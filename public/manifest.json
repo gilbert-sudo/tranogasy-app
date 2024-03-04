@@ -47,5 +47,11 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://tranogasy-gilbert-414910.el.r.appspot.com/manifest.json"
+    }
+ ]
 }
