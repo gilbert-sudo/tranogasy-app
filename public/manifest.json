@@ -51,7 +51,7 @@
   "related_applications": [
     {
       "platform": "webapp",
-      "url": "http://localhost:8080/manifest.json"
+      "url": "https://gotrano.onrender.com/manifest.json"
     }
  ]
 }
