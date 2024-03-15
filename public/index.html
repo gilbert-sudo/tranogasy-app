@@ -42,17 +42,28 @@
     <link rel="manifest" href="manifest.json" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=places"></script>
     <script src="images/dist/add-to-homescreen.min.js"></script>
-    <script defer="defer" src="static/js/main.57f41f42.js"></script>
+    <script defer="defer" src="static/js/main.90732bd6.js"></script>
     <link href="static/css/main.0363f06a.css" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
     <script>
+      "serviceWorker" in navigator &&
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((e) => console.log("Service worker registered!", e))
+            .catch((e) =>
+              console.log("Service worker registration failed:", e)
+            );
+        });
+    </script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         (window.AddToHomeScreenInstance = new window.AddToHomeScreen({
           appName: "TranoGasy",
           appIconUrl: "apple-touch-icon.png",
-          assetUrl: "/images/dist/assets/img/",
+          assetUrl: "/images/",
           showErrorMessageForUnsupportedBrowsers:
             window.AddToHomeScreen.SHOW_ERRMSG_UNSUPPORTED.ALL,
           allowUserToCloseModal: !0,
