@@ -1,4 +1,4 @@
-const cacheName = "v1"; // Version your cache for updates
+const cacheName = "v2"; // Version your cache for updates
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
@@ -7,14 +7,14 @@ self.addEventListener("install", function (event) {
       return cache.addAll([
         "/", // Cache your app's root URL
         "index.html", // Cache your main HTML file
-        // "static/css/main.0363f06a.css",
-        // "static/js/main.378112b4.js",
-        // "static/js/845.f99cbb79.chunk.js",
-        // "static/js/787.cdfa87fd.chunk.js",
-        // "static/css/main.0363f06a.css.map",
-        // "static/js/main.378112b4.js.map",
-        // "static/js/845.f99cbb79.chunk.js.map",
-        // "static/js/787.cdfa87fd.chunk.js.map",
+        "static/css/main.0363f06a.css",
+        "static/js/main.90732bd6.js",
+        "static/js/845.f99cbb79.chunk.js",
+        "static/js/787.cdfa87fd.chunk.js",
+        "static/css/main.0363f06a.css.map",
+        "static/js/main.90732bd6.js.map",
+        "static/js/845.f99cbb79.chunk.js.map",
+        "static/js/787.cdfa87fd.chunk.js.map",
         "apple-touch-icon.png", // Cache app icon
         "images/dist/add-to-homescreen.min.css",
         "images/add-more.jpg",
