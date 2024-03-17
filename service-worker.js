@@ -1,4 +1,4 @@
-const cacheName = "v1.1 "; // Version your cache for updates
+const cacheName = "v0.1"; // Version your cache for updates
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
@@ -8,14 +8,13 @@ self.addEventListener("install", function (event) {
         "/", // Cache your app's root URL
         "/index.html", // Cache your main HTML file
         "/no connetion.svg",
-        "/data/communes madagasikara.json",
-        "/data/madagasikarawithid.json",
+        "/apple-touch-icon.png", // Cache app icon
         "/static/css/main.0363f06a.css",
-        "/static/js/main.76de44e4.js",
+        "/static/js/main.6a81fb9f.js",
         "/static/js/845.f99cbb79.chunk.js",
         "/static/js/787.cdfa87fd.chunk.js",
         "/static/css/main.0363f06a.css.map",
-        "/static/js/main.76de44e4.js.map",
+        "/static/js/main.6a81fb9f.js.map",
         "/static/js/845.f99cbb79.chunk.js.map",
         "/static/js/787.cdfa87fd.chunk.js.map",
         "/images/dist/add-to-homescreen.min.css",
@@ -37,11 +36,15 @@ self.addEventListener("install", function (event) {
         "/images/down-arrow-blue.svg",
         "/images/down-arrow.png",
         "/images/down-arrow.svg",
+        "/images/favicon.ico",
         "/images/generic-more-button.svg",
         "/images/generic-vertical-bouncing-arrow.svg",
         "/images/generic-vertical-down-bouncing-arrow.svg",
         "/images/generic-vertical-up-bouncing-arrow.svg",
         "/images/gps_satellite_icongif.gif",
+        "/images/icon-logo.png",
+        "/images/icon-logonew.png",
+        "/images/icons",
         "/images/ios-add-to-home-screen-button.svg",
         "/images/ios-bouncing-arrow.svg",
         "/images/ios-chrome-add-to-home-screen-button.svg",
@@ -55,6 +58,7 @@ self.addEventListener("install", function (event) {
         "/images/loader.gif",
         "/images/loading-house.gif",
         "/images/logo-gilbert.png",
+        "/images/logo.png",
         "/images/love the house.png",
         "/images/MG.svg",
         "/images/no connction.jpg",
@@ -115,6 +119,8 @@ self.addEventListener("install", function (event) {
         "/js/like.js",
         "/js/main.js",
         "/js/scroll.js",
+        "/data/communes madagasikara.json",
+        "/data/madagasikarawithid.json",
       ]);
     })
   );
