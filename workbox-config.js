@@ -6,7 +6,7 @@ module.exports = {
   swDest: "sw.js",
   runtimeCaching: [
     {
-      urlPattern: ({ url }) => url.pathname.startsWith('https://gotrano.onrender.com'),
+      urlPattern: ({ url }) => url.origin.startsWith('https://gotrano.onrender.com'),
       handler: "CacheFirst",
       options: {
         cacheName: "tranogasy-cache",
