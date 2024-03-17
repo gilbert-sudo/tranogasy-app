@@ -2,7 +2,6 @@
   "name": "TranoGasy",
   "short_name": "TranoGasy",
   "start_url": "/index.html",
-  "scope": "/",
   "description": "Application pour cherche votre maison de reve partout a madagascar",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -49,11 +48,5 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ],
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://gotrano.onrender.com/manifest.json"
-    }
- ]
+  ]
 }
