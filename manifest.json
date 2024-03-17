@@ -1,7 +1,7 @@
 {
-  "name": "TranoGasy",
+  "name": "TranoGasy by Gilbert Madagascar",
   "short_name": "TranoGasy",
-  "start_url": "/index.html",
+  "start_url": "/",
   "description": "Application pour cherche votre maison de reve partout a madagascar",
   "display": "standalone",
   "background_color": "#ffffff",
