@@ -1,8 +1,7 @@
 {
   "name": "TranoGasy",
   "short_name": "TranoGasy",
-  "start_url": "./index.html",
-  "scope": ".",
+  "start_url": "/index.html",
   "description": "Application pour cherche votre maison de reve partout a madagascar",
   "display": "standalone",
   "background_color": "#ffffff",
