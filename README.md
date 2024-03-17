@@ -1,1 +1,0 @@
-# trano-gasy
