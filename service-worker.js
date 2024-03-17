@@ -9,12 +9,8 @@ self.addEventListener("install", function (event) {
         "/index.html", // Cache your main HTML file
         "/no connetion.svg",
         "/apple-touch-icon.png", // Cache app icon
-        "/images/apple-touch-icon.png",
-        "/images/favicon.ico",
-        "/images/gps_satellite_icongif.gif",
-        "/images/icon-logo.png",
-        "/images/loader.gif",
-        "/images/logo.png",
+        "/static/css/main.0363f06a.css",
+        "/static/js/main.76de44e4.js",
         "/data/communes madagasikara.json",
         "/data/madagasikarawithid.json",
       ]);
