@@ -1,27 +1,26 @@
 module.exports = {
-  globDirectory: ".",
+  // Include all static assets in the precache
+  globDirectory: './',
   globPatterns: [
-    "**/*.{png,json,css,ico,eot,svg,ttf,woff,txt,scss,html,pdf,js,jpg,gif,md,mp3,wav,manifest}", // Include manifest.json
+    '**/*.{html,css,js,json,ico,svg,png,jpg,gif,manifest}',
   ],
-  swDest: "sw.js",
+  swDest: 'sw.js',
+  maximumFileSizeToCacheInBytes: 5000000, // 5MB limit (adjust as needed)
+  ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
+  // Cache all requests with CacheFirst strategy (assuming offline page exists)
   runtimeCaching: [
     {
-      urlPattern: ({ url }) => url.origin === "https://gotrano.onrender.com",
-      handler: "CacheFirst",
+      urlPattern: /.*/,
+      handler: 'CacheFirst',
       options: {
-        cacheName: "cdn-cache",
-        expiration: {
-          maxEntries: 100,
+        cacheName: 'offline-cache',
+        cacheableResponse: {
+          statuses: [0, 200], // Cache successful responses only
         },
       },
     },
-    {
-      urlPattern: /.*/, // Default strategy for all other URLs
-      handler: "StaleWhileRevalidate",
-    },
   ],
+  // Other options
   clientsClaim: true,
   skipWaiting: true,
-  maximumFileSizeToCacheInBytes: 5000000,
-  ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
 };

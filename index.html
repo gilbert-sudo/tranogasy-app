@@ -45,9 +45,16 @@
     <script defer="defer" src="static/js/main.6a81fb9f.js"></script>
     <link rel="manifest" href="manifest.json" />
     <script>
+      // This registers the service worker script (if available).
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js');
+          navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+              console.log('Service worker registration successful:', registration);
+            })
+            .catch(error => {
+              console.warn('Service worker registration failed:', error);
+            });
         });
       }
     </script>
