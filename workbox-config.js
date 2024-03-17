@@ -6,13 +6,14 @@ module.exports = {
   swDest: "sw.js",
   runtimeCaching: [
     {
-      urlPattern: ({ url }) => url.origin === "https://gotrano.onrender.com",
+      urlPattern: ({ url }) => url.pathname.startsWith('https://gotrano.onrender.com'),
       handler: "CacheFirst",
       options: {
-        cacheName: "tranogasy-v0",
+        cacheName: "tranogasy-cache",
         expiration: {
           // Adjust the number of entries to keep as needed.
-          maxEntries: 50,
+          maxEntries: undefined, // Keep this undefined to use default behavior
+          maxAgeSeconds: undefined 
         },
       },
     },
