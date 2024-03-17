@@ -12,7 +12,7 @@ module.exports = {
         cacheName: "cdn-assets",
         expiration: {
           // Adjust the number of entries to keep as needed.
-          maxEntries: 100,
+          maxEntries: 50,
         },
       },
     },
