@@ -1,4 +1,4 @@
-const cacheName = "v0.1"; // Version your cache for updates
+const cacheName = "tranogasy0.1"; // Version your cache for updates
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
@@ -127,13 +127,39 @@ self.addEventListener("install", function (event) {
 });
 
 // Fetch event: Serve cached version of assets if available
-self.addEventListener("fetch", function (event) {
-  event.respondWith(
-    caches.match(event.request).then(function (response) {
-      return response || fetch(event.request);
-    })
+self.addEventListener("fetch", (e) => {
+  e.respondWith(
+    (async () => {
+      const r = await caches.match(e.request);
+      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
+      if (r) {
+        return r;
+      }
+      const response = await fetch(e.request);
+      const cache = await caches.open(cacheName);
+      console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
+      cache.put(e.request, response.clone());
+      return response;
+    })(),
   );
 });
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(
+        keyList.map((key) => {
+          if (key === cacheName) {
+            return;
+          }
+          return caches.delete(key);
+        }),
+      );
+    }),
+  );
+});
+
+
 
 // Push notification placeholder (requires server-side setup)
 // self.addEventListener('push', (event) => {
