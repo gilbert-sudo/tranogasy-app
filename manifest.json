@@ -1,35 +1,43 @@
 {
-  "name": "Awesome Tranogasy",
-  "short_name": "Tranogasy",
+  "name": "MIMMO",
+  "short_name": "MIMMO",
+  "description": "Trouvez votre bien immobilier à Madagascar facilement ! La première application mobile dédiée à l'immobilier à Madagascar.",
+  "lang": "fr",
+  "categories": [
+    "immobilier",
+    "vie_quotidienne",
+    "affaires",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "./assets/icon-48.png",
-      "sizes": "192x192",
+      "sizes": "48x48",
       "type": "image/png"
     },
     {
       "src": "./assets/icon-72.png",
-      "sizes": "192x192",
+      "sizes": "72x72",
       "type": "image/png"
     },
     {
       "src": "./assets/icon-96.png",
-      "sizes": "192x192",
+      "sizes": "96x96",
       "type": "image/png"
     },
     {
       "src": "./assets/icon-128.png",
-      "sizes": "192x192",
+      "sizes": "128x128",
       "type": "image/png"
     },
     {
       "src": "./assets/icon-144.png",
-      "sizes": "192x192",
+      "sizes": "144x144",
       "type": "image/png"
     },
     {
       "src": "./assets/icon-152.png",
-      "sizes": "192x192",
+      "sizes": "152x152",
       "type": "image/png"
     },
     {
@@ -46,6 +54,44 @@
       "src": "./assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./assets/screenshot1.png",
+      "type": "image/png",
+      "sizes": "645x1398",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "./assets/screenshot2.png",
+      "type": "image/png",
+      "sizes": "645x1398",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "./assets/screenshot3.png",
+      "type": "image/png",
+      "sizes": "645x1398",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "./assets/wide-screenshot1.png",
+      "type": "image/png",
+      "sizes": "1149x815",
+      "form_factor": "wide"
+    },
+    {
+      "src": "./assets/wide-screenshot2.png",
+      "type": "image/png",
+      "sizes": "1149x815",
+      "form_factor": "wide"
+    },
+    {
+      "src": "./assets/wide-screenshot3.png",
+      "type": "image/png",
+      "sizes": "1149x815",
+      "form_factor": "wide"
     }
   ],
   "theme_color": "#FFFFFF",

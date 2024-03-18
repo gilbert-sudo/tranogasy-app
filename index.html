@@ -7,6 +7,15 @@
       name="viewport"
       content="width=device-width,initial-scale=1,shrink-to-fit=no"
     />
+    <meta
+      name="description"
+      content="**Révolutionnez votre recherche immobilière à Madagascar !** L'application MIMMO est la première plateforme mobile dédiée à l'immobilier à Madagascar. Trouvez facilement le bien de vos rêves, qu'il s'agisse d'une maison, d'un appartement, d'un terrain ou d'un local commercial. Grâce à MIMMO, accédez à une large sélection d'annonces immobilières en quelques clics et simplifiez votre recherche de logement.
+
+**MIMMO** est l'outil idéal pour les Malagasy à la recherche d'un bien immobilier. Simplifiez votre recherche et gagnez du temps grâce à nos fonctionnalités intuitives.
+
+**Téléchargez MIMMO dès aujourd'hui et trouvez votre nouveau chez-vous à Madagascar !**"
+    />
+
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
@@ -46,14 +55,18 @@
     <link rel="manifest" href="manifest.json" />
     <script>
       // This registers the service worker script (if available).
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js')
-            .then(registration => {
-              console.log('Service worker registration successful:', registration);
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("sw.js")
+            .then((registration) => {
+              console.log(
+                "Service worker registration successful:",
+                registration
+              );
             })
-            .catch(error => {
-              console.warn('Service worker registration failed:', error);
+            .catch((error) => {
+              console.warn("Service worker registration failed:", error);
             });
         });
       }
