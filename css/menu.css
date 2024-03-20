@@ -13,13 +13,13 @@
   --title-color: hsl(var(--hue), 12%, 15%);
   --text-color: hsl(var(--hue), 8%, 35%);
   --body-color: hsl(var(--hue), 100%, 99%);
-  --container-color: #FFF;
+  --container-color: #fff;
 
   /*========== Font and typography ==========*/
-  --body-font: 'Open Sans', sans-serif;
+  --body-font: "Open Sans", sans-serif;
   --h1-font-size: 1.5rem;
-  --normal-font-size: .938rem;
-  --tiny-font-size: .650rem;
+  --normal-font-size: 0.938rem;
+  --tiny-font-size: 0.65rem;
 
   /*========== z index ==========*/
   --z-tooltip: 10;
@@ -82,7 +82,7 @@ img {
   width: 100%;
   background-color: var(--container-color);
   z-index: var(--z-fixed);
-  transition: .4s;
+  transition: 0.4s;
 }
 
 /*=============== NAV ===============*/
@@ -103,22 +103,24 @@ img {
   font-weight: 600;
 }
 
-  .nav__menu {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    background-color: var(--container-color);
-    box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.15);
-    width: 100%;
-    height: 4rem;
-    padding: 0 1rem;
-    display: grid;
-    align-content: center;
-    border-radius: 1.25rem 1.25rem 0 0;
-    transition: .4s;
-  }
+.nav__menu {
+  position: fixed;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 0;
+  left: 0;
+  background-color: var(--container-color);
+  box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.15);
+  width: 100%;
+  height: 4rem;
+  padding: 0 1rem;
+  display: grid;
+  border-radius: 1.25rem 1.25rem 0 0;
+  transition: 0.4s;
+}
 
-.nav__list, 
+.nav__list,
 .nav__link {
   display: flex;
 }
@@ -149,7 +151,7 @@ img {
   position: relative;
   /* color: var(--first-color); */
   color: #7cbd1e;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 /* Minimalist design, active link */
@@ -167,6 +169,3 @@ img {
 .scroll-header {
   box-shadow: 0 1px 12px hsla(var(--hue), var(--sat), 15%, 0.15);
 }
-
-
-

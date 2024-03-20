@@ -15,7 +15,6 @@
 
 **Téléchargez MIMMO dès aujourd'hui et trouvez votre nouveau chez-vous à Madagascar !**"
     />
-
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
@@ -48,29 +47,24 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap"
       rel="stylesheet"
     />
-    <link href="static/css/main.0363f06a.css" rel="stylesheet" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=places"></script>
     <script src="images/dist/add-to-homescreen.min.js"></script>
-    <script defer="defer" src="static/js/main.6a81fb9f.js"></script>
     <link rel="manifest" href="manifest.json" />
     <script>
-      // This registers the service worker script (if available).
-      if ("serviceWorker" in navigator) {
+      "serviceWorker" in navigator &&
         window.addEventListener("load", () => {
           navigator.serviceWorker
             .register("sw.js")
-            .then((registration) => {
-              console.log(
-                "Service worker registration successful:",
-                registration
-              );
+            .then((e) => {
+              console.log("Service worker registration successful:", e);
             })
-            .catch((error) => {
-              console.warn("Service worker registration failed:", error);
+            .catch((e) => {
+              console.warn("Service worker registration failed:", e);
             });
         });
-      }
     </script>
+    <script defer="defer" src="static/js/main.661383be.js"></script>
+    <link href="static/css/main.fafdb8ef.css" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
