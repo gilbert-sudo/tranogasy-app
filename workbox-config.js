@@ -5,13 +5,14 @@ module.exports = {
   swDest: "sw.js",
   maximumFileSizeToCacheInBytes: 5000000, // 5MB limit (adjust as needed)
   ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
-  // Cache all requests with CacheFirst and background updates
+  // Use NetworkFirst strategy with cache fallback
   runtimeCaching: [
     {
       urlPattern: /.*/,
-      handler: "StaleWhileRevalidate",
+      handler: "NetworkFirst",
       options: {
-        cacheName: "offline-cache",
+        cacheName: "dynamic-cache",
+        networkTimeoutSeconds: 10, // Time to wait for the network before falling back to the cache
         cacheableResponse: {
           statuses: [0, 200], // Cache successful responses only
         },
