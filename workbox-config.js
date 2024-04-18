@@ -19,4 +19,7 @@ module.exports = {
       },
     },
   ],
+  // Other options
+  clientsClaim: true,
+  skipWaiting: false,
 };
