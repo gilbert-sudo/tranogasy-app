@@ -9,10 +9,9 @@ module.exports = {
   runtimeCaching: [
     {
       urlPattern: /.*/,
-      handler: "NetworkFirst",
+      handler: "StaleWhileRevalidate",
       options: {
         cacheName: "dynamic-cache",
-        networkTimeoutSeconds: 10, // Time to wait for the network before falling back to the cache
         cacheableResponse: {
           statuses: [0, 200], // Cache successful responses only
         },

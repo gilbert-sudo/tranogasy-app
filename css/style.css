@@ -511,6 +511,7 @@ a:hover {
 .property-entry .offer-type-wrap {
   position: absolute;
   top: 10px;
+  margin-right: 10px;
   left: 10px;
   z-index: 8;
 }
@@ -518,7 +519,7 @@ a:hover {
   position: absolute;
   font-size: 0.8rem;
   top: 8px;
-  right: 10px;
+  margin-right: 10px;
   z-index: 8;
   color: #fff; /* Set the text color based on the background */
   /* background-color: rgba(0, 0, 0, 0.5); */
