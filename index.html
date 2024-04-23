@@ -50,19 +50,6 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=places"></script>
     <script src="images/dist/add-to-homescreen.min.js"></script>
     <link rel="manifest" href="manifest.json" />
-    <script>
-      "serviceWorker" in navigator &&
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("sw.js")
-            .then((e) => {
-              console.log("Service worker registration successful:", e);
-            })
-            .catch((e) => {
-              console.warn("Service worker registration failed:", e);
-            });
-        });
-    </script>
     <script defer="defer" src="static/js/main.270b9ffc.js"></script>
     <link href="static/css/main.9d1f6abb.css" rel="stylesheet" />
   </head>
