@@ -9,38 +9,24 @@
     />
     <meta
       name="description"
-      content="**Révolutionnez votre recherche immobilière à Madagascar !** L'application MIMMO est la première plateforme mobile dédiée à l'immobilier à Madagascar. Trouvez facilement le bien de vos rêves, qu'il s'agisse d'une maison, d'un appartement, d'un terrain ou d'un local commercial. Grâce à MIMMO, accédez à une large sélection d'annonces immobilières en quelques clics et simplifiez votre recherche de logement.
+      content="**Révolutionnez votre recherche immobilière à Madagascar !** L'application TranoGasy est la première plateforme mobile dédiée à l'immobilier à Madagascar. Trouvez facilement le bien de vos rêves, qu'il s'agisse d'une maison, d'un appartement, d'un terrain ou d'un local commercial. Grâce à TranoGasy, accédez à une large sélection d'annonces immobilières en quelques clics et simplifiez votre recherche de logement.
 
-**MIMMO** est l'outil idéal pour les Malagasy à la recherche d'un bien immobilier. Simplifiez votre recherche et gagnez du temps grâce à nos fonctionnalités intuitives.
+**TranoGasy** est l'outil idéal pour les Malagasy à la recherche d'un bien immobilier. Simplifiez votre recherche et gagnez du temps grâce à nos fonctionnalités intuitives.
 
-**Téléchargez MIMMO dès aujourd'hui et trouvez votre nouveau chez-vous à Madagascar !**"
+**Téléchargez TranoGasy dès aujourd'hui et trouvez votre nouveau chez-vous à Madagascar !**"
     />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="stylesheet" href="images/dist/add-to-homescreen.min.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,700,900|Roboto+Mono:300,400,500"
     />
-    <link rel="stylesheet" href="fonts/icomoon/style.css" />
     <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/magnific-popup.css" />
-    <link rel="stylesheet" href="css/jquery-ui.css" />
     <link rel="stylesheet" href="css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="css/owl.theme.default.min.css" />
-    <link rel="stylesheet" href="css/bootstrap-datepicker.css" />
-    <link rel="stylesheet" href="css/mediaelementplayer.css" />
-    <link rel="stylesheet" href="css/animate.css" />
-    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css" />
-    <link rel="stylesheet" href="css/fl-bigmug-line.css" />
-    <link rel="stylesheet" href="css/aos.css" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/loader.css" />
     <link rel="stylesheet" href="css/menu.css" />
-    <link rel="stylesheet" href="css/searchbar.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -48,40 +34,73 @@
       rel="stylesheet"
     />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=places"></script>
-    <script src="images/dist/add-to-homescreen.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=drawing"></script>
     <link rel="manifest" href="manifest.json" />
-    <script defer="defer" src="static/js/main.270b9ffc.js"></script>
-    <link href="static/css/main.9d1f6abb.css" rel="stylesheet" />
+    <script></script>
+    <script defer="defer" src="static/js/main.0d31c70c.js"></script>
+    <link href="static/css/main.de93c9cf.css" rel="stylesheet" />
   </head>
   <body>
+    <div
+      id="loader"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 90%;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div align="center">
+        <img
+          src="images/icon-logonew.png"
+          alt="Loading..."
+          style="max-width: 100px"
+        /><br /><strong style="color: #7cbd1e; font-size: 20px">Trano</strong
+        ><strong style="color: #ec1c24; position: relative; font-size: 20px"
+          >Gasy
+          <img
+            style="position: absolute"
+            src="images/Animation - 17331.gif"
+            alt=""
+            width="28px" /></strong
+        >.
+      </div>
+    </div>
+    <div
+      id="footer"
+      style="
+        position: fixed;
+        width: 100%;
+        bottom: 5%;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div style="bottom: 10%" align="center">
+        <small>Préparation de l'application...</small>
+      </div>
+    </div>
     <div id="root"></div>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        (window.AddToHomeScreenInstance = new window.AddToHomeScreen({
-          appName: "TranoGasy",
-          appIconUrl: "apple-touch-icon.png",
-          assetUrl: "/images/dist/assets/img/",
-          showErrorMessageForUnsupportedBrowsers:
-            window.AddToHomeScreen.SHOW_ERRMSG_UNSUPPORTED.ALL,
-          allowUserToCloseModal: !0,
-          maxModalDisplayCount: -1,
-        })),
-          (ret = window.AddToHomeScreenInstance.show());
-      });
+      const checkRootContent = setInterval(() => {
+        const e = document.getElementById("root");
+        if (e && e.children.length > 0) {
+          const e = document.getElementById("loader"),
+            t = document.getElementById("footer");
+          e && t && ((e.style.display = "none"), (t.style.display = "none")),
+            clearInterval(checkRootContent);
+        }
+      }, 100);
     </script>
   </body>
   <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/mediaelement-and-player.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.countdown.min.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/bootstrap-datepicker.min.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/like.js"></script>
   <script src="js/main.js"></script>
 </html>

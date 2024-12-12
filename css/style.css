@@ -917,7 +917,6 @@ a:hover {
   left: 0;
 }
 .unit-8 .accordion-item .heading > a[aria-expanded="true"]:before {
-  font-family: "icomoon";
   position: absolute;
   content: "\e316";
   -webkit-transition: 0.3s all ease;
@@ -930,7 +929,6 @@ a:hover {
 .unit-8 .accordion-item .heading > a[aria-expanded="false"]:before {
   content: "\e313";
   color: #ccc;
-  font-family: "icomoon";
   position: absolute;
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;
