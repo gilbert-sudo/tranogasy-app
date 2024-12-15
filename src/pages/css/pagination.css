@@ -1,0 +1,56 @@
+.pagination {
+  margin-bottom: 0 !important;
+}
+.pagination-bottom-navbar {
+  border-radius: 25px 25px 0 0;
+  margin: 2px 5px 0 5px;
+  max-width: 450px;
+  box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.3);
+}
+
+.custom-page-item {
+  display: flex;
+  justify-content: center;
+  padding: 3px;
+  border:1px  solid  #e0dbdb;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.custom-page-item.active {
+  background: #cfcdcd;
+  border:1px  solid  #e0dbdb;
+}
+
+.custom-page-link {
+  color: black !important;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+@media (max-width: 364px) {
+  .prev-btn-label {
+    display: none;
+  }
+  .next-btn-label {
+    display: none;
+  }
+}
+.previous-btn {
+  margin-right: auto;
+  border: none;
+}
+.break-btn {
+  border: none;
+}
+
+.next-btn {
+  margin-left: auto;
+  border: none;
+}
+
+.custom-page-link {
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  font-size: large;
+}

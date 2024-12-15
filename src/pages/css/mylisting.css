@@ -1,0 +1,34 @@
+
+.ad-category-card {
+    padding: 0px 30px 0px 30px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30);
+}
+
+.ad-category-card:hover {
+   background-color: #E5E4E2 !important;
+}
+
+.ad-category-card-body {
+    min-width: 80px;
+}
+.add-ad-btn {
+    border-radius: 10px;
+    box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30);
+}
+
+.quick-add-ad-btn {
+    padding: 0 18px 0 18px;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30);
+    font-size: 40px;
+}
+
+.go-back-link{
+    width: 85px;
+    color: white;
+    background-color:rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+}

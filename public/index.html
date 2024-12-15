@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>TranoGasy - Gilbert Madagascar</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta
+    name="description"
+    content="**Révolutionnez votre recherche immobilière à Madagascar !** L'application TranoGasy est la première plateforme mobile dédiée à l'immobilier à Madagascar. Trouvez facilement le bien de vos rêves, qu'il s'agisse d'une maison, d'un appartement, d'un terrain ou d'un local commercial. Grâce à TranoGasy, accédez à une large sélection d'annonces immobilières en quelques clics et simplifiez votre recherche de logement.
+
+**TranoGasy** est l'outil idéal pour les Malagasy à la recherche d'un bien immobilier. Simplifiez votre recherche et gagnez du temps grâce à nos fonctionnalités intuitives.
+
+**Téléchargez TranoGasy dès aujourd'hui et trouvez votre nouveau chez-vous à Madagascar !**"
+  />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
+        <!-- <link
+      rel="stylesheet"
+      href="%PUBLIC_URL%/images/dist/add-to-homescreen.min.css"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,700,900|Roboto+Mono:300,400,500"
+    />
+
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/style.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/loader.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/css/menu.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=drawing"></script>
+  
+
+    <!-- <script src="%PUBLIC_URL%/images/dist/add-to-homescreen.min.js"></script> -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <script>
+      // This registers the service worker script (if available).
+      // if ("serviceWorker" in navigator) {
+      //   window.addEventListener("load", () => {
+      //     navigator.serviceWorker
+      //       .register("sw.js")
+      //       .then((registration) => {
+      //         console.log(
+      //           "Service worker registration successful:",
+      //           registration
+      //         );
+      //       })
+      //       .catch((error) => {
+      //         console.warn("Service worker registration failed:", error);
+      //       });
+      //   });
+      // }
+    </script>
+
+  </head>
+
+  <body>
+     <!-- Loader -->
+     <div id="loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 90%; background: #fff; display: flex; justify-content: center; align-items: center;">
+      <div align="center">
+        <img src="images/icon-logonew.png" alt="Loading..." style="max-width: 100px;"/><br>
+        <strong style="color: #7cbd1e; font-size: 20px;">Trano</strong><strong style="color: #ec1c24; position: relative; font-size: 20px;">Gasy <img style="position: absolute;" src="images/Animation - 17331.gif" alt="" width="28px"></strong>.
+      </div>
+    </div>
+     <div id="footer" style="position: fixed; width: 100%; bottom: 5%; background: #fff; display: flex; justify-content: center; align-items: center;">
+      <div style="bottom: 10%;" align="center"><small>Préparation de l'application...</small></div>
+    </div>
+
+    <div id="root"></div>
+
+    <script>
+      // Check for children in the #root div
+      const checkRootContent = setInterval(() => {
+        const root = document.getElementById("root");
+        if (root && root.children.length > 0) {
+          const loader = document.getElementById("loader");
+          const footer = document.getElementById("footer");
+          if (loader && footer) {
+            loader.style.display = "none";
+            footer.style.display = "none";
+          }
+          clearInterval(checkRootContent); // Stop checking once the root is populated
+        }
+      }, 100); // Check every 100ms
+    </script>
+    
+    <!-- <script>
+      document.addEventListener('DOMContentLoaded', function () { // document.getElementById('addToHomeScreen').addEventListener('click', function () and add <button id="addToHomeScreen">Add to Home Screen</button> somewhere on your page to get a button instead.
+      
+       window.AddToHomeScreenInstance = new window.AddToHomeScreen({
+        appName: 'TranoGasy',                                   // Name of the app.
+                                                               // Required.
+        appIconUrl: 'apple-touch-icon.png',                    // App icon link (square, at least 40 x 40 pixels).
+                                                               // Required.
+        assetUrl: '%PUBLIC_URL%/images/dist/assets/img/',  // Link to directory of library image assets.
+                                                                                                  // Required. 
+        showErrorMessageForUnsupportedBrowsers: window.AddToHomeScreen.SHOW_ERRMSG_UNSUPPORTED.ALL, // Show an error message if add-to-home-screen is not supported for this browser
+                                                                                                    // (e.g.  "adding to home screen is not supported in IOS Firefox, please open this [website] in IOS Safari instead." or "adding to home screen is not supported on desktop, please open this [website] in your mobile browser instead".  You can also set more granular permissions to show error messages only on mobile browsers and not on desktop browsers, etc)
+                                                                                                    // Optional. Default: window.AddToHomeScreen.SHOW_ERRMSG_UNSUPPORTED.ALL 
+        allowUserToCloseModal: true,                          // Allow user to close the 'Add to Homescreen' message? Not allowing will increase installs.
+                                                               // Optional. Default: false.
+        maxModalDisplayCount: -1                               // If set, the modal will only show this many times.
+                                                               // Optional. Default: -1 (no limit).  (Debugging: Use this.clearModalDisplayCount() to reset the count)
+      });
+            
+       ret = window.AddToHomeScreenInstance.show();             // show "add-to-homescreen" instructions to user, or do nothing if already added to homescreen
+      });
+      </script> -->
+
+      </body>
+
+    <script src="%PUBLIC_URL%/js/jquery-3.3.1.min.js"></script>
+    <script src="%PUBLIC_URL%/js/bootstrap.min.js"></script>
+    <script src="%PUBLIC_URL%/js/main.js"></script>
+    <!-- <script src="%PUBLIC_URL%/js/scroll.js"></script> -->
+  </body>
+</html>

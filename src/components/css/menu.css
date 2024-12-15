@@ -1,0 +1,15 @@
+.center-navitem {
+  position: relative;
+  display: flex; /* Use flexbox layout */
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically (optional) */
+}
+
+.center-navlink {
+  box-shadow: 0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30);
+  padding: 12px;
+  border: 6px solid white;
+  border-radius: 50%;
+  margin-top: -19px;
+  background-color: white;
+}

@@ -1,0 +1,48 @@
+.autocomplete-container {
+  margin: 9px;
+  position: absolute;
+}
+
+@media (max-width: 329px) {
+  .map-input {
+    width: 29vh;
+  }
+}
+@media (min-width: 330px) {
+  .map-input {
+    width: 31vh;
+  }
+}
+
+@media (min-width: 420px) {
+  .map-input {
+    width: 33vh;
+  }
+}
+
+.map-input {
+  font-size: larger;
+  border-radius: 3px;
+  border: 1px solid grey;
+  padding-left: 13px;
+  padding-right: 13px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.pac-container .pac-logo {
+  z-index: 10 !important;
+  top: 0px !important;
+}
+#root
+  > div
+  > div
+  > main
+  > div
+  > div:nth-child(2)
+  > div
+  > div.gm-style
+  > div:nth-child(5)
+  > div {
+  left: 0px !important;
+}

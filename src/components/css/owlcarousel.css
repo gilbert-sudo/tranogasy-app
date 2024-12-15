@@ -1,0 +1,36 @@
+/* Custom styles for OwlCarousel dots pagination */
+.owl-theme .owl-dots {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 10px; /* Adjust the distance from the bottom as needed */
+    left: 0;
+    right: 0;
+    list-style: none; /* Remove the default list style */
+    padding: 0;
+  }
+  
+  .owl-theme .owl-dot {
+    display: inline-block;
+    width: 11px; /* Adjust the dot size as needed */
+    height: 11px; /* Adjust the dot size as needed */
+    border-radius: 50%;
+    background-color: #fff;
+    margin: 0 5px; /* Adjust the space between dots as needed */
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+    box-shadow: none; /* Remove the shadow */
+    position: relative;
+  }
+  
+  .owl-theme .owl-dots .owl-dot span {
+    display: none !important; /* Hide the span element inside the dots */
+  }
+  
+  .owl-theme .owl-dot.active {
+    width: 12px; /* Adjust the dot size as needed */
+    height: 12px; /* Adjust the dot size as needed */
+    opacity: 1;
+  }
+  

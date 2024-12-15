@@ -1,0 +1,211 @@
+/* CSS */
+
+.custom-bg-white {
+  background-color: white;
+}
+.button-7 {
+  background-color: #4267b2;
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 30px;
+  box-shadow: rgba(255, 255, 255, 0.4) 0 1px 0 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans",
+    sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15385;
+  margin: 0;
+  outline: none;
+  padding: 8px 0.8em;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.button-7:hover,
+.button-7:focus {
+  background-color: #173d8a;
+}
+
+.button-7:focus {
+  box-shadow: 0 0 0 4px rgba(0, 149, 255, 0.15);
+}
+tionDetails .button-7:active {
+  background-color: #4267b2;
+  box-shadow: none;
+}
+
+.custom-container {
+  min-height: 100vh;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.btn-custum {
+  border-radius: 30px;
+}
+.btn-form {
+  border-radius: 30px;
+}
+
+.text-light-custom {
+  font-family: "Roboto", sans-serif;
+  color: #c5c5c5 !important;
+}
+
+.image-container {
+  position: relative;
+  width: 100%; /* Adjust as needed */
+  height: auto; /* Adjust as needed */
+}
+
+.image-container img {
+  width: 100%; /* Full width of the container */
+  height: auto; /* Keep the aspect ratio */
+  display: block;
+}
+
+.image-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%; /* Gradient from top to middle */
+  background: linear-gradient(to bottom, black, transparent);
+  pointer-events: none; /* Allows clicks to pass through the overlay */
+}
+
+.favorite-date-details-wrap {
+  position: absolute;
+  font-size: 0.8rem;
+  top: 35px;
+  right: 10px;
+  z-index: 8;
+  color: #fff; /* Set the text color based on the background */
+  /* background-color: rgba(0, 0, 0, 0.5); */
+}
+
+.favorite-quarter-details-wrap {
+  text-align: end;
+  position: absolute;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  font-size: 0.7rem;
+  font-weight: 200;
+  top: 50px;
+  left: 10px;
+  right: 10px;
+  z-index: 8;
+  color: #fff; /* Set the text color based on the background */
+}
+
+.receipt-container{
+  background-color: rgba(0, 0, 0, 0.5);
+  min-height: 90vh;
+  min-width: 100%;
+}
+
+.receipt {
+  background-color: #fff;
+  max-width: 330px;
+  min-height: 300px;
+  --mask: 
+    conic-gradient(from 130deg at top,#0000,#000 1deg 99deg,#0000 100deg) top/11.92px 51% repeat-x,
+    conic-gradient(from -50deg at bottom,#0000,#000 1deg 99deg,#0000 100deg) bottom/11.92px 51% repeat-x;
+  -webkit-mask: var(--mask);
+          mask: var(--mask);
+}
+
+.receipt-tittle {
+  border-style: dashed none dashed none;
+  padding: 10px;
+}
+
+.receipt-message, .receipt-th{
+ padding: 10px;
+}
+.receipt-th2{
+  padding-top: 0 !important;
+  padding: 10px;
+}
+
+.receipt-exp, .receipt-amount{
+ border-bottom-style: dashed;
+ padding: 10px;
+}
+
+.receipt-exp{
+ border-bottom-style: dashed;
+ padding: 10px;
+}
+
+.receipt-footer > button{
+  margin-top: 30px;
+  border-radius: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+  min-width: 48%;
+}
+
+@media (max-width: 330px) {
+  .btn-form {
+    border-radius: 11px !important;
+    padding: 3px;
+    font-size: small;
+    font-family: "Roboto", sans-serif;
+  }
+}
+
+@media (min-width: 330px) and (max-width: 391px) {
+  .btn-form {
+    border-radius: 13px !important;
+    padding: 3px 5px;
+    font-size: smaller;
+    font-family: "Roboto", sans-serif;
+  }
+}
+
+@media (min-width: 391px) {
+  .btn-form {
+    border-radius: 10px !important;
+    padding: 4px 7px;
+    font-family: "Roboto", sans-serif;
+  }
+}
+@media (min-width: 576px) {
+  .custom-container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .custom-container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .custom-container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .custom-container {
+    max-width: 1140px;
+  }
+}

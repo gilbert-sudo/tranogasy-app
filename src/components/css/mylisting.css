@@ -1,0 +1,12 @@
+.listing-delete-button {
+    border-radius: 15px;
+    transform: translateX(-11%);
+    transform: translateY(-17%);
+}
+.listing-delete-btn-icon {
+    font-size: small;
+    margin-right: 3px;
+    top: 50%;
+    -ms-transform: translateY(-25%);
+    transform: translateY(-25%);
+}
