@@ -307,7 +307,7 @@ const PaymentPage = () => {
                               <span className="hidden-xs">
                                 <small className="text-danger">NB:</small>{" "}
                                 <small className="text-light">
-                                  Sorato eto iLay numero nialan'ilay vola !
+                                  Sorato eto iLay numero nandefa ilay vola !
                                 </small>
                               </span>
                             </label>

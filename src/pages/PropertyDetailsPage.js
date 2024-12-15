@@ -117,7 +117,7 @@ const PropertyDetailsPage = () => {
     document.body.removeChild(textarea);
 
     // Show the popup
-    alert("Vous venez de copie le lien vers cette annonce ! Vous pouvez maintenant le coller ou vous voulez.");
+    alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
   };
 
   const handleGoBack = () => {

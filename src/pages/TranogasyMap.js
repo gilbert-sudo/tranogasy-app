@@ -21,8 +21,9 @@ import {
 import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
-import { MdArrowBackIos } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
+import { ImLocation } from "react-icons/im";
+import { IoCheckmarkDone } from "react-icons/io5";
 
 export default function TranogasyMap() {
   const searchForm = useSelector((state) => state.searchForm);
@@ -246,8 +247,7 @@ function MyMap({ properties }) {
                 <button
                   onClick={() =>
                     setLocation(
-                      `/property-details/${
-                        selectedProperty._id
+                      `/property-details/${selectedProperty._id
                       }/${encodeURIComponent(JSON.stringify(selectedProperty))}`
                     )
                   }
@@ -299,12 +299,29 @@ const Markers = ({ points, onMarkerClick }) => {
     });
   };
 
+  const usedCoords = new Set();
+
+  const adjustCoordsRandomlyUnique = (coords, maxOffset = 0.00027) => {
+    const randomOffset = () => (Math.random() - 0.5) * maxOffset;
+    let newCoords;
+
+    do {
+      newCoords = {
+        lat: coords.lat + randomOffset(),
+        lng: coords.lng + randomOffset(),
+      };
+    } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
+
+    usedCoords.add(`${newCoords.lat},${newCoords.lng}`);
+    return newCoords;
+  };
+
   return (
     <>
       {points.map((property) => (
         <AdvancedMarker
           style={{ height: "100px" }}
-          position={property?.coords ? property.coords : property.city.coords}
+          position={property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords)}
           key={property._id}
           ref={(marker) => setMarkerRef(marker, property._id)}
           onClick={() => onMarkerClick(property)} // When marker is clicked
@@ -325,11 +342,18 @@ const Markers = ({ points, onMarkerClick }) => {
                 color: "#000",
                 fontSize: "1rem",
                 border: "2px solid red",
+                whiteSpace: "nowrap", // Prevent line breaks
               }}
             >
-              {(property.rent || property.price) &&
+              <small>Ar</small>{(property.rent || property.price) &&
                 formatPrice(property.rent || property.price)}
+              {property?.coords &&
+                <small>
+                  <ImLocation style={{ marginBottom: "5px", color: "red" }} />
+                  <IoCheckmarkDone style={{ color: "green" }} />
+                </small>}
             </span>
+
           </Pin>
         </AdvancedMarker>
       ))}
