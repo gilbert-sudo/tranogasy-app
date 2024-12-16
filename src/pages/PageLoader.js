@@ -22,6 +22,7 @@ const PageLoader = () => {
     loadUsersProperties,
     loadProperties,
     loadPayments,
+    loadPlans
   } = useLoader();
   const { loginLastUser } = useLogin();
 
@@ -80,6 +81,7 @@ const PageLoader = () => {
           loadUsersProperties(user._id);
         }
       }
+      loadPlans();
       loadProperties();
     };
     fetchLastUser();

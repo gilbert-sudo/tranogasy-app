@@ -10,10 +10,7 @@ const Pricing = () => {
   // redux
   const user = useSelector((state) => state.user);
   const plans = useSelector((state) => state.plans);
-  console.log(user);
-
-  //stringify the plan details data to pass it as parameter
-  const àGÔGÔ24DataString = JSON.stringify(plans[0]);
+  console.log(plans);
 
   return (
     <>
@@ -26,10 +23,12 @@ const Pricing = () => {
             />
             <div className="container">
               <div className="row d-flex justify-content-center">
-                <div className="col-md-6 col-lg-3">
-                  <div className="pricing-success pricing">
+
+                {plans && plans.map((plan, index) => (
+                  <div className="col-md-6 col-lg-3">
+                  <div className={`${index === 0 && "pricing-success"} ${index === 1 && "pricing-error"} pricing`}>
                     <div className="title">
-                      <a href="/shop"># Tolotra àGOGO - 24 Ora</a>
+                      # Tolotra {plan?.planName}
                     </div>
                     <div className="price-box">
                       <div className="icon pull-right border circle">
@@ -42,16 +41,17 @@ const Pricing = () => {
                           id="livicon-3"
                           style={{ width: 32, height: 32 }}
                         >
-                          <IoDiamondSharp />
+                          {index === 0 && <IoDiamondSharp />}
+                          {index === 1 && <IoInfiniteSharp />}
                         </span>
                       </div>
                       <div className="starting">à seulement</div>
                       <div className="price">
-                        Ar 2000<span> TTC </span>
+                        Ar {plan?.amount}<span> TTC </span>
                       </div>
                     </div>
                     <div className="bottom-box">
-                    <p style={{color:"rgb(77 114 23)"}}>Profitez d'un accès complet aux fonctionnalités premium pendant 24 heures avec notre plan àGoGo-24. Explorez les annonces immobilières et maximisez votre expérience pendant toute <strong>une journée</strong>!</p>
+                      <p style={{ color: "rgb(77 114 23)" }}>{plan?.description}</p>
 
                       <a href="/shop" className="more">
                         Laisser un avis <span className="fa fa-angle-right" />
@@ -66,62 +66,15 @@ const Pricing = () => {
                         </div>
                       </div>
                       <Link
-                        to={`/payment/${encodeURIComponent(àGÔGÔ24DataString)}/init`}
-                        className="btn btn-lg btn-success clearfix"
+                        to={`/payment/${encodeURIComponent(JSON.stringify(plan))}/init`}
+                        className={`btn btn-lg ${index === 0 && "btn-success"} ${index === 1 && "btn-danger"} clearfix`}
                       >
                         Acheter
                       </Link>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-lg-3">
-                  <div className="pricing-error pricing">
-                    <div className="title">
-                      <a href="/shop"># Tolotra àGOGO - 48 Ora</a>
-                    </div>
-                    <div className="price-box">
-                      <div className="icon pull-right border circle">
-                        <span
-                          className="livicon livicon-processed"
-                          data-n="piggybank"
-                          data-s={32}
-                          data-c="#9ab71a"
-                          data-hc={0}
-                          id="livicon-3"
-                          style={{ width: 32, height: 32 }}
-                        >
-                          <IoInfiniteSharp />
-                        </span>
-                      </div>
-                      <div className="starting">à seulement</div>
-                      <div className="price">
-                        Ar 3000<span> TTC </span>
-                      </div>
-                    </div>
-                    <div className="bottom-box">
-                    <p style={{color:"rgb(77 114 23)"}}>Profitez d'un accès complet aux fonctionnalités premium pendant 48 heures avec notre plan àGoGo-48. Explorez les annonces et profitez au maximum de votre expérience pendant <strong>deux jours</strong>!</p>
-
-                      <a href="/shop" className="more">
-                        Laisser un avis <span className="fa fa-angle-right" />
-                      </a>
-                      <div className="rating-box">
-                        <div className="rating">
-                          <IoMdStar className="rating-star" />
-                          <IoMdStar className="rating-star" />
-                          <IoMdStar className="rating-star" />
-                          <IoMdStarHalf className="rating-star" />
-                          <IoMdStarOutline className="rating-star" />
-                        </div>
-                      </div>
-                      <Link
-                        to={`/payment/${encodeURIComponent(àGÔGÔ24DataString)}/init`}
-                        className="btn btn-lg btn-danger clearfix"
-                      >
-                        Acheter
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

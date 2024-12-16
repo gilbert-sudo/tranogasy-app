@@ -70,6 +70,7 @@ const PaymentPage = () => {
       type: paymentInfo.mobileMoney,
       reason: planDetails.planName,
       amount,
+      payload: planDetails.reference,
       phoneNumber,
       planValidity: planDetails.planValidity,
       operator: paymentInfo.operator

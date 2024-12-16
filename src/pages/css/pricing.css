@@ -161,7 +161,7 @@ body{margin-top:20px;}
 .pricing.pricing-success:before {
   background: rgba(132,162,0,.06);
 }
-.pricing.pricing-success .title a {
+.pricing.pricing-success .title {
   color: #84a200;
 }
 .pricing.pricing-success .price-box .icon {
@@ -185,7 +185,7 @@ body{margin-top:20px;}
 .pricing.pricing-error:before {
   background: rgba(212,7,70,.06);
 }
-.pricing.pricing-error .title a {
+.pricing.pricing-error .title {
   color: #d40746;
 }
 .pricing.pricing-error .price-box .icon {

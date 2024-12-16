@@ -19,7 +19,11 @@ const PaymentRecoveryPage = () => {
   const payments = useSelector((state) => state.payments);
   const plans = useSelector((state) => state.plans);
   const unpaidbill = payments.filter((payment) => payment.status === "refused" || payment.status === "redone")[0];
-  const plan = plans.filter((plan) => plan.planName === unpaidbill.reason)[0];
+  if (!unpaidbill) {
+    setLocation("/explore");
+    return
+  } else {
+    const plan = plans.filter((plan) => plan.reference === unpaidbill.payload)[0];
 
   return (
     <div className="container receipt-container">
@@ -66,6 +70,8 @@ const PaymentRecoveryPage = () => {
       </div>
     </div>
   );
+  }
+  
 };
 
 export default PaymentRecoveryPage;

@@ -613,7 +613,7 @@ export const { setPayments, addPayment , updatePayment } = paymentSlice.actions;
 
 const planSlice = createSlice({
   name: "plans",
-  initialState: [{planName: "àGOGO - 24", amount: "2000", planValidity: 23.9833 }],
+  initialState: [],
   reducers: {
     setPlans: (state, action) => {
       return action.payload;

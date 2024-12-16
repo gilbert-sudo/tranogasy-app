@@ -126,6 +126,7 @@ export const usePayment = () => {
               user: paymentData.user,
               type: paymentData.type,
               reason: paymentData.reason,
+              payload: paymentData.payload,
               amount: paymentData.amount,
               phoneNumber: paymentData.phoneNumber,
             }),
@@ -284,7 +285,7 @@ export const usePayment = () => {
               Swal.fire({
                 title: "<h6><strong>Merci pour votre achat!<strong><h6/>",
                 icon: "success",
-                html: `Félicitations ! Vous avez souscrit à notre service premium ${paymentData.reason}.`,
+                html: `Ok, veuillez à présent patienter ! Nous sommes en train de confirmer votre paiement.`,
                 showCloseButton: true,
                 focusConfirm: false,
                 confirmButtonText: "Ok",

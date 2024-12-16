@@ -73,8 +73,8 @@ const useHashLocation = () => {
   return [location, hashNavigate];
 };
 
- // Define all your routes in an array
- const routes = [
+// Define all your routes in an array
+const routes = [
   { path: "/login", component: LoginPage, private: true },
   { path: "/explore", component: ExplorePage, private: false },
   { path: "/search", component: SearchPage, private: false },
@@ -106,15 +106,16 @@ const useHashLocation = () => {
 function App() {
   const dispatch = useDispatch();
   const loader = useSelector((state) => state.loader);
-  
+
   const user = useSelector((state) => state.user);
+
   const topNavbar = useSelector((state) => state.topNavbar);
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const historyStack = useSelector((state) => state.historyStack.value);
 
   const { updateTimer, isExpired } = useTimer();
   const { findLocationsWithinDistance } = useMap();
-  const {updateReduxProperty} = useRedux();
+  const { updateReduxProperty } = useRedux();
 
   // Render the main content
 
@@ -182,8 +183,8 @@ function App() {
   }, [user, isExpired]); // Include isExpired in the dependency array
 
   useEffect(() => {
-     // Connect to the Socket.io server
-    const socket = io(`${process.env.REACT_APP_API_URL}`, {
+    // Connect to the Socket.io server
+    const socket = io(`${process.env.REACT_APP_API_URL}/`, {
       auth: {
         app: "tranogasy-app",
         socketId: localStorage.getItem('socketId') // Send the generated unique ID
@@ -209,6 +210,14 @@ function App() {
           dispatch(deleteFromNotifications(notification));
           console.log("Notification deleted:", notification);
         }
+      } else if (user &&
+        notification &&
+        notification.user === user._id &&
+        notification.confirmedBy === null) {
+        if (notificationData.reason === "delete") {
+          dispatch(deleteFromNotifications(notification));
+          console.log("Notification deleted:", notification);
+        }
       }
     });
 
@@ -216,7 +225,7 @@ function App() {
     socket.on("property", (propertyData) => {
       const property = propertyData.payload;
       console.log("propertyData izany ary", propertyData);
-      
+
       // Handle the payment data received in real-time
       if (property) {
         // You can dispatch an action or handle the payment data as needed
@@ -241,7 +250,7 @@ function App() {
     socket.on("payment", (paymentData) => {
       const payment = paymentData.payload;
       console.log("paymentData izany ary", paymentData);
-      
+
       // Handle the payment data received in real-time
       if (user && payment && payment.user._id === user._id) {
         // You can dispatch an action or handle the payment data as needed
@@ -256,14 +265,15 @@ function App() {
       }
     });
 
-     // Subscribe to the 'user' event
-     socket.on("user", (userData) => {
+    // Subscribe to the 'user' event
+    socket.on("user", (userData) => {
       const socketUser = userData.payload;
       // Handle the payment data received in real-time
       if (user && socketUser && socketUser._id === user._id) {
         // You can dispatch an action or handle the payment data as needed
         if (userData.reason === "updateSubscription") {
           if (!socketUser.planValidity || socketUser.leftTime) {
+            console.log("resetnnhhfghffghdfghdfg");
             dispatch(setTimer({ timer: null, display: null }));
           }
           dispatch(setUser(socketUser));
@@ -280,11 +290,11 @@ function App() {
       socket.off("payment");
       socket.off("user");
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const trackHistory = () => {
-      
+
       const currenturl = window.location.href;
       const currentPath = currenturl.split("#/")[1]; // This will split at the "#/" and take the second part
 
@@ -295,7 +305,7 @@ function App() {
       const lastIndex = historyStack.lastIndexOf("login");
       if (lastIndex !== -1) {
         // get the right numbers to get back after the login
-        const rightNumbers = (historyStack.length - (lastIndex + 1)) + (historyStack[lastIndex - 1] === "login" ? 2 : 1) ;
+        const rightNumbers = (historyStack.length - (lastIndex + 1)) + (historyStack[lastIndex - 1] === "login" ? 2 : 1);
         dispatch(setSteps(rightNumbers));
       }
 
@@ -313,7 +323,7 @@ function App() {
       window.removeEventListener("replaceState", trackHistory);
     };
   }, [window.location.href]);
- 
+
   return (
     <div className="App">
       <SkeletonTheme>
@@ -340,27 +350,27 @@ function App() {
                 </Route>
 
                 {/* If loader is false, show PageLoader */}
-                {!loader && 
-                <Route path="/:anything*">
-                  <PageLoader />
-                </Route>}
+                {!loader &&
+                  <Route path="/:anything*">
+                    <PageLoader />
+                  </Route>}
 
                 {/* If loader is true, render the routes */}
                 {loader &&
-                routes.map(({ path, component: Component, private: isPrivate }, index) => (
-                  <Route key={index} path={path}>
-                    {/* Handle private routes if needed */}
-                    {isPrivate && user ? <Redirect to="/user" /> : <Component />}
-                  </Route>
-                ))}
+                  routes.map(({ path, component: Component, private: isPrivate }, index) => (
+                    <Route key={index} path={path}>
+                      {/* Handle private routes if needed */}
+                      {isPrivate && user ? <Redirect to="/user" /> : <Component />}
+                    </Route>
+                  ))}
 
                 {/* Handle 404 page */}
-                {loader && 
-                <Route path="/:anything*">
-                  <center className="mt-5">
-                    <b>404:</b> Désolé, cette page n'est pas encore prête!
-                  </center>
-                </Route>}
+                {loader &&
+                  <Route path="/:anything*">
+                    <center className="mt-5">
+                      <b>404:</b> Désolé, cette page n'est pas encore prête!
+                    </center>
+                  </Route>}
               </Switch>
             </main>
           </div>

@@ -8,6 +8,7 @@ import {
   setQuartersName,
   setUsersProperties,
   setPayments,
+  setPlans,
 } from "../redux/redux";
 
 export const useLoader = () => {
@@ -142,6 +143,26 @@ export const useLoader = () => {
     }
   };
 
+  const loadPlans = async (userId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/plans/`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "aplication/json",
+        },
+      });
+      const json = await response.json();
+
+      if (response.ok) {
+        dispatch(setPlans(json.plans));
+        console.log("plans loaded: ", json.plans);
+      }
+    } catch (error) {
+      console.log(error);
+      setLocation("/nosignal");
+    }
+  };
+
   
   const loadUsersProperties = async (userId) => {
     try {
@@ -168,6 +189,7 @@ export const useLoader = () => {
     loadQuartersName,
     loadProperties,
     loadPayments,
+    loadPlans,
     loadTopProperties,
     loadUsersProperties,
   };
