@@ -399,17 +399,7 @@ const notificationSlice = createSlice({
   initialState: null,
   reducers: {
     pushNotification: (state, action) => {
-      const newNotification = action.payload;
-
-      // Check if the notification with the same ID already exists
-      const isNotificationExists = state.some(
-        (notification) => notification._id === newNotification._id
-      );
-
-      // If the notification doesn't exist, add it to the beginning of the array
-      if (!isNotificationExists) {
-        state.unshift(newNotification);
-      }
+      state.unshift(action.payload);
     },
     setNotifications: (state, action) => {
       return (state = action.payload);
@@ -438,13 +428,16 @@ export const {
 //notifications
 const notificationStatusSlice = createSlice({
   name: "notificationStatus",
-  initialState: { reading: null, counter: 0 },
+  initialState: { reading: null, counter: 0, bell: false },
   reducers: {
     setNotificationReadingStatus: (state, action) => {
       state.reading = action.payload;
     },
     setNotificationCounterStatus: (state, action) => {
       state.counter = action.payload;
+    },
+    setNotificationBellStatus: (state, action) => {
+      state.bell = action.payload;
     },
     pushNotificationCounterStatus: (state, action) => {
       state.counter = state.counter + 1;
@@ -456,6 +449,7 @@ export const {
   setNotificationReadingStatus,
   setNotificationCounterStatus,
   pushNotificationCounterStatus,
+  setNotificationBellStatus
 } = notificationStatusSlice.actions;
 
 //searchForm state

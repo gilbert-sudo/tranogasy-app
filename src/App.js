@@ -34,11 +34,10 @@ import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisati
 import ImageUpload from "./pages/ImageUpload";
 import { Geolocation } from "@capacitor/geolocation";
 
-import formattedTrees from "./data/trees";
-
 import { useTimer } from "./hooks/useTimer";
 import { useMap } from "./hooks/useMap";
 import { useRedux } from "./hooks/useRedux";
+import { useNotification } from "./hooks/useNotification";
 
 //all components
 import Navbar from "./components/Navbar";
@@ -56,7 +55,6 @@ import {
   deleteFromProperties,
   deleteFromTopProperty,
   deleteLike,
-  pushNotification,
   deleteFromNotifications,
   toggleDarkMode,
   setTimer,
@@ -116,6 +114,7 @@ function App() {
   const { updateTimer, isExpired } = useTimer();
   const { findLocationsWithinDistance } = useMap();
   const { updateReduxProperty } = useRedux();
+  const { pushNotification } = useNotification();
 
   // Render the main content
 
@@ -203,7 +202,7 @@ function App() {
       ) {
         //Dispatch an action to update your Redux store with the new notification
         if (notificationData.reason === "create") {
-          dispatch(pushNotification(notification));
+          pushNotification(notification);
           console.log("New Notification Received:", notification);
         }
         if (notificationData.reason === "delete") {

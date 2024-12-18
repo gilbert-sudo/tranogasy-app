@@ -283,13 +283,23 @@ const Navbar = () => {
                   Retour{" "}
                 </button>
               )}
-              {user && (
+              {user && !notificationStatus.bell && (
                 <Link to="/user">
                   <img
                     className="ml-1"
                     src={user?.avatar ? user.avatar : userProfile}
                     alt="profile picture"
                     style={{objectFit: "cover", height: "30px",width: "30px", borderRadius: "50%" }}
+                  />
+                </Link>
+              )}
+              {user && notificationStatus.bell && (
+                <Link to="/notification">
+                  <img
+                    className="ml-1"
+                    src="images/notification-bell.gif"
+                    alt="profile picture"
+                    style={{height: "30px",width: "30px", cursor: "pointer" }}
                   />
                 </Link>
               )}

@@ -1,8 +1,26 @@
-import { useDispatch } from "react-redux";
-import { pushNotification, setNotificationReadingStatus, pushNotificationCounterStatus, setNotificationCounterStatus, markAllNotificationsAsRead } from "../redux/redux";
+import { useDispatch, useSelector } from "react-redux";
+import { pushNotification as reduxPushNotification, setNotificationReadingStatus, setNotificationCounterStatus, setNotificationBellStatus, markAllNotificationsAsRead } from "../redux/redux";
+import useSound from "use-sound";
 
 export const useNotification = () => {
   const dispatch = useDispatch();
+
+  const notifications = useSelector((state) => state.notifications)
+
+  const [play] = useSound("sounds/doorbell.mp3");
+
+  const pushNotification = async (newNotification) => {
+    // Check if the notification with the same ID already exists
+    const isNotificationExists = notifications.some(
+      (notification) => notification._id === newNotification._id
+    );
+    if (!isNotificationExists) {
+      dispatch(reduxPushNotification(newNotification));
+      dispatch(setNotificationBellStatus(true));
+      // Play a notification sound
+      play();
+    }
+  }
 
   const sendNotification = async (notificationData) => {
 
@@ -18,7 +36,7 @@ export const useNotification = () => {
     const json = await response.json();
 
     if (response.ok) {
-      dispatch(pushNotification(json));
+      pushNotification(json);
       dispatch(setNotificationReadingStatus(null));
       console.log("notification sent !");
     }
@@ -40,6 +58,9 @@ export const useNotification = () => {
       if (response.ok) {
         dispatch(setNotificationReadingStatus("done"));
         dispatch(setNotificationCounterStatus(0));
+        setTimeout(() => {
+          dispatch(setNotificationBellStatus(false));
+        }, 2000);
         dispatch(markAllNotificationsAsRead());
 
         console.log("All notifications updated to read");
@@ -49,5 +70,5 @@ export const useNotification = () => {
     }
   };
 
-  return { sendNotification, updateAllNotificationsToRead };
+  return { pushNotification, sendNotification, updateAllNotificationsToRead };
 };
