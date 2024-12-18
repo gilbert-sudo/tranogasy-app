@@ -3,6 +3,7 @@ import { FiRefreshCw } from "react-icons/fi";
 import { useChecker } from "../hooks/useChecker";
 import Swal from "sweetalert2";
 
+
 const NoInternetPage = () => {
   const { checkInternetConnection, isLoading } = useChecker();
 
@@ -131,14 +132,41 @@ const NoInternetPage = () => {
   <path d="M0 0 C0.33 0.66 0.66 1.32 1 2 C-0.09 3.51 -1.2 5.01 -2.31 6.5 C-3.23 7.75 -3.23 7.75 -4.18 9.03 C-4.78 9.68 -5.38 10.33 -6 11 C-6.99 11 -7.98 11 -9 11 C-8.6 10.54 -8.2 10.08 -7.79 9.61 C-5.09 6.48 -2.42 3.36 0 0 Z " fill="#182E4E" transform="translate(691,228)"/>
   </svg>`;
 
+  // Function to manually refresh connection
   const refreshPage = async () => {
     console.log("Clicked on retry button");
     checkInternetConnection();
   };
 
+  // Automatically check for internet connection
   useEffect(() => {
-      // Close all the alerts 
-      Swal.close();
+    const checkConnectionAutomatically = () => {
+      if (navigator.onLine) {
+        checkInternetConnection();
+      }
+    };
+
+    // Check periodically every 5 seconds
+    const interval = setInterval(() => {
+      console.log("Checking internet connection...");
+      checkConnectionAutomatically();
+    }, 1000);
+
+    // Handle browser online/offline events
+    window.addEventListener("online", checkInternetConnection);
+    window.addEventListener("offline", checkInternetConnection);
+
+    // Cleanup interval and event listeners on unmount
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("online", checkInternetConnection);
+      window.removeEventListener("offline", checkInternetConnection);
+    };
+  }, [checkInternetConnection]);
+
+  useEffect(() => {
+    // Close all SweetAlert alerts
+    Swal.close();
   }, []);
 
   return (
@@ -146,17 +174,16 @@ const NoInternetPage = () => {
       <div className="container mt-5 no-internet-connection">
         {!isLoading && (
           <center>
-            {" "}
             <img
               className="img-fluid"
               style={{ maxHeight: "50vh" }}
               src={`data:image/svg+xml;utf8,${encodeURIComponent(svgCode)}`}
               alt="Pas de connexion Internet"
-            />{" "}
+            />
             <p style={{ fontFamily: "Roboto, sans-serif" }}>
               Aucune connexion Internet détectée. Veuillez vérifier votre
               connexion Internet et réessayer.
-            </p>{" "}
+            </p>
             <button className="btn btn-dark" onClick={refreshPage}>
               <i className="refresh-icon fas fa-sync-alt">
                 <FiRefreshCw />
@@ -164,18 +191,17 @@ const NoInternetPage = () => {
               Réessayer
             </button>
           </center>
-        )}{" "}
+        )}
         {isLoading && (
           <center>
-            {" "}
             <img
               className="img-fluid mt-5"
               style={{ maxHeight: "50vh" }}
-              src="images\gps_satellite_icongif.gif"
+              src="images\\gps_satellite_icongif.gif"
               alt="Pas de connexion Internet"
             />
             <p style={{ fontFamily: "Arial, sans-serif" }}>
-              connexion au serveur distant TranoGasy{" "}
+              Connexion au serveur distant TranoGasy{" "}
               <strong style={{ fontSize: "24px" }}>...</strong>
             </p>
           </center>

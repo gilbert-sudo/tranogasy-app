@@ -10,28 +10,31 @@ export const useChecker = () => {
   const checkInternetConnection = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-
-      const json = await response.json();
-
-      if (response.ok) {
+      // Step 1: Check browser's online status
+      if (!navigator.onLine) {
+        console.log("Le navigateur signale que l'utilisateur est hors ligne.");
         setIsLoading(false);
-        resetReduxStore();
-        setLocation("/loader");
-        console.log(json);
+        return;
       }
-
-    } catch (error) {
+  
+      // Step 2: Perform a lightweight ping to confirm connectivity
+      const response = await fetch("https://www.google.com/generate_204", {
+        method: "HEAD",
+        mode: "no-cors", // Ensures no additional data is loaded
+      });
+  
+      // If fetch doesn't throw, assume online
       setIsLoading(false);
-      console.log(error);
+      resetReduxStore();
+      setLocation("/loader");
+      console.log("Connexion Internet confirmée.");
+    } catch (error) {
+      // Network error or fetch failed
+      setIsLoading(false);
+      console.log("Aucune connexion Internet détectée :", error.message);
     }
   };
+  
 
   return {
     checkInternetConnection,
