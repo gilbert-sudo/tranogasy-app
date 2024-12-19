@@ -170,6 +170,8 @@ const HouseSearchForm = () => {
       if (!mapData.fokotanyList || !mapData.districtList) {
         try {
           const result = await loadMap();
+          console.log(result);
+          
           setMapData(result); // Log the result after it's resolved
         } catch (error) {
           console.error(error);
