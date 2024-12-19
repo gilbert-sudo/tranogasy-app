@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 
 function NotificationCardDetails({ notification }) {
 
-  const [ , setLocation] = useLocation("");
+  const [, setLocation] = useLocation("");
 
   const userAvatarThumblai = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="343" height="343">
 <path d="M0 0 C113.19 0 226.38 0 343 0 C343 113.19 343 226.38 343 343 C229.81 343 116.62 343 0 343 C0 229.81 0 116.62 0 0 Z " fill="#FEFEFE" transform="translate(0,0)"/>
@@ -34,7 +34,7 @@ function NotificationCardDetails({ notification }) {
     hour: "numeric",
     minute: "numeric",
     second: "numeric",
-    timeZone: "Indian/Antananarivo", 
+    timeZone: "Indian/Antananarivo",
   }).format(new Date(notification.created_at));
 
   return (
@@ -66,8 +66,8 @@ function NotificationCardDetails({ notification }) {
               <b>
                 {notification.confirmedBy
                   ? notification.confirmedBy.name +
-                    " " +
-                    notification.confirmedBy.firstname
+                  " " +
+                  notification.confirmedBy.firstname
                   : "Tranogasy"}
               </b>{" "}
               <small
@@ -89,10 +89,10 @@ function NotificationCardDetails({ notification }) {
       </div>
 
       <div className="align-items-left notification-list_feature-img mr-1">
-        <img
+        {notification.img && <img
           src={notification.img && notification.img}
           alt="Feature image"
-        />
+        />}
       </div>
     </div>
   );

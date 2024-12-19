@@ -3,24 +3,32 @@ import { pushNotification as reduxPushNotification, setNotificationReadingStatus
 import useSound from "use-sound";
 
 export const useNotification = () => {
+  const notifications = useSelector((state) => state.notifications);
   const dispatch = useDispatch();
-
-  const notifications = useSelector((state) => state.notifications)
 
   const [play] = useSound("sounds/doorbell.mp3");
 
   const pushNotification = async (newNotification) => {
-    // Check if the notification with the same ID already exists
-    const isNotificationExists = notifications.some(
-      (notification) => notification._id === newNotification._id
-    );
-    if (!isNotificationExists) {
+    console.log(notifications);
+    if (notifications) {
+      // Check if the notification with the same ID already exists
+      const isNotificationExists = notifications.some(
+        (notification) => notification._id === newNotification._id
+      );
+      if (!isNotificationExists) {
+        dispatch(reduxPushNotification(newNotification));
+        dispatch(setNotificationBellStatus(true));
+        // Play a notification sound
+        play();
+      }
+    } else {
       dispatch(reduxPushNotification(newNotification));
       dispatch(setNotificationBellStatus(true));
       // Play a notification sound
       play();
     }
-  }
+
+  };
 
   const sendNotification = async (notificationData) => {
 

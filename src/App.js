@@ -213,6 +213,12 @@ function App() {
         notification &&
         notification.user === user._id &&
         notification.confirmedBy === null) {
+        if (notificationData.reason === "create") {
+          if (notification.reason === "normal") {
+            pushNotification(notification);
+            console.log("New Notification Received:", notification);
+          }
+        }
         if (notificationData.reason === "delete") {
           dispatch(deleteFromNotifications(notification));
           console.log("Notification deleted:", notification);
