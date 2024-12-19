@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setTopNavbar } from "../redux/redux";
 import { useAccountRecovery } from "../hooks/useAccountRecovery";
+import { useImage } from "../hooks/useImage";
 import { MdArrowBackIos } from "react-icons/md";
 
 import Swal from "sweetalert2";
@@ -11,6 +12,7 @@ import PhoneNumberInput from "../components/PhoneNumberInput";
 const PasswordRecoveryPage = () => {
   const [match, params] = useRoute("/password-recovery/:phoneNumber");
   const [, setLocation] = useLocation("");
+  const { mgFlag } = useImage();
 
   const [phoneNumber, setPhoneNumber] = useState(
     match ? params.phoneNumber : ""
@@ -111,7 +113,7 @@ const PasswordRecoveryPage = () => {
                               height: "20px",
                               borderRadius: "50%"
                             }}
-                            src="images/MG.svg"
+                            src={mgFlag()}
                           />
                           <div>&nbsp; +261</div>
                         </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLoader } from "../hooks/useLoader";
 import { useNotification } from "../hooks/useNotification";
+import { useImage } from "../hooks/useImage";
 import "./css/notification..css";
 import NotificationCardDetails from "../components/NotificationCardDetails";
 import NotLogedIn from "../components/NotLogedIn";
@@ -10,6 +11,9 @@ const NotificationPage = () => {
   // redux
   const { loadNotifications } = useLoader();
   const { updateAllNotificationsToRead } = useNotification();
+
+  const { noNotificationImg } = useImage();
+
   const notifications = useSelector((state) => state.notifications)
   const notificationStatus = useSelector((state) => state.notificationStatus);
   const user = useSelector((state) => state.user);
@@ -22,7 +26,7 @@ const NotificationPage = () => {
   }
 
   useEffect(() => {
-    const pageLoader = () => {
+    const pageLoader = async() => {
       if (user) {
         const userId = user._id;
         if (!notifications) {
@@ -51,7 +55,7 @@ const NotificationPage = () => {
                     <img
                       className="img-fluid"
                       style={{ maxHeight: "55vh" }}
-                      src="images/no-notification.jpg"
+                      src={noNotificationImg()}
                       alt="Pas de notification"
                     />
                   </div>

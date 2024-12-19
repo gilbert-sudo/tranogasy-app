@@ -9,6 +9,7 @@ import { FcHome, FcLandscape } from "react-icons/fc";
 import { MdAdd } from "react-icons/md";
 import { useLoader } from "../hooks/useLoader";
 import { usePopup } from "../hooks/usePopup";
+import { useImage } from "../hooks/useImage";
 import "./css/mylisting.css";
 
 const MyListingPage = () => {
@@ -18,6 +19,7 @@ const MyListingPage = () => {
   const user = useSelector((state) => state.user);
   const { loadUsersProperties } = useLoader();
   const { featureUnderConstructionPopup } = usePopup();
+  const { noListingImg } = useImage();
   const dispatch = useDispatch();
   const [oneTimeTask, setOneTimeTask] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,9 +58,9 @@ const MyListingPage = () => {
                 <>
                   <div className="mt-5 no-booking d-flex justify-content-center align-items-center">
                     <img
-                      src="images/create-ad.jpg"
+                      src={noListingImg()}
                       style={{ maxHeight: "45vh", borderRadius: "30px" }}
-                      alt="Pas de connexion Internet"
+                      alt="Creer vos annonces"
                       className="img-fluid"
                     />
                   </div>

@@ -1,5 +1,6 @@
 import { FaLock, FaEyeSlash, FaUser, FaEye } from "react-icons/fa";
 import { useSignup } from "../hooks/useSignup";
+import { useImage } from "../hooks/useImage";
 import PhoneNumberInput from "../components/PhoneNumberInput";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -19,6 +20,7 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const signupWaitlist = useSelector((state) => state.signup);
+  const { mgFlag } = useImage();
 
   const handlePhoneNumberInput = (e) => {
     // Remove non-numeric characters before updating state
@@ -133,7 +135,7 @@ const SignUpPage = () => {
                               height: "20px",
                               borderRadius: "50%"
                             }}
-                            src="images/MG.svg"
+                            src={mgFlag()}
                           />
                           <div>&nbsp; +261</div>
                         </div>

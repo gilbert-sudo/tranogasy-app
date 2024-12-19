@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaLock, FaEyeSlash, FaEye } from "react-icons/fa";
 import { useLogin } from "../hooks/useLogin";
+import { useImage } from "../hooks/useImage";
 import PhoneNumberInput from "../components/PhoneNumberInput";
 import Swal from "sweetalert2";
 import { Link } from "wouter";
@@ -10,6 +11,7 @@ const LoginPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, error, bootstrapClassname } = useLogin();
+  const { mgFlag } = useImage();
 
   const handlePhoneNumberInput = (e) => {
     // Remove non-numeric characters before updating state
@@ -90,7 +92,7 @@ const LoginPage = () => {
                               height: "20px",
                               borderRadius: "50%"
                             }}
-                            src="images/MG.svg"
+                            src={mgFlag()}
                           />
                           <div>&nbsp; +261</div>
                         </div>
