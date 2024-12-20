@@ -38,6 +38,8 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap"
       rel="stylesheet"
     />
+    <link rel="prefetch" href="%PUBLIC_URL%/data/madagascar.json" as="fetch" type="application/json" crossorigin="anonymous">
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=places"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs&libraries=drawing"></script>
   
@@ -95,6 +97,7 @@
       }, 100); // Check every 100ms
     </script>
     
+    
     <!-- <script>
       document.addEventListener('DOMContentLoaded', function () { // document.getElementById('addToHomeScreen').addEventListener('click', function () and add <button id="addToHomeScreen">Add to Home Screen</button> somewhere on your page to get a button instead.
       
@@ -117,7 +120,24 @@
        ret = window.AddToHomeScreenInstance.show();             // show "add-to-homescreen" instructions to user, or do nothing if already added to homescreen
       });
       </script> -->
-
+<!-- 
+      <script>
+        fetch('https://storage.googleapis.com/tranogasy-cdn/data/madagascar.json')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Success:', data);
+            alert('CORS is working!');
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('CORS is NOT working!');
+          });
+      </script> -->
       </body>
 
     <script src="%PUBLIC_URL%/js/jquery-3.3.1.min.js"></script>

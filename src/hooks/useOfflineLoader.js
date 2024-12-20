@@ -3,7 +3,7 @@ export const offlineLoader = () => {
     try {
       // Fetch the JSON data from the CDN
       const response = await fetch(
-        "data/madagascar.json"
+        "https://storage.googleapis.com/tranogasy-cdn/data/madagascar.json"
       );
 
       if (!response.ok) {

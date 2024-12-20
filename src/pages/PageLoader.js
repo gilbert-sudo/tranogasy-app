@@ -6,6 +6,7 @@ import { HashLoader } from "react-spinners";
 import { setSignUp, setLoader } from "../redux/redux";
 import { useLoader } from "../hooks/useLoader";
 import { useLogin } from "../hooks/useLogin";
+import { offlineLoader } from "../hooks/useOfflineLoader";
 
 const PageLoader = () => {
   //redux
@@ -25,6 +26,7 @@ const PageLoader = () => {
     loadPlans
   } = useLoader();
   const { loginLastUser } = useLogin();
+  const { loadMap } = offlineLoader();
 
   function generateUniqueId() {
     const timestamp = Date.now(); // Get the current timestamp in milliseconds
@@ -81,6 +83,9 @@ const PageLoader = () => {
           loadUsersProperties(user._id);
         }
       }
+      const mapData = await loadMap();
+      console.log("mapData", mapData);
+      
       loadPlans();
       loadProperties();
     };
