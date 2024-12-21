@@ -68,6 +68,7 @@ const Navbar = () => {
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer);
   
+  const properties = useSelector((state) => state.properties);
   const notifications = useSelector((state) => state.notifications);
   const payments = useSelector((state) => state.payments);
   const notificationStatus = useSelector((state) => state.notificationStatus);
@@ -241,7 +242,17 @@ const Navbar = () => {
                   <small>{user.leftTime && formatMillisecondToDisplay(user.leftTime)}</small> 
                 </>
               )}
-              {location === "/search" && location !== "/searchResult" && (
+               {!properties && (
+                <button
+                  style={{ borderRadius: "20px", position: "relative", paddingRight: "25px" }}
+                  className="ml-1 btn btn-sm btn-outline-success"
+                  type="button"
+                >
+                  Chargement{" "}
+                  <img src="images/Animation - 17331.gif" style={{width: "20px", height: "20px", position: "absolute", marginLeft: "2px" }}/>
+                </button>
+              )}
+              {location === "/search" && location !== "/searchResult" && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-danger"
@@ -254,7 +265,7 @@ const Navbar = () => {
                   />
                 </button>
               )}{" "}
-              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && (
+              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-outline-success"
@@ -270,7 +281,7 @@ const Navbar = () => {
                   />
                 </button>
               )}
-              {(location === "/searchResult" || location === "/tranogasyMap") && (
+              {(location === "/searchResult" || location === "/tranogasyMap") && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-danger"
