@@ -1,0 +1,55 @@
+/* Hide the radio inputs completely */
+.rooms-input-group .btn-check {
+  display: none;
+}
+
+.rooms-input-group label:first-of-type {
+  border-radius: 10px 0 0 10px !important;
+}
+
+.rooms-input-group label:last-of-type {
+  border-left: none;
+  border-radius: 0 10px 10px 0 !important;
+}
+
+.rooms-input-group label:not(:first-of-type):not(:last-of-type) {
+  border-left: none;
+}
+
+.rooms-input-group .btn {
+  border-radius: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.rooms-input-group .btn.active {
+  background-color: #6c757d !important;
+  color: white;
+  border-color: #343a40 !important;
+}
+
+.rooms-input-group .btn {
+  cursor: pointer;
+}
+
+/* Flex container for horizontal alignment and vertical centering */
+.room-selector {
+  display: flex;
+  align-items: center; /* Centers items vertically */
+  justify-content: center; /* Centers items horizontally */
+  height: 100%; /* Ensure the container takes the parent's full height */
+}
+
+/* "Ou" Label Styling */
+.or-label {
+  font-weight: bold;
+  font-size: 1rem;
+  display: flex;
+  align-items: center; /* Center text vertically */
+}
+
+/* Custom Room Input */
+.custom-room-input {
+  display: flex;
+  align-items: center; /* Center text vertically */
+  height: 40px;
+}

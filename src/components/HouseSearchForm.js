@@ -18,10 +18,11 @@ import AutosuggestInput from "../components/AutosuggestInput";
 import DistrictAutosuggestInput from "./DistrictAutosuggestInput";
 import CommuneAutosuggestInput from "./CommuneAutosuggestInput";
 import PropertyLocationAreaSelector from "./PropertyLocationAreaSelector";
+import RoomSelector from "./RoomSelector";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
-import { MdOutlineEditLocation, MdAddCircleOutline } from "react-icons/md";
+import { MdOutlineEditLocation, MdAddCircleOutline, MdOutlineLiving } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 import {
   GiCheckMark,
@@ -110,6 +111,7 @@ const HouseSearchForm = () => {
   const [electricityJirama, setElectricityJirama] = useState(false);
   const [waterPumpSupplyJirama, setWaterPumpSupplyJirama] = useState(false);
   const [kitchenFacilities, setKitchenFacilities] = useState(false);
+  const [furnishedProperty, setFurnishedProperty] = useState(false);
   const [airConditionerAvailable, setAirConditionerAvailable] = useState(false);
   const [smokeDetectorsAvailable, setSmokeDetectorsAvailable] = useState(false);
   const [terrace, setTerrace] = useState(false);
@@ -418,7 +420,7 @@ const HouseSearchForm = () => {
                         <strong>Choisir une zone de recherche :</strong>
                       </label>
                       <div className="input-group">
-                        <div className="btn-group" role="group">
+                        <div className="btn-group px-1" role="group">
                           <button
                             type="button"
                             className={`btn btn-form mx-1 ${
@@ -769,7 +771,7 @@ const HouseSearchForm = () => {
                         <strong>Type d'offre :</strong>
                       </label>
                       <div className="input-group">
-                        <div className="btn-group" role="group">
+                        <div className="btn-group px-1" role="group">
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
@@ -870,6 +872,15 @@ const HouseSearchForm = () => {
                             }
                           />
                         </div>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="cardNumber">
+                        <strong className="text-danger">*</strong>{" "}
+                        <strong>Sélectionnez le nombre de chambres :</strong>
+                      </label>
+                      <div className="input-group">
+                        <RoomSelector/>
                       </div>
                     </div>
                     <div className="form-group">
@@ -1017,6 +1028,16 @@ const HouseSearchForm = () => {
                           label={"Équipements de cuisine disponibles"}
                           onClickFunction={() =>
                             setKitchenFacilities(!kitchenFacilities)
+                          }
+                        />
+                      </div>
+                      <div className="input-group">
+                        <GenerateCheckbox
+                          icon={<MdOutlineLiving />}
+                          state={furnishedProperty}
+                          label={"Logement Meublé"}
+                          onClickFunction={() =>
+                            setFurnishedProperty(!furnishedProperty)
                           }
                         />
                       </div>
