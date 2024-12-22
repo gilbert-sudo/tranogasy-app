@@ -10,7 +10,7 @@ export const useMap = () => {
           nearbyLocations.push({ location: location, distance: dist });
         }
       });
-      console.log(nearbyLocations);
+      // console.log(nearbyLocations);
       return nearbyLocations;
     }
 
@@ -22,7 +22,7 @@ export const useMap = () => {
         locationCoords.push(coord);
        }
       });
-      console.log(locationCoords);
+      // console.log(locationCoords);
       
       return locationCoords;
     }

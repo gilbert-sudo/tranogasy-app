@@ -112,6 +112,7 @@ class DistrictAutosuggestInput extends Component {
           onChange={this.onChange}
           onFocus={this.props.onFocus && this.props.onFocus}
         />
+       
         {suggestions && suggestions.length === 0 && value !== "" &&
           <div
             style={{

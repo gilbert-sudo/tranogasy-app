@@ -119,7 +119,7 @@ function MyMap() {
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-      <div style={{ height: "40vh", width: "100%" }}>
+      <div style={{ height: "70vh", width: "100%" }}>
         <div className="places-container">
           <CustomMapControl
             controlPosition={ControlPosition.LEFT_TOP}
@@ -178,6 +178,14 @@ function MyMap() {
             fillOpacity={0.2}
             editable
             draggable
+            onDragStart={(event) => {
+              event.domEvent.stopPropagation();
+              document.body.style.overflow = "hidden"; // Disable scrolling
+            }}
+            onDragEnd={(event) => {
+              event.domEvent.stopPropagation();
+              document.body.style.overflow = "auto"; // Re-enable scrolling
+            }}
           />
           {/* 
           {open && (

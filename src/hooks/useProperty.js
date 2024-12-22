@@ -511,7 +511,7 @@ export const useProperty = () => {
       console.log(propertyNumber);
     } else {
       if (selectedMapType === "gmap" && nearbyLocations?.length) {
-        console.log("nearby locations: ", nearbyLocations);
+        // console.log("nearby locations: ", nearbyLocations);
         if (nearbyLocations.length > 0) {
           for (let i = 0; i < nearbyLocations.length; i++) {
             const location = nearbyLocations[i].location;

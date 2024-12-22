@@ -51,5 +51,6 @@
 .custom-room-input {
   display: flex;
   align-items: center; /* Center text vertically */
+  max-width: 170px;
   height: 40px;
 }

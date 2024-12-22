@@ -84,7 +84,6 @@ const HouseSearchForm = () => {
 
   const { loadMap } = offlineLoader();
   const { findLocationsWithinDistance } = useMap();
-  const { getUploadedImg } = usePhoto();
   const { searchProperty, getPriceAndRentRanges } = useProperty();
 
   const [isRent, setIsRent] = useState(true);
@@ -220,6 +219,9 @@ const HouseSearchForm = () => {
     setMapInputOnFocus(false);
     // console.log("Selected item _id:", itemId);
     // dispatch(setReduxSelectedCity({ selectedCity: itemId }));
+    setTimeout(() => {
+      targetDivRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
   };
 
   const onMapInputFocus = () => {
@@ -292,14 +294,17 @@ const HouseSearchForm = () => {
     };
     console.log(parameters);
 
-    searchProperty(parameters);
-    if (submitType === "list") setLocation("/searchResult");
-    if (submitType === "map") setLocation("/tranogasyMap");
+    if ((selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap") && !byNumber) {
+      searchProperty(parameters);
+      if (submitType === "list") setLocation("/searchResult");
+      if (submitType === "map") setLocation("/tranogasyMap");
+    } else {
+      onMapInputFocus();
+    }
   };
 
   useEffect(() => {
-    if (properties && properties.length > 0 && (selectedCity || selectedDistrict || selectedCommune)) {
-      setMapInputOnFocus(false);
+    if (properties && properties.length > 0 && (selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap")) {
 
       console.log("Search Form submited");
 
@@ -352,7 +357,6 @@ const HouseSearchForm = () => {
         propertyNumber,
         nearbyLocations,
       };
-      console.log(parameters);
 
       setSearchResults(searchProperty(parameters));
     }
@@ -384,7 +388,7 @@ const HouseSearchForm = () => {
     insideBathroom,
     byNumber,
     propertyNumber,
-    selectedMapType]);
+    selectedMapType, searchForm]);
 
   useEffect(() => {
     if (properties) {
@@ -410,9 +414,9 @@ const HouseSearchForm = () => {
       : 0;
 
     // Define faster animation speed
-    const interval = 7; // Faster interval (lower value = quicker updates)
-    const stepMin = Math.ceil(endMin / 15); // Larger step size for quicker animation
-    const stepMax = Math.ceil(endMax / 15);
+    const interval = 5; // Faster interval (lower value = quicker updates)
+    const stepMin = Math.ceil(endMin / 10); // Larger step size for quicker animation
+    const stepMax = Math.ceil(endMax / 10);
 
     const intervalId = setInterval(() => {
       // Increment startMin and startMax
@@ -859,23 +863,13 @@ const HouseSearchForm = () => {
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form ml-1 ${isRent
+                            className={`btn btn-form mx-1 ${isRent
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}
                             onClick={handleRentClick}
                           >
-                            <b>Location/mois</b>
-                          </button>
-                          <button
-                            style={{ borderRadius: "10px" }}
-                            type="button"
-                            className={`btn btn-form mx-1 ${false
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                          >
-                            <b>Location/jour</b>
+                            <b>Location</b>
                           </button>
                           <button
                             type="button"
@@ -971,7 +965,7 @@ const HouseSearchForm = () => {
                         <strong className="text-danger">*</strong>{" "}
                         <strong>Sélectionnez le nombre de chambres :</strong>
                       </label>
-                      <div className="input-group">
+                      <div className="input-group w-100">
                         <RoomSelector />
                       </div>
                     </div>
@@ -1344,6 +1338,7 @@ const HouseSearchForm = () => {
                       marginTop: "0.5rem",
                     }}
                     className="btn mr-1 btn-dark  btn-block"
+                    disabled={!(searchResults && searchResults.length > 0) || !(selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap")}
                   >
                     <FcGoogle /> Voir sur carte
                   </button>
@@ -1357,7 +1352,7 @@ const HouseSearchForm = () => {
                   }}
                   className="btn btn-success btn-block shadow-sm"
                 >
-                  {byNumber ? "Chercher" : ((selectedCity || selectedDistrict || selectedCommune) ? ((searchResults && searchResults.length > 0) ? `Lister les ${searchResults.length} résultats` : "Aucune annonce trouvée") : `${properties && properties.length} annonces disponibles`)}
+                  {byNumber ? "Chercher" : ((selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap") ? ((searchResults && searchResults.length > 0) ? `Lister les ${searchResults.length} résultats` : "Aucune annonce trouvée") : `${properties && properties.length} annonces disponibles`)}
                 </button>
               </div>
               {/* <p className="alert alert-success mt-3">

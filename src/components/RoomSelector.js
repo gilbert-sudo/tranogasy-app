@@ -29,7 +29,7 @@ const RoomSelector = () => {
   };
 
   return (
-    <div className="room-selector d-flex justify-content-center align-items-center px-2">
+    <div className="room-selector d-flex justify-content-start align-items-center px-2 w-100">
       <div id="rooms" className="btn-group rooms-input-group pt-2" role="group">
         {["1+", "2+", "3+", "4+", "5+"].map((value, index) => (
           <React.Fragment key={index}>
@@ -57,7 +57,7 @@ const RoomSelector = () => {
       </div>
 
       {/* "Ou" Label */}
-      <label className="or-label mx-3 mt-2">Ou</label>
+      <label className="or-label mx-2 mt-2">Ou</label>
 
       {/* Custom Number Input */}
       <input

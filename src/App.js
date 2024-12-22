@@ -3,6 +3,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import io from "socket.io-client"; // Import Socket.io client library
 import React, { useEffect } from "react";
+import "./App.css";
 import Darkreader from "react-darkreader";
 import { useLocationProperty, navigate } from "wouter/use-location";
 
