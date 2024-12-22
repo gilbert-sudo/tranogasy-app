@@ -22,7 +22,7 @@ import RoomSelector from "./RoomSelector";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
-import { MdOutlineEditLocation, MdAddCircleOutline, MdOutlineLiving } from "react-icons/md";
+import { MdOutlineEditLocation, MdOutlineLiving } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 import {
   GiCheckMark,
@@ -118,14 +118,14 @@ const HouseSearchForm = () => {
   const [swimmingPool, setSwimmingPool] = useState(false);
   const [insideToilet, setInsideToilet] = useState("all");
   const [insideBathroom, setInsideBathroom] = useState("all");
+  const [searchResults, setSearchResults] = useState("");
 
   const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
     return (
       <div
         style={{ borderRadius: "10px", cursor: "pointer" }}
-        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${
-          state ? "bg-secondary" : "bg-light"
-        }`}
+        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${state ? "bg-secondary" : "bg-light"
+          }`}
         role="group"
         onClick={onClickFunction}
       >
@@ -173,7 +173,7 @@ const HouseSearchForm = () => {
         try {
           const result = await loadMap();
           console.log(result);
-          
+
           setMapData(result); // Log the result after it's resolved
         } catch (error) {
           console.error(error);
@@ -293,7 +293,98 @@ const HouseSearchForm = () => {
     console.log(parameters);
 
     searchProperty(parameters);
+    if (submitType === "list") setLocation("/searchResult");
+    if (submitType === "map") setLocation("/tranogasyMap");
   };
+
+  useEffect(() => {
+    if (properties && properties.length > 0 && (selectedCity || selectedDistrict || selectedCommune)) {
+      setMapInputOnFocus(false);
+
+      console.log("Search Form submited");
+
+      let type;
+      let nearbyLocations = [];
+      isRent === true ? (type = "rent") : (type = "sale");
+
+      let fokontany;
+      if (selectedCity) {
+        fokontany = selectedCity._id;
+      } else {
+        fokontany = null;
+      }
+
+      if (selectedMapType === "gmap") {
+        nearbyLocations = findLocationsWithinDistance(
+          mapData.fokotanyList,
+          searchForm.gmapValue.circleCenter,
+          searchForm.gmapValue.circleRadius
+        ).sort((a, b) => a.distance - b.distance);
+      }
+
+      const parameters = {
+        selectedMapType,
+        type,
+        budgetMax,
+        budgetMin,
+        fokontany,
+        selectedDistrict,
+        selectedCommune,
+        carAccess,
+        motoAccess,
+        wifiAvailability,
+        parkingSpaceAvailable,
+        waterPumpSupply,
+        electricityPower,
+        securitySystem,
+        waterWellSupply,
+        surroundedByWalls,
+        electricityJirama,
+        waterPumpSupplyJirama,
+        kitchenFacilities,
+        airConditionerAvailable,
+        smokeDetectorsAvailable,
+        terrace,
+        swimmingPool,
+        insideToilet,
+        insideBathroom,
+        byNumber,
+        propertyNumber,
+        nearbyLocations,
+      };
+      console.log(parameters);
+
+      setSearchResults(searchProperty(parameters));
+    }
+  }, [
+    selectedMapType,
+    isRent,
+    budgetMax,
+    budgetMin,
+    selectedCity,
+    selectedDistrict,
+    selectedCommune,
+    carAccess,
+    motoAccess,
+    wifiAvailability,
+    parkingSpaceAvailable,
+    waterPumpSupply,
+    electricityPower,
+    securitySystem,
+    waterWellSupply,
+    surroundedByWalls,
+    electricityJirama,
+    waterPumpSupplyJirama,
+    kitchenFacilities,
+    airConditionerAvailable,
+    smokeDetectorsAvailable,
+    terrace,
+    swimmingPool,
+    insideToilet,
+    insideBathroom,
+    byNumber,
+    propertyNumber,
+    selectedMapType]);
 
   useEffect(() => {
     if (properties) {
@@ -318,13 +409,13 @@ const HouseSearchForm = () => {
       ? (isRent && priceRange.maxRent) || (isSale && priceRange.maxPrice)
       : 0;
 
-    // Define animation speed
-    const interval = 20; // Shorter interval for smooth animation
-    const stepMin = Math.ceil(endMin / 50); // Control increment step size
-    const stepMax = Math.ceil(endMax / 40); 
+    // Define faster animation speed
+    const interval = 7; // Faster interval (lower value = quicker updates)
+    const stepMin = Math.ceil(endMin / 15); // Larger step size for quicker animation
+    const stepMax = Math.ceil(endMax / 15);
 
     const intervalId = setInterval(() => {
-      // Increment startMin and startMax gradually
+      // Increment startMin and startMax
       startMin = Math.min(startMin + stepMin, endMin);
       startMax = Math.min(startMax + stepMax, endMax);
 
@@ -338,6 +429,7 @@ const HouseSearchForm = () => {
 
     return () => clearInterval(intervalId); // Cleanup on unmount
   }, [isRent, isSale]);
+
 
 
   return (
@@ -356,7 +448,7 @@ const HouseSearchForm = () => {
               style={
                 mapInputOnFocus
                   ? { minHeight: "102vh", paddingBottom: "70px" }
-                  : { paddingBottom: "70px" }
+                  : { paddingBottom: "50px" }
               }
             >
               <div className="d-flex justify-content-between">
@@ -366,9 +458,8 @@ const HouseSearchForm = () => {
                 <button
                   type="button"
                   style={{ borderRadius: "10px", height: "30px" }}
-                  className={`btn btn-sm btn-outline-dark ${
-                    byNumber && "active"
-                  }`}
+                  className={`btn btn-sm btn-outline-dark ${byNumber && "active"
+                    }`}
                   onClick={() => {
                     setByNumber(true);
                     dispatch(setReduxByNumber({ byNumber: true }));
@@ -423,11 +514,10 @@ const HouseSearchForm = () => {
                         <div className="btn-group px-1" role="group">
                           <button
                             type="button"
-                            className={`btn btn-form mx-1 ${
-                              selectedMapType === "district"
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mx-1 ${selectedMapType === "district"
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setSelectedMapType("district");
                               setSelectedCommune(null);
@@ -447,11 +537,10 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-form mr-1 ${
-                              selectedMapType === "commune"
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${selectedMapType === "commune"
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setSelectedMapType("commune");
                               setSelectedDistrict(null);
@@ -471,11 +560,10 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-form mr-1 ${
-                              selectedMapType === "fokotany"
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${selectedMapType === "fokotany"
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setSelectedMapType("fokotany");
                               setSelectedDistrict(null);
@@ -497,11 +585,10 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-form mr-1 ${
-                              selectedMapType === "gmap"
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${selectedMapType === "gmap"
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setSelectedMapType("gmap");
                               setSelectedDistrict(null);
@@ -563,12 +650,11 @@ const HouseSearchForm = () => {
                                   className="alert alert-light mb-0"
                                   role="alert"
                                 >
-                                  <b>{`${
-                                    selectedDistrict.district
-                                      .charAt(0)
-                                      .toUpperCase() +
+                                  <b>{`${selectedDistrict.district
+                                    .charAt(0)
+                                    .toUpperCase() +
                                     selectedDistrict.district.slice(1)
-                                  }`}</b>{" "}
+                                    }`}</b>{" "}
                                   <br />
                                   <small>{`${selectedDistrict.region.toUpperCase()}`}</small>{" "}
                                   {`(${selectedDistrict.province})`}
@@ -613,11 +699,11 @@ const HouseSearchForm = () => {
                                     (commune) =>
                                       (selectedDistrict
                                         ? commune.district ===
-                                          selectedDistrict.district
+                                        selectedDistrict.district
                                         : true) &&
                                       (selectedDistrict
                                         ? commune.region ===
-                                          selectedDistrict.region
+                                        selectedDistrict.region
                                         : true)
                                   )
                                 }
@@ -639,12 +725,11 @@ const HouseSearchForm = () => {
                                   className="alert alert-light mb-0"
                                   role="alert"
                                 >
-                                  <b>{`${selectedCommune.commune}, ${
-                                    selectedCommune.district
-                                      .charAt(0)
-                                      .toUpperCase() +
+                                  <b>{`${selectedCommune.commune}, ${selectedCommune.district
+                                    .charAt(0)
+                                    .toUpperCase() +
                                     selectedCommune.district.slice(1)
-                                  }`}</b>{" "}
+                                    }`}</b>{" "}
                                   <br />
                                   <small>{`${selectedCommune.region.toUpperCase()}`}</small>{" "}
                                   {`(${selectedCommune.province})`}
@@ -689,11 +774,11 @@ const HouseSearchForm = () => {
                                     (fokotany) =>
                                       (selectedDistrict
                                         ? fokotany.district ===
-                                          selectedDistrict.district
+                                        selectedDistrict.district
                                         : true) &&
                                       (selectedDistrict
                                         ? fokotany.region ===
-                                          selectedDistrict.region
+                                        selectedDistrict.region
                                         : true)
                                   )
                                 }
@@ -715,12 +800,11 @@ const HouseSearchForm = () => {
                                   className="alert alert-light mb-0"
                                   role="alert"
                                 >
-                                  <b>{`${selectedCity.fokontany}, ${
-                                    selectedCity.commune
-                                      .charAt(0)
-                                      .toUpperCase() +
+                                  <b>{`${selectedCity.fokontany}, ${selectedCity.commune
+                                    .charAt(0)
+                                    .toUpperCase() +
                                     selectedCity.commune.slice(1)
-                                  }`}</b>{" "}
+                                    }`}</b>{" "}
                                   <br />
                                   <small>{`${selectedCity.district.toUpperCase()}`}</small>{" "}
                                   {`(${selectedCity.region})`}
@@ -750,9 +834,9 @@ const HouseSearchForm = () => {
                         className="form-group position-relative"
                         style={
                           !selectedDistrict &&
-                          !selectedCommune &&
-                          !selectedCity &&
-                          selectedMapType === "gmap"
+                            !selectedCommune &&
+                            !selectedCity &&
+                            selectedMapType === "gmap"
                             ? {}
                             : { display: "none", height: 0 }
                         }
@@ -775,23 +859,31 @@ const HouseSearchForm = () => {
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form mx-1 ${
-                              isRent
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form ml-1 ${isRent
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={handleRentClick}
                           >
-                            <b>Location</b>
+                            <b>Location/mois</b>
+                          </button>
+                          <button
+                            style={{ borderRadius: "10px" }}
+                            type="button"
+                            className={`btn btn-form mx-1 ${false
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
+                          >
+                            <b>Location/jour</b>
                           </button>
                           <button
                             type="button"
                             style={{ borderRadius: "10px" }}
-                            className={`btn btn-form mr-1 ${
-                              isSale
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${isSale
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={handleSaleClick}
                           >
                             <b>Vente</b>
@@ -813,13 +905,13 @@ const HouseSearchForm = () => {
                         min={
                           priceRange
                             ? (isRent && priceRange.minRent) ||
-                              (isSale && priceRange.minPrice)
+                            (isSale && priceRange.minPrice)
                             : 0
                         }
                         max={
                           priceRange
                             ? (isRent && priceRange.maxRent) ||
-                              (isSale && priceRange.maxPrice)
+                            (isSale && priceRange.maxPrice)
                             : 0
                         }
                         id="range-slider-yellow"
@@ -880,7 +972,7 @@ const HouseSearchForm = () => {
                         <strong>Sélectionnez le nombre de chambres :</strong>
                       </label>
                       <div className="input-group">
-                        <RoomSelector/>
+                        <RoomSelector />
                       </div>
                     </div>
                     <div className="form-group">
@@ -1082,7 +1174,7 @@ const HouseSearchForm = () => {
                         <switch
                           style={{ borderRadius: "10px" }}
                           className="text-success border border-dark p-1 mr-2"
-                          // className="text-success border border-dark pl-5 pr-1 py-1 mr-2"
+                        // className="text-success border border-dark pl-5 pr-1 py-1 mr-2"
                         >
                           <minilabel
                             style={{
@@ -1090,9 +1182,8 @@ const HouseSearchForm = () => {
                               zIndex: `${advancedOption ? "1" : "10"}`,
                               position: "relative",
                             }}
-                            className={`text-light border px-2 ${
-                              advancedOption ? "bg-default" : "bg-secondary"
-                            }`}
+                            className={`text-light border px-2 ${advancedOption ? "bg-default" : "bg-secondary"
+                              }`}
                           >
                             <small> Désactivé </small>
                           </minilabel>
@@ -1103,9 +1194,8 @@ const HouseSearchForm = () => {
                               zIndex: `${advancedOption ? "10" : "1"}`,
                               position: "relative",
                             }}
-                            className={`text-light border px-2 ${
-                              advancedOption ? "bg-success" : "bg-default"
-                            }`}
+                            className={`text-light border px-2 ${advancedOption ? "bg-success" : "bg-default"
+                              }`}
                           >
                             <small> Activée </small>
                           </minilabel>
@@ -1128,11 +1218,10 @@ const HouseSearchForm = () => {
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form mx-1 ${
-                              insideToilet === "all"
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mx-1 ${insideToilet === "all"
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setInsideToilet("all");
                             }}
@@ -1142,11 +1231,10 @@ const HouseSearchForm = () => {
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form mr-1 ${
-                              insideToilet === true
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${insideToilet === true
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setInsideToilet(true);
                             }}
@@ -1156,11 +1244,10 @@ const HouseSearchForm = () => {
                           <button
                             type="button"
                             style={{ borderRadius: "10px" }}
-                            className={`btn btn-form mr-1 ${
-                              !insideToilet
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${!insideToilet
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setInsideToilet(false);
                             }}
@@ -1180,11 +1267,10 @@ const HouseSearchForm = () => {
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form mx-1 ${
-                              insideBathroom === "all"
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mx-1 ${insideBathroom === "all"
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setInsideBathroom("all");
                             }}
@@ -1194,11 +1280,10 @@ const HouseSearchForm = () => {
                           <button
                             style={{ borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form mr-1 ${
-                              insideBathroom === true
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${insideBathroom === true
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setInsideBathroom(true);
                             }}
@@ -1208,11 +1293,10 @@ const HouseSearchForm = () => {
                           <button
                             type="button"
                             style={{ borderRadius: "10px" }}
-                            className={`btn btn-form mr-1 ${
-                              !insideBathroom
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
-                            }`}
+                            className={`btn btn-form mr-1 ${!insideBathroom
+                              ? "btn-outline-secondary active"
+                              : "btn-outline-secondary"
+                              }`}
                             onClick={() => {
                               setInsideBathroom(false);
                             }}
@@ -1224,59 +1308,67 @@ const HouseSearchForm = () => {
                     </div>
                   </>
                 )}
-                <div className="d-flex justify-content-between">
-                  {byNumber && (
-                    <button
-                      type="button"
-                      style={{
-                        borderRadius: "10px",
-                        width: "100%",
-                      }}
-                      className="btn mr-1 btn-sm btn-outline-danger"
-                      onClick={() => {
-                        setByNumber(false);
-                        dispatch(setReduxByNumber({ byNumber: false }));
-                        setPropertyNumber(null);
-                        dispatch(
-                          setReduxPropertyNumber({ propertyNumber: null })
-                        );
-                      }}
-                    >
-                      Annuler
-                    </button>
-                  )}
-                  {!byNumber && (
-                    <button
-                      type="submit"
-                      name="submitType"
-                      value="map"
-                      style={{
-                        borderRadius: "10px",
-                        width: "100%",
-                      }}
-                      className="btn mr-1 btn-sm btn-dark"
-                    >
-                      <FcGoogle /> Voir sur carte
-                    </button>
-                  )}
+              </div>
+            </div>
+            {/* bottom navbar */}
+            <div class="fixed-bottom bg-white">
+              <div className="container d-flex justify-content-between  navbar navbar-expand-sm navbar-light">
+                {byNumber && (
+                  <button
+                    type="button"
+                    style={{
+                      borderRadius: "10px",
+                      width: "100%",
+                    }}
+                    className="btn mr-1 btn-sm btn-outline-danger"
+                    onClick={() => {
+                      setByNumber(false);
+                      dispatch(setReduxByNumber({ byNumber: false }));
+                      setPropertyNumber(null);
+                      dispatch(
+                        setReduxPropertyNumber({ propertyNumber: null })
+                      );
+                    }}
+                  >
+                    Annuler
+                  </button>
+                )}
+                {!byNumber && (
                   <button
                     type="submit"
                     name="submitType"
-                    value="list"
-                    style={{ borderRadius: "10px" }}
-                    className="btn btn-success btn-block shadow-sm"
+                    value="map"
+                    style={{
+                      borderRadius: "10px",
+                      width: "100%",
+                      marginTop: "0.5rem",
+                    }}
+                    className="btn mr-1 btn-dark  btn-block"
                   >
-                    {byNumber ? "Chercher" : "Lister"}
+                    <FcGoogle /> Voir sur carte
                   </button>
-                </div>
-                {/* <p className="alert alert-success mt-3">
+                )}
+                <button
+                  type="submit"
+                  name="submitType"
+                  value="list"
+                  style={{
+                    borderRadius: "10px",
+                  }}
+                  className="btn btn-success btn-block shadow-sm"
+                >
+                  {byNumber ? "Chercher" : ((selectedCity || selectedDistrict || selectedCommune) ? ((searchResults && searchResults.length > 0) ? `Lister les ${searchResults.length} résultats` : "Aucune annonce trouvée") : `${properties && properties.length} annonces disponibles`)}
+                </button>
+              </div>
+              {/* <p className="alert alert-success mt-3">
                     Some text success or error
                   </p> */}
-              </div>
             </div>
+            {/* bottom navbar */}
           </form>
         </div>
       </div>
+
     </div>
   );
 };

@@ -466,9 +466,8 @@ export const useProperty = () => {
     }
   };
 
-  const searchProperty = async (parameters) => {
+  const searchProperty = (parameters) => {
     const {
-      submitType,
       selectedMapType,
       type,
       budgetMax,
@@ -498,9 +497,7 @@ export const useProperty = () => {
       propertyNumber,
       nearbyLocations,
     } = parameters;
-
-    if(submitType === "list") setLocation("/searchResult");
-    if(submitType === "map") setLocation("/tranogasyMap");
+   
 
     let results = [];
 
@@ -618,6 +615,7 @@ export const useProperty = () => {
 
       dispatch(setSearchResults(results));
     }
+    return results;
   };
 
   const formatPrice = (price = 0) => {
