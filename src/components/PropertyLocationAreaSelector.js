@@ -179,11 +179,9 @@ function MyMap() {
             editable
             draggable
             onDragStart={(event) => {
-              event.domEvent.stopPropagation();
               document.body.style.overflow = "hidden"; // Disable scrolling
             }}
             onDragEnd={(event) => {
-              event.domEvent.stopPropagation();
               document.body.style.overflow = "auto"; // Re-enable scrolling
             }}
           />

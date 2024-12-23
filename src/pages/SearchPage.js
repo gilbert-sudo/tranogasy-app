@@ -8,11 +8,19 @@ import { setSearchResults, setPreviousUrl } from "../redux/redux";
 const SearchPage = () => {
   const dispatch = useDispatch();
   const pagination = useSelector((state) => state.pagination[0]);
+  const historyStack = useSelector((state) => state.historyStack.value);
   const searchResults = useSelector((state) => state.searchResults);
-  const [selectedOption, setSelectedOption] = useState(false);
   const [oneTimeTask, setOneTimeTask] = useState(null);
 
   if (oneTimeTask === null) {
+    let last = historyStack[historyStack.length - 1];
+    if (last = "search") {
+      last = historyStack[historyStack.length - 2];
+    }
+    console.log({historyStack, last});
+    if (!(last === "tranogasyMap" || last === "searchResult")) {
+      window.scrollTo(0, 0);
+    }
     if (!isNaN(pagination.previousUrl)) {
       dispatch(setPreviousUrl(null));
     }
