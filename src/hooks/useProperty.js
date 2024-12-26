@@ -69,6 +69,8 @@ export const useProperty = () => {
       smokeDetectorsAvailable,
       terrace,
       swimmingPool,
+      furnishedProperty,
+      hotWaterAvailable,
       insideToilet,
       insideBathroom,
     } = newProperty;
@@ -97,6 +99,8 @@ export const useProperty = () => {
       waterPumpSupplyJirama === undefined ||
       kitchenFacilities === undefined ||
       airConditionerAvailable === undefined ||
+      hotWaterAvailable === undefined ||
+      furnishedProperty === undefined ||
       smokeDetectorsAvailable === undefined
     ) {
       setBootstrap("alert alert-danger");
@@ -145,6 +149,8 @@ export const useProperty = () => {
             smokeDetectorsAvailable,
             terrace,
             swimmingPool,
+            furnishedProperty,
+            hotWaterAvailable,
             insideToilet,
             insideBathroom,
           }),
@@ -224,6 +230,8 @@ export const useProperty = () => {
       smokeDetectorsAvailable,
       terrace,
       swimmingPool,
+      furnishedProperty,
+      hotWaterAvailable,
       insideToilet,
       insideBathroom,
     } = newUpdate;
@@ -259,6 +267,8 @@ export const useProperty = () => {
         smokeDetectorsAvailable,
         terrace,
         swimmingPool,
+        furnishedProperty,
+        hotWaterAvailable,
         insideToilet,
         insideBathroom,
       },
@@ -491,6 +501,8 @@ export const useProperty = () => {
       smokeDetectorsAvailable,
       terrace,
       swimmingPool,
+      furnishedProperty,
+      hotWaterAvailable,
       insideToilet,
       insideBathroom,
       byNumber,

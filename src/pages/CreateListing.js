@@ -8,7 +8,7 @@ import AutosuggestInput from "../components/AutosuggestInput";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
-import { MdOutlineEditLocation, MdArrowBackIos } from "react-icons/md";
+import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving } from "react-icons/md";
 import {
   GiCheckMark,
   GiCircle,
@@ -24,6 +24,7 @@ import {
   FaParking,
   FaShieldAlt,
   FaSwimmingPool,
+  FaHotTub,
 } from "react-icons/fa";
 import {
   FaFaucetDrip,
@@ -85,6 +86,8 @@ const CreateListing = () => {
   const [smokeDetectorsAvailable, setSmokeDetectorsAvailable] = useState(false);
   const [terrace, setTerrace] = useState(false);
   const [swimmingPool, setSwimmingPool] = useState(false);
+  const [furnishedProperty, setFurnishedProperty] = useState(false);
+  const [hotWaterAvailable, setHotWaterAvailable] = useState(false);
   const [insideToilet, setInsideToilet] = useState(true);
   const [insideBathroom, setInsideBathroom] = useState(true);
 
@@ -96,9 +99,8 @@ const CreateListing = () => {
     return (
       <div
         style={{ borderRadius: "15px", cursor: "pointer" }}
-        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${
-          state ? "bg-secondary" : "bg-light"
-        }`}
+        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${state ? "bg-secondary" : "bg-light"
+          }`}
         role="group"
         onClick={onClickFunction}
       >
@@ -201,6 +203,8 @@ const CreateListing = () => {
       airConditionerAvailable ||
       smokeDetectorsAvailable ||
       terrace ||
+      furnishedProperty ||
+      hotWaterAvailable ||
       swimmingPool
     ) {
       setNoFeatureSet(false);
@@ -250,6 +254,8 @@ const CreateListing = () => {
       smokeDetectorsAvailable,
       terrace,
       swimmingPool,
+      furnishedProperty,
+      hotWaterAvailable,
       insideToilet,
       insideBathroom,
     };
@@ -300,7 +306,7 @@ const CreateListing = () => {
                   Créer une annonce :
                 </h6>
                 <div id="nav-tab-rent" className="tab-pane fade show active">
-                <div className="form-group">
+                  <div className="form-group">
                     <label
                       data-toggle="tooltip"
                       title=""
@@ -346,10 +352,9 @@ const CreateListing = () => {
                           className="alert alert-light mb-0"
                           role="alert"
                         >
-                          <b>{`${selectedCity.fokontany}, ${
-                            selectedCity.commune.charAt(0).toUpperCase() +
+                          <b>{`${selectedCity.fokontany}, ${selectedCity.commune.charAt(0).toUpperCase() +
                             selectedCity.commune.slice(1)
-                          }`}</b>{" "}
+                            }`}</b>{" "}
                           <br />
                           <small>{`${selectedCity.district.toUpperCase()}`}</small>{" "}
                           {`(${selectedCity.region})`}
@@ -370,7 +375,7 @@ const CreateListing = () => {
                     )}
                   </div>
                   {selectedCity && (
-                  <div className="form-group">
+                    <div className="form-group">
                       <label
                         data-toggle="tooltip"
                         title=""
@@ -382,14 +387,14 @@ const CreateListing = () => {
                           carte l'emplacement exact de la propriété.
                         </strong>
                       </label>
-                        <PropertyLocationSelector
-                          defaultPosition={
-                            coords
-                              ? coords
-                              : selectedCity.coords
-                          }
-                          setCoords={setCoords}
-                        />
+                      <PropertyLocationSelector
+                        defaultPosition={
+                          coords
+                            ? coords
+                            : selectedCity.coords
+                        }
+                        setCoords={setCoords}
+                      />
                     </div>
                   )}
 
@@ -424,11 +429,10 @@ const CreateListing = () => {
                         <button
                           style={{ borderRadius: "15px" }}
                           type="button"
-                          className={`btn mx-1 ${
-                            isHouse
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                          }`}
+                          className={`btn mx-1 ${isHouse
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
+                            }`}
                           onClick={handleSelectHouseClick}
                         >
                           <b>Maison</b>
@@ -436,11 +440,10 @@ const CreateListing = () => {
                         <button
                           type="button"
                           style={{ borderRadius: "15px" }}
-                          className={`btn mx-1 ${
-                            isLand
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                          }`}
+                          className={`btn mx-1 ${isLand
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
+                            }`}
                           onClick={handleSelectLandClick}
                         >
                           <b>Terrain</b>
@@ -448,40 +451,38 @@ const CreateListing = () => {
                       </div>
                     </div>
                   </div>
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Type d'offre :</strong>
-                      </label>
-                      <div className="input-group">
-                        <div className="btn-group" role="group">
-                          <button
-                            style={{ borderRadius: "15px" }}
-                            type="button"
-                            className={`btn mx-1 ${
-                              isRent
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
+                  <div className="form-group">
+                    <label htmlFor="cardNumber">
+                      <strong className="text-danger">*</strong>{" "}
+                      <strong>Type d'offre :</strong>
+                    </label>
+                    <div className="input-group">
+                      <div className="btn-group" role="group">
+                        <button
+                          style={{ borderRadius: "15px" }}
+                          type="button"
+                          className={`btn mx-1 ${isRent
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
                             }`}
-                            onClick={handleRentClick}
-                          >
-                            <b>Location</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ borderRadius: "15px" }}
-                            className={`btn mx-1 ${
-                              isSale
-                                ? "btn-outline-secondary active"
-                                : "btn-outline-secondary"
+                          onClick={handleRentClick}
+                        >
+                          <b>Location</b>
+                        </button>
+                        <button
+                          type="button"
+                          style={{ borderRadius: "15px" }}
+                          className={`btn mx-1 ${isSale
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
                             }`}
-                            onClick={handleSaleClick}
-                          >
-                            <b>Vente</b>
-                          </button>
-                        </div>
+                          onClick={handleSaleClick}
+                        >
+                          <b>Vente</b>
+                        </button>
                       </div>
                     </div>
+                  </div>
 
                   {isRent && (
                     <div className="form-group">
@@ -644,11 +645,10 @@ const CreateListing = () => {
                         <button
                           style={{ borderRadius: "15px" }}
                           type="button"
-                          className={`btn mx-1 ${
-                            insideToilet
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                          }`}
+                          className={`btn mx-1 ${insideToilet
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
+                            }`}
                           onClick={() => {
                             setInsideToilet(true);
                           }}
@@ -658,11 +658,10 @@ const CreateListing = () => {
                         <button
                           type="button"
                           style={{ borderRadius: "15px" }}
-                          className={`btn mx-1 ${
-                            !insideToilet
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                          }`}
+                          className={`btn mx-1 ${!insideToilet
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
+                            }`}
                           onClick={() => {
                             setInsideToilet(false);
                           }}
@@ -682,11 +681,10 @@ const CreateListing = () => {
                         <button
                           style={{ borderRadius: "15px" }}
                           type="button"
-                          className={`btn mx-1 ${
-                            insideBathroom
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                          }`}
+                          className={`btn mx-1 ${insideBathroom
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
+                            }`}
                           onClick={() => {
                             setInsideBathroom(true);
                           }}
@@ -696,11 +694,10 @@ const CreateListing = () => {
                         <button
                           type="button"
                           style={{ borderRadius: "15px" }}
-                          className={`btn mx-1 ${
-                            !insideBathroom
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                          }`}
+                          className={`btn mx-1 ${!insideBathroom
+                            ? "btn-outline-secondary active"
+                            : "btn-outline-secondary"
+                            }`}
                           onClick={() => {
                             setInsideBathroom(false);
                           }}
@@ -716,10 +713,10 @@ const CreateListing = () => {
                     style={
                       noFeatureSet
                         ? {
-                            border: "2px solid red",
-                            borderRadius: "13px",
-                            marginBottom: "0px",
-                          }
+                          border: "2px solid red",
+                          borderRadius: "13px",
+                          marginBottom: "0px",
+                        }
                         : {}
                     }
                   >
@@ -895,6 +892,17 @@ const CreateListing = () => {
                     </div>
                     <div className="input-group">
                       <GenerateCheckbox
+                        icon={<MdOutlineLiving />}
+                        state={furnishedProperty}
+                        label={"Logement Meublé"}
+                        onClickFunction={() => {
+                          setFurnishedProperty(!furnishedProperty);
+                          if (furnishedProperty === false) setNoFeatureSet(false);
+                        }}
+                      />
+                    </div>
+                    <div className="input-group">
+                      <GenerateCheckbox
                         icon={<TbAirConditioning />}
                         state={airConditionerAvailable}
                         label={"Climatisation disponible"}
@@ -902,6 +910,17 @@ const CreateListing = () => {
                           setAirConditionerAvailable(!airConditionerAvailable);
                           if (airConditionerAvailable === false)
                             setNoFeatureSet(false);
+                        }}
+                      />
+                    </div>
+                    <div className="input-group">
+                      <GenerateCheckbox
+                        icon={<FaHotTub />} // Hot water icon
+                        state={hotWaterAvailable}
+                        label={"Eau chaude disponible"} // Appropriate label in French
+                        onClickFunction={() => {
+                          setHotWaterAvailable(!hotWaterAvailable);
+                          if (hotWaterAvailable === false) setNoFeatureSet(false);
                         }}
                       />
                     </div>

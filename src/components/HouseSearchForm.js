@@ -50,6 +50,7 @@ import {
 
 const HouseSearchForm = () => {
   const targetDivRef = useRef(null);
+  const advancedOptionRef = useRef(null);
 
   const searchForm = useSelector((state) => state.searchForm);
   const properties = useSelector((state) => state.properties);
@@ -229,6 +230,13 @@ const HouseSearchForm = () => {
     // Queue the subsequent code to be executed in the next tick
     setTimeout(() => {
       targetDivRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 0);
+  };
+
+  const handleAdvancedOption = () => {
+    setAdvancedOption(!advancedOption);
+    setTimeout(() => {
+      advancedOptionRef.current.scrollIntoView({ behavior: "smooth" });
     }, 0);
   };
 
@@ -1148,7 +1156,7 @@ const HouseSearchForm = () => {
                         />
                       </div>
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" ref={advancedOptionRef}>
                       <label
                         data-toggle="tooltip"
                         title=""
@@ -1164,7 +1172,7 @@ const HouseSearchForm = () => {
                           </small>
                         </span>
                       </label>
-                      <p onClick={() => setAdvancedOption(!advancedOption)}>
+                      <p onClick={handleAdvancedOption}>
                         <switch
                           style={{ borderRadius: "10px" }}
                           className="text-success border border-dark p-1 mr-2"
@@ -1314,7 +1322,7 @@ const HouseSearchForm = () => {
                       borderRadius: "10px",
                       width: "100%",
                     }}
-                    className="btn mr-1 btn-sm btn-outline-danger"
+                    className="btn mr-1 btn-outline-danger my-1"
                     onClick={() => {
                       setByNumber(false);
                       dispatch(setReduxByNumber({ byNumber: false }));

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { MdArrowBackIos } from "react-icons/md";
+import { MdArrowBackIos, MdOutlineLiving } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { GiWell, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
+import { GiWell, GiCheckMark, GiCircle, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
 import {
   FaCar,
@@ -120,6 +120,43 @@ const PropertyDetailsPage = () => {
     alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
   };
 
+  const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
+    return (
+      <div
+        style={{ borderRadius: "15px", cursor: "pointer" }}
+        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${state ? "bg-secondary" : "bg-light"
+          }`}
+        role="group"
+        onClick={onClickFunction}
+      >
+        {state && <span className="text-light">{icon}</span>}
+        <div className="form-check pl-0" style={{ cursor: "pointer" }}>
+          <label
+            className="form-check-label"
+            htmlFor={state}
+            style={{ cursor: "pointer" }}
+          >
+            {!state && icon}
+            {!state && (
+              <sub>
+                <GiCircle />
+              </sub>
+            )}{" "}
+            {state && (
+              <sub>
+                {" "}
+                <GiCheckMark className="text-success" />
+              </sub>
+            )}{" "}
+            <feature className={`${state ? "text-white" : ""}`}>
+              {label}
+            </feature>
+          </label>
+        </div>
+      </div>
+    );
+  };
+
   const handleGoBack = () => {
     propertyData !== "preview" ? window.history.back() : setLocation("/explore");
   };
@@ -134,7 +171,7 @@ const PropertyDetailsPage = () => {
     } else {
       notLogedPopUp();
     }
-    
+
   };
 
   let position;
@@ -143,8 +180,8 @@ const PropertyDetailsPage = () => {
     position = propertiesDetails.coords
       ? propertiesDetails.coords
       : propertiesDetails.city.coords
-      ? propertiesDetails.city.coords
-      : {
+        ? propertiesDetails.city.coords
+        : {
           lat: -18.905195365917766,
           lng: 47.52370521426201,
         };
@@ -185,7 +222,7 @@ const PropertyDetailsPage = () => {
                       </div>
                     </div>
                     <div
-                      style={{ whiteSpace: "break-spaces" }}
+                      style={{ whiteSpace: "break-spaces", wordBreak: "break-word" }}
                       className="font-weight-normal"
                     >
                       {propertiesDetails && propertiesDetails.description}
@@ -206,7 +243,7 @@ const PropertyDetailsPage = () => {
                       {propertiesDetails.features.wifiAvailability && (
                         <h6 className="mb-0">
                           <FaWifi className="text-success h5 mr-1" />
-                          
+
                           <feature className="font-weight-normal">Disponibilité de la connexion Wi-Fi</feature>
                         </h6>
                       )}
@@ -288,6 +325,15 @@ const PropertyDetailsPage = () => {
                           <feature className="font-weight-normal">Détecteurs de fumée disponibles</feature>
                         </h6>
                       )}
+
+                      <div className="input-group">
+                        <GenerateCheckbox
+                          icon={<MdOutlineLiving />}
+                          state={propertiesDetails.features.furnishedProperty}
+                          label={"Logement Meublé"}
+                          onClickFunction={() => {}}
+                        />
+                      </div>
                     </p>
                   </div>
                   <CardDetails property={propertiesDetails} />
@@ -311,7 +357,7 @@ const PropertyDetailsPage = () => {
                 <MdArrowBackIos
                   style={{ fontSize: "15px", marginBottom: "3px" }}
                 />
-                {propertyData !== "preview" ? "Retour" : "Accueil"}  
+                {propertyData !== "preview" ? "Retour" : "Accueil"}
               </button>
 
               <button
@@ -322,11 +368,11 @@ const PropertyDetailsPage = () => {
               >
                 <FaPhoneAlt className="mr-2 mb-1" />
                 {user && user
-                  ? propertiesDetails.owner._id === user._id 
+                  ? propertiesDetails.owner._id === user._id
                     ? propertiesDetails.phone1
                     : !user || !timer || user.leftTime
-                    ? "Voir contact"
-                    : propertiesDetails.phone1
+                      ? "Voir contact"
+                      : propertiesDetails.phone1
                   : "Voir contact"}
               </button>
             </nav>
