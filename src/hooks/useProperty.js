@@ -602,6 +602,9 @@ export const useProperty = () => {
             (kitchenFacilities
               ? property.features.kitchenFacilities === kitchenFacilities
               : true) &&
+            (hotWaterAvailable
+              ? property.features.hotWaterAvailable === hotWaterAvailable
+              : true) &&
             (airConditionerAvailable
               ? property.features.airConditionerAvailable ===
                 airConditionerAvailable
@@ -613,6 +616,9 @@ export const useProperty = () => {
             (terrace ? property.features.terrace === terrace : true) &&
             (swimmingPool
               ? property.features.swimmingPool === swimmingPool
+              : true) &&
+            (furnishedProperty
+              ? property.features.furnishedProperty === furnishedProperty
               : true) &&
             (insideToilet === "all"
               ? true

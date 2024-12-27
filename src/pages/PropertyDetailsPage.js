@@ -51,7 +51,7 @@ const PropertyDetailsPage = () => {
   }
 
   const [match, params] = useRoute(
-    "/property-details/:propertyId/:propertyData"
+    "/property-details/:propertyId/:propertyData/:prevPath"
   );
   const propertyData = match ? params.propertyData : null;
   const propertyId = match ? params.propertyId : null;

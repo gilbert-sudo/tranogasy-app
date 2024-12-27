@@ -348,7 +348,7 @@ function App() {
             </div>
             <main>
               <Switch>
-                <Route path="/property-details/:propertyId/:propertyData">
+                <Route path="/property-details/:propertyId/:propertyData/:prevPath">
                   <PropertyDetailsPage />
                 </Route>
                 <Route path="/loader">

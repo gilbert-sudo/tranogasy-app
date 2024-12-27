@@ -39,6 +39,7 @@ import {
   FaParking,
   FaShieldAlt,
   FaSwimmingPool,
+  FaHotTub,
 } from "react-icons/fa";
 import {
   FaFaucetDrip,
@@ -113,6 +114,7 @@ const HouseSearchForm = () => {
   const [kitchenFacilities, setKitchenFacilities] = useState(false);
   const [furnishedProperty, setFurnishedProperty] = useState(false);
   const [airConditionerAvailable, setAirConditionerAvailable] = useState(false);
+  const [hotWaterAvailable, setHotWaterAvailable] = useState(false);
   const [smokeDetectorsAvailable, setSmokeDetectorsAvailable] = useState(false);
   const [terrace, setTerrace] = useState(false);
   const [swimmingPool, setSwimmingPool] = useState(false);
@@ -290,6 +292,8 @@ const HouseSearchForm = () => {
       electricityJirama,
       waterPumpSupplyJirama,
       kitchenFacilities,
+      furnishedProperty,
+      hotWaterAvailable,
       airConditionerAvailable,
       smokeDetectorsAvailable,
       terrace,
@@ -355,6 +359,8 @@ const HouseSearchForm = () => {
         electricityJirama,
         waterPumpSupplyJirama,
         kitchenFacilities,
+        furnishedProperty,
+        hotWaterAvailable,
         airConditionerAvailable,
         smokeDetectorsAvailable,
         terrace,
@@ -388,6 +394,8 @@ const HouseSearchForm = () => {
     electricityJirama,
     waterPumpSupplyJirama,
     kitchenFacilities,
+    furnishedProperty,
+    hotWaterAvailable,
     airConditionerAvailable,
     smokeDetectorsAvailable,
     terrace,
@@ -1137,6 +1145,16 @@ const HouseSearchForm = () => {
                           onClickFunction={() =>
                             setFurnishedProperty(!furnishedProperty)
                           }
+                        />
+                      </div>
+                      <div className="input-group">
+                        <GenerateCheckbox
+                          icon={<FaHotTub />} // Hot water icon
+                          state={hotWaterAvailable}
+                          label={"Eau chaude disponible"} // Appropriate label in French
+                          onClickFunction={() => {
+                            setHotWaterAvailable(!hotWaterAvailable);
+                          }}
                         />
                       </div>
                       <div className="input-group">

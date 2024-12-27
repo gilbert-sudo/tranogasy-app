@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { FaRegEdit } from "react-icons/fa";
 import { BsCheck2All, BsTrash3Fill } from "react-icons/bs";
 import { MdDoNotDisturb } from "react-icons/md";
@@ -10,8 +10,8 @@ import "./css/mylisting.css";
 
 function MyListingDetails({ property }) {
   const { deleteProperty } = useProperty();
+  const [location] = useLocation();
   //redux
-  const user = useSelector((state) => state.user);
 
   //stringify the property data to pass it as parameter
   const propertyDataString = JSON.stringify(property);
@@ -20,7 +20,7 @@ function MyListingDetails({ property }) {
     <div className="col-md-6 col-lg-4 mb-4">
       <div className="property-entry h-100 mx-1">
         <Link
-          to={`/property-details/${property._id}/${encodeURIComponent(propertyDataString)}`}
+          to={`/property-details/${property._id}/${encodeURIComponent(propertyDataString)}/${location.split("/")[1]}`}
           className="property-thumbnail"
         >
           <div className="offer-type-wrap">
@@ -53,7 +53,7 @@ function MyListingDetails({ property }) {
         <div className="p-3 property-body">
           <Link
             className="text text-dark"
-            to={`/property-details/${property._id}/${encodeURIComponent(propertyDataString)}`}
+            to={`/property-details/${property._id}/${encodeURIComponent(propertyDataString)}/${location.split("/")[1]}`}
           >
             <h2 className="property-title">{property.title}</h2>
             <span className="property-location d-block">

@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { BsTrashFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useLike } from "../hooks/useLike";
@@ -13,6 +13,7 @@ function FavoritePropertyDetails({ property }) {
   }).format(new Date(property.created_at));
 
   const { disLike } = useLike();
+  const [location] = useLocation();
   const [isliked, setIsliked] = useState(false);
   //redux
   const user = useSelector((state) => state.user);
@@ -53,7 +54,7 @@ function FavoritePropertyDetails({ property }) {
         <Link
           to={`/property-details/${property._id}/${encodeURIComponent(
             propertyDataString
-          )}`}
+          )}/${location.split("/")[1]}`}
           className="property-thumbnail"
         >
           <div className="offer-type-wrap mr-2">

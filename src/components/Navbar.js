@@ -73,6 +73,11 @@ const Navbar = () => {
   const payments = useSelector((state) => state.payments);
   const notificationStatus = useSelector((state) => state.notificationStatus);
 
+    const [match, params] = useRoute(
+      "/property-details/:propertyId/:propertyData/:prevPath"
+    );
+    const prevPath = match ? params.prevPath : null;
+
   useEffect(() => {
     async function loadPage() {
       if (location.startsWith("/payment-recovery")) {
@@ -104,6 +109,8 @@ const Navbar = () => {
       } else {
         dispatch(setTopNavbar(true));
       }
+      console.log({prevPath});
+      
     }
     loadPage();
   }, [location]);
@@ -265,7 +272,7 @@ const Navbar = () => {
                   />
                 </button>
               )}{" "}
-              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && properties && (
+              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && prevPath !== "searchResult" && prevPath !== "tranogasyMap" && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-outline-success"
@@ -281,7 +288,7 @@ const Navbar = () => {
                   />
                 </button>
               )}
-              {(location === "/searchResult" || location === "/tranogasyMap") && properties && (
+              {(location === "/searchResult" || location === "/tranogasyMap" || prevPath === "searchResult" || prevPath === "tranogasyMap" ) && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-danger"
