@@ -102,7 +102,7 @@ function PropertyDetails({ property }) {
           </div>
           <MiniCarousel images={property.images} />
         </Link>
-        <div className="p-3 property-body">
+        <div className="p-2 property-body">
           {isliked && isliked ? (
             <div
               className="property-favorite"
@@ -126,9 +126,9 @@ function PropertyDetails({ property }) {
               propertyDataString
             )}`}
           >
-            <h2 className="ml-1 property-title">
+            <h4 className="ml-1 property-title">
               <label className="text-danger">#</label> {property.title}
-            </h2>
+            </h4>
             <p
               className="property-description"
               style={{ whiteSpace: "break-spaces", fontWeight: "400" }}
@@ -192,11 +192,11 @@ function PropertyDetails({ property }) {
               <div className="mt-2 property-title">
                 {property.type === "rent" ? (
                   <small className="d-flex text-success justify-content-end">
-                    {property.rent.toLocaleString("en-US")} Ar/mois
+                    <strong>{property.rent.toLocaleString("en-US")} Ar/mois</strong>
                   </small>
                 ) : (
                   <small className="d-flex text-danger justify-content-end">
-                    {property.price.toLocaleString("en-US")} Ar
+                    <strong>{property.price.toLocaleString("en-US")} Ar</strong>
                   </small>
                 )}
               </div>

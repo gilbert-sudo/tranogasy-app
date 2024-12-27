@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { MdArrowBackIos, MdOutlineLiving } from "react-icons/md";
 import { useSelector } from "react-redux";
@@ -120,40 +120,14 @@ const PropertyDetailsPage = () => {
     alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
   };
 
-  const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
+  const GenerateFeaturebox = ({ icon, label }) => {
     return (
-      <div
-        style={{ borderRadius: "15px", cursor: "pointer" }}
-        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${state ? "bg-secondary" : "bg-light"
-          }`}
-        role="group"
-        onClick={onClickFunction}
-      >
-        {state && <span className="text-light">{icon}</span>}
-        <div className="form-check pl-0" style={{ cursor: "pointer" }}>
-          <label
-            className="form-check-label"
-            htmlFor={state}
-            style={{ cursor: "pointer" }}
-          >
-            {!state && icon}
-            {!state && (
-              <sub>
-                <GiCircle />
-              </sub>
-            )}{" "}
-            {state && (
-              <sub>
-                {" "}
-                <GiCheckMark className="text-success" />
-              </sub>
-            )}{" "}
-            <feature className={`${state ? "text-white" : ""}`}>
-              {label}
-            </feature>
-          </label>
-        </div>
-      </div>
+      <h6 className="mb-0">
+        {icon && React.isValidElement(icon) ? ( // Check if icon prop is a valid React element
+          React.cloneElement(icon, { className: `h6 mr-1 mt-1 ${icon.props.className || ''}` }) // Clone and add/merge classes
+        ) : null}
+        <span className="font-weight-light">{label}</span>
+      </h6>
     );
   };
 
@@ -227,113 +201,109 @@ const PropertyDetailsPage = () => {
                     >
                       {propertiesDetails && propertiesDetails.description}
                     </div>
-                    <p className="ml-3 mt-3 mb-0">
+                    <p className="mt-3 mb-0">
                       {propertiesDetails.features.motoAccess && (
-                        <h6 className="mb-0">
-                          <FaMotorcycle className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Accès pour moto disponible</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaMotorcycle />}
+                          label={"Accès pour moto disponible"}
+                        />
                       )}
                       {propertiesDetails.features.carAccess && (
-                        <h6 className="mb-0">
-                          <FaCar className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Accès pour voiture disponible</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaCar />}
+                          label={"Accès pour voiture disponible"}
+                        />
                       )}
                       {propertiesDetails.features.wifiAvailability && (
-                        <h6 className="mb-0">
-                          <FaWifi className="text-success h5 mr-1" />
-
-                          <feature className="font-weight-normal">Disponibilité de la connexion Wi-Fi</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaWifi />}
+                          label={"Disponibilité de la connexion Wi-Fi"}
+                        />
                       )}
                       {propertiesDetails.features.parkingSpaceAvailable && (
-                        <h6 className="mb-0">
-                          <FaParking className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Espace de stationnement disponible</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaParking />}
+                          label={"Espace de stationnement disponible"}
+                        />
                       )}
                       {propertiesDetails.features.waterPumpSupplyJirama && (
-                        <h6 className="mb-0">
-                          <FaFaucetDrip className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Robinet d'eau de la JI.RA.MA</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaFaucetDrip />}
+                          label={"Robinet d'eau de la JI.RA.MA"}
+                        />
                       )}
                       {propertiesDetails.features.waterPumpSupply && (
-                        <h6 className="mb-0">
-                          <FaOilWell className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Pompe à eau privee</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaOilWell />}
+                          label={"Pompe à eau privee"}
+                        />
                       )}
                       {propertiesDetails.features.waterWellSupply && (
-                        <h6 className="mb-0">
-                          <GiWell className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Approvisionnement en puits d'eau</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<GiWell />}
+                          label={"Approvisionnement en puits d'eau"}
+                        />
                       )}
                       {propertiesDetails.features.electricityPower && (
-                        <h6 className="mb-0">
-                          <FaPlugCircleCheck className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Alimentation en électricité privee</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaPlugCircleCheck />}
+                          label={"Alimentation en électricité privee"}
+                        />
                       )}
                       {propertiesDetails.features.electricityJirama && (
-                        <h6 className="mb-0">
-                          <FaPlugCircleBolt className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Électricité fournie par la JI.RA.MA</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaPlugCircleBolt />}
+                          label={"Électricité fournie par la JI.RA.MA"}
+                        />
                       )}
                       {propertiesDetails.features.surroundedByWalls && (
-                        <h6 className="mb-0">
-                          <GiBrickWall className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Propriété entourée de murs</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<GiBrickWall />}
+                          label={"Propriété entourée de murs"}
+                        />
                       )}
                       {propertiesDetails.features.securitySystem && (
-                        <h6 className="mb-0">
-                          <FaShieldAlt className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Domaine sécurisé</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaShieldAlt />}
+                          label={"Domaine sécurisé"}
+                        />
                       )}
                       {propertiesDetails.features.kitchenFacilities && (
-                        <h6 className="mb-0">
-                          <FaKitchenSet className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Équipements de cuisine disponibles</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaKitchenSet />}
+                          label={"Équipements de cuisine disponibles"}
+                        />
                       )}
                       {propertiesDetails.features.terrace && (
-                        <h6 className="mb-0">
-                          <TbBuildingCastle className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Avec terrasse disponible.</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<TbBuildingCastle />}
+                          label={"Avec terrasse disponible."}
+                        />
                       )}
                       {propertiesDetails.features.swimmingPool && (
-                        <h6 className="mb-0">
-                          <FaSwimmingPool className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Avec piscine.</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<FaSwimmingPool />}
+                          label={"Avec piscine."}
+                        />
                       )}
                       {propertiesDetails.features.airConditionerAvailable && (
-                        <h6 className="mb-0">
-                          <TbAirConditioning className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Climatisation disponible</feature>
-                        </h6>
+                        <GenerateFeaturebox
+                          icon={<TbAirConditioning />}
+                          label={"Climatisation disponible"}
+                        />
                       )}
                       {propertiesDetails.features.smokeDetectorsAvailable && (
-                        <h6 className="mb-0">
-                          <GiSmokeBomb className="text-success h5 mr-1" />
-                          <feature className="font-weight-normal">Détecteurs de fumée disponibles</feature>
-                        </h6>
+                         <GenerateFeaturebox
+                         icon={<GiSmokeBomb />}
+                         label={"Détecteurs de fumée disponibles"}
+                       />
                       )}
-
-                      <div className="input-group">
-                        <GenerateCheckbox
+                      {propertiesDetails.features.furnishedProperty && (
+                        <GenerateFeaturebox
                           icon={<MdOutlineLiving />}
-                          state={propertiesDetails.features.furnishedProperty}
                           label={"Logement Meublé"}
-                          onClickFunction={() => {}}
                         />
-                      </div>
+                      )}
                     </p>
                   </div>
                   <CardDetails property={propertiesDetails} />

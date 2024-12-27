@@ -8,7 +8,7 @@ body {
   color: rgba(0, 0, 0, 0.6);
   font-weight: 300;
   font-size: 1rem;
-  font-family: "Roboto", sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 ::-moz-selection {
@@ -557,7 +557,7 @@ a:hover {
   transform: scale(1);
 }
 .property-entry .property-title {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-bottom: 0px;
 }
 .property-entry .property-title a {

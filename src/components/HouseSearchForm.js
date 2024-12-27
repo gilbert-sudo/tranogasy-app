@@ -523,10 +523,11 @@ const HouseSearchForm = () => {
                         <strong>Choisir une zone de recherche :</strong>
                       </label>
                       <div className="input-group">
-                        <div className="btn-group px-1" role="group">
+                        <div className="">
                           <button
                             type="button"
-                            className={`btn btn-form mx-1 ${selectedMapType === "district"
+                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
+                            className={`btn-sm mx-1 mb-2 ${selectedMapType === "district"
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}
@@ -549,7 +550,8 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-form mr-1 ${selectedMapType === "commune"
+                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
+                            className={`btn-sm mr-1 mb-2 ${selectedMapType === "commune"
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}
@@ -572,7 +574,8 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-form mr-1 ${selectedMapType === "fokotany"
+                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
+                            className={`btn-sm mb-2 ${selectedMapType === "fokotany"
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}
@@ -597,7 +600,8 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            className={`btn btn-form mr-1 ${selectedMapType === "gmap"
+                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
+                            className={`btn-sm mx-1 mb-2 ${selectedMapType === "gmap"
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}
@@ -867,11 +871,11 @@ const HouseSearchForm = () => {
                         <strong>Type d'offre :</strong>
                       </label>
                       <div className="input-group">
-                        <div className="btn-group px-1" role="group">
+                        <div className="d-flex justify-content-center px-1">
                           <button
-                            style={{ borderRadius: "10px" }}
+                            style={{ border: "1px solid", borderRadius: "10px" }}
                             type="button"
-                            className={`btn btn-form mx-1 ${isRent
+                            className={`btn-sm mx-1 ${isRent
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}
@@ -881,8 +885,8 @@ const HouseSearchForm = () => {
                           </button>
                           <button
                             type="button"
-                            style={{ borderRadius: "10px" }}
-                            className={`btn btn-form mr-1 ${isSale
+                            style={{ border: "1px solid", borderRadius: "10px" }}
+                            className={`btn-sm mr-1 ${isSale
                               ? "btn-outline-secondary active"
                               : "btn-outline-secondary"
                               }`}

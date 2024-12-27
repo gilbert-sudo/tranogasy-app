@@ -51,10 +51,10 @@ const MyHouseListingPage = () => {
         <div className="mylisting mt-5 pt-1">
           <div className="site-section site-section-sm bg-light">
             <div className="custom-container" style={{ paddingBottom: "80px" }}>
-              <div className="fixed-top mt-5" style={{ maxWidth: "max-content"}}>
+              <div className="fixed-top mt-5" style={{ minWidth: "max-content"}}>
                 <Link to="/mylisting">
                   <h6
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", minWidth: "max-content" }}
                     className="font-weight-light m-2 go-back-link p-2"
                   >
                     <MdArrowBackIos

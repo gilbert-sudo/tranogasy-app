@@ -15,12 +15,12 @@ const MiniCarousel = ({ images }) => {
 
   return (
     <OwlCarousel
-      style={{ backgroundColor: "#ECEFF4", borderRadius: "15px", height: "18rem", overflow: 'hidden' }}
+      style={{ backgroundColor: "#ECEFF4", borderRadius: "15px", height: "16rem", overflow: 'hidden' }}
       className="slide-one-item home-slider owl-theme"
       {...options}
     >
       {displayedImages.map((image, index) => (
-        <div key={index} style={{ height: "18rem", overflow: 'hidden' }}>
+        <div key={index} style={{ height: "16rem", overflow: 'hidden' }}>
           <img
             className="img"
             src={image.src}

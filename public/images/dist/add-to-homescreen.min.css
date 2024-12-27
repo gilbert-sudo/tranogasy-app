@@ -11,7 +11,7 @@
   z-index: 9999;
   opacity: 0;
   transition: opacity 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #212121;
   backdrop-filter: blur(1px);
   -webkit-backdrop-filter: blur(1px);
