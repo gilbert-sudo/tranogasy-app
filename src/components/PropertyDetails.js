@@ -9,6 +9,7 @@ import MiniCarousel from "../components/MiniCarousel";
 import { ImLocation } from "react-icons/im";
 import { GiWell, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { MdOutlineLiving } from "react-icons/md";
 import {
   FaCar,
   FaMotorcycle,
@@ -16,6 +17,7 @@ import {
   FaParking,
   FaShieldAlt,
   FaSwimmingPool,
+  FaHotTub,
 } from "react-icons/fa";
 import {
   FaPlugCircleBolt,
@@ -23,7 +25,6 @@ import {
   FaOilWell,
   FaKitchenSet,
   FaFaucetDrip,
-  FaHashtag,
 } from "react-icons/fa6";
 
 import useSound from "use-sound";
@@ -183,6 +184,12 @@ function PropertyDetails({ property }) {
               {property.features.swimmingPool && (
                 <FaSwimmingPool className="h6 mr-1" />
               )}
+              {property.features.furnishedProperty && (
+                <MdOutlineLiving className="h6 mr-1" />
+              )}
+              {property.features.hotWaterAvailable && (
+                <FaHotTub className="h6 mr-1" />
+              )}
               {property.features.airConditionerAvailable && (
                 <TbAirConditioning className="h6 mr-1" />
               )}
@@ -193,11 +200,11 @@ function PropertyDetails({ property }) {
             <div className="mt-2 property-title">
               {property.type === "rent" ? (
                 <small className="d-flex text-success justify-content-end">
-                  <strong>{property.rent.toLocaleString("en-US")} Ar/mois</strong>
+                  <strong>{property.rent.toLocaleString("en-US")} <small>Ar/mois</small></strong>
                 </small>
               ) : (
                 <small className="d-flex text-danger justify-content-end">
-                  <strong>{property.price.toLocaleString("en-US")} Ar</strong>
+                  <strong>{property.price.toLocaleString("en-US")} <small>Ar</small></strong>
                 </small>
               )}
             </div>

@@ -729,7 +729,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<FaMotorcycle />}
                         state={motoAccess}
-                        label={"Accès pour moto disponible"}
+                        label={"Accès pour moto"}
                         onClickFunction={() => {
                           setMotoAccess(!motoAccess);
                           if (carAccess === true) setMotoAccess(true);
@@ -741,7 +741,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<FaCar />}
                         state={carAccess}
-                        label={"Accès pour voiture disponible"}
+                        label={"Accès pour voiture"}
                         onClickFunction={() => {
                           setCarAccess(!carAccess);
                           if (carAccess === false) setMotoAccess(true);
@@ -753,7 +753,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<FaWifi />}
                         state={wifiAvailability}
-                        label={"Disponibilité de la connexion Wi-Fi"}
+                        label={"De la connexion Wi-Fi"}
                         onClickFunction={() => {
                           setWifiAvailability(!wifiAvailability);
                           if (wifiAvailability === false)
@@ -765,7 +765,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<FaParking />}
                         state={parkingSpaceAvailable}
-                        label={"Espace de stationnement disponible"}
+                        label={"Espace de stationnement"}
                         onClickFunction={() => {
                           setParkingSpaceAvailable(!parkingSpaceAvailable);
                           if (parkingSpaceAvailable === false)
@@ -801,7 +801,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<GiWell />}
                         state={waterWellSupply}
-                        label={"Approvisionnement en puits d'eau"}
+                        label={"Un puits d'eau"}
                         onClickFunction={() => {
                           setWaterWellSupply(!waterWellSupply);
                           if (waterWellSupply === false) setNoFeatureSet(false);
@@ -882,7 +882,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<FaKitchenSet />}
                         state={kitchenFacilities}
-                        label={"Équipements de cuisine disponibles"}
+                        label={"Cuisine déjà équipée"}
                         onClickFunction={() => {
                           setKitchenFacilities(!kitchenFacilities);
                           if (kitchenFacilities === false)
@@ -928,7 +928,7 @@ const CreateListing = () => {
                       <GenerateCheckbox
                         icon={<GiSmokeBomb />}
                         state={smokeDetectorsAvailable}
-                        label={"Détecteurs de fumée disponibles"}
+                        label={"Détecteurs de fumée"}
                         onClickFunction={() => {
                           setSmokeDetectorsAvailable(!smokeDetectorsAvailable);
                           if (smokeDetectorsAvailable === false)

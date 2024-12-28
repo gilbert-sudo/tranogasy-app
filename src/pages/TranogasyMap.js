@@ -299,9 +299,15 @@ const Markers = ({ points, onMarkerClick }) => {
     });
   };
 
-  const usedCoords = new Set();
+  // Cache for adjusted coordinates
+  const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
+  const [usedCoords, setUsedCoords] = useState(new Set());
 
-  const adjustCoordsRandomlyUnique = (coords, maxOffset = 0.00027) => {
+  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
+    if (adjustedCoordsCache[id]) {
+      return adjustedCoordsCache[id];
+    }
+
     const randomOffset = () => (Math.random() - 0.5) * maxOffset;
     let newCoords;
 
@@ -312,16 +318,23 @@ const Markers = ({ points, onMarkerClick }) => {
       };
     } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
 
-    usedCoords.add(`${newCoords.lat},${newCoords.lng}`);
+    // Add the new unique coordinates to the used set and cache
+    setUsedCoords((prev) => new Set(prev).add(`${newCoords.lat},${newCoords.lng}`));
+    setAdjustedCoordsCache((prevCache) => ({
+      ...prevCache,
+      [id]: newCoords,
+    }));
+
     return newCoords;
   };
+
 
   return (
     <>
       {points.map((property) => (
         <AdvancedMarker
           style={{ height: "100px" }}
-          position={property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords)}
+          position={property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords, property._id)}
           key={property._id}
           ref={(marker) => setMarkerRef(marker, property._id)}
           onClick={() => onMarkerClick(property)} // When marker is clicked
@@ -342,8 +355,10 @@ const Markers = ({ points, onMarkerClick }) => {
                 color: "#000",
                 fontSize: "1rem",
                 border: "2px solid red",
+                borderRadius: "15px",
                 whiteSpace: "nowrap", // Prevent line breaks
               }}
+              onClick={() => onMarkerClick(property)}
             >
               <small>Ar</small>{(property.rent || property.price) &&
                 formatPrice(property.rent || property.price)}

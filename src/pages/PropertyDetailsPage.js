@@ -12,6 +12,7 @@ import {
   FaShieldAlt,
   FaPhoneAlt,
   FaSwimmingPool,
+  FaHotTub,
 } from "react-icons/fa";
 import {
   FaPlugCircleBolt,
@@ -205,25 +206,25 @@ const PropertyDetailsPage = () => {
                       {propertiesDetails.features.motoAccess && (
                         <GenerateFeaturebox
                           icon={<FaMotorcycle />}
-                          label={"Accès pour moto disponible"}
+                          label={"Accès pour moto"}
                         />
                       )}
                       {propertiesDetails.features.carAccess && (
                         <GenerateFeaturebox
                           icon={<FaCar />}
-                          label={"Accès pour voiture disponible"}
+                          label={"Accès pour voiture"}
                         />
                       )}
                       {propertiesDetails.features.wifiAvailability && (
                         <GenerateFeaturebox
                           icon={<FaWifi />}
-                          label={"Disponibilité de la connexion Wi-Fi"}
+                          label={"De la connexion Wi-Fi"}
                         />
                       )}
                       {propertiesDetails.features.parkingSpaceAvailable && (
                         <GenerateFeaturebox
                           icon={<FaParking />}
-                          label={"Espace de stationnement disponible"}
+                          label={"Espace de stationnement"}
                         />
                       )}
                       {propertiesDetails.features.waterPumpSupplyJirama && (
@@ -241,7 +242,7 @@ const PropertyDetailsPage = () => {
                       {propertiesDetails.features.waterWellSupply && (
                         <GenerateFeaturebox
                           icon={<GiWell />}
-                          label={"Approvisionnement en puits d'eau"}
+                          label={"Un puits d'eau"}
                         />
                       )}
                       {propertiesDetails.features.electricityPower && (
@@ -271,7 +272,7 @@ const PropertyDetailsPage = () => {
                       {propertiesDetails.features.kitchenFacilities && (
                         <GenerateFeaturebox
                           icon={<FaKitchenSet />}
-                          label={"Équipements de cuisine disponibles"}
+                          label={"Cuisine déjà équipée"}
                         />
                       )}
                       {propertiesDetails.features.terrace && (
@@ -286,6 +287,12 @@ const PropertyDetailsPage = () => {
                           label={"Avec piscine."}
                         />
                       )}
+                      {propertiesDetails.features.hotWaterAvailable && (
+                        <GenerateFeaturebox
+                          icon={<FaHotTub />}
+                          label={"Eau chaude disponible"}
+                        />
+                      )}
                       {propertiesDetails.features.airConditionerAvailable && (
                         <GenerateFeaturebox
                           icon={<TbAirConditioning />}
@@ -295,7 +302,7 @@ const PropertyDetailsPage = () => {
                       {propertiesDetails.features.smokeDetectorsAvailable && (
                          <GenerateFeaturebox
                          icon={<GiSmokeBomb />}
-                         label={"Détecteurs de fumée disponibles"}
+                         label={"Détecteurs de fumée"}
                        />
                       )}
                       {propertiesDetails.features.furnishedProperty && (

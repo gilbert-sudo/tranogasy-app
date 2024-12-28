@@ -1001,7 +1001,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<FaMotorcycle />}
                           state={motoAccess}
-                          label={"Accès pour moto disponible"}
+                          label={"Accès pour moto"}
                           onClickFunction={() => {
                             setMotoAccess(!motoAccess);
                             if (carAccess === true) setMotoAccess(true);
@@ -1012,7 +1012,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<FaCar />}
                           state={carAccess}
-                          label={"Accès pour voiture disponible"}
+                          label={"Accès pour voiture"}
                           onClickFunction={() => {
                             setCarAccess(!carAccess);
                             if (carAccess === false) setMotoAccess(true);
@@ -1023,7 +1023,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<FaWifi />}
                           state={wifiAvailability}
-                          label={"Disponibilité de la connexion Wi-Fi"}
+                          label={"De la connexion Wi-Fi"}
                           onClickFunction={() =>
                             setWifiAvailability(!wifiAvailability)
                           }
@@ -1033,7 +1033,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<FaParking />}
                           state={parkingSpaceAvailable}
-                          label={"Espace de stationnement disponible"}
+                          label={"Espace de stationnement"}
                           onClickFunction={() =>
                             setParkingSpaceAvailable(!parkingSpaceAvailable)
                           }
@@ -1064,7 +1064,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<GiWell />}
                           state={waterWellSupply}
-                          label={"Approvisionnement en puits d'eau"}
+                          label={"Un puits d'eau"}
                           onClickFunction={() =>
                             setWaterWellSupply(!waterWellSupply)
                           }
@@ -1131,7 +1131,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<FaKitchenSet />}
                           state={kitchenFacilities}
-                          label={"Équipements de cuisine disponibles"}
+                          label={"Cuisine déjà équipée"}
                           onClickFunction={() =>
                             setKitchenFacilities(!kitchenFacilities)
                           }
@@ -1171,7 +1171,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<GiSmokeBomb />}
                           state={smokeDetectorsAvailable}
-                          label={"Détecteurs de fumée disponibles"}
+                          label={"Détecteurs de fumée"}
                           onClickFunction={() =>
                             setSmokeDetectorsAvailable(!smokeDetectorsAvailable)
                           }

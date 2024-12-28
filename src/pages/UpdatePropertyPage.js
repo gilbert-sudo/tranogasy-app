@@ -8,7 +8,7 @@ import AutosuggestInput from "../components/AutosuggestInput";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
-import { MdOutlineEditLocation, MdArrowBackIos } from "react-icons/md";
+import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving } from "react-icons/md";
 import {
   GiCheckMark,
   GiCircle,
@@ -25,6 +25,7 @@ import {
   FaShieldAlt,
   FaSwimmingPool,
   FaRegSave,
+  FaHotTub,
 } from "react-icons/fa";
 import {
   FaFaucetDrip,
@@ -132,6 +133,8 @@ const UpdatePropertyPage = () => {
   const [swimmingPool, setSwimmingPool] = useState(
     oldPropertyDetails.features.swimmingPool
   );
+  const [furnishedProperty, setFurnishedProperty] = useState(oldPropertyDetails.features.furnishedProperty);
+  const [hotWaterAvailable, setHotWaterAvailable] = useState(oldPropertyDetails.features.hotWaterAvailable);
   const [insideToilet, setInsideToilet] = useState(
     oldPropertyDetails.features.insideToilet
   );
@@ -150,9 +153,8 @@ const UpdatePropertyPage = () => {
     return (
       <div
         style={{ borderRadius: "15px", cursor: "pointer" }}
-        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${
-          state ? "bg-secondary" : "bg-light"
-        }`}
+        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${state ? "bg-secondary" : "bg-light"
+          }`}
         role="group"
         onClick={onClickFunction}
       >
@@ -295,9 +297,11 @@ const UpdatePropertyPage = () => {
       waterPumpSupplyJirama,
       kitchenFacilities,
       airConditionerAvailable,
+      hotWaterAvailable,
       smokeDetectorsAvailable,
       terrace,
       swimmingPool,
+      furnishedProperty,
       insideToilet,
       insideBathroom,
     };
@@ -394,10 +398,9 @@ const UpdatePropertyPage = () => {
                             className="alert alert-light mb-0"
                             role="alert"
                           >
-                            <b>{`${selectedCity.fokontany}, ${
-                              selectedCity.commune.charAt(0).toUpperCase() +
+                            <b>{`${selectedCity.fokontany}, ${selectedCity.commune.charAt(0).toUpperCase() +
                               selectedCity.commune.slice(1)
-                            }`}</b>{" "}
+                              }`}</b>{" "}
                             <br />
                             <small>{`${selectedCity.district.toUpperCase()}`}</small>{" "}
                             {`(${selectedCity.region})`}
@@ -494,11 +497,10 @@ const UpdatePropertyPage = () => {
                           <button
                             style={{ borderRadius: "15px" }}
                             type="button"
-                            className={`btn mx-1 ${
-                              isRent
+                            className={`btn mx-1 ${isRent
                                 ? "btn-outline-secondary active"
                                 : "btn-outline-secondary"
-                            }`}
+                              }`}
                             onClick={handleRentClick}
                           >
                             <b>Location</b>
@@ -506,11 +508,10 @@ const UpdatePropertyPage = () => {
                           <button
                             type="button"
                             style={{ borderRadius: "15px" }}
-                            className={`btn mx-1 ${
-                              isSale
+                            className={`btn mx-1 ${isSale
                                 ? "btn-outline-secondary active"
                                 : "btn-outline-secondary"
-                            }`}
+                              }`}
                             onClick={handleSaleClick}
                           >
                             <b>Vente</b>
@@ -680,11 +681,10 @@ const UpdatePropertyPage = () => {
                           <button
                             style={{ borderRadius: "15px" }}
                             type="button"
-                            className={`btn mx-1 ${
-                              insideToilet
+                            className={`btn mx-1 ${insideToilet
                                 ? "btn-outline-secondary active"
                                 : "btn-outline-secondary"
-                            }`}
+                              }`}
                             onClick={() => {
                               setInsideToilet(true);
                             }}
@@ -694,11 +694,10 @@ const UpdatePropertyPage = () => {
                           <button
                             type="button"
                             style={{ borderRadius: "15px" }}
-                            className={`btn mx-1 ${
-                              !insideToilet
+                            className={`btn mx-1 ${!insideToilet
                                 ? "btn-outline-secondary active"
                                 : "btn-outline-secondary"
-                            }`}
+                              }`}
                             onClick={() => {
                               setInsideToilet(false);
                             }}
@@ -718,11 +717,10 @@ const UpdatePropertyPage = () => {
                           <button
                             style={{ borderRadius: "15px" }}
                             type="button"
-                            className={`btn mx-1 ${
-                              insideBathroom
+                            className={`btn mx-1 ${insideBathroom
                                 ? "btn-outline-secondary active"
                                 : "btn-outline-secondary"
-                            }`}
+                              }`}
                             onClick={() => {
                               setInsideBathroom(true);
                             }}
@@ -732,11 +730,10 @@ const UpdatePropertyPage = () => {
                           <button
                             type="button"
                             style={{ borderRadius: "15px" }}
-                            className={`btn mx-1 ${
-                              !insideBathroom
+                            className={`btn mx-1 ${!insideBathroom
                                 ? "btn-outline-secondary active"
                                 : "btn-outline-secondary"
-                            }`}
+                              }`}
                             onClick={() => {
                               setInsideBathroom(false);
                             }}
@@ -752,10 +749,10 @@ const UpdatePropertyPage = () => {
                       style={
                         noFeatureSet
                           ? {
-                              border: "2px solid red",
-                              borderRadius: "13px",
-                              marginBottom: "0px",
-                            }
+                            border: "2px solid red",
+                            borderRadius: "13px",
+                            marginBottom: "0px",
+                          }
                           : {}
                       }
                     >
@@ -768,7 +765,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<FaMotorcycle />}
                           state={motoAccess}
-                          label={"Accès pour moto disponible"}
+                          label={"Accès pour moto"}
                           onClickFunction={() => {
                             setMotoAccess(!motoAccess);
                             if (carAccess === true) setMotoAccess(true);
@@ -780,7 +777,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<FaCar />}
                           state={carAccess}
-                          label={"Accès pour voiture disponible"}
+                          label={"Accès pour voiture"}
                           onClickFunction={() => {
                             setCarAccess(!carAccess);
                             if (carAccess === false) setMotoAccess(true);
@@ -792,7 +789,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<FaWifi />}
                           state={wifiAvailability}
-                          label={"Disponibilité de la connexion Wi-Fi"}
+                          label={"De la connexion Wi-Fi"}
                           onClickFunction={() => {
                             setWifiAvailability(!wifiAvailability);
                             if (wifiAvailability === false)
@@ -804,7 +801,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<FaParking />}
                           state={parkingSpaceAvailable}
-                          label={"Espace de stationnement disponible"}
+                          label={"Espace de stationnement"}
                           onClickFunction={() => {
                             setParkingSpaceAvailable(!parkingSpaceAvailable);
                             if (parkingSpaceAvailable === false)
@@ -841,7 +838,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<GiWell />}
                           state={waterWellSupply}
-                          label={"Approvisionnement en puits d'eau"}
+                          label={"Un puits d'eau"}
                           onClickFunction={() => {
                             setWaterWellSupply(!waterWellSupply);
                             if (waterWellSupply === false)
@@ -924,10 +921,38 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<FaKitchenSet />}
                           state={kitchenFacilities}
-                          label={"Équipements de cuisine disponibles"}
+                          label={"Cuisine déjà équipée"}
                           onClickFunction={() => {
                             setKitchenFacilities(!kitchenFacilities);
                             if (kitchenFacilities === false)
+                              setNoFeatureSet(false);
+                          }}
+                        />
+                      </div>
+                      <div className="input-group">
+                        <GenerateCheckbox
+                          icon={<MdOutlineLiving />}
+                          state={furnishedProperty}
+                          label={"Logement Meublé"}
+                          onClickFunction={() => {
+                            setFurnishedProperty(
+                              !furnishedProperty
+                            );
+                            if (furnishedProperty === false)
+                              setNoFeatureSet(false);
+                          }}
+                        />
+                      </div>
+                      <div className="input-group">
+                        <GenerateCheckbox
+                          icon={<FaHotTub />}
+                          state={hotWaterAvailable}
+                          label={"Eau chaude disponible"}
+                          onClickFunction={() => {
+                            setHotWaterAvailable(
+                              !hotWaterAvailable
+                            );
+                            if (hotWaterAvailable === false)
                               setNoFeatureSet(false);
                           }}
                         />
@@ -950,7 +975,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox
                           icon={<GiSmokeBomb />}
                           state={smokeDetectorsAvailable}
-                          label={"Détecteurs de fumée disponibles"}
+                          label={"Détecteurs de fumée"}
                           onClickFunction={() => {
                             setSmokeDetectorsAvailable(
                               !smokeDetectorsAvailable
