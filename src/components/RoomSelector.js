@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./css/roomselector.css";
 
-const RoomSelector = () => {
-  const [selectedRoom, setSelectedRoom] = useState("1+");
-  const [customRoom, setCustomRoom] = useState("");
+const RoomSelector = ({ selectedRoom, setSelectedRoom, customRoom, setCustomRoom }) => {
 
   const handleRoomChange = (event) => {
     setSelectedRoom(event.target.value);
@@ -12,10 +10,16 @@ const RoomSelector = () => {
 
   const handleCustomRoomChange = (event) => {
     const value = event.target.value;
+    
+    // Check if the custom input is empty or 0 and reset to "1+"
+    if ((!value || value === "" || (Number(value) <= 0))) {
+      setSelectedRoom("1+");
+    }else{
+      setSelectedRoom(""); // Deselect predefined options
+    }
 
     // Allow only numbers and ensure the value is between 0 and 100
     if (/^\d*$/.test(value) && (value === "" || (Number(value) >= 0 && Number(value) <= 100))) {
-      setSelectedRoom(""); // Deselect predefined options
       setCustomRoom(value); // Update the state with the valid input
     }
   };
@@ -43,11 +47,10 @@ const RoomSelector = () => {
               checked={selectedRoom === value}
             />
             <label
-              className={`btn ${
-                selectedRoom === value
+              className={`btn ${selectedRoom === value
                   ? "btn-primary active"
                   : "btn-outline-dark"
-              }`}
+                }`}
               htmlFor={`room${index + 1}`}
             >
               <small>{value}</small>

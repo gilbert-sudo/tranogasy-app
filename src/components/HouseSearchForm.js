@@ -74,12 +74,6 @@ const HouseSearchForm = () => {
   );
   const [selectedCity, setSelectedCity] = useState(searchForm.selectedCity);
   const [gmapValue, setGmapValue] = useState(null);
-  const [rooms, setRooms] = useState(null);
-  const [bathrooms, setBathrooms] = useState(null);
-  const [area, setArea] = useState(null);
-  const [toilet, setToilet] = useState(null);
-  const [kitchen, setKitchen] = useState(null);
-  const [livingRoom, setLivingRoom] = useState(null);
   const [budgetMax, setBudgetMax] = useState(null);
   const [budgetMin, setBudgetMin] = useState(null);
   const [advancedOption, setAdvancedOption] = useState(false);
@@ -94,6 +88,8 @@ const HouseSearchForm = () => {
     properties ? getPriceAndRentRanges(properties) : null
   );
   const [rangeValue, setRangeValue] = useState([0, 0]);
+  const [selectedRoom, setSelectedRoom] = useState("1+");
+  const [customRoom, setCustomRoom] = useState("");
 
   const [byNumber, setByNumber] = useState(searchForm.byNumber);
   const [propertyNumber, setPropertyNumber] = useState(
@@ -271,12 +267,15 @@ const HouseSearchForm = () => {
       ).sort((a, b) => a.distance - b.distance);
     }
 
+    let numberOfRooms = (selectedRoom && selectedRoom.length > 0) ? selectedRoom.split("+")[0] : customRoom;
+
     const parameters = {
       submitType,
       selectedMapType,
       type,
       budgetMax,
       budgetMin,
+      numberOfRooms,
       fokontany,
       selectedDistrict,
       selectedCommune,
@@ -339,11 +338,14 @@ const HouseSearchForm = () => {
         ).sort((a, b) => a.distance - b.distance);
       }
 
+      let numberOfRooms = (selectedRoom && selectedRoom.length > 0) ? selectedRoom.split("+")[0] : customRoom;
+      
       const parameters = {
         selectedMapType,
         type,
         budgetMax,
         budgetMin,
+        numberOfRooms,
         fokontany,
         selectedDistrict,
         selectedCommune,
@@ -379,6 +381,8 @@ const HouseSearchForm = () => {
     isRent,
     budgetMax,
     budgetMin,
+    selectedRoom,
+    customRoom,
     selectedCity,
     selectedDistrict,
     selectedCommune,
@@ -983,10 +987,15 @@ const HouseSearchForm = () => {
                     <div className="form-group">
                       <label htmlFor="cardNumber">
                         <strong className="text-danger">*</strong>{" "}
-                        <strong>Sélectionnez le nombre de chambres :</strong>
+                        <strong>Sélectionnez le nombre de chambres :</strong> <br />
+                        <span className="hidden-xs">
+                          <small className="text-dark">
+                            <small className="text-danger ml-2">NB:</small> Living room et cuisine inclus
+                          </small>
+                        </span>
                       </label>
                       <div className="input-group w-100">
-                        <RoomSelector />
+                        <RoomSelector selectedRoom={selectedRoom} setSelectedRoom={setSelectedRoom} customRoom={customRoom} setCustomRoom={setCustomRoom} />
                       </div>
                     </div>
                     <div className="form-group">

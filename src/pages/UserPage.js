@@ -175,7 +175,7 @@ const UserPage = () => {
                       />
                     </label>
                   </div>
-                  {isDarkMode ? "Mode clair" : "Mode sombre"}
+                  {isDarkMode ? "Mode clair" : "Mode sombre"} (Beta)
                 </div>
               </li>
               <li className="">

@@ -482,6 +482,7 @@ export const useProperty = () => {
       type,
       budgetMax,
       budgetMin,
+      numberOfRooms,
       fokontany,
       selectedDistrict,
       selectedCommune,
@@ -568,6 +569,7 @@ export const useProperty = () => {
         // the advanced search mode
         results = results.filter(
           (property) =>
+            (numberOfRooms ? (property.rooms + property.livingRoom + property.kitchen) >= numberOfRooms : true) &&
             (carAccess ? property.features.carAccess === carAccess : true) &&
             (motoAccess ? property.features.motoAccess === motoAccess : true) &&
             (wifiAvailability
