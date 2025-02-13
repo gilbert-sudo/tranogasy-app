@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, Link } from "wouter";
+import { useLocation } from "wouter";
 import { getCenterOfBounds, getBounds, getDistance } from "geolib";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -99,13 +99,15 @@ function MyMap({ properties }) {
   const dispatch = useDispatch();
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
 
-  const [, setLocation] = useLocation("");
+  const [location, setLocation] = useLocation("");
 
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
 
   const handleMarkerClick = (property) => {
     setSelectedProperty(property);
+    console.log("Selected Property: ", property);
+    
     setIsDetailsVisible(true); // Show the sliding div
   };
 
@@ -248,7 +250,7 @@ function MyMap({ properties }) {
                   onClick={() =>
                     setLocation(
                       `/property-details/${selectedProperty._id
-                      }/${encodeURIComponent(JSON.stringify(selectedProperty))}`
+                      }/${encodeURIComponent(JSON.stringify(selectedProperty))}/${location.split("/")[1]}`
                     )
                   }
                   className="btn btn-success mt-1 w-100"
@@ -347,6 +349,7 @@ const Markers = ({ points, onMarkerClick }) => {
             <span
               className="font-weight-bold p-1 position-absolute"
               style={{
+                
                 backgroundColor: "#d2ff90",
                 left: "50%",
                 transform: "translate(-50%, -90%)",
@@ -357,8 +360,7 @@ const Markers = ({ points, onMarkerClick }) => {
                 border: "2px solid red",
                 borderRadius: "15px",
                 whiteSpace: "nowrap", // Prevent line breaks
-              }}
-              onClick={() => onMarkerClick(property)}
+              }}  
             >
               <small>Ar</small>{(property.rent || property.price) &&
                 formatPrice(property.rent || property.price)}

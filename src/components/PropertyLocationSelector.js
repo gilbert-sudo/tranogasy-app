@@ -109,7 +109,7 @@ function MyMap({ defaultPosition, setCoords }) {
                   border: "2px solid red",
                   height: "45px",
                   position: "absolute",
-                  left: "-35%",
+                  left: "13%",
                   top: "-55%",
                 }}
               />

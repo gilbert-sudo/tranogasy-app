@@ -9,8 +9,8 @@ const ExplorePage = () => {
 
   return (
     <div className="home">
-      <HomeSlider />
       <div className="site-section site-section-sm pb-0">
+      <HomeSlider />
         <div className="container" id="prodisplay">
           <PropertyFilter />
         </div>

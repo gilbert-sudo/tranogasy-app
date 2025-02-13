@@ -4,6 +4,7 @@ import { MdArrowBackIos, MdOutlineLiving } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { GiWell, GiCheckMark, GiCircle, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { HashLoader } from "react-spinners";
 import {
   FaCar,
   FaMotorcycle,
@@ -36,7 +37,7 @@ import PropertyLocationDisplayer from "../components/PropertyLocationDisplayer";
 //redux data
 
 const PropertyDetailsPage = () => {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
   const loader = useSelector((state) => state.loader);
@@ -101,7 +102,7 @@ const PropertyDetailsPage = () => {
     // Get the current URL
     const currentPath = window.location.href;
     const serverUrl = currentPath.split("/#/")[0]; // This will split at the "#/" and take the second part
-    const currentUrl = `${serverUrl}/#/property-details/${propertiesDetails._id}/preview`;
+    const currentUrl = `${serverUrl}/#/property-details/${propertiesDetails._id}/preview/${location.split("/")[1]}`;
 
     // Create a textarea element to hold the URL temporarily
     const textarea = document.createElement("textarea");
@@ -300,10 +301,10 @@ const PropertyDetailsPage = () => {
                         />
                       )}
                       {propertiesDetails.features.smokeDetectorsAvailable && (
-                         <GenerateFeaturebox
-                         icon={<GiSmokeBomb />}
-                         label={"Détecteurs de fumée"}
-                       />
+                        <GenerateFeaturebox
+                          icon={<GiSmokeBomb />}
+                          label={"Détecteurs de fumée"}
+                        />
                       )}
                       {propertiesDetails.features.furnishedProperty && (
                         <GenerateFeaturebox
@@ -360,7 +361,15 @@ const PropertyDetailsPage = () => {
       {(!(propertyData !== "preview" || propertyPreview) || (propertyData !== "preview" && !loader)) && (
         <div>
           <div className="logo-loader"></div>
-          <div className="page-loader"></div>
+          <div className="page-loader mt-2"></div>
+          <div className="spinner-loader mt-5">
+            <div className="d-flex justify-content-center align-items-center">
+              <small className="mr-2" style={{ color: "#c59d45" }}>
+                Chargement
+              </small>{" "}
+              <HashLoader color="#c59d45" size={20} />
+            </div>
+          </div>
         </div>
       )}
     </div>

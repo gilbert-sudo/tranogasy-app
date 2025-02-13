@@ -27,7 +27,8 @@ const HomeSlider = () => {
               <p className="align-self-end">
                 <a
                   href="#"
-                  className="btn btn-white btn-outline-white rounded-0 btn-5"
+                  className="btn btn-white btn-outline-white btn-5"
+                  style={{ borderRadius: "30px" }}
                 >
                   <BsTelephone/> Nous contacter
                 </a>
@@ -52,7 +53,8 @@ const HomeSlider = () => {
               <p className="align-self-end">
                 <a
                   href="#"
-                  className="btn btn-white btn-outline-white rounded-0 btn-5"
+                  className="btn btn-white btn-outline-white btn-5"
+                  style={{ borderRadius: "30px" }}
                 >
                   <BsTelephone/> Nous contacter
                 </a>
