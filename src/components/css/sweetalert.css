@@ -1,3 +1,7 @@
+.my-title-class {
+  font-size: 14px; /* Change font size */
+}
+
 /* Custom styles for smaller SweetAlert2 dialog and buttons */
 .smaller-sweet-alert {
   font-size: 14px;

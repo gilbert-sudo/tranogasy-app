@@ -15,6 +15,7 @@ import ExplorePage from "./pages/ExplorePage";
 import SearchPage from "./pages/SearchPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import TranogasyMap from "./pages/TranogasyMap";
+import PropertyLandsAreaSelector from "./components/PropertyLandsAreaSelector";
 import MyListingPage from "./pages/MyListingPage";
 import MyHouseListingPage from "./pages/MyHouseListingPage";
 import CreateListing from "./pages/CreateListing";
@@ -78,6 +79,7 @@ const routes = [
   { path: "/explore", component: ExplorePage, private: false },
   { path: "/search", component: SearchPage, private: false },
   { path: "/tranogasyMap", component: TranogasyMap, private: false },
+  { path: "/create-land-listing", component: PropertyLandsAreaSelector, private: false },
   { path: "/searchResult", component: SearchResultPage, private: false },
   { path: "/favorite", component: FavoritePage, private: false },
   { path: "/mylisting", component: MyListingPage, private: false },

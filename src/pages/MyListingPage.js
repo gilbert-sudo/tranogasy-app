@@ -18,7 +18,7 @@ const MyListingPage = () => {
   const pagination = useSelector((state) => state.pagination);
   const user = useSelector((state) => state.user);
   const { loadUsersProperties } = useLoader();
-  const { featureUnderConstructionPopup } = usePopup();
+  const { featureUnderConstructionPopup, listingOptionPopup } = usePopup();
   const { noListingImg } = useImage();
   const dispatch = useDispatch();
   const [oneTimeTask, setOneTimeTask] = useState(null);
@@ -86,6 +86,36 @@ const MyListingPage = () => {
                     </div>
                   </div>
                   <div className="row">
+                    {/* <div className="d-flex justify-content-center w-100">
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setLocation("/myhouselisting")}
+                        className="d-flex align-items-center justify-content-start ad-category-card m-2 bg-white"
+                      >
+                        <div className="d-flex align-items-center flex-column ad-category-card-body my-3">
+                          <h1>
+                            <FcHome />
+                          </h1>
+                          <div className="">
+                            <h6 className="font-weight-bold text-dark mt-1">Maison</h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setLocation("/myhouselisting")}
+                        className="d-flex align-items-center justify-content-start ad-category-card m-2 bg-white"
+                      >
+                        <div className="d-flex align-items-center flex-column ad-category-card-body my-3">
+                          <h1>
+                          <FcLandscape />
+                          </h1>
+                          <div className="">
+                            <h6 className="font-weight-bold text-dark mt-1">Terrain</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div> */}
                     <div className="d-flex justify-content-center w-100">
                       <div
                         style={{ cursor: "pointer" }}
@@ -132,13 +162,13 @@ const MyListingPage = () => {
                 </>
               )}
               <div className="d-flex justify-content-center w-100">
-                <Link
-                  to="/create-listing"
+                <button
                   className="btn btn-success add-ad-btn m-4"
+                  onClick={() => listingOptionPopup()}
                   type="button"
                 >
                   <MdAdd /> Créer une annonce
-                </Link>
+                </button>
               </div>
             </div>
           </div>

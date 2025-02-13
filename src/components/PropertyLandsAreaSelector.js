@@ -80,7 +80,7 @@ function MyMap() {
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-      <div style={{ height: "60vh", width: "100%" }}>
+      <div className="mt-5" style={{ height: "60vh", width: "100%" }}>
         <Map
           zoom={15}
           minZoom={6}
