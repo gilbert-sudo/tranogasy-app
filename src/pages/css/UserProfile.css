@@ -1,0 +1,58 @@
+/* Top section with smooth curved cut-out */
+.top-section {
+  background: #38474e;
+  height: 170px;
+  position: relative;
+  clip-path: ellipse(90% 70% at 50% 30%);
+}
+
+.user-profile-page-picture {
+  display: block;
+  object-fit: cover;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid #fff;
+  outline: 10px solid #38474e;
+  border-radius: 50%;
+  height: 160px;
+  width: 160px;
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.profile-btn {
+    background-color: #38474e;
+    color: white;
+    border-radius: 15px;
+    padding: 12px 24px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .profile-btn:hover {
+    background-color: #2c3e50;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .profile-btn:active {
+    background-color: #222d32;
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .profile-btn:focus {
+    outline: 2px solid #1f2a30;
+    outline-offset: 2px;
+  }
+  

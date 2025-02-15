@@ -109,7 +109,7 @@ const UpdatePropertyPage = () => {
     oldPropertyDetails.features.securitySystem
   );
   const [waterWellSupply, setWaterWellSupply] = useState(
-    oldPropertyDetails.features.waterPumpSupply
+    oldPropertyDetails.features.waterWellSupply
   );
   const [surroundedByWalls, setSurroundedByWalls] = useState(
     oldPropertyDetails.features.surroundedByWalls

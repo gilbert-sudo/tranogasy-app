@@ -27,6 +27,7 @@ import FavoritePage from "./pages/FavoritePage";
 import NotificationPage from "./pages/NotificationPage";
 import SignUpPage from "./pages/SignUpPage";
 import UserPage from "./pages/UserPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import EditUsersProfilePage from "./pages/EditUsersProfilePage";
 import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import SignUpVerificationPage from "./pages/SignUpVerificationPage";
@@ -91,6 +92,7 @@ const routes = [
   { path: "/create-listing", component: CreateListing, private: false },
   { path: "/update-property/:propertyData", component: UpdatePropertyPage, private: false },
   { path: "/user", component: UserPage, private: false },
+  { path: "/userProfile", component: UserProfilePage, private: false },
   { path: "/editProfile", component: EditUsersProfilePage, private: false },
   { path: "/signupverification", component: SignUpVerificationPage, private: false },
   { path: "/signup", component: SignUpPage, private: false },

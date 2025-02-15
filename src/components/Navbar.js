@@ -39,7 +39,8 @@ const ActiveLink = (
   href2 = "",
   href3 = "",
   href4 = "",
-  href5 = ""
+  href5 = "",
+  href6 = ""
 ) => {
   const [isActive] = useRoute(href);
   const [isActive1] = useRoute(href1);
@@ -47,8 +48,9 @@ const ActiveLink = (
   const [isActive3] = useRoute(href3);
   const [isActive4] = useRoute(href4);
   const [isActive5] = useRoute(href5);
+  const [isActive6] = useRoute(href6);
   const LinkStyle =
-    isActive || isActive1 || isActive2 || isActive3 || isActive4 || isActive5
+    isActive || isActive1 || isActive2 || isActive3 || isActive4 || isActive5 || isActive6
       ? { color: "#ec1c24" }
       : {};
   return LinkStyle;
@@ -228,7 +230,8 @@ const Navbar = () => {
                       "/user",
                       "/signupverification",
                       "/password-recovery",
-                      "/password-recovery/:phoneNumber"
+                      "/password-recovery/:phoneNumber",
+                      "/userProfile"
                     )}
                   >
                     <BsPersonGear className="nav__icon" />
@@ -302,7 +305,7 @@ const Navbar = () => {
                 </button>
               )}
               {user && !notificationStatus.bell && (
-                <Link to="/user">
+                <Link to="/userProfile">
                   <img
                     className="ml-1"
                     src={user?.avatar ? user.avatar : userProfile}
