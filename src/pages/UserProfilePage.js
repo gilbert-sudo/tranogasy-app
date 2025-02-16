@@ -5,7 +5,6 @@ import { useLoader } from "../hooks/useLoader";
 import { useUser } from "../hooks/useUser";
 import { useImage } from "../hooks/useImage";
 import { useEffect, useState } from "react";
-import NotLogedIn from "../components/NotLogedIn";
 
 //import css
 import "./css/UserProfile.css";
@@ -20,7 +19,7 @@ import { BiSolidLike } from "react-icons/bi";
 const UserProfilePage = () => {
     // redux
     const { getUserById } = useUser();
-    const { loadLikes } = useLoader();
+    const {loadSpesificUsersProperties } = useLoader();
     const likedPropertiesState = useSelector((state) => state.likedProperties);
     const user = useSelector((state) => state.user);
 
@@ -36,24 +35,21 @@ const UserProfilePage = () => {
     const [match, params] = useRoute("/userProfile/:userId");
     const userId = match ? params.userId : "";
     const [userData, setUserData] = useState(null);
+    const [userProperties, setUserProperties] = useState(null);
 
     useEffect(() => {
         const pageLoader = async () => {
             if (userId) {
                 (userId === user._id) ? setUserData(user) : setUserData(await getUserById(userId));
             }
-            if (user) {
-                if (!likedPropertiesState) {
-                    const userId = user._id;
-                    loadLikes(userId);
+            if (userData) {
+                if (!userProperties) {
+                    setUserProperties(await loadSpesificUsersProperties(userData._id));
                 }
-            }
-            if (likedPropertiesState) {
-                console.log(likedPropertiesState);
             }
         };
         pageLoader();
-    }, [user, likedPropertiesState]);
+    }, [user, userProperties, userData]);
 
     return (
         <div className="myfavorite">
@@ -116,13 +112,13 @@ const UserProfilePage = () => {
                                 </>
                             ) : (
                                 <div className="row">
-                                    {likedPropertiesState &&
-                                        likedPropertiesState.map(
-                                            (likedProperty) =>
-                                                likedProperty && (
+                                    {userProperties &&
+                                        userProperties.map(
+                                            (property) =>
+                                                property && (
                                                     <FavoritePropertyDetails
-                                                        key={likedProperty._id}
-                                                        property={likedProperty}
+                                                        key={property._id}
+                                                        property={property}
                                                     />
                                                 )
                                         )}

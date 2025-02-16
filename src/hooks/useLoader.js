@@ -1,3 +1,4 @@
+// Desc: This hook is used to load data from the server and dispatch it to the redux store
 import { useLocation } from "wouter";
 import { useDispatch } from "react-redux";
 import {
@@ -182,6 +183,25 @@ export const useLoader = () => {
       setLocation("/nosignal");
     }
   };
+
+  const loadSpesificUsersProperties = async (userId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties/user/${userId}`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "aplication/json",
+        },
+      });
+      const json = await response.json();
+
+      if (response.ok) {
+        return json;
+      }
+    } catch (error) {
+      console.log(error);
+      setLocation("/nosignal");
+    }
+  };
   
   return {
     loadLikes,
@@ -192,5 +212,6 @@ export const useLoader = () => {
     loadPlans,
     loadTopProperties,
     loadUsersProperties,
+    loadSpesificUsersProperties
   };
 };
