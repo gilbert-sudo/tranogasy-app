@@ -118,7 +118,7 @@ const UserPage = () => {
               </div>
             </div>
           </div>
-          <div className="media p-2">
+          <div className="media p-2" onClick={() => setLocation(`/userProfile/${user._id}`)}>
             <img
               alt=""
               src={user?.avatar ? user.avatar : userProfile}

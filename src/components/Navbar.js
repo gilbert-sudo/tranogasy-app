@@ -231,7 +231,7 @@ const Navbar = () => {
                       "/signupverification",
                       "/password-recovery",
                       "/password-recovery/:phoneNumber",
-                      "/userProfile"
+                      "/userProfile/:userId"
                     )}
                   >
                     <BsPersonGear className="nav__icon" />
@@ -305,7 +305,7 @@ const Navbar = () => {
                 </button>
               )}
               {user && !notificationStatus.bell && (
-                <Link to="/userProfile">
+                <Link to={`/userProfile/${user._id}`}>
                   <img
                     className="ml-1"
                     src={user?.avatar ? user.avatar : userProfile}

@@ -18,7 +18,7 @@ export const useUser = () => {
   const updateUser = async (params) => {
     setIsLoading(true);
     const { userId } = params;
-    
+
     const newAvatar = params?.avatar;
     const oldAvatar = user?.avatar;
 
@@ -65,8 +65,28 @@ export const useUser = () => {
     }
   };
 
+  const getUserById = async (userId) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "aplication/json",
+        },
+      });
+      const json = await response.json();
+
+      if (response.ok) {
+        return json.user;
+      }
+    } catch (error) {
+      console.log(error);
+      window.history.back();
+    }
+  };
+
   return {
     updateUser,
+    getUserById,
     isLoading,
     setIsLoading,
     error,

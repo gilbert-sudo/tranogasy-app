@@ -92,7 +92,7 @@ const routes = [
   { path: "/create-listing", component: CreateListing, private: false },
   { path: "/update-property/:propertyData", component: UpdatePropertyPage, private: false },
   { path: "/user", component: UserPage, private: false },
-  { path: "/userProfile", component: UserProfilePage, private: false },
+  { path: "/userProfile/:userId", component: UserProfilePage, private: false },
   { path: "/editProfile", component: EditUsersProfilePage, private: false },
   { path: "/signupverification", component: SignUpVerificationPage, private: false },
   { path: "/signup", component: SignUpPage, private: false },

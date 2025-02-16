@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { useLocation } from "wouter";
 import { FaPhoneAlt } from "react-icons/fa";
 import { ImLocation } from "react-icons/im";
 import "./css/sweetalert.css";
@@ -6,6 +7,8 @@ import "./css/sweetalert.css";
 import userProfile from "../img/user-avatar.png";
 
 const CarouselDetails = ({ property, handleShowContact }) => {
+
+  const [, setLocation] = useLocation("");
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
 
@@ -28,7 +31,7 @@ const CarouselDetails = ({ property, handleShowContact }) => {
           className="container"
           style={{ backgroundColor: `rgb(0, 0, 0, 0.5)` }}
         >
-          <div className="position-absolute media mt-5">
+          <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)}>
             <img
               alt=""
               src={property.owner?.avatar ? property.owner.avatar : userProfile}
@@ -87,8 +90,8 @@ const CarouselDetails = ({ property, handleShowContact }) => {
                       ? property.owner._id === user._id
                         ? property.phone1
                         : !user || !timer || user.leftTime
-                        ? "Voir contact"
-                        : property.phone1
+                          ? "Voir contact"
+                          : property.phone1
                       : "Voir contact"}
                   </button>
                 </p>
