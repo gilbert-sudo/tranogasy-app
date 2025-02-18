@@ -1,8 +1,11 @@
 import { Link, useLocation } from "wouter";
-import { BsTrashFill } from "react-icons/bs";
+import { BsTrashFill, BsHeartFill } from "react-icons/bs";
+import { FaHeart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useLike } from "../hooks/useLike";
+import { useLogin } from "../hooks/useLogin";
 import { useEffect, useState } from "react";
+import useSound from "use-sound";
 
 function FavoritePropertyDetails({ property }) {
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
@@ -12,13 +15,28 @@ function FavoritePropertyDetails({ property }) {
     timeZone: "Indian/Antananarivo",
   }).format(new Date(property.created_at));
 
-  const { disLike } = useLike();
+  const { like, disLike } = useLike();
+  const { notLogedPopUp } = useLogin();
   const [location] = useLocation();
   const [isliked, setIsliked] = useState(false);
+  const [play] = useSound("sounds/Like Sound Effect.mp3");
   //redux
   const user = useSelector((state) => state.user);
 
   const likedProperties = useSelector((state) => state.likedProperties);
+
+  //click the like button
+  const handleLike = async (e) => {
+    e.preventDefault();
+    if (user) {
+      play();
+      setIsliked(true);
+      like(property);
+    }
+    if (!user) {
+      notLogedPopUp();
+    }
+  };
 
   //click the disLike button
   const handleDisLike = async (e) => {
@@ -104,6 +122,24 @@ function FavoritePropertyDetails({ property }) {
               <BsTrashFill className="text-white mb-1" />
             </div>
           )}
+          {location.startsWith("/userProfile") ?
+            (isliked ? (
+              <div
+                className="property-favorite"
+                style={{ background: "#f23a2e", zIndex: "1" }}
+                onClick={handleDisLike}
+              >
+                <BsHeartFill className="text-white" />
+              </div>
+            ) : (
+              <div
+                className="property-favorite"
+                style={{ zIndex: "2" }}
+                onClick={handleLike}
+              >
+                <FaHeart />
+              </div>
+            )) : null}
         </div>
       </div>
     </div>

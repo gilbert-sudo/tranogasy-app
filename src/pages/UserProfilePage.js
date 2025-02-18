@@ -14,12 +14,13 @@ import userProfile from "../img/user-avatar.png";
 
 //import icons
 import { ImLocation } from "react-icons/im";
+import { MdArrowBackIos } from "react-icons/md";
 import { BiSolidLike } from "react-icons/bi";
 
 const UserProfilePage = () => {
     // redux
     const { getUserById } = useUser();
-    const {loadSpesificUsersProperties } = useLoader();
+    const { loadSpesificUsersProperties } = useLoader();
     const likedPropertiesState = useSelector((state) => state.likedProperties);
     const user = useSelector((state) => state.user);
 
@@ -43,9 +44,7 @@ const UserProfilePage = () => {
                 (userId === user._id) ? setUserData(user) : setUserData(await getUserById(userId));
             }
             if (userData) {
-                if (!userProperties) {
-                    setUserProperties(await loadSpesificUsersProperties(userData._id));
-                }
+                setUserProperties(await loadSpesificUsersProperties(userData._id));
             }
         };
         pageLoader();
@@ -53,6 +52,22 @@ const UserProfilePage = () => {
 
     return (
         <div className="myfavorite">
+            <div className="fixed-top mt-5" style={{ width: "max-content" }}>
+                <button type="button"
+                    style={{ border: "none", background: "none" }}
+                    onClick={() => window.history.back()}
+                >
+                    <h6
+                        style={{ cursor: "pointer", minWidth: "max-content" }}
+                        className="font-weight-light m-2 go-back-link p-2"
+                    >
+                        <MdArrowBackIos
+                            style={{ fontSize: "15px", marginBottom: "3px" }}
+                        />{" "}
+                        Retour
+                    </h6>
+                </button>
+            </div>
             {user && userData ? (
                 <div className="myfavorite pt-3">
                     <div className="site-section site-section-sm bg-light pt-3">
@@ -72,7 +87,7 @@ const UserProfilePage = () => {
                         <div className="d-flex justify-content-center my-2">
                             <div className="d-flex justify-content-beetween mx-5">
                                 <div className="d-flex flex-column justify-content-center text-dark">
-                                    <h5 className="text-center text-danger">46</h5>
+                                    <h5 className="text-center text-danger">{userProperties ? userProperties.length : "00"}</h5>
                                     <p className="text-center font-weight-bold">Annonces</p>
                                 </div>
                                 <div className="d-flex flex-column justify-content-center text-dark mx-5">
