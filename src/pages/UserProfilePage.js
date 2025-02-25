@@ -1,5 +1,6 @@
 import { useRoute } from "wouter";
 import FavoritePropertyDetails from "../components/FavoritePropertyDetails";
+import FavoritePropertyDetailsSkeleton from "../components/FavoritePropertyDetailsSkeleton";
 import { useSelector } from "react-redux";
 import { useLoader } from "../hooks/useLoader";
 import { useUser } from "../hooks/useUser";
@@ -137,6 +138,13 @@ const UserProfilePage = () => {
                                                     />
                                                 )
                                         )}
+                                </div>
+                            )}
+                            {!userProperties && (
+                                <div className="row">
+                                {[...Array(6)].map((_, index) => (
+                                    <FavoritePropertyDetailsSkeleton key={index} />
+                                ))}
                                 </div>
                             )}
                         </div>

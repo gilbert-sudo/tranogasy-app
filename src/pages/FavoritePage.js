@@ -1,4 +1,5 @@
 import FavoritePropertyDetails from "../components/FavoritePropertyDetails";
+import FavoritePropertyDetailsSkeleton from "../components/FavoritePropertyDetailsSkeleton";
 import { useSelector } from "react-redux";
 import { useLoader } from "../hooks/useLoader";
 import { useImage } from "../hooks/useImage";
@@ -74,6 +75,13 @@ const FavoritePage = () => {
                     )}
                 </div>
               )}
+               {!likedPropertiesState && (
+                    <div className="row">
+                    {[...Array(6)].map((_, index) => (
+                        <FavoritePropertyDetailsSkeleton key={index} />
+                    ))}
+                    </div>
+                )}
             </div>
           </div>
         </div>
