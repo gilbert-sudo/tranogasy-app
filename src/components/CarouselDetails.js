@@ -1,14 +1,23 @@
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "wouter";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaHeart, FaPhoneAlt } from "react-icons/fa";
+import { BsHeartFill } from "react-icons/bs";
 import { ImLocation } from "react-icons/im";
+import { useLike } from "../hooks/useLike";
+import { useLogin } from "../hooks/useLogin";
 import "./css/sweetalert.css";
 //import user photo profil
 import userProfile from "../img/user-avatar.png";
+import useSound from "use-sound";
 
 const CarouselDetails = ({ property, handleShowContact }) => {
 
   const [, setLocation] = useLocation("");
+  const { like, disLike } = useLike();
+  const { notLogedPopUp } = useLogin();
+  const [play] = useSound("sounds/Like Sound Effect.mp3");
+  const [isliked, setIsliked] = useState(false);
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
 
@@ -19,10 +28,41 @@ const CarouselDetails = ({ property, handleShowContact }) => {
     timeZone: "Indian/Antananarivo",
   }).format(new Date(property.created_at));
 
+   //click the like button
+   const handleLike = async (e) => {
+    e.preventDefault();
+    if (user) {
+      play();
+      setIsliked(true);
+      like(property);
+    }
+    if (!user) {
+      notLogedPopUp();
+    }
+  };
+  //click the disLike button
+  const handleDisLike = async (e) => {
+    e.preventDefault();
+    setIsliked(false);
+    disLike(property);
+  };
+
+   //check the like button state
+   useEffect(() => {
+    function loadingPage() {
+      if (user && user?.favorites?.includes(property._id)) {
+        setIsliked(true);
+      } else {
+        setIsliked(false);
+      }
+    }
+    loadingPage();
+  }, []);
+
   return (
     <div>
       <div
-        className="site-blocks-cover inner-page-cover overlay"
+        className="site-blocks-cover inner-page-cover overlay pb-4"
         style={{ backgroundImage: `url(${property.images[0].src})` }}
         data-aos="fade"
         data-stellar-background-ratio="0.5"
@@ -96,6 +136,28 @@ const CarouselDetails = ({ property, handleShowContact }) => {
                   </button>
                 </p>
               </div>
+            </div>
+          </div>
+
+          <div className="position-relative d-flex items-align-end justify-content-end text-danger">
+            <div style={{ marginBottom: "20px", bottom: "-100%" }} className="position-absolute ">
+                  {isliked && isliked ? (
+                    <div
+                      className="d-flex justify-content-center align-items-center property-favoriten"
+                      style={{ background: "#f23a2e", zIndex: "1" , height: "50px", width: "50px", borderRadius: "50%" }}
+                      onClick={handleDisLike}
+                    >
+                      <BsHeartFill className="text-white" />
+                    </div>
+                  ) : (
+                    <div
+                      className="d-flex justify-content-center align-items-center property-favoriten"
+                      style={{ background: "white", color: "black", zIndex: "2", height: "50px", width: "50px", borderRadius: "50%" }}
+                      onClick={handleLike}
+                    >
+                      <FaHeart />
+                    </div>
+                  )}
             </div>
           </div>
         </div>

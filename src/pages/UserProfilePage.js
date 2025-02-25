@@ -6,6 +6,7 @@ import { useLoader } from "../hooks/useLoader";
 import { useUser } from "../hooks/useUser";
 import { useImage } from "../hooks/useImage";
 import { useEffect, useState } from "react";
+import { PiSmileySadThin } from "react-icons/pi";
 
 //import css
 import "./css/UserProfile.css";
@@ -22,11 +23,9 @@ const UserProfilePage = () => {
     // redux
     const { getUserById } = useUser();
     const { loadSpesificUsersProperties } = useLoader();
-    const likedPropertiesState = useSelector((state) => state.likedProperties);
     const user = useSelector((state) => state.user);
 
     const [oneTimeTask, setOneTimeTask] = useState(null);
-    const { noFavoriteImg } = useImage();
 
     if (oneTimeTask === null) {
         // scroll to top of the page
@@ -41,10 +40,10 @@ const UserProfilePage = () => {
 
     useEffect(() => {
         const pageLoader = async () => {
-            if (userId) {
-                (userId === user._id) ? setUserData(user) : setUserData(await getUserById(userId));
+            if (!userData && userId) {
+                (user && (userId === user._id)) ? setUserData(user) : setUserData(await getUserById(userId));
             }
-            if (userData) {
+            if (userData && !userProperties) {
                 setUserProperties(await loadSpesificUsersProperties(userData._id));
             }
         };
@@ -69,7 +68,7 @@ const UserProfilePage = () => {
                     </h6>
                 </button>
             </div>
-            {user && userData ? (
+            {userData ? (
                 <div className="myfavorite pt-3">
                     <div className="site-section site-section-sm bg-light pt-3">
                         <div className="top-section"></div>
@@ -108,21 +107,17 @@ const UserProfilePage = () => {
                             </div>
                         </div>
                         <div className="custom-container" style={{ paddingBottom: "80px", minHeight: "unset !important" }}>
-                            {likedPropertiesState && likedPropertiesState.length === 0 ? (
+                            {userProperties && userProperties.length === 0 ? (
                                 <>
-                                    <div className="no-booking d-flex justify-content-center align-items-center">
-                                        <img
-                                            className="img-fluid"
-                                            style={{ maxHeight: "55vh", borderRadius: "15px" }}
-                                            src={noFavoriteImg()}
-                                            alt="Pas de favoris"
+                                    <div className="no-booking d-flex justify-content-center align-items-center mt-5">
+                                        <PiSmileySadThin
+                                            style={{ fontSize: "100px" }}
                                         />
                                     </div>
                                     <center>
                                         {" "}
                                         <p style={{ fontWeight: "400" }} className="m-2">
-                                            Répertorier les propriétés qui vous intéressent en
-                                            cliquant sur l'icône en forme de cœur.
+                                          Aucune annonce trouvée.
                                         </p>
                                     </center>
                                 </>
