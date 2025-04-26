@@ -507,13 +507,10 @@ const HouseSearchForm = () => {
                         </strong>
                       </span>
                     </label>
-                    <div
-                      style={{ backgroundColor: "#e9ecef" }}
-                      className="d-flex align-item-center justify-content-center border rounded p-2"
-                    >
-                      <div className="w-50">
+                      <div className="w-100">
                         <input
                           type="number"
+                          style={{width: "100%"}}
                           placeholder="N°"
                           name="propertyNumber"
                           className="form-control"
@@ -523,7 +520,6 @@ const HouseSearchForm = () => {
                           autoFocus
                         />
                       </div>
-                    </div>
                   </div>
                 )}
                 {!byNumber && (

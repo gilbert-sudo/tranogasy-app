@@ -19,7 +19,7 @@ import { usePopup } from "../hooks/usePopup";
 import userProfile from "../img/user-avatar.png";
 
 const UserPage = () => {
-  const [ , setLocation] = useLocation("");
+  const [, setLocation] = useLocation("");
   const { logout } = useLogout();
   const { unpaidBillPopup, featureUnderConstructionPopup } = usePopup();
   const { formatMillisecondToDisplay } = useTimer();
@@ -29,10 +29,10 @@ const UserPage = () => {
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer);
   console.log(!timer.timer || !user.leftTime);
-  
+
   const plans = useSelector((state) => state.plans);
   const payments = useSelector((state) => state.payments);
-  
+
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
 
   const [planName, setPlanName] = useState("inconue");
@@ -108,13 +108,15 @@ const UserPage = () => {
                     )}
                   </span>
                 </div>
-                <button
-                  onClick={handleRechargeClick}
-                  type="button"
-                  className="btn bbtn-secondary btn-secondary"
-                >
-                  <small>Recharger</small> <FaDonate className="mb-1" />
-                </button>
+                {user && (timer.display === "" || timer.timer === null) && !user.leftTime ? (
+                  <button
+                    onClick={handleRechargeClick}
+                    type="button"
+                    className="btn bbtn-secondary btn-secondary"
+                  >
+                    <small>Recharger</small> <FaDonate className="mb-1" />
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
@@ -135,9 +137,8 @@ const UserPage = () => {
             <div className="media-body">
               <div className="d-flex flex-row justify-content-between">
                 <h6
-                  className={`ml-1 ${
-                    user && user.username.length > 25 ? "mt-0" : "mt-2"
-                  } mb-0`}
+                  className={`ml-1 ${user && user.username.length > 25 ? "mt-0" : "mt-2"
+                    } mb-0`}
                 >
                   {user && user.username}
                 </h6>

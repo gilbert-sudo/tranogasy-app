@@ -75,8 +75,9 @@ export const usePopup = () => {
         });
   
         document.getElementById("landOption").addEventListener("click", () => {
-          setLocation("/create-land-listing");
+          // setLocation("/create-land-listing");
           Swal.close(); // Close the popup
+          featureUnderConstructionPopup();
         });
       }
     });
