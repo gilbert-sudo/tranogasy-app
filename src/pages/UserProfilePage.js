@@ -4,7 +4,7 @@ import FavoritePropertyDetailsSkeleton from "../components/FavoritePropertyDetai
 import { useSelector } from "react-redux";
 import { useLoader } from "../hooks/useLoader";
 import { useUser } from "../hooks/useUser";
-import { useImage } from "../hooks/useImage";
+import { useLogin } from "../hooks/useLogin";
 import { useEffect, useState } from "react";
 import { PiSmileySadThin } from "react-icons/pi";
 
@@ -15,13 +15,14 @@ import "./css/UserProfile.css";
 import userProfile from "../img/user-avatar.png";
 
 //import icons
-import { ImLocation } from "react-icons/im";
+import { ImLocation, ImPhone } from "react-icons/im";
 import { MdArrowBackIos } from "react-icons/md";
-import { BiSolidLike } from "react-icons/bi";
+import { BiSolidLike, BiCheck } from "react-icons/bi";
 
 const UserProfilePage = () => {
     // redux
     const { getUserById } = useUser();
+    const { notLogedPopUp } = useLogin();
     const { loadSpesificUsersProperties } = useLoader();
     const user = useSelector((state) => state.user);
 
@@ -36,6 +37,7 @@ const UserProfilePage = () => {
     const [match, params] = useRoute("/userProfile/:userId");
     const userId = match ? params.userId : "";
     const [userData, setUserData] = useState(null);
+    const [isLiked, setIsLiked] = useState(false);
     const [userProperties, setUserProperties] = useState(null);
 
     useEffect(() => {
@@ -81,28 +83,34 @@ const UserProfilePage = () => {
                         </div>
                         <div className="text-dark d-flex flex-column justify-content-center description pt-4">
                             <h6 className="text-center">{userData.username}</h6>
+                            <p className="text-center mb-1"> {userData.bio}</p>
                             <p className="text-center mb-1"><ImLocation className="text-danger" /> Soanierana  Antananarivo</p>
-                            <p className="text-center mb-1">{userData.phone}</p>
+                            <p className="text-center mb-1"><ImPhone className="text-success mb-1" /> {userData.phone}</p>
                         </div>
                         <div className="d-flex justify-content-center my-2">
                             <div className="d-flex justify-content-beetween mx-5">
                                 <div className="d-flex flex-column justify-content-center text-dark">
                                     <h5 className="text-center text-danger">{userProperties ? userProperties.length : "00"}</h5>
-                                    <p className="text-center font-weight-bold">Annonces</p>
+                                    <p className="text-center font-weight-bold">Maison</p>
                                 </div>
                                 <div className="d-flex flex-column justify-content-center text-dark mx-5">
-                                    <h5 className="text-center text-danger">118</h5>
-                                    <p className="text-center font-weight-bold">Vues</p>
+                                    <h5 className="text-center text-danger">0</h5>
+                                    <p className="text-center font-weight-bold">Terrain</p>
                                 </div>
                                 <div className="d-flex flex-column justify-content-center text-dark">
-                                    <h5 className="text-center text-danger">456</h5>
-                                    <p className="text-center font-weight-bold">likes</p>
+                                    <h5 className="text-center text-danger">56</h5>
+                                    <p className="text-center font-weight-bold">J'aime</p>
                                 </div>
                             </div>
                         </div>
                         <div className="d-flex  justify-content-center mb-4">
                             <div className="d-flex justify-content-beetween mx-5">
-                                <button style={{ borderRadius: "15px" }} className="profile-btn btn mx-2" type="button"><BiSolidLike className="mb-1" /> J'aime</button>
+                                {user && isLiked ? (
+                                    <button style={{ borderRadius: "15px" }} className="profile-btn btn mx-2" type="button" onClick={() => setIsLiked(false)}><BiCheck className="mb-1 text-success" /> J'aime déjà</button>
+                                ) : (
+                                    <button style={{ borderRadius: "15px" }} className="profile-btn btn mx-2" type="button" onClick={() => {(user) ? setIsLiked(true) : notLogedPopUp()}} ><BiSolidLike className="mb-1" /> J'aime</button>
+                                )}
+
                                 <button style={{ borderRadius: "15px" }} className="profile-btn btn mx-2" type="button">Contacter</button>
                             </div>
                         </div>
@@ -117,7 +125,7 @@ const UserProfilePage = () => {
                                     <center>
                                         {" "}
                                         <p style={{ fontWeight: "400" }} className="m-2">
-                                          Aucune annonce trouvée.
+                                            Aucune annonce trouvée.
                                         </p>
                                     </center>
                                 </>
@@ -137,9 +145,9 @@ const UserProfilePage = () => {
                             )}
                             {!userProperties && (
                                 <div className="row">
-                                {[...Array(6)].map((_, index) => (
-                                    <FavoritePropertyDetailsSkeleton key={index} />
-                                ))}
+                                    {[...Array(6)].map((_, index) => (
+                                        <FavoritePropertyDetailsSkeleton key={index} />
+                                    ))}
                                 </div>
                             )}
                         </div>

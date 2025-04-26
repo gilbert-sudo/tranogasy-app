@@ -323,7 +323,7 @@ function App() {
 
     // Track initial load
     trackHistory();
-
+    
     // You can also track history on route changes
     window.addEventListener("pushState", trackHistory);
     window.addEventListener("replaceState", trackHistory);

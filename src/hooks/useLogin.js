@@ -91,7 +91,7 @@ export const useLogin = () => {
             setLocation("/loader");
             console.log(location);
             setTimeout(() => {
-              console.log("steps needed: ", historyStack);
+              console.log("steps needed: ", -(historyStack.steps + 2));
               window.history.go(-(historyStack.steps + 2));
             }, 500);
           }
