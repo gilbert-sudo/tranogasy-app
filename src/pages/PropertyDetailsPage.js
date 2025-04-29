@@ -121,6 +121,28 @@ const PropertyDetailsPage = () => {
     alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
   };
 
+  const handleShare = () => {
+     // Get the current URL
+     const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${propertiesDetails._id}`;
+     // Build the full title
+     const metaTitle = `${propertiesDetails.title} à ${propertiesDetails.location} - ${propertiesDetails.formattedPrice}`;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: metaTitle,
+          text: "Découvrez cette propriété sur TranoGasy!",
+          url: currentUrl,
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      // fallback for desktop
+      navigator.clipboard.writeText(currentUrl);
+      alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
+    }
+  };
+  
+
   const GenerateFeaturebox = ({ icon, label }) => {
     return (
       <h6 className="mb-0">
@@ -188,7 +210,7 @@ const PropertyDetailsPage = () => {
                         {propertiesDetails && propertiesDetails.title}
                       </h3>
                       <div
-                        onClick={copyToClipboard}
+                        onClick={handleShare}
                         style={{ height: "0px", overflow: "visible" }}
                         title="copied"
                         className="share-button d-flex flex-column share-btn align-self-start align-items-center"
