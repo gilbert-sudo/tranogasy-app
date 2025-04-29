@@ -11,6 +11,7 @@
     "@vis.gl/react-google-maps": "^0.5.4",
     "browser-image-compression": "^2.0.2",
     "geolib": "^3.3.4",
+    "linkify-react": "^4.2.0",
     "magnific-popup": "^1.1.0",
     "react": "^18.2.0",
     "react-darkreader": "^1.5.6",

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { GiWell, GiCheckMark, GiCircle, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
 import { HashLoader } from "react-spinners";
+import Linkify from "linkify-react";
 import {
   FaCar,
   FaMotorcycle,
@@ -100,9 +101,7 @@ const PropertyDetailsPage = () => {
 
   const copyToClipboard = () => {
     // Get the current URL
-    const currentPath = window.location.href;
-    const serverUrl = currentPath.split("/#/")[0]; // This will split at the "#/" and take the second part
-    const currentUrl = `${serverUrl}/#/property-details/${propertiesDetails._id}/preview/${location.split("/")[1]}`;
+    const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${propertiesDetails._id}`;
 
     // Create a textarea element to hold the URL temporarily
     const textarea = document.createElement("textarea");
@@ -163,6 +162,11 @@ const PropertyDetailsPage = () => {
         };
   }
 
+  const options = {
+    target: '_blank',
+    rel: 'noopener noreferrer'
+  };
+
   return (
     <div>
       {(propertyData !== "preview" || propertyPreview) && !(propertyData !== "preview" && !loader) && (
@@ -201,7 +205,9 @@ const PropertyDetailsPage = () => {
                       style={{ whiteSpace: "break-spaces", wordBreak: "break-word" }}
                       className="font-weight-normal"
                     >
-                      {propertiesDetails && propertiesDetails.description}
+                      <Linkify options={options}>
+                        {propertiesDetails && propertiesDetails.description}
+                      </Linkify>
                     </div>
                     <p className="mt-3 mb-0">
                       {propertiesDetails.features.motoAccess && (
