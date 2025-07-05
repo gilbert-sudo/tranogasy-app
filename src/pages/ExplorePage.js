@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropertyDetails from "../components/PropertyDetails";
 import PropertyFilter from "../components/PropertyFilter";
 import HomeSlider from "../components/HomeSlider";
@@ -6,6 +7,19 @@ import { useSelector } from "react-redux";
 const ExplorePage = () => {
   //redux
   const topProperties = useSelector((state) => state.topProperties);
+
+  
+  const [oneTimeTask, setOneTimeTask] = useState(null);
+
+  if (oneTimeTask === null) {
+    // Check if the property preview exists in local storage
+    const propertyPreview = localStorage.getItem("propertyPreview");
+    if (propertyPreview) {
+      console.log("Property preview exists in local storage.",  propertyPreview);
+    }
+    setOneTimeTask("done");
+  }
+
 
   return (
     <div className="home">

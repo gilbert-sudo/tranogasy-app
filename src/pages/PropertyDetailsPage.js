@@ -37,7 +37,7 @@ import PropertyLocationDisplayer from "../components/PropertyLocationDisplayer";
 
 //redux data
 
-const PropertyDetailsPage = () => {
+const PropertyDetailsPage = ({ fastPreviewProperty, setIsDetailsVisible }) => {
   const [location, setLocation] = useLocation();
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
@@ -47,11 +47,6 @@ const PropertyDetailsPage = () => {
   const [oneTimeTask, setOneTimeTask] = useState(null);
   const [propertyPreview, setPropertyPreview] = useState(null);
 
-  if (oneTimeTask === null) {
-    // scroll to top of the page
-    window.scrollTo(0, 0);
-    setOneTimeTask("done");
-  }
 
   const [match, params] = useRoute(
     "/property-details/:propertyId/:propertyData/:prevPath"
@@ -74,9 +69,15 @@ const PropertyDetailsPage = () => {
 
       if (response.ok) {
         setPropertyPreview(json);
+        localStorage.setItem(
+          "propertyPreview",
+          JSON.stringify(json)
+        );
       }
     } catch (error) {
       console.log(error);
+      localStorage.removeItem("propertyPreview");
+      setPropertyPreview(null);
       setLocation("/nosignal");
     }
   };
@@ -90,10 +91,14 @@ const PropertyDetailsPage = () => {
     fetchProperty();
   }
 
-  const propertiesDetails =
-    propertyData !== "preview"
+  let propertiesDetails;
+
+  propertiesDetails =
+    (propertyData !== "preview"
       ? JSON.parse(decodeURIComponent(propertyData))
-      : propertyPreview;
+      : propertyPreview) ||
+    fastPreviewProperty;
+
 
   const { notLogedPopUp } = useLogin();
   const { notSubscribedPopup } = useSubscription();
@@ -122,10 +127,10 @@ const PropertyDetailsPage = () => {
   };
 
   const handleShare = () => {
-     // Get the current URL
-     const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${propertiesDetails._id}`;
-     // Build the full title
-     const metaTitle = `${propertiesDetails.title} à ${propertiesDetails.location} - ${propertiesDetails.formattedPrice}`;
+    // Get the current URL
+    const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${propertiesDetails._id}`;
+    // Build the full title
+    const metaTitle = `${propertiesDetails.title} à ${propertiesDetails.location} - ${propertiesDetails.formattedPrice}`;
 
     if (navigator.share) {
       navigator
@@ -141,7 +146,7 @@ const PropertyDetailsPage = () => {
       alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
     }
   };
-  
+
 
   const GenerateFeaturebox = ({ icon, label }) => {
     return (
@@ -189,6 +194,7 @@ const PropertyDetailsPage = () => {
     rel: 'noopener noreferrer'
   };
 
+
   return (
     <div>
       {(propertyData !== "preview" || propertyPreview) && !(propertyData !== "preview" && !loader) && (
@@ -198,7 +204,7 @@ const PropertyDetailsPage = () => {
             property={propertiesDetails}
           />
           <div className="site-section site-section-sm">
-            <div className="container pb-5">
+            <div className={`container ${fastPreviewProperty ? "" : "pb-5"}`}>
               <div className="row">
                 <div className="col-lg-12 pb-3">
                   <div className="bg-white widget mt-3 p-3 mb-0 rounded">
@@ -353,10 +359,18 @@ const PropertyDetailsPage = () => {
             </div>
           </div>
           {/* details navbar */}
-          <div class="fixed-bottom bg-white">
+          <div class="bg-white"
+            style={{
+              position: "sticky",
+              bottom: 0,
+              width: "100%",
+              zIndex: 100,
+              borderTop: "1px solid #eee",
+            }}
+          >
             <nav className="d-flex justify-content-between navbar navbar-expand-lg navbar-light">
               <button
-                onClick={handleGoBack}
+                onClick={fastPreviewProperty ? () => setIsDetailsVisible(false) : handleGoBack}
                 style={{ fontSize: "15px" }}
                 className="text-capitalize font-weight-light btn btn-outline-dark border-0"
               >

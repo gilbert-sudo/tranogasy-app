@@ -11,6 +11,22 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+
+/* Tablet (example: from 768px up) */
+@media (min-width: 768px) {
+  .site-blocks-cover {
+    width: 60% !important;
+  }
+}
+
+/* Desktop (example: from 1024px up) */
+@media (min-width: 1366px) {
+  .site-blocks-cover {
+    width: 40% !important;
+  }
+}
+
+
 ::-moz-selection {
   background: #000;
   color: #fff;
@@ -119,8 +135,13 @@ a:hover {
 }
 .btn.btn-white.btn-outline-white {
   border-color: #7cbd1e;
-  background: rgb(124, 189, 30, 0.5);
+  background: #7cbd1e;
   color: #ffffff;
+}
+.btn.btn-white.btn-outline-golden {
+  border: 2px solid #e4ac3c;
+  background:  #1b1b1b;
+  color: #e4ac3c;
 }
 .btn.btn-white.btn-outline-white:hover {
   background: #fff;
@@ -357,10 +378,15 @@ a:hover {
 
 /* Blocks */
 .site-blocks-cover {
+  margin: 0 auto; /* Center horizontally */
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: top;
+  background-position: center;
 }
+.site-blocks-cover-background {
+  background-color: #f3f3f3;
+}
+
 .site-blocks-cover.overlay {
   position: relative;
 }

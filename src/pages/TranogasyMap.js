@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import PropertyDetails from "../components/PropertyDetails";
 import NoResultFound from "../components/NoResultFound";
 import SearchLoader from "../components/SearchLoader";
+import PropertyDetailsPage from "./PropertyDetailsPage";
 
 import { setReduxGmapValue } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
@@ -103,13 +104,19 @@ function MyMap({ properties }) {
 
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
+  const sliderRef = useRef(null);
 
   const handleMarkerClick = (property) => {
     setSelectedProperty(property);
     console.log("Selected Property: ", property);
-    
-    setIsDetailsVisible(true); // Show the sliding div
+    setIsDetailsVisible(true);
+
+    // 👇 Reset scroll to top
+    if (sliderRef.current) {
+      sliderRef.current.scrollTop = 0;
+    }
   };
+
 
   const handleMapClick = (event) => {
     setSelected(event.detail.latLng);
@@ -213,53 +220,54 @@ function MyMap({ properties }) {
           className={`property-details-slide ${isDetailsVisible ? "show" : ""}`}
           style={{
             position: "fixed",
-            left: "50%", // Move it to the center of the page
+            left: "50%",
             bottom: 0,
             transform: isDetailsVisible
-              ? "translate(-50%, 0)" // Center it horizontally and handle the vertical slide
-              : "translate(-50%, 100%)", // Keep it centered while sliding down
+              ? "translate(-50%, 0)"
+              : "translate(-50%, 100%)",
             width: "100%",
-            maxWidth: "450px", // Set the max width for the div
-            height: "max-content",
+            height: "95vh",
+            overflowY: "auto",
             backgroundColor: "#fff",
             borderRadius: "30px 30px 0 0",
             boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
-            transition: "transform 0.3s ease",
+            transition: "transform 0.5s ease",
             boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
             zIndex: 1000,
           }}
         >
-          <IoMdCloseCircle
+          {/* mini navbar for the lose button to hide the sliding div */}
+          <div
+            className="fixed-top"
             style={{
-              fontSize: "2rem",
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              zIndex: "9999",
+              width: "100%",
+              zIndex: 9999,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "sticky",
             }}
-            onClick={() => setIsDetailsVisible(false)}
-          />
+          >
+            <IoMdCloseCircle
+              style={{
+                fontSize: "2rem",
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                zIndex: "9999",
+              }}
+              onClick={() => setIsDetailsVisible(false)}
+            />
+          </div>
+          {/* Close button to hide the sliding div */}
+
           {selectedProperty && (
             <div style={{ padding: "5.5vh 1vh 2vh 1vh" }}>
-              <PropertyDetails
+              <PropertyDetailsPage
                 key={selectedProperty._id}
-                property={selectedProperty}
+                fastPreviewProperty={selectedProperty}
+                setIsDetailsVisible={setIsDetailsVisible}
               />
-              <center>
-                <button
-                  onClick={() =>
-                    setLocation(
-                      `/property-details/${selectedProperty._id
-                      }/${encodeURIComponent(JSON.stringify(selectedProperty))}/${location.split("/")[1]}`
-                    )
-                  }
-                  className="btn btn-success mt-1 w-100"
-                  style={{ borderRadius: "20px" }}
-                  type="button"
-                >
-                  Voir plus de détails
-                </button>
-              </center>
             </div>
           )}
         </div>
@@ -349,7 +357,7 @@ const Markers = ({ points, onMarkerClick }) => {
             <span
               className="font-weight-bold p-1 position-absolute"
               style={{
-                
+
                 backgroundColor: "#d2ff90",
                 left: "50%",
                 transform: "translate(-50%, -90%)",
@@ -360,7 +368,7 @@ const Markers = ({ points, onMarkerClick }) => {
                 border: "2px solid red",
                 borderRadius: "15px",
                 whiteSpace: "nowrap", // Prevent line breaks
-              }}  
+              }}
             >
               <small>Ar</small>{(property.rent || property.price) &&
                 formatPrice(property.rent || property.price)}

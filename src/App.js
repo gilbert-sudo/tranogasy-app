@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import "./App.css";
 import Darkreader from "react-darkreader";
 import { useLocationProperty, navigate } from "wouter/use-location";
+import { WonderPush } from 'react-wonderpush';
 
 // all pages
 import NoInternetPage from "./pages/NoInternet";
@@ -44,6 +45,7 @@ import { useNotification } from "./hooks/useNotification";
 
 //all components
 import Navbar from "./components/Navbar";
+import AutoSubscribe from "./components/AutoSubscribe";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -323,7 +325,7 @@ function App() {
 
     // Track initial load
     trackHistory();
-    
+
     // You can also track history on route changes
     window.addEventListener("pushState", trackHistory);
     window.addEventListener("replaceState", trackHistory);
@@ -335,58 +337,61 @@ function App() {
   }, [window.location.href]);
 
   return (
-    <div className="App">
-      <SkeletonTheme>
-        <Router hook={useHashLocation}>
-          <div className="App">
-            {loader && topNavbar && <Navbar />}
-            <div style={{ display: "none" }}>
-              <Darkreader
-                defaultDarken={isDarkMode}
-                theme={{
-                  brightness: 100,
-                  contrast: 85,
-                }}
-                onChange={() => dispatch(toggleDarkMode())}
-              />
-            </div>
-            <main>
-              <Switch>
-                <Route path="/property-details/:propertyId/:propertyData/:prevPath">
-                  <PropertyDetailsPage />
-                </Route>
-                <Route path="/loader">
-                  <PageLoader />
-                </Route>
-
-                {/* If loader is false, show PageLoader */}
-                {!loader &&
-                  <Route path="/:anything*">
+    <WonderPush options={{ webKey: 'ad242738aead9587c7ee3a981f65e2acabfa82bbe33620c0d14cf1ced5b0b5a1' }}>
+      <AutoSubscribe />
+      <div className="App">
+        <SkeletonTheme>
+          <Router hook={useHashLocation}>
+            <div className="App">
+              {loader && topNavbar && <Navbar />}
+              <div style={{ display: "none" }}>
+                <Darkreader
+                  defaultDarken={isDarkMode}
+                  theme={{
+                    brightness: 100,
+                    contrast: 85,
+                  }}
+                  onChange={() => dispatch(toggleDarkMode())}
+                />
+              </div>
+              <main>
+                <Switch>
+                  <Route path="/property-details/:propertyId/:propertyData/:prevPath">
+                    <PropertyDetailsPage />
+                  </Route>
+                  <Route path="/loader">
                     <PageLoader />
-                  </Route>}
+                  </Route>
 
-                {/* If loader is true, render the routes */}
-                {loader &&
-                  routes.map(({ path, component: Component, private: isPrivate }, index) => (
-                    <Route key={index} path={path}>
-                      {/* Handle private routes if needed */}
-                      {isPrivate && user ? <Redirect to="/user" /> : <Component />}
-                    </Route>
-                  ))}
+                  {/* If loader is false, show PageLoader */}
+                  {!loader &&
+                    <Route path="/:anything*">
+                      <PageLoader />
+                    </Route>}
 
-                {/* Handle 404 page */}
-                {loader &&
-                  <Route path="/:anything*">
-                    <center className="mt-5">
-                      <b>404:</b> Désolé, cette page n'est pas encore prête!
-                    </center>
-                  </Route>}
-              </Switch>
-            </main>
-          </div>
-        </Router>
-      </SkeletonTheme>
-    </div>
+                  {/* If loader is true, render the routes */}
+                  {loader &&
+                    routes.map(({ path, component: Component, private: isPrivate }, index) => (
+                      <Route key={index} path={path}>
+                        {/* Handle private routes if needed */}
+                        {isPrivate && user ? <Redirect to="/user" /> : <Component />}
+                      </Route>
+                    ))}
+
+                  {/* Handle 404 page */}
+                  {loader &&
+                    <Route path="/:anything*">
+                      <center className="mt-5">
+                        <b>404:</b> Désolé, cette page n'est pas encore prête!
+                      </center>
+                    </Route>}
+                </Switch>
+              </main>
+            </div>
+          </Router>
+        </SkeletonTheme>
+      </div>
+    </WonderPush>
   );
 }
 

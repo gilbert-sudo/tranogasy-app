@@ -1,5 +1,8 @@
 import OwlCarousel from "react-owl-carousel";
-import { BsTelephone } from "react-icons/bs";
+import { BsFillSearchHeartFill } from "react-icons/bs";
+import { GiRobotHelmet } from "react-icons/gi";
+import { useLocation } from "wouter";
+import { usePopup } from "../hooks/usePopup";
 
 const options = {
   items: 1,
@@ -10,13 +13,17 @@ const options = {
 };
 
 const HomeSlider = () => {
+  const [, setLocation] = useLocation();
+  const { featureUnderConstructionPopup } = usePopup();
+
   return (
-    <OwlCarousel className="slide-one-item home-slider owl-theme h-50" {...options}>
+    <OwlCarousel className="slide-one-item home-slider site-blocks-cover-background owl-theme h-50" {...options}>
       <div
-        className="site-blocks-cover overlay"
+        className="site-blocks-cover d-flex align-items-center justify-content-center overlay"
         style={{
+          width: "100%",
           backgroundImage:
-          "url(https://ik.imagekit.io/ryxb55mhk/Tranogasy/rova-tranogasy.png?updatedAt=1679328193424)",
+            "url(https://storage.googleapis.com/tranogasy-cdn/images/bg%20landing%201.jpg)",
         }}
         data-aos="fade"
         data-stellar-background-ratio="0.5"
@@ -25,13 +32,14 @@ const HomeSlider = () => {
           <div className="row align-items-center justify-content-center text-center">
             <div className="col-md-6 align-self-end">
               <p className="align-self-end">
-                <a
-                  href="#"
-                  className="btn btn-white btn-outline-white btn-5"
+                <button
+                  type="button"
+                  onClick={() => setLocation("/search")}
+                  className="btn btn-white btn-outline-white btn-5 font-weight-bold"
                   style={{ borderRadius: "30px" }}
                 >
-                  <BsTelephone/> Nous contacter
-                </a>
+                  <BsFillSearchHeartFill /> Rechercher un bien
+                </button>
               </p>
             </div>
           </div>
@@ -41,8 +49,8 @@ const HomeSlider = () => {
       <div
         className="site-blocks-cover overlay"
         style={{
-          backgroundImage:
-            "url(https://ik.imagekit.io/ryxb55mhk/Tranogasy/rova-tranogasy_2.png?updatedAt=1679331634605)",
+          width: "100%",
+          backgroundImage: "url(https://storage.googleapis.com/tranogasy-cdn/images/Gillbert%20Ai%20.png)",
         }}
         data-aos="fade"
         data-stellar-background-ratio="0.5"
@@ -51,13 +59,14 @@ const HomeSlider = () => {
           <div className="row align-items-center justify-content-center text-center">
             <div className="col-md-6 align-self-end">
               <p className="align-self-end">
-                <a
-                  href="#"
-                  className="btn btn-white btn-outline-white btn-5"
+                <button
+                  type="button"
+                  onClick={() => featureUnderConstructionPopup()}
+                  className="btn btn-white btn-outline-golden btn-5 font-weight-bold"
                   style={{ borderRadius: "30px" }}
                 >
-                  <BsTelephone/> Nous contacter
-                </a>
+                  <GiRobotHelmet /> Recherche intelligente
+                </button>
               </p>
             </div>
           </div>

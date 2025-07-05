@@ -6,6 +6,9 @@ const PhotoGallery = ({ images }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [viewerIsOpen, setViewerIsOpen] = useState(false);
 
+  // Create a mutable copy of images to prevent mutation errors
+  const mutableImages = images.map(img => ({ ...img }));
+
   const openLightbox = (index) => {
     setCurrentImage(index);
     setViewerIsOpen(true);
@@ -19,7 +22,7 @@ const PhotoGallery = ({ images }) => {
   return (
     <div className="bg-white property-body border-bottom border-left border-right p-0">
       <Gallery
-        photos={images}
+        photos={mutableImages}
         onClick={(event, { index }) => openLightbox(index)}
       />
       <ModalGateway>
@@ -27,7 +30,7 @@ const PhotoGallery = ({ images }) => {
           <Modal onClose={closeLightbox}>
             <Carousel
               currentIndex={currentImage}
-              views={images.map((photo) => ({
+              views={mutableImages.map((photo) => ({
                 ...photo,
                 srcset: photo.srcSet,
                 caption: photo.title,
