@@ -62,8 +62,13 @@ const HomeSlider = () => {
                 <button
                   type="button"
                   onClick={() => featureUnderConstructionPopup()}
-                  className="btn btn-white btn-outline-golden btn-5 font-weight-bold"
-                  style={{ borderRadius: "30px" }}
+                  className="btn btn-5 font-weight-bold"
+                  style={{
+                    borderRadius: "30px",
+                    border: "2px solid #e4ac3c",
+                    background: "#1b1b1b",
+                    color: "#e4ac3c",
+                  }}
                 >
                   <GiRobotHelmet /> Recherche intelligente
                 </button>

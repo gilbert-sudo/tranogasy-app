@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import NoResultFound from "../components/NoResultFound";
 import SearchLoader from "../components/SearchLoader";
 import PropertyDetailsPage from "./PropertyDetailsPage";
+import CustomMapControl from "../components/CustomMapControl";
+
 
 import { setReduxGmapValue } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
@@ -16,13 +18,14 @@ import {
   Pin,
   ControlPosition,
   useMap,
+  MapControl,
 } from "@vis.gl/react-google-maps";
 import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
 import { ImLocation } from "react-icons/im";
-import { IoCheckmarkDone } from "react-icons/io5";
+import { LuSettings2 } from "react-icons/lu";
 
 export default function TranogasyMap() {
   const searchForm = useSelector((state) => state.searchForm);
@@ -44,33 +47,6 @@ export default function TranogasyMap() {
 
     // Call the cleanup function when the component unmounts
     return cleanupFunction;
-  }, []);
-
-  useEffect(() => {
-    // Handle fullscreenchange event
-    const handleFullscreenChange = function (event) {
-      let target = event.target;
-      let pacContainerElements =
-        document.getElementsByClassName("pac-container");
-      if (pacContainerElements.length > 0) {
-        let pacContainer = document.getElementsByClassName("pac-container")[0];
-        if (pacContainer.parentElement === target) {
-          document.getElementsByTagName("BODY")[0].appendChild(pacContainer);
-        } else {
-          target.appendChild(pacContainer);
-          console.log("GO ON FULL SCREEN", target);
-        }
-      } else {
-        console.log("FULL SCREEN change - no pacContainer found");
-      }
-    };
-
-    document.onfullscreenchange = handleFullscreenChange;
-
-    // Cleanup function to remove the event listener when component unmounts
-    return () => {
-      document.onfullscreenchange = null;
-    };
   }, []);
 
   if (searchResults && searchResults.length !== 0) {
@@ -139,31 +115,6 @@ function MyMap({ properties }) {
     }
   }, [properties]);
 
-  useEffect(() => {
-    var circleCenter = !selectedPlace
-      ? !selected
-        ? defaultposition
-        : selected
-      : selectedPlace;
-    var circleRadius = radius;
-    dispatch(
-      setReduxGmapValue({
-        gmapValue: {
-          circleCenter: {
-            lat:
-              typeof circleCenter.lat == "function"
-                ? circleCenter.lat()
-                : circleCenter.lat,
-            lng:
-              typeof circleCenter.lng == "function"
-                ? circleCenter.lng()
-                : circleCenter.lng,
-          },
-          circleRadius,
-        },
-      })
-    );
-  }, [defaultposition, selectedPlace, selected, radius]);
 
   useEffect(() => {
     // Get user's current position
@@ -184,13 +135,27 @@ function MyMap({ properties }) {
     }
   }, []);
 
+  useEffect(() => {
+    // get the selected place coordinates
+    console.log("Selected Place Coordinates: ", selectedPlace);
+  }, [selectedPlace]);
+
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
       <div
         className="pt-4 position-relative"
         style={{ height: "97.7vh", width: "100%" }}
       >
-        <button
+        <div className="d-flex justify-content-center align-items-center places-container">
+          <div className="places-input">
+            <CustomMapControl
+              controlPosition={ControlPosition.LEFT_TOP}
+              onPlaceSelect={setSelectedPlace}
+            />
+          </div>
+        </div>
+
+        {/* <button
           type="button"
           onClick={() => setLocation("/searchResult")}
           className="btn btn-light position-absolute"
@@ -204,9 +169,9 @@ function MyMap({ properties }) {
             </strong>
           </span>{" "}
           <small style={{ color: "blue" }}>
-            <u>Cliquez ici</u>
+            <u>Cliquez ici.</u>
           </small>
-        </button>
+        </button> */}
         <Map
           zoom={properties && mapZoomLevel ? mapZoomLevel : 13}
           minZoom={6}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { MapControl } from '@vis.gl/react-google-maps';
 import PlaceAutocompleteClassic from './PlaceAutocompleteClassic';
 
