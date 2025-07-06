@@ -377,7 +377,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, setIsDetailsVisible }) => {
                 <MdArrowBackIos
                   style={{ fontSize: "15px", marginBottom: "3px" }}
                 />
-                {propertyData !== "preview" ? "Retour" : "Accueil"}
+                {fastPreviewProperty ? "Fermer" : (propertyData !== "preview" ? "Retour" : "Accueil")}
               </button>
 
               <button

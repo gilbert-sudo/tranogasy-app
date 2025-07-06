@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { getCenterOfBounds, getBounds, getDistance } from "geolib";
 import { useSelector, useDispatch } from "react-redux";
-
-import PropertyDetails from "../components/PropertyDetails";
 import NoResultFound from "../components/NoResultFound";
 import SearchLoader from "../components/SearchLoader";
 import PropertyDetailsPage from "./PropertyDetailsPage";
@@ -105,6 +103,8 @@ function MyMap({ properties }) {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const sliderRef = useRef(null);
+  const map = useMap();
+  const [mapTypeId, setMapTypeId] = useState("roadmap");
 
   const handleMarkerClick = (property) => {
     setSelectedProperty(property);
@@ -124,6 +124,7 @@ function MyMap({ properties }) {
     setIsDetailsVisible(false);
     console.log(event.detail.latLng);
   };
+
 
   useEffect(() => {
     if (properties && properties.length > 0) {
@@ -209,10 +210,21 @@ function MyMap({ properties }) {
         <Map
           zoom={properties && mapZoomLevel ? mapZoomLevel : 13}
           minZoom={6}
+          onZoomChanged={(e) => {
+            const newZoomLevel = e.detail.zoom;
+            // 👇 Change the map type based on zoom level
+            if (newZoomLevel > 16) setMapTypeId("hybrid");
+            if (newZoomLevel <= 16) setMapTypeId("roadmap");
+          }}
           center={properties && center ? center : defaultposition}
           mapId="80e7a8f8db80acb5"
           onClick={handleMapClick}
           mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
+          options={{
+            fullscreenControl: false,
+            streetViewControl: false, // 👈 disable Pegman
+          }}
+          mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
         >
           <Markers points={properties} onMarkerClick={handleMarkerClick} />
         </Map>
@@ -375,7 +387,6 @@ const Markers = ({ points, onMarkerClick }) => {
               {property?.coords &&
                 <small>
                   <ImLocation style={{ marginBottom: "5px", color: "red" }} />
-                  <IoCheckmarkDone style={{ color: "green" }} />
                 </small>}
             </span>
 
