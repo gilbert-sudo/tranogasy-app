@@ -337,7 +337,7 @@ const HouseSearchForm = () => {
       }
 
       let numberOfRooms = (selectedRoom && selectedRoom.length > 0) ? selectedRoom.split("+")[0] : customRoom;
-      
+
       const parameters = {
         selectedMapType,
         type,
@@ -477,381 +477,11 @@ const HouseSearchForm = () => {
                 <h6 className="font-weight-light text-uppercase mb-4">
                   Chercher une maison :
                 </h6>
-                <button
-                  type="button"
-                  style={{ borderRadius: "10px", height: "30px" }}
-                  className={`btn btn-sm btn-outline-dark ${byNumber && "active"
-                    }`}
-                  onClick={() => {
-                    setByNumber(true);
-                    dispatch(setReduxByNumber({ byNumber: true }));
-                  }}
-                >
-                  <b>Par son N°</b>
-                </button>
               </div>
 
               <div id="nav-tab-rent" className="tab-pane fade show active">
-                {byNumber && (
-                  <div className="form-group">
-                    <label>
-                      <span className="hidden-xs">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>
-                          Entrez{" "}
-                          <b className="font-weight-bold">
-                            le numéro de la propriété :
-                          </b>{" "}
-                        </strong>
-                      </span>
-                    </label>
-                      <div className="w-100">
-                        <input
-                          type="number"
-                          style={{width: "100%"}}
-                          placeholder="N°"
-                          name="propertyNumber"
-                          className="form-control"
-                          value={propertyNumber}
-                          onChange={(e) => setPropertyNumber(e.target.value)}
-                          required={byNumber}
-                          autoFocus
-                        />
-                      </div>
-                  </div>
-                )}
                 {!byNumber && (
                   <>
-                    {" "}
-                    <div className="form-group">
-                      <label htmlFor="cardNumber" ref={targetDivRef}>
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Choisir une zone de recherche :</strong>
-                      </label>
-                      <div className="input-group">
-                        <div className="">
-                          <button
-                            type="button"
-                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
-                            className={`btn-sm mx-1 mb-2 ${selectedMapType === "district"
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setSelectedMapType("district");
-                              setSelectedCommune(null);
-                              dispatch(
-                                setReduxSelectedCommune({
-                                  selectedCommune: null,
-                                })
-                              );
-                              setSelectedCity(null);
-                              dispatch(
-                                setReduxSelectedCity({ selectedCity: null })
-                              );
-                              setGmapValue(null);
-                            }}
-                          >
-                            <b>District</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
-                            className={`btn-sm mr-1 mb-2 ${selectedMapType === "commune"
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setSelectedMapType("commune");
-                              setSelectedDistrict(null);
-                              dispatch(
-                                setReduxSelectedDistrict({
-                                  selectedDistrict: null,
-                                })
-                              );
-                              setSelectedCity(null);
-                              dispatch(
-                                setReduxSelectedCity({ selectedCity: null })
-                              );
-                              setGmapValue(null);
-                            }}
-                          >
-                            <b>Commune</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
-                            className={`btn-sm mb-2 ${selectedMapType === "fokotany"
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setSelectedMapType("fokotany");
-                              setSelectedDistrict(null);
-                              dispatch(
-                                setReduxSelectedDistrict({
-                                  selectedDistrict: null,
-                                })
-                              );
-                              setSelectedCommune(null);
-                              dispatch(
-                                setReduxSelectedCommune({
-                                  selectedCommune: null,
-                                })
-                              );
-                              setGmapValue(null);
-                            }}
-                          >
-                            <b>Fokotany</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ border: "1px solid", paddingLeft: "0.3rem", paddingRight: "0.3rem", borderRadius: "10px" }}
-                            className={`btn-sm mx-1 mb-2 ${selectedMapType === "gmap"
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setSelectedMapType("gmap");
-                              setSelectedDistrict(null);
-                              dispatch(
-                                setReduxSelectedDistrict({
-                                  selectedDistrict: null,
-                                })
-                              );
-                              setSelectedCommune(null);
-                              dispatch(
-                                setReduxSelectedCommune({
-                                  selectedCommune: null,
-                                })
-                              );
-                              setSelectedCity(null);
-                              dispatch(
-                                setReduxSelectedCity({ selectedCity: null })
-                              );
-                              handleGmapSelected();
-                            }}
-                          >
-                            <b>
-                              <FcGoogle /> Carte
-                            </b>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      {!selectedCommune &&
-                        !selectedCity &&
-                        selectedMapType === "district" && (
-                          <div className="form-group position-relative">
-                            <label htmlFor="username">
-                              <strong className="text-danger">*</strong>{" "}
-                              <strong>
-                                Veuillez nous donner <b>un nom de ville</b>:
-                              </strong>
-                            </label>
-
-                            {!selectedDistrict && (
-                              <DistrictAutosuggestInput
-                                data={mapData.districtList}
-                                onSelectItem={handleDistrictSelected}
-                                onFocus={onMapInputFocus}
-                              />
-                            )}
-
-                            {selectedDistrict && (
-                              <div
-                                style={{ backgroundColor: "#6c757d" }}
-                                className="fokotany border"
-                              >
-                                <div
-                                  style={{
-                                    border: "2px solid #6c757d",
-                                    color: "#6c757d",
-                                  }}
-                                  className="alert alert-light mb-0"
-                                  role="alert"
-                                >
-                                  <b>{`${selectedDistrict.district
-                                    .charAt(0)
-                                    .toUpperCase() +
-                                    selectedDistrict.district.slice(1)
-                                    }`}</b>{" "}
-                                  <br />
-                                  <small>{`${selectedDistrict.region.toUpperCase()}`}</small>{" "}
-                                  {`(${selectedDistrict.province})`}
-                                </div>
-                                <div className="d-flex justify-content-end">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      setSelectedDistrict(null);
-                                      dispatch(
-                                        setReduxSelectedDistrict({
-                                          selectedDistrict: null,
-                                        })
-                                      );
-                                    }}
-                                    className="btn btn-sm btn-danger"
-                                  >
-                                    Changer <MdOutlineEditLocation />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                      {!selectedDistrict &&
-                        !selectedCity &&
-                        selectedMapType === "commune" && (
-                          <div className="form-group position-relative">
-                            <label htmlFor="commune">
-                              <strong className="text-danger">*</strong>{" "}
-                              <strong>
-                                Veuillez nous donner <b>un commune</b>:
-                              </strong>
-                            </label>
-
-                            {!selectedCommune && (
-                              <CommuneAutosuggestInput
-                                data={
-                                  mapData.communeList &&
-                                  mapData.communeList.filter(
-                                    (commune) =>
-                                      (selectedDistrict
-                                        ? commune.district ===
-                                        selectedDistrict.district
-                                        : true) &&
-                                      (selectedDistrict
-                                        ? commune.region ===
-                                        selectedDistrict.region
-                                        : true)
-                                  )
-                                }
-                                onSelectItem={handleCommuneSelected}
-                                onFocus={onMapInputFocus}
-                              />
-                            )}
-
-                            {selectedCommune && (
-                              <div
-                                style={{ backgroundColor: "#6c757d" }}
-                                className="fokotany border"
-                              >
-                                <div
-                                  style={{
-                                    border: "2px solid #6c757d",
-                                    color: "#6c757d",
-                                  }}
-                                  className="alert alert-light mb-0"
-                                  role="alert"
-                                >
-                                  <b>{`${selectedCommune.commune}, ${selectedCommune.district
-                                    .charAt(0)
-                                    .toUpperCase() +
-                                    selectedCommune.district.slice(1)
-                                    }`}</b>{" "}
-                                  <br />
-                                  <small>{`${selectedCommune.region.toUpperCase()}`}</small>{" "}
-                                  {`(${selectedCommune.province})`}
-                                </div>
-                                <div className="d-flex justify-content-end">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      setSelectedCommune(null);
-                                      dispatch(
-                                        setReduxSelectedCommune({
-                                          selectedCommune: null,
-                                        })
-                                      );
-                                    }}
-                                    className="btn btn-sm btn-danger"
-                                  >
-                                    Changer <MdOutlineEditLocation />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                      {!selectedDistrict &&
-                        !selectedCommune &&
-                        selectedMapType === "fokotany" && (
-                          <div className="form-group position-relative">
-                            <label htmlFor="username">
-                              <strong className="text-danger">*</strong>{" "}
-                              <strong>
-                                Veuillez nous donner <b>un quartier</b>:
-                              </strong>
-                            </label>
-
-                            {!selectedCity && (
-                              <AutosuggestInput
-                                data={
-                                  mapData.fokotanyList &&
-                                  mapData.fokotanyList.filter(
-                                    (fokotany) =>
-                                      (selectedDistrict
-                                        ? fokotany.district ===
-                                        selectedDistrict.district
-                                        : true) &&
-                                      (selectedDistrict
-                                        ? fokotany.region ===
-                                        selectedDistrict.region
-                                        : true)
-                                  )
-                                }
-                                onSelectItem={handleItemSelected}
-                                onFocus={onMapInputFocus}
-                              />
-                            )}
-
-                            {selectedCity && (
-                              <div
-                                style={{ backgroundColor: "#6c757d" }}
-                                className="fokotany border"
-                              >
-                                <div
-                                  style={{
-                                    border: "2px solid #6c757d",
-                                    color: "#6c757d",
-                                  }}
-                                  className="alert alert-light mb-0"
-                                  role="alert"
-                                >
-                                  <b>{`${selectedCity.fokontany}, ${selectedCity.commune
-                                    .charAt(0)
-                                    .toUpperCase() +
-                                    selectedCity.commune.slice(1)
-                                    }`}</b>{" "}
-                                  <br />
-                                  <small>{`${selectedCity.district.toUpperCase()}`}</small>{" "}
-                                  {`(${selectedCity.region})`}
-                                </div>
-                                <div className="d-flex justify-content-end">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      setSelectedCity(null);
-                                      dispatch(
-                                        setReduxSelectedCity({
-                                          selectedCity: null,
-                                        })
-                                      );
-                                    }}
-                                    className="btn btn-sm btn-danger"
-                                  >
-                                    Changer <MdOutlineEditLocation />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                    </div>
                     <div className="form-group">
                       <label htmlFor="cardNumber">
                         <strong className="text-danger">*</strong>{" "}
@@ -1318,62 +948,79 @@ const HouseSearchForm = () => {
                 )}
               </div>
             </div>
-            {/* bottom navbar */}
-            <div class="fixed-bottom bg-white">
-              <div className="container d-flex justify-content-between  navbar navbar-expand-sm navbar-light">
-                {byNumber && (
-                  <button
-                    type="button"
-                    style={{
-                      borderRadius: "10px",
-                      width: "100%",
-                    }}
-                    className="btn mr-1 btn-outline-danger my-1"
-                    onClick={() => {
-                      setByNumber(false);
-                      dispatch(setReduxByNumber({ byNumber: false }));
-                      setPropertyNumber(null);
-                      dispatch(
-                        setReduxPropertyNumber({ propertyNumber: null })
-                      );
-                    }}
-                  >
-                    Annuler
-                  </button>
-                )}
-                {!byNumber && (
-                  <button
-                    type="submit"
-                    name="submitType"
-                    value="map"
-                    style={{
-                      borderRadius: "10px",
-                      width: "100%",
-                      marginTop: "0.5rem",
-                    }}
-                    className="btn mr-1 btn-dark  btn-block"
-                    disabled={!(searchResults && searchResults.length > 0) || !(selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap")}
-                  >
-                    <FcGoogle /> Voir sur carte
-                  </button>
-                )}
+            {/* bottom mobile app–style navbar */}
+            <div
+              className="fixed-bottom bg-white shadow-sm"
+              style={{
+                position: "sticky",
+                bottom: 0,
+                borderTop: "1px solid #eee",
+                padding: "0.5rem 1rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              {/* Results display (non-clickable) */}
+              <div
+                style={{
+                  flex: 1,
+                  borderRadius: "12px",
+                  backgroundColor: "white",
+                  border: "1px solid #ddd",
+                  color: "#333",
+                  padding: "12px",
+                  textAlign: "center",
+                  fontWeight: "500",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  userSelect: "none",
+                  maxWidth: "200px",
+                }}
+              >
+                {byNumber
+                  ? "Chercher"
+                  : (selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap")
+                    ? (searchResults && searchResults.length > 0)
+                      ? `${searchResults.length} résultats`
+                      : "Aucune trouvée"
+                    : `${properties && properties.length} annonces`}
+              </div>
+
+              {/* Google map submit button */}
+              {!byNumber && (
                 <button
                   type="submit"
                   name="submitType"
-                  value="list"
+                  value="map"
                   style={{
-                    borderRadius: "10px",
+                    flex: 1,
+                    borderRadius: "12px",
+                    backgroundColor: "#222",
+                    border: "none",
+                    color: "white",
+                    padding: "12px",
+                    textAlign: "center",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    maxWidth: "200px",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                   }}
-                  className="btn btn-success btn-block shadow-sm"
+                  disabled={
+                    !(searchResults && searchResults.length > 0) ||
+                    !(selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap")
+                  }
                 >
-                  {byNumber ? "Chercher" : ((selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap") ? ((searchResults && searchResults.length > 0) ? `Lister les ${searchResults.length} résultats` : "Aucune annonce trouvée") : `${properties && properties.length} annonces disponibles`)}
+                  <FcGoogle size={20} /> Voir carte
                 </button>
-              </div>
-              {/* <p className="alert alert-success mt-3">
-                    Some text success or error
-                  </p> */}
+              )}
             </div>
-            {/* bottom navbar */}
+
+
           </form>
         </div>
       </div>

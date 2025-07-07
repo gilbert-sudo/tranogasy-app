@@ -389,9 +389,9 @@ const Markers = ({ points, onMarkerClick }) => {
   const markersRef = useRef([]);
   const clusterer = useRef(null);
 
-  // Cache for adjusted coordinates
   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
   const [usedCoords, setUsedCoords] = useState(new Set());
+  const [visiblePoints, setVisiblePoints] = useState([]);
 
   const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
     if (adjustedCoordsCache[id]) {
@@ -408,7 +408,6 @@ const Markers = ({ points, onMarkerClick }) => {
       };
     } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
 
-    // Add the new unique coordinates to the used set and cache
     setUsedCoords((prev) => new Set(prev).add(`${newCoords.lat},${newCoords.lng}`));
     setAdjustedCoordsCache((prevCache) => ({
       ...prevCache,
@@ -418,34 +417,77 @@ const Markers = ({ points, onMarkerClick }) => {
     return newCoords;
   };
 
+
   const createCustomMarkerIcon = (property) => {
     const price = formatPrice(property.rent || property.price);
+    const width = 80;
+    const rectHeight = 28;
+    const tipHeight = 5;
 
-    // Define width and height
-    const width = 90;
-    const rectHeight = 30;
-    const tipHeight = 5; // small tip
-
-    const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${rectHeight + tipHeight + 10}">
-      <!-- Rectangle -->
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${rectHeight + tipHeight + 10}">
       <rect x="5" y="5" rx="15" ry="15" width="${width - 10}" height="${rectHeight}" fill="#d2ff90" stroke="red" stroke-width="2"/>
-      
-      <!-- Text -->
       <text x="${width / 2}" y="${5 + rectHeight / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="#000">Ar ${price}</text>
-      
-      <!-- Pointer tip -->
-      <polygon points="${width / 2 - 5},${rectHeight + 5} ${width / 2 + 5},${rectHeight + 5} ${width / 2},${rectHeight + 5 + tipHeight}" fill="red" stroke="red" stroke-width="2"/>
-    </svg>
-  `;
+    </svg>`;
 
     return {
       url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
       scaledSize: new window.google.maps.Size(width, rectHeight + tipHeight + 10),
-      anchor: new window.google.maps.Point(width / 2, rectHeight + tipHeight + 10), // makes the tip land on coords
+      anchor: new window.google.maps.Point(
+        width / 2,
+        rectHeight + tipHeight + 10
+      ),
     };
   };
 
+
+
+  useEffect(() => {
+    if (!map) return;
+
+    const updateVisiblePoints = () => {
+      const bounds = map.getBounds();
+      if (!bounds) return;
+
+      const ne = bounds.getNorthEast();
+      const sw = bounds.getSouthWest();
+
+      // Add margin buffer
+      const latMargin = (ne.lat() - sw.lat()) * 0.1;
+      const lngMargin = (ne.lng() - sw.lng()) * 0.1;
+
+      const extendedBounds = {
+        north: ne.lat() + latMargin,
+        south: sw.lat() - latMargin,
+        east: ne.lng() + lngMargin,
+        west: sw.lng() - lngMargin,
+      };
+
+      const filtered = points.filter((property) => {
+        const coords = property?.coords ? property.coords : property.city.coords;
+        const lat = coords.lat;
+        const lng = coords.lng;
+        return (
+          lat >= extendedBounds.south &&
+          lat <= extendedBounds.north &&
+          lng >= extendedBounds.west &&
+          lng <= extendedBounds.east
+        );
+      });
+
+      setVisiblePoints(filtered);
+    };
+
+    // Update points initially
+    updateVisiblePoints();
+
+    // Add listener for map move or zoom
+    map.addListener("idle", updateVisiblePoints);
+
+    // Cleanup
+    return () => {
+      google.maps.event.clearListeners(map, "idle");
+    };
+  }, [points, map]);
 
   useEffect(() => {
     if (!map) return;
@@ -455,9 +497,13 @@ const Markers = ({ points, onMarkerClick }) => {
     markersRef.current = [];
 
     // Create new markers
-    const newMarkers = points.map((property) => {
+    const newMarkers = visiblePoints.map((property) => {
+      const finalCoords = property?.coords
+        ? property.coords
+        : adjustCoordsRandomlyUnique(property.city.coords, property._id);
+
       const marker = new window.google.maps.Marker({
-        position: property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords, property._id),
+        position: finalCoords,
         map,
         icon: createCustomMarkerIcon(property),
       });
@@ -469,7 +515,7 @@ const Markers = ({ points, onMarkerClick }) => {
       return marker;
     });
 
-    // Create or update clusterer
+    // Update clusterer
     if (clusterer.current) {
       clusterer.current.clearMarkers();
       clusterer.current.addMarkers(newMarkers);
@@ -483,7 +529,7 @@ const Markers = ({ points, onMarkerClick }) => {
     return () => {
       newMarkers.forEach((marker) => marker.setMap(null));
     };
-  }, [points, map]);
+  }, [visiblePoints, map]);
 
-  return null; // We no longer render JSX markers directly
+  return null;
 };
