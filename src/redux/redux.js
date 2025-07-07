@@ -462,6 +462,7 @@ const searchFormSlice = createSlice({
     selectedCommune: null,
     selectedDistrict: null,
     gmapValue: null,
+    formFilter: false,
   },
   reducers: {
     setReduxByNumber: (state, action) => {
@@ -482,6 +483,9 @@ const searchFormSlice = createSlice({
     setReduxGmapValue: (state, action) => {
       state.gmapValue = action.payload.gmapValue;
     },
+    setReduxFormFilter: (state, action) => {
+      state.formFilter = action.payload.formFilter;
+    },
   },
 });
 
@@ -492,6 +496,7 @@ export const {
   setReduxSelectedCommune,
   setReduxSelectedDistrict,
   setReduxGmapValue,
+  setReduxFormFilter,
 } = searchFormSlice.actions;
 
 

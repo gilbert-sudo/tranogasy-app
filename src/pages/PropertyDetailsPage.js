@@ -37,7 +37,7 @@ import PropertyLocationDisplayer from "../components/PropertyLocationDisplayer";
 
 //redux data
 
-const PropertyDetailsPage = ({ fastPreviewProperty, setIsDetailsVisible }) => {
+const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => {
   const [location, setLocation] = useLocation();
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
@@ -370,7 +370,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, setIsDetailsVisible }) => {
           >
             <nav className="d-flex justify-content-between navbar navbar-expand-lg navbar-light">
               <button
-                onClick={fastPreviewProperty ? () => setIsDetailsVisible(false) : handleGoBack}
+                onClick={fastPreviewProperty ? () => handleCloseSlideClick() : handleGoBack}
                 style={{ fontSize: "15px" }}
                 className="text-capitalize font-weight-light btn btn-outline-dark border-0"
               >

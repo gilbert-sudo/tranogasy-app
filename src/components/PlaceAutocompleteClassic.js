@@ -4,9 +4,13 @@ import "./css/googlemaps.css";
 import { LuSettings2 } from "react-icons/lu";
 import { LuBellPlus } from "react-icons/lu";
 
+import { setReduxFormFilter } from "../redux/redux";
+import { useDispatch } from "react-redux";
+
 const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
   const inputRef = useRef(null);
+  const dispatch = useDispatch();
   const places = useMapsLibrary("places");
 
   useEffect(() => {
@@ -79,7 +83,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       >
         <button
           className="btn"
-          onClick={() => alert("Fonctionnalité en cours de développement")}
+          onClick={() => dispatch(setReduxFormFilter({ formFilter: true }))}
           style={{
             borderRadius: "30px",
             padding: "10px 14px",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
 import RangeSlider from "react-range-slider-input";
@@ -11,13 +11,11 @@ import {
   setReduxSelectedCommune,
   setReduxSelectedDistrict,
 } from "../redux/redux";
-import { usePhoto } from "../hooks/usePhoto";
 import { useProperty } from "../hooks/useProperty";
 import { useMap } from "../hooks/useMap";
 import AutosuggestInput from "../components/AutosuggestInput";
 import DistrictAutosuggestInput from "./DistrictAutosuggestInput";
 import CommuneAutosuggestInput from "./CommuneAutosuggestInput";
-import PropertyLocationAreaSelector from "./PropertyLocationAreaSelector";
 import RoomSelector from "./RoomSelector";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
@@ -853,25 +851,6 @@ const HouseSearchForm = () => {
                             )}
                           </div>
                         )}
-
-                      <div
-                        className="form-group position-relative"
-                        style={
-                          !selectedDistrict &&
-                            !selectedCommune &&
-                            !selectedCity &&
-                            selectedMapType === "gmap"
-                            ? {}
-                            : { display: "none", height: 0 }
-                        }
-                      >
-                        <label htmlFor="username">
-                          <strong className="text-danger">*</strong>{" "}
-                          <strong>Indiquez la zone sur la carte.</strong>
-                        </label>
-
-                        <PropertyLocationAreaSelector />
-                      </div>
                     </div>
                     <div className="form-group">
                       <label htmlFor="cardNumber">

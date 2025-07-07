@@ -6,19 +6,16 @@ import NoResultFound from "../components/NoResultFound";
 import SearchLoader from "../components/SearchLoader";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
+import HouseSearchForm from "../components/HouseSearchForm";
 
-
-import { setReduxGmapValue } from "../redux/redux";
+import { setReduxFormFilter } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import {
   APIProvider,
   Map,
-  AdvancedMarker,
-  Pin,
   ControlPosition,
   useMap,
-  MapControl,
 } from "@vis.gl/react-google-maps";
 import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
@@ -29,6 +26,8 @@ import { LuSettings2 } from "react-icons/lu";
 
 export default function TranogasyMap() {
   const searchForm = useSelector((state) => state.searchForm);
+  console.log("Search Form: ", searchForm);
+
   const searchResults = useSelector((state) => state.searchResults);
 
   const { isLoaded } = useLoadScript({
@@ -63,6 +62,7 @@ export default function TranogasyMap() {
 
 function MyMap({ properties }) {
   const geolocation = useSelector((state) => state.geolocation);
+  const searchForm = useSelector((state) => state.searchForm);
   const [selected, setSelected] = useState(null);
   const [center, setCenter] = useState(null);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
@@ -77,7 +77,7 @@ function MyMap({ properties }) {
   const [location, setLocation] = useLocation("");
 
   const [selectedProperty, setSelectedProperty] = useState(null);
-  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
+  const [isDetailsVisible, setIsSlideVisible] = useState(false);
   const sliderRef = useRef(null);
   const map = useMap();
   const [mapTypeId, setMapTypeId] = useState("roadmap");
@@ -85,7 +85,7 @@ function MyMap({ properties }) {
   const handleMarkerClick = (property) => {
     setSelectedProperty(property);
     console.log("Selected Property: ", property);
-    setIsDetailsVisible(true);
+    setIsSlideVisible(true);
 
     // 👇 Reset scroll to top
     if (sliderRef.current) {
@@ -97,8 +97,14 @@ function MyMap({ properties }) {
   const handleMapClick = (event) => {
     setSelected(event.detail.latLng);
     setSelectedPlace(null);
-    setIsDetailsVisible(false);
+    setIsSlideVisible(false);
     console.log(event.detail.latLng);
+  };
+
+  const handleCloseSlideClick = (event) => {
+    setIsSlideVisible(false);
+    dispatch(setReduxFormFilter({ formFilter: false }));
+    setSelectedProperty(null);
   };
 
 
@@ -139,6 +145,12 @@ function MyMap({ properties }) {
     // get the selected place coordinates
     console.log("Selected Place Coordinates: ", selectedPlace);
   }, [selectedPlace]);
+
+  useEffect(() => {
+    let formFilter = searchForm.formFilter;
+    formFilter ? setIsSlideVisible(true) : setIsSlideVisible(false);
+    console.log("Form Filter: ", formFilter);
+  }, [searchForm.formFilter]);
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
@@ -233,58 +245,149 @@ function MyMap({ properties }) {
                 right: "10px",
                 zIndex: "9999",
               }}
-              onClick={() => setIsDetailsVisible(false)}
+              onClick={handleCloseSlideClick}
             />
           </div>
           {/* Close button to hide the sliding div */}
-
+          {searchForm.formFilter && (
+            <div style={{ padding: "5.5vh 1vh 2vh 1vh" }}>
+              <HouseSearchForm />
+            </div>
+          )}
           {selectedProperty && (
             <div style={{ padding: "5.5vh 1vh 2vh 1vh" }}>
               <PropertyDetailsPage
                 key={selectedProperty._id}
                 fastPreviewProperty={selectedProperty}
-                setIsDetailsVisible={setIsDetailsVisible}
+                handleCloseSlideClick={handleCloseSlideClick}
               />
             </div>
           )}
+
         </div>
       </div>
     </APIProvider>
   );
 }
 
+//   const map = useMap();
+//   const { formatPrice } = useProperty();
+
+//   const [markers, setMarkers] = useState({});
+//   const clusterer = useRef(null);
+
+//   useEffect(() => {
+//     if (!map) return;
+//     if (!clusterer.current) {
+//       clusterer.current = new MarkerClusterer({ map });
+//     }
+//   }, [map]);
+
+//   useEffect(() => {
+//     clusterer.current?.clearMarkers();
+//     clusterer.current?.addMarkers(Object.values(markers));
+//   }, [markers]);
+
+
+//   const setMarkerRef = (marker, key) => {
+//   // Only update if marker is truly new or removed
+//   if (marker && markers[key] === marker) return;
+//   if (!marker && !markers[key]) return;
+
+//   setMarkers((prev) => {
+//     if (marker) {
+//       return { ...prev, [key]: marker };
+//     } else {
+//       const newMarkers = { ...prev };
+//       delete newMarkers[key];
+//       return newMarkers;
+//     }
+//   });
+// };
+
+
+//   // Cache for adjusted coordinates
+//   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
+//   const [usedCoords, setUsedCoords] = useState(new Set());
+
+//   const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
+//     if (adjustedCoordsCache[id]) {
+//       return adjustedCoordsCache[id];
+//     }
+
+//     const randomOffset = () => (Math.random() - 0.5) * maxOffset;
+//     let newCoords;
+
+//     do {
+//       newCoords = {
+//         lat: coords.lat + randomOffset(),
+//         lng: coords.lng + randomOffset(),
+//       };
+//     } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
+
+//     // Add the new unique coordinates to the used set and cache
+//     setUsedCoords((prev) => new Set(prev).add(`${newCoords.lat},${newCoords.lng}`));
+//     setAdjustedCoordsCache((prevCache) => ({
+//       ...prevCache,
+//       [id]: newCoords,
+//     }));
+
+//     return newCoords;
+//   };
+
+
+//   return (
+//     <>
+//       {points.map((property) => (
+//         <AdvancedMarker
+//           style={{ height: "100px" }}
+//           position={property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords, property._id)}
+//           key={property._id}
+//           ref={(marker) => setMarkerRef(marker, property._id)}
+//           onClick={() => onMarkerClick(property)} // When marker is clicked
+//         >
+//           <Pin
+//             background={"red"}
+//             glyphColor={"white"}
+//             className={"position-relative"}
+//           >
+//             <span
+//               className="font-weight-bold p-1 position-absolute"
+//               style={{
+
+//                 backgroundColor: "#d2ff90",
+//                 left: "50%",
+//                 transform: "translate(-50%, -90%)",
+//                 marginTop: "1rem",
+//                 borderRadius: "5px",
+//                 color: "#000",
+//                 fontSize: "1rem",
+//                 border: "2px solid red",
+//                 borderRadius: "15px",
+//                 whiteSpace: "nowrap", // Prevent line breaks
+//               }}
+//             >
+//               <small>Ar</small>{(property.rent || property.price) &&
+//                 formatPrice(property.rent || property.price)}
+//               {property?.coords &&
+//                 <small>
+//                   <ImLocation style={{ marginBottom: "5px", color: "red" }} />
+//                 </small>}
+//             </span>
+
+//           </Pin>
+//         </AdvancedMarker>
+//       ))}
+//     </>
+//   );
+// };
+
 const Markers = ({ points, onMarkerClick }) => {
   const map = useMap();
   const { formatPrice } = useProperty();
 
-  const [markers, setMarkers] = useState({});
+  const markersRef = useRef([]);
   const clusterer = useRef(null);
-
-  useEffect(() => {
-    if (!map) return;
-    if (!clusterer.current) {
-      clusterer.current = new MarkerClusterer({ map });
-    }
-  }, [map]);
-
-  useEffect(() => {
-    clusterer.current?.clearMarkers();
-    clusterer.current?.addMarkers(Object.values(markers));
-  }, [markers]);
-
-  const setMarkerRef = (marker, key) => {
-    if (marker && markers[key]) return;
-    if (!marker && !markers[key]) return;
-    setMarkers((prev) => {
-      if (marker) {
-        return { ...prev, [key]: marker };
-      } else {
-        const newMarkers = { ...prev };
-        delete newMarkers[key];
-        return newMarkers;
-      }
-    });
-  };
 
   // Cache for adjusted coordinates
   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
@@ -315,49 +418,72 @@ const Markers = ({ points, onMarkerClick }) => {
     return newCoords;
   };
 
+  const createCustomMarkerIcon = (property) => {
+    const price = formatPrice(property.rent || property.price);
 
-  return (
-    <>
-      {points.map((property) => (
-        <AdvancedMarker
-          style={{ height: "100px" }}
-          position={property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords, property._id)}
-          key={property._id}
-          ref={(marker) => setMarkerRef(marker, property._id)}
-          onClick={() => onMarkerClick(property)} // When marker is clicked
-        >
-          <Pin
-            background={"red"}
-            glyphColor={"white"}
-            className={"position-relative"}
-          >
-            <span
-              className="font-weight-bold p-1 position-absolute"
-              style={{
+    // Define width and height
+    const width = 90;
+    const rectHeight = 30;
+    const tipHeight = 5; // small tip
 
-                backgroundColor: "#d2ff90",
-                left: "50%",
-                transform: "translate(-50%, -90%)",
-                marginTop: "1rem",
-                borderRadius: "5px",
-                color: "#000",
-                fontSize: "1rem",
-                border: "2px solid red",
-                borderRadius: "15px",
-                whiteSpace: "nowrap", // Prevent line breaks
-              }}
-            >
-              <small>Ar</small>{(property.rent || property.price) &&
-                formatPrice(property.rent || property.price)}
-              {property?.coords &&
-                <small>
-                  <ImLocation style={{ marginBottom: "5px", color: "red" }} />
-                </small>}
-            </span>
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${rectHeight + tipHeight + 10}">
+      <!-- Rectangle -->
+      <rect x="5" y="5" rx="15" ry="15" width="${width - 10}" height="${rectHeight}" fill="#d2ff90" stroke="red" stroke-width="2"/>
+      
+      <!-- Text -->
+      <text x="${width / 2}" y="${5 + rectHeight / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="#000">Ar ${price}</text>
+      
+      <!-- Pointer tip -->
+      <polygon points="${width / 2 - 5},${rectHeight + 5} ${width / 2 + 5},${rectHeight + 5} ${width / 2},${rectHeight + 5 + tipHeight}" fill="red" stroke="red" stroke-width="2"/>
+    </svg>
+  `;
 
-          </Pin>
-        </AdvancedMarker>
-      ))}
-    </>
-  );
+    return {
+      url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
+      scaledSize: new window.google.maps.Size(width, rectHeight + tipHeight + 10),
+      anchor: new window.google.maps.Point(width / 2, rectHeight + tipHeight + 10), // makes the tip land on coords
+    };
+  };
+
+
+  useEffect(() => {
+    if (!map) return;
+
+    // Clear old markers
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current = [];
+
+    // Create new markers
+    const newMarkers = points.map((property) => {
+      const marker = new window.google.maps.Marker({
+        position: property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords, property._id),
+        map,
+        icon: createCustomMarkerIcon(property),
+      });
+
+      marker.addListener("click", () => {
+        onMarkerClick(property);
+      });
+
+      return marker;
+    });
+
+    // Create or update clusterer
+    if (clusterer.current) {
+      clusterer.current.clearMarkers();
+      clusterer.current.addMarkers(newMarkers);
+    } else {
+      clusterer.current = new MarkerClusterer({ map, markers: newMarkers });
+    }
+
+    markersRef.current = newMarkers;
+
+    // Cleanup on unmount
+    return () => {
+      newMarkers.forEach((marker) => marker.setMap(null));
+    };
+  }, [points, map]);
+
+  return null; // We no longer render JSX markers directly
 };
