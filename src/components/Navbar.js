@@ -281,7 +281,7 @@ const Navbar = () => {
                   className="ml-1 btn btn-sm btn-outline-success"
                   type="button"
                   onClick={(e) => {
-                   (payments && payments.filter((payment) => (payment.status === "refused" || payment.status === "redone")).length > 0) ? unpaidBillPopup() : setLocation("/search");
+                   (payments && payments.filter((payment) => (payment.status === "refused" || payment.status === "redone")).length > 0) ? unpaidBillPopup() : setLocation("/tranogasyMap");
                   }}
                 >
                   Chercher{" "}

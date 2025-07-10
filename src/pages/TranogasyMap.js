@@ -22,9 +22,11 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
 import { ImLocation } from "react-icons/im";
-import { LuSettings2 } from "react-icons/lu";
 
 export default function TranogasyMap() {
+
+  const properties = useSelector((state) => state.properties);
+
   const searchForm = useSelector((state) => state.searchForm);
   console.log("Search Form: ", searchForm);
 
@@ -56,9 +58,11 @@ export default function TranogasyMap() {
     return <NoResultFound searchForm={searchForm} />;
   }
   if (!searchResults) {
-    return <SearchLoader />;
+    // return <SearchLoader />;
+    return <MyMap properties={properties} />;
   }
 }
+
 
 function MyMap({ properties }) {
   const geolocation = useSelector((state) => state.geolocation);

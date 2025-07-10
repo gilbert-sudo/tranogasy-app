@@ -22,6 +22,8 @@ const SignUpVerificationPage = () => {
   const inputRefs = useRef([]);
 
   const code = signupWaitlist.confirmationCode;
+  console.log("Code de confirmation:", code);
+  
   const phone = signupWaitlist.phone;
 
   const handleInputChange = (e, index) => {

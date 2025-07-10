@@ -5,6 +5,7 @@ import {
   setLikedPropreties,
   setNotifications,
   setProperties,
+  setSearchResults,
   setTopProperties,
   setQuartersName,
   setUsersProperties,
@@ -117,6 +118,7 @@ export const useLoader = () => {
 
       if (response.ok) {
         dispatch(setProperties(json));
+        dispatch(setSearchResults(json));
       }
     } catch (error) {
       console.log(error);

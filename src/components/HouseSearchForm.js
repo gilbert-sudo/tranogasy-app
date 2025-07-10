@@ -13,9 +13,6 @@ import {
 } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap } from "../hooks/useMap";
-import AutosuggestInput from "../components/AutosuggestInput";
-import DistrictAutosuggestInput from "./DistrictAutosuggestInput";
-import CommuneAutosuggestInput from "./CommuneAutosuggestInput";
 import RoomSelector from "./RoomSelector";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
@@ -38,6 +35,9 @@ import {
   FaShieldAlt,
   FaSwimmingPool,
   FaHotTub,
+  FaHome,
+  FaKey,
+  FaUsers,
 } from "react-icons/fa";
 import {
   FaFaucetDrip,
@@ -82,6 +82,7 @@ const HouseSearchForm = () => {
 
   const [isRent, setIsRent] = useState(true);
   const [isSale, setIsSale] = useState(false);
+  const [isColoc, setIsColoc] = useState(false);
   const [priceRange, setPriceRange] = useState(
     properties ? getPriceAndRentRanges(properties) : null
   );
@@ -119,8 +120,8 @@ const HouseSearchForm = () => {
   const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
     return (
       <div
-        style={{ borderRadius: "10px", cursor: "pointer" }}
-        className={`btn-group w-100 border py-1 border-dark px-2 mx-2 my-1 ${state ? "bg-secondary" : "bg-light"
+        style={{ borderRadius: "20px", padding: "10px", cursor: "pointer", border: "1px solid #ccc" }}
+        className={`btn-group ${state ? "bg-secondary" : "bg-light"
           }`}
         role="group"
         onClick={onClickFunction}
@@ -144,9 +145,9 @@ const HouseSearchForm = () => {
                 <GiCheckMark className="text-success" />
               </sub>
             )}{" "}
-            <feature className={`${state ? "text-white" : ""}`}>
+            <small className={`${state ? "text-white" : ""}`}>
               {label}
-            </feature>
+            </small>
           </label>
         </div>
       </div>
@@ -156,12 +157,21 @@ const HouseSearchForm = () => {
   const handleRentClick = () => {
     setIsRent(true);
     setIsSale(false);
+    setIsColoc(false);
   };
 
   const handleSaleClick = () => {
     setIsRent(false);
     setIsSale(true);
+    setIsColoc(false);
   };
+
+  const handleColocClick = () => {
+    setIsRent(false);
+    setIsSale(false);
+    setIsColoc(true);
+  };
+
 
   useEffect(() => {
     const pageLoader = async () => {
@@ -456,29 +466,10 @@ const HouseSearchForm = () => {
 
   return (
     <div className="create-listing">
-      <div
-        className="create-listing pt-3"
-        style={{ backgroundColor: "#F0F5F9" }}
-      >
-        <div
-          className="site-section site-section-sm"
-          style={{ backgroundColor: "#F0F5F9" }}
-        >
+      <div className="create-listing">
+        <div className="site-section site-section-sm">
           <form method="post" onSubmit={handleSubmit}>
-            <div
-              className="container"
-              style={
-                mapInputOnFocus
-                  ? { minHeight: "102vh", paddingBottom: "70px" }
-                  : { paddingBottom: "50px" }
-              }
-            >
-              <div className="d-flex justify-content-between">
-                <h6 className="font-weight-light text-uppercase mb-4">
-                  Chercher une maison :
-                </h6>
-              </div>
-
+            <div className="container">
               <div id="nav-tab-rent" className="tab-pane fade show active">
                 {!byNumber && (
                   <>
@@ -487,43 +478,170 @@ const HouseSearchForm = () => {
                         <strong className="text-danger">*</strong>{" "}
                         <strong>Type d'offre :</strong>
                       </label>
-                      <div className="input-group">
-                        <div className="d-flex justify-content-center px-1">
-                          <button
-                            style={{ border: "1px solid", borderRadius: "10px" }}
-                            type="button"
-                            className={`btn-sm mx-1 ${isRent
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={handleRentClick}
-                          >
-                            <b>Location</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ border: "1px solid", borderRadius: "10px" }}
-                            className={`btn-sm mr-1 ${isSale
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={handleSaleClick}
-                          >
-                            <b>Vente</b>
-                          </button>
-                        </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: "10px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={handleRentClick}
+                          style={{
+                            flex: "1 1 20%",
+                            padding: "12px 16px",
+                            borderRadius: "20px",
+                            border: isRent ? "2px solid #6b7280" : "1px solid #aaa",
+                            backgroundColor: isRent ? "#6b7280" : "#fff",
+                            color: isRent ? "#fff" : "#333",
+                            fontWeight: "500",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                            transition: "all 0.2s ease",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <FaKey />
+                          Location
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleSaleClick}
+                          style={{
+                            flex: "1 1 20%",
+                            padding: "12px 16px",
+                            borderRadius: "20px",
+                            border: isSale ? "2px solid #6b7280" : "1px solid #aaa",
+                            backgroundColor: isSale ? "#6b7280" : "#fff",
+                            color: isSale ? "#fff" : "#333",
+                            fontWeight: "500",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                            transition: "all 0.2s ease",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <FaHome />
+                          Vente
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleColocClick}
+                          style={{
+                            flex: "1 1 20%",
+                            padding: "12px 16px",
+                            borderRadius: "20px",
+                            border: isColoc ? "2px solid #6b7280" : "1px solid #aaa",
+                            backgroundColor: isColoc ? "#6b7280" : "#fff",
+                            color: isColoc ? "#fff" : "#333",
+                            fontWeight: "500",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                            transition: "all 0.2s ease",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <FaUsers />
+                          Colocation
+                        </button>
                       </div>
                     </div>
+
+
                     <div className="form-group">
-                      <label>
-                        <span className="hidden-xs">
-                          <strong className="text-danger">*</strong>{" "}
-                          <strong>
-                            Votre budget {isRent && "(en Ar/mois)"}
-                            {isSale && "(en Ar)"} :
-                          </strong>
-                        </span>
+                      <label htmlFor="cardNumber">
+                        <strong className="text-danger">*</strong>{" "}
+                        <strong>Votre budget {isRent && "(en Ar/mois)"}
+                          {isSale && "(en Ar)"} :</strong> <br />
                       </label>
+                      <div style={{ display: "flex", gap: "10px", marginTop: "10px", marginBottom: "20px" }}>
+                        {/* Minimum */}
+                        <div style={{ position: "relative", flex: 1 }}>
+                          <label
+                            style={{
+                              position: "absolute",
+                              top: "-10px",
+                              left: "15px",
+                              background: "white",
+                              padding: "0 6px",
+                              fontSize: "13px",
+                              color: "#333",
+                            }}
+                          >
+                            Minimum Ar
+                          </label>
+                          <input
+                            type="number"
+                            placeholder="Minimum"
+                            value={
+                              Math.min(...rangeValue) !== 0 ? Math.min(...rangeValue) : ""
+                            }
+                            style={{
+                              width: "100%",
+                              border: "1px solid #999",
+                              borderRadius: "20px",
+                              padding: "12px",
+                              textAlign: "center",
+                            }}
+                            onChange={(e) =>
+                              setRangeValue([
+                                Number(e.target.value),
+                                Math.max(...rangeValue),
+                              ])
+                            }
+                          />
+                        </div>
+
+                        {/* Maximum */}
+                        <div style={{ position: "relative", flex: 1 }}>
+                          <label
+                            style={{
+                              position: "absolute",
+                              top: "-10px",
+                              left: "15px",
+                              background: "white",
+                              padding: "0 6px",
+                              fontSize: "13px",
+                              color: "#333",
+                            }}
+                          >
+                            Maximum Ar
+                          </label>
+                          <input
+                            type="number"
+                            placeholder="Maximum"
+                            value={
+                              Math.max(...rangeValue) !== 0 ? Math.max(...rangeValue) : ""
+                            }
+                            style={{
+                              width: "100%",
+                              border: "1px solid #999",
+                              borderRadius: "20px",
+                              padding: "12px",
+                              textAlign: "center",
+                            }}
+                            onChange={(e) =>
+                              setRangeValue([
+                                Math.min(...rangeValue),
+                                Number(e.target.value),
+                              ])
+                            }
+                          />
+                        </div>
+
+                      </div>
+
                       <RangeSlider
                         min={
                           priceRange
@@ -542,67 +660,60 @@ const HouseSearchForm = () => {
                         value={rangeValue}
                         onInput={setRangeValue}
                       />
-                      <div className="d-flex align-item-center justify-content-between">
-                        <div className="mr-3 w-50">
-                          <center>
-                            <small>Minimum</small>
-                          </center>
-                          <input
-                            type="number"
-                            placeholder="Minimum"
-                            value={
-                              Math.min(...rangeValue) !== 0
-                                ? Math.min(...rangeValue)
-                                : ""
-                            }
-                            style={{ borderRadius: "30px" }}
-                            className="form-control"
-                            onChange={(e) =>
-                              setRangeValue([
-                                Number(e.target.value),
-                                Math.max(...rangeValue),
-                              ])
-                            }
-                          />
-                        </div>
-                        <div className="ml-3 w-50">
-                          <center>
-                            <small>Maximum</small>
-                          </center>
-                          <input
-                            type="number"
-                            placeholder="Maximum"
-                            style={{ borderRadius: "30px" }}
-                            className="form-control"
-                            value={
-                              Math.max(...rangeValue) !== 0
-                                ? Math.max(...rangeValue)
-                                : ""
-                            }
-                            onChange={(e) =>
-                              setRangeValue([
-                                Math.min(...rangeValue),
-                                Number(e.target.value),
-                              ])
-                            }
-                          />
-                        </div>
-                      </div>
                     </div>
+
                     <div className="form-group">
                       <label htmlFor="cardNumber">
                         <strong className="text-danger">*</strong>{" "}
-                        <strong>Sélectionnez le nombre de chambres :</strong> <br />
-                        <span className="hidden-xs">
-                          <small className="text-dark">
-                            <small className="text-danger ml-2">NB:</small> Living room et cuisine inclus
-                          </small>
-                        </span>
+                        <strong>Sélectionnez le nombre de pièces  :</strong> <br />
                       </label>
-                      <div className="input-group w-100">
-                        <RoomSelector selectedRoom={selectedRoom} setSelectedRoom={setSelectedRoom} customRoom={customRoom} setCustomRoom={setCustomRoom} />
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                          marginTop: "10px",
+                        }}
+                      >
+                        {/* Exemple boutons pour sélectionner rapidement */}
+                        {["1+", "2+", "3+", "4+", "5+"].map((room) => (
+                          <button
+                            key={room}
+                            type="button"
+                            onClick={() => setSelectedRoom(room)}
+                            style={{
+                              flex: "1 1 5%",
+                              padding: "8px",
+                              borderRadius: "20px",
+                              border: selectedRoom === room ? "2px solid #6b7280" : "1px solid #999",
+                              backgroundColor: selectedRoom === room ? "#6b7280" : "#fff",
+                              color: selectedRoom === room ? "#fff" : "#333",
+                              fontWeight: "500",
+                              textAlign: "center",
+                            }}
+                          >
+                            {room}
+                          </button>
+                        ))}
+
+                        {/* Champ personnalisé */}
+                        <input
+                          type="number"
+                          placeholder="Autre..."
+                          value={customRoom}
+                          onChange={(e) => setCustomRoom(e.target.value)}
+                          style={{
+                            flex: "1 1 45%",
+                            padding: "10px",
+                            borderRadius: "20px",
+                            border: "1px solid #999",
+                            textAlign: "center",
+                          }}
+                        />
                       </div>
                     </div>
+
                     <div className="form-group">
                       <label htmlFor="cardNumber">
                         <strong className="text-danger">*</strong>{" "}
@@ -611,70 +722,61 @@ const HouseSearchForm = () => {
                         </strong>
                       </label>
 
-                      <div className="input-group">
+                      <div className="d-flex flex-wrap"
+                        style={{
+                          gap: "4px",
+                          marginBottom: "12px",
+                        }}>
                         <GenerateCheckbox
                           icon={<FaMotorcycle />}
                           state={motoAccess}
-                          label={"Accès pour moto"}
+                          label={"Accès moto"}
                           onClickFunction={() => {
                             setMotoAccess(!motoAccess);
                             if (carAccess === true) setMotoAccess(true);
                           }}
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaCar />}
                           state={carAccess}
-                          label={"Accès pour voiture"}
+                          label={"Accès voiture"}
                           onClickFunction={() => {
                             setCarAccess(!carAccess);
                             if (carAccess === false) setMotoAccess(true);
                           }}
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaWifi />}
                           state={wifiAvailability}
-                          label={"De la connexion Wi-Fi"}
+                          label={"Wi-Fi"}
                           onClickFunction={() =>
                             setWifiAvailability(!wifiAvailability)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaParking />}
                           state={parkingSpaceAvailable}
-                          label={"Espace de stationnement"}
+                          label={"Parking"}
                           onClickFunction={() =>
                             setParkingSpaceAvailable(!parkingSpaceAvailable)
                           }
                         />
-                      </div>
-
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaFaucetDrip />}
                           state={waterPumpSupplyJirama}
-                          label={"Robinet d'eau de la JI.RA.MA"}
+                          label={"Eau de la JI.RA.MA"}
                           onClickFunction={() =>
                             setWaterPumpSupplyJirama(!waterPumpSupplyJirama)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaOilWell />}
                           state={waterPumpSupply}
-                          label={"Pompe à eau privee"}
+                          label={"Pompe à eau"}
                           onClickFunction={() =>
                             setWaterPumpSupply(!waterPumpSupply)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<GiWell />}
                           state={waterWellSupply}
@@ -683,65 +785,50 @@ const HouseSearchForm = () => {
                             setWaterWellSupply(!waterWellSupply)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaPlugCircleBolt />}
                           state={electricityJirama}
-                          label={"Électricité fournie par la JI.RA.MA"}
+                          label={"Électricité JI.RA.MA"}
                           onClickFunction={() =>
                             setElectricityJirama(!electricityJirama)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaPlugCircleCheck />}
                           state={electricityPower}
-                          label={"Alimentation en électricité privee"}
+                          label={"Électricité privée"}
                           onClickFunction={() =>
                             setElectricityPower(!electricityPower)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<GiBrickWall />}
                           state={surroundedByWalls}
-                          label={"Propriété entourée de murs"}
+                          label={"Clôturé"}
                           onClickFunction={() =>
                             setSurroundedByWalls(!surroundedByWalls)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaShieldAlt />}
                           state={securitySystem}
-                          label={"Domaine sécurisé"}
+                          label={"Sécurisé"}
                           onClickFunction={() =>
                             setSecuritySystem(!securitySystem)
                           }
                         />
-                      </div>
-
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<TbBuildingCastle />}
                           state={terrace}
-                          label={"avec terrasse disponible."}
+                          label={"Terrasse."}
                           onClickFunction={() => setTerrace(!terrace)}
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaSwimmingPool />}
                           state={swimmingPool}
-                          label={"Avec piscine."}
+                          label={"Piscine."}
                           onClickFunction={() => setSwimmingPool(!swimmingPool)}
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaKitchenSet />}
                           state={kitchenFacilities}
@@ -750,8 +837,6 @@ const HouseSearchForm = () => {
                             setKitchenFacilities(!kitchenFacilities)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<MdOutlineLiving />}
                           state={furnishedProperty}
@@ -760,28 +845,22 @@ const HouseSearchForm = () => {
                             setFurnishedProperty(!furnishedProperty)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<FaHotTub />} // Hot water icon
                           state={hotWaterAvailable}
-                          label={"Eau chaude disponible"} // Appropriate label in French
+                          label={"Eau chaude"} // Appropriate label in French
                           onClickFunction={() => {
                             setHotWaterAvailable(!hotWaterAvailable);
                           }}
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<TbAirConditioning />}
                           state={airConditionerAvailable}
-                          label={"Climatisation disponible"}
+                          label={"Climatiseur"}
                           onClickFunction={() =>
                             setAirConditionerAvailable(!airConditionerAvailable)
                           }
                         />
-                      </div>
-                      <div className="input-group">
                         <GenerateCheckbox
                           icon={<GiSmokeBomb />}
                           state={smokeDetectorsAvailable}

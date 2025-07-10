@@ -34,7 +34,7 @@ const HomeSlider = () => {
               <p className="align-self-end">
                 <button
                   type="button"
-                  onClick={() => setLocation("/search")}
+                  onClick={() => setLocation("/tranogasyMap")}
                   className="btn btn-white btn-outline-white btn-5 font-weight-bold"
                   style={{ borderRadius: "30px" }}
                 >
