@@ -529,7 +529,7 @@ const HouseSearchForm = () => {
 
                         <button
                           type="button"
-                          onClick={handleSaleClick}
+                          onClick={() => alert("Fonctionnalité en cours de développement")}
                           style={{
                             minWidth: "100px",
                             padding: "10px 14px",
@@ -553,7 +553,7 @@ const HouseSearchForm = () => {
 
                         <button
                           type="button"
-                          onClick={handleColocClick}
+                          onClick={() => alert("Fonctionnalité en cours de développement")}
                           style={{
                             minWidth: "100px",
                             padding: "10px 14px",
@@ -584,7 +584,7 @@ const HouseSearchForm = () => {
                         marginTop: "20px",
                       }}
                     >
-                      <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280" }}>
+                      <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280"}}>
                         Votre budget {isRent && "(en Ar/mois)"} {isSale && "(en Ar)"}
                       </label>
 
