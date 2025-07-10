@@ -469,31 +469,47 @@ const HouseSearchForm = () => {
       <div className="create-listing">
         <div className="site-section site-section-sm">
           <form method="post" onSubmit={handleSubmit}>
-            <div className="container">
+            <div className="container pb-3">
               <div id="nav-tab-rent" className="tab-pane fade show active">
                 {!byNumber && (
                   <>
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Type d'offre :</strong>
+                    <div
+                      style={{
+                        position: "relative",
+                        border: "1px solid #6b7280",
+                        borderRadius: "20px",
+                        padding: "20px",
+                      }}
+                    >
+                      <label
+                        style={{
+                          position: "absolute",
+                          top: "-10px",
+                          left: "15px",
+                          background: "#fff",
+                          padding: "0 6px",
+                          fontSize: "14px",
+                          color: "#6b7280",
+                        }}
+                      >
+                        Type d'offre
                       </label>
 
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "center",
-                          gap: "10px",
-                          flexWrap: "wrap",
+                          gap: "8px",
+                          flexWrap: "nowrap",
                         }}
                       >
                         <button
                           type="button"
                           onClick={handleRentClick}
                           style={{
-                            flex: "1 1 20%",
-                            padding: "12px 16px",
-                            borderRadius: "20px",
+                            minWidth: "100px",
+                            padding: "10px 14px",
+                            borderRadius: "16px",
                             border: isRent ? "2px solid #6b7280" : "1px solid #aaa",
                             backgroundColor: isRent ? "#6b7280" : "#fff",
                             color: isRent ? "#fff" : "#333",
@@ -501,9 +517,10 @@ const HouseSearchForm = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            gap: "8px",
+                            gap: "6px",
                             transition: "all 0.2s ease",
                             cursor: "pointer",
+                            fontSize: "12px",
                           }}
                         >
                           <FaKey />
@@ -514,9 +531,9 @@ const HouseSearchForm = () => {
                           type="button"
                           onClick={handleSaleClick}
                           style={{
-                            flex: "1 1 20%",
-                            padding: "12px 16px",
-                            borderRadius: "20px",
+                            minWidth: "100px",
+                            padding: "10px 14px",
+                            borderRadius: "16px",
                             border: isSale ? "2px solid #6b7280" : "1px solid #aaa",
                             backgroundColor: isSale ? "#6b7280" : "#fff",
                             color: isSale ? "#fff" : "#333",
@@ -524,9 +541,10 @@ const HouseSearchForm = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            gap: "8px",
+                            gap: "6px",
                             transition: "all 0.2s ease",
                             cursor: "pointer",
+                            fontSize: "12px",
                           }}
                         >
                           <FaHome />
@@ -537,9 +555,9 @@ const HouseSearchForm = () => {
                           type="button"
                           onClick={handleColocClick}
                           style={{
-                            flex: "1 1 20%",
-                            padding: "12px 16px",
-                            borderRadius: "20px",
+                            minWidth: "100px",
+                            padding: "10px 14px",
+                            borderRadius: "16px",
                             border: isColoc ? "2px solid #6b7280" : "1px solid #aaa",
                             backgroundColor: isColoc ? "#6b7280" : "#fff",
                             color: isColoc ? "#fff" : "#333",
@@ -547,9 +565,10 @@ const HouseSearchForm = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            gap: "8px",
+                            gap: "6px",
                             transition: "all 0.2s ease",
                             cursor: "pointer",
+                            fontSize: "12px",
                           }}
                         >
                           <FaUsers />
@@ -558,25 +577,37 @@ const HouseSearchForm = () => {
                       </div>
                     </div>
 
-
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Votre budget {isRent && "(en Ar/mois)"}
-                          {isSale && "(en Ar)"} :</strong> <br />
+                    <div
+                      style={{
+                        position: "relative",
+                        borderRadius: "20px",
+                        marginTop: "20px",
+                      }}
+                    >
+                      <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280" }}>
+                        Votre budget {isRent && "(en Ar/mois)"} {isSale && "(en Ar)"}
                       </label>
-                      <div style={{ display: "flex", gap: "10px", marginTop: "10px", marginBottom: "20px" }}>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          marginTop: "10px",
+                          marginBottom: "20px",
+                          flexWrap: "wrap",
+                        }}
+                      >
                         {/* Minimum */}
-                        <div style={{ position: "relative", flex: 1 }}>
+                        <div style={{ position: "relative", flex: "1 1 150px" }}>
                           <label
                             style={{
                               position: "absolute",
                               top: "-10px",
                               left: "15px",
-                              background: "white",
+                              background: "#fff",
                               padding: "0 6px",
-                              fontSize: "13px",
-                              color: "#333",
+                              fontSize: "12px",
+                              color: "#6b7280",
                             }}
                           >
                             Minimum Ar
@@ -584,15 +615,14 @@ const HouseSearchForm = () => {
                           <input
                             type="number"
                             placeholder="Minimum"
-                            value={
-                              Math.min(...rangeValue) !== 0 ? Math.min(...rangeValue) : ""
-                            }
+                            value={Math.min(...rangeValue) !== 0 ? Math.min(...rangeValue) : ""}
                             style={{
                               width: "100%",
                               border: "1px solid #999",
-                              borderRadius: "20px",
-                              padding: "12px",
+                              borderRadius: "16px",
+                              padding: "10px",
                               textAlign: "center",
+                              fontSize: "13px",
                             }}
                             onChange={(e) =>
                               setRangeValue([
@@ -604,16 +634,16 @@ const HouseSearchForm = () => {
                         </div>
 
                         {/* Maximum */}
-                        <div style={{ position: "relative", flex: 1 }}>
+                        <div style={{ position: "relative", flex: "1 1 150px" }}>
                           <label
                             style={{
                               position: "absolute",
                               top: "-10px",
                               left: "15px",
-                              background: "white",
+                              background: "#fff",
                               padding: "0 6px",
-                              fontSize: "13px",
-                              color: "#333",
+                              fontSize: "12px",
+                              color: "#6b7280",
                             }}
                           >
                             Maximum Ar
@@ -621,15 +651,14 @@ const HouseSearchForm = () => {
                           <input
                             type="number"
                             placeholder="Maximum"
-                            value={
-                              Math.max(...rangeValue) !== 0 ? Math.max(...rangeValue) : ""
-                            }
+                            value={Math.max(...rangeValue) !== 0 ? Math.max(...rangeValue) : ""}
                             style={{
                               width: "100%",
                               border: "1px solid #999",
-                              borderRadius: "20px",
-                              padding: "12px",
+                              borderRadius: "16px",
+                              padding: "10px",
                               textAlign: "center",
+                              fontSize: "13px",
                             }}
                             onChange={(e) =>
                               setRangeValue([
@@ -639,7 +668,6 @@ const HouseSearchForm = () => {
                             }
                           />
                         </div>
-
                       </div>
 
                       <RangeSlider
@@ -662,71 +690,110 @@ const HouseSearchForm = () => {
                       />
                     </div>
 
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Sélectionnez le nombre de pièces  :</strong> <br />
+
+                    <div
+                      style={{
+                        position: "relative",
+                        border: "1px solid #6b7280",
+                        borderRadius: "20px",
+                        padding: "20px",
+                        marginTop: "40px",
+                      }}
+                    >
+                      <label
+                        style={{
+                          position: "absolute",
+                          top: "-10px",
+                          left: "15px",
+                          background: "#fff",
+                          padding: "0 6px",
+                          fontSize: "14px",
+                          color: "#6b7280",
+                        }}
+                      >
+                        Nombre de pièces
                       </label>
 
                       <div
                         style={{
                           display: "flex",
+                          alignItems: "center",
                           flexWrap: "wrap",
-                          gap: "10px",
-                          marginTop: "10px",
+                          gap: "8px",
                         }}
                       >
-                        {/* Exemple boutons pour sélectionner rapidement */}
-                        {["1+", "2+", "3+", "4+", "5+"].map((room) => (
-                          <button
-                            key={room}
-                            type="button"
-                            onClick={() => setSelectedRoom(room)}
-                            style={{
-                              flex: "1 1 5%",
-                              padding: "8px",
-                              borderRadius: "20px",
-                              border: selectedRoom === room ? "2px solid #6b7280" : "1px solid #999",
-                              backgroundColor: selectedRoom === room ? "#6b7280" : "#fff",
-                              color: selectedRoom === room ? "#fff" : "#333",
-                              fontWeight: "500",
-                              textAlign: "center",
-                            }}
-                          >
-                            {room}
-                          </button>
-                        ))}
+                        <span style={{ width: "100px", fontWeight: "500" }}>Sélection :</span>
 
-                        {/* Champ personnalisé */}
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            gap: "6px",
+                            flexWrap: "nowrap",
+                            flex: 1,
+                          }}
+                        >
+                          {["1+", "2+", "3+", "4+", "5+"].map((room) => (
+                            <button
+                              key={room}
+                              type="button"
+                              onClick={() => setSelectedRoom(room)}
+                              style={{
+                                minWidth: "50px",
+                                padding: "6px 10px",
+                                borderRadius: "16px",
+                                border: selectedRoom === room ? "2px solid #6b7280" : "1px solid #999",
+                                backgroundColor: selectedRoom === room ? "#6b7280" : "#fff",
+                                color: selectedRoom === room ? "#fff" : "#333",
+                                fontSize: "12px",
+                                fontWeight: "500",
+                                transition: "all 0.2s ease",
+                              }}
+                            >
+                              {room}
+                            </button>
+                          ))}
+                        </div>
+
                         <input
                           type="number"
                           placeholder="Autre..."
                           value={customRoom}
                           onChange={(e) => setCustomRoom(e.target.value)}
                           style={{
-                            flex: "1 1 45%",
-                            padding: "10px",
-                            borderRadius: "20px",
+                            minWidth: "80px",
+                            padding: "6px 10px",
+                            borderRadius: "16px",
                             border: "1px solid #999",
                             textAlign: "center",
+                            fontSize: "12px",
+                            flex: "0 0 auto",
                           }}
                         />
                       </div>
                     </div>
 
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>
+                    <div className="form-group" style={{ marginTop: "20px" }}>
+                      <div
+                        style={{
+                          position: "relative",
+                          display: "inline-block",
+                          padding: "0 8px",
+                          backgroundColor: "#fff",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280" }}>
                           Cliquez sur ce que vous souhaitez trouver :
-                        </strong>
-                      </label>
+                        </label>
+                      </div>
 
-                      <div className="d-flex flex-wrap"
+                      <div
+                        className="d-flex flex-wrap"
                         style={{
                           gap: "4px",
                           marginBottom: "12px",
-                        }}>
+                        }}
+                      >
                         <GenerateCheckbox
                           icon={<FaMotorcycle />}
                           state={motoAccess}
@@ -749,49 +816,37 @@ const HouseSearchForm = () => {
                           icon={<FaWifi />}
                           state={wifiAvailability}
                           label={"Wi-Fi"}
-                          onClickFunction={() =>
-                            setWifiAvailability(!wifiAvailability)
-                          }
+                          onClickFunction={() => setWifiAvailability(!wifiAvailability)}
                         />
                         <GenerateCheckbox
                           icon={<FaParking />}
                           state={parkingSpaceAvailable}
                           label={"Parking"}
-                          onClickFunction={() =>
-                            setParkingSpaceAvailable(!parkingSpaceAvailable)
-                          }
+                          onClickFunction={() => setParkingSpaceAvailable(!parkingSpaceAvailable)}
                         />
                         <GenerateCheckbox
                           icon={<FaFaucetDrip />}
                           state={waterPumpSupplyJirama}
                           label={"Eau de la JI.RA.MA"}
-                          onClickFunction={() =>
-                            setWaterPumpSupplyJirama(!waterPumpSupplyJirama)
-                          }
+                          onClickFunction={() => setWaterPumpSupplyJirama(!waterPumpSupplyJirama)}
                         />
                         <GenerateCheckbox
                           icon={<FaOilWell />}
                           state={waterPumpSupply}
                           label={"Pompe à eau"}
-                          onClickFunction={() =>
-                            setWaterPumpSupply(!waterPumpSupply)
-                          }
+                          onClickFunction={() => setWaterPumpSupply(!waterPumpSupply)}
                         />
                         <GenerateCheckbox
                           icon={<GiWell />}
                           state={waterWellSupply}
                           label={"Un puits d'eau"}
-                          onClickFunction={() =>
-                            setWaterWellSupply(!waterWellSupply)
-                          }
+                          onClickFunction={() => setWaterWellSupply(!waterWellSupply)}
                         />
                         <GenerateCheckbox
                           icon={<FaPlugCircleBolt />}
                           state={electricityJirama}
                           label={"Électricité JI.RA.MA"}
-                          onClickFunction={() =>
-                            setElectricityJirama(!electricityJirama)
-                          }
+                          onClickFunction={() => setElectricityJirama(!electricityJirama)}
                         />
                         <GenerateCheckbox
                           icon={<FaPlugCircleCheck />}
@@ -871,160 +926,178 @@ const HouseSearchForm = () => {
                         />
                       </div>
                     </div>
-                    <div className="form-group" ref={advancedOptionRef}>
-                      <label
-                        data-toggle="tooltip"
-                        title=""
-                        data-original-title="le numéro de l'expéditeur"
-                        className="text-light"
-                      >
-                        <span className="hidden-xs">
-                          <small className="text-danger">NB:</small>{" "}
-                          <small className="text-dark">
-                            Cliquez ici pour{" "}
-                            {!advancedOption ? "activer" : "désactiver"}{" "}
-                            l'option avancee !
-                          </small>
-                        </span>
-                      </label>
-                      <p onClick={handleAdvancedOption}>
-                        <switch
-                          style={{ borderRadius: "10px" }}
-                          className="text-success border border-dark p-1 mr-2"
-                        // className="text-success border border-dark pl-5 pr-1 py-1 mr-2"
-                        >
-                          <minilabel
-                            style={{
-                              borderRadius: "10px",
-                              zIndex: `${advancedOption ? "1" : "10"}`,
-                              position: "relative",
-                            }}
-                            className={`text-light border px-2 ${advancedOption ? "bg-default" : "bg-secondary"
-                              }`}
-                          >
-                            <small> Désactivé </small>
-                          </minilabel>
-                          <minilabel
-                            style={{
-                              borderRadius: "10px",
-                              marginLeft: "-30px",
-                              zIndex: `${advancedOption ? "10" : "1"}`,
-                              position: "relative",
-                            }}
-                            className={`text-light border px-2 ${advancedOption ? "bg-success" : "bg-default"
-                              }`}
-                          >
-                            <small> Activée </small>
-                          </minilabel>
-                        </switch>
-                        <strong>Voir plus d'options</strong>
-                      </p>
-                    </div>
+
                   </>
                 )}
 
-                {advancedOption && !byNumber && (
-                  <>
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Emplacement du toilette (WC):</strong>
-                      </label>
-                      <div className="input-group">
-                        <div className="btn-group" role="group">
-                          <button
-                            style={{ borderRadius: "10px" }}
-                            type="button"
-                            className={`btn btn-form mx-1 ${insideToilet === "all"
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setInsideToilet("all");
-                            }}
-                          >
-                            <b>Tous</b>
-                          </button>
-                          <button
-                            style={{ borderRadius: "10px" }}
-                            type="button"
-                            className={`btn btn-form mr-1 ${insideToilet === true
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setInsideToilet(true);
-                            }}
-                          >
-                            <b>Intérieur</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ borderRadius: "10px" }}
-                            className={`btn btn-form mr-1 ${!insideToilet
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setInsideToilet(false);
-                            }}
-                          >
-                            <b>Extérieur</b>
-                          </button>
-                        </div>
-                      </div>
+                <div
+                  style={{
+                    position: "relative",
+                    border: "1px solid #6b7280",
+                    borderRadius: "20px",
+                    padding: "20px",
+                    marginTop: "20px",
+                  }}
+                >
+                  <label
+                    style={{
+                      position: "absolute",
+                      top: "-10px",
+                      left: "15px",
+                      background: "#fff",
+                      padding: "0 6px",
+                      fontSize: "14px",
+                      color: "#6b7280",
+                    }}
+                  >
+                    Emplacement
+                  </label>
+
+                  {/* Ligne WC */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "15px",
+                    }}
+                  >
+                    <span style={{ width: "80px", fontWeight: "500" }}>WC:</span>
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        gap: "6px",
+                        flexWrap: "nowrap",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setInsideToilet("all")}
+                        style={{
+                          minWidth: "60px",
+                          padding: "6px 10px",
+                          borderRadius: "16px",
+                          border: insideToilet === "all" ? "2px solid #6b7280" : "1px solid #aaa",
+                          backgroundColor: insideToilet === "all" ? "#6b7280" : "#fff",
+                          color: insideToilet === "all" ? "#fff" : "#333",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Tous
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setInsideToilet(true)}
+                        style={{
+                          minWidth: "60px",
+                          padding: "6px 10px",
+                          borderRadius: "16px",
+                          border: insideToilet === true ? "2px solid #6b7280" : "1px solid #aaa",
+                          backgroundColor: insideToilet === true ? "#6b7280" : "#fff",
+                          color: insideToilet === true ? "#fff" : "#333",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Int
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setInsideToilet(false)}
+                        style={{
+                          minWidth: "60px",
+                          padding: "6px 10px",
+                          borderRadius: "16px",
+                          border: insideToilet === false ? "2px solid #6b7280" : "1px solid #aaa",
+                          backgroundColor: insideToilet === false ? "#6b7280" : "#fff",
+                          color: insideToilet === false ? "#fff" : "#333",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Ext
+                      </button>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="cardNumber">
-                        <strong className="text-danger">*</strong>{" "}
-                        <strong>Emplacement de la douche :</strong>
-                      </label>
-                      <div className="input-group">
-                        <div className="btn-group" role="group">
-                          <button
-                            style={{ borderRadius: "10px" }}
-                            type="button"
-                            className={`btn btn-form mx-1 ${insideBathroom === "all"
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setInsideBathroom("all");
-                            }}
-                          >
-                            <b>Tous</b>
-                          </button>
-                          <button
-                            style={{ borderRadius: "10px" }}
-                            type="button"
-                            className={`btn btn-form mr-1 ${insideBathroom === true
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setInsideBathroom(true);
-                            }}
-                          >
-                            <b>Intérieur</b>
-                          </button>
-                          <button
-                            type="button"
-                            style={{ borderRadius: "10px" }}
-                            className={`btn btn-form mr-1 ${!insideBathroom
-                              ? "btn-outline-secondary active"
-                              : "btn-outline-secondary"
-                              }`}
-                            onClick={() => {
-                              setInsideBathroom(false);
-                            }}
-                          >
-                            <b>Extérieur</b>
-                          </button>
-                        </div>
-                      </div>
+                  </div>
+
+                  {/* Ligne Douche */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ width: "80px", fontWeight: "500" }}>Douche:</span>
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        gap: "6px",
+                        flexWrap: "nowrap",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setInsideBathroom("all")}
+                        style={{
+                          minWidth: "60px",
+                          padding: "6px 10px",
+                          borderRadius: "16px",
+                          border: insideBathroom === "all" ? "2px solid #6b7280" : "1px solid #aaa",
+                          backgroundColor: insideBathroom === "all" ? "#6b7280" : "#fff",
+                          color: insideBathroom === "all" ? "#fff" : "#333",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Tous
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setInsideBathroom(true)}
+                        style={{
+                          minWidth: "60px",
+                          padding: "6px 10px",
+                          borderRadius: "16px",
+                          border: insideBathroom === true ? "2px solid #6b7280" : "1px solid #aaa",
+                          backgroundColor: insideBathroom === true ? "#6b7280" : "#fff",
+                          color: insideBathroom === true ? "#fff" : "#333",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Int
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setInsideBathroom(false)}
+                        style={{
+                          minWidth: "60px",
+                          padding: "6px 10px",
+                          borderRadius: "16px",
+                          border: insideBathroom === false ? "2px solid #6b7280" : "1px solid #aaa",
+                          backgroundColor: insideBathroom === false ? "#6b7280" : "#fff",
+                          color: insideBathroom === false ? "#fff" : "#333",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        Ext
+                      </button>
                     </div>
-                  </>
-                )}
+                  </div>
+                </div>
+
+
               </div>
             </div>
             {/* bottom mobile app–style navbar */}
