@@ -80,7 +80,7 @@ function MyMap({ defaultPosition, setCoords }) {
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-      <div style={{ height: "40vh", width: "100%" }}>
+      <div style={{ height: "50vh", width: "100%" , marginBottom: "30px" }}>
         <div className="places-container">
           <CustomMapControl
             controlPosition={ControlPosition.LEFT_TOP}

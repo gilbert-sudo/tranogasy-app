@@ -190,7 +190,7 @@ const ImageUploader = ({ payload, setImageIsLoading }) => {
   return (
     <>
       <div className="bg-white property-body border-bottom border-left border-right p-0">
-        <div className="row no-gutters">
+        <div className="row no-gutters mb-2">
           {imgPreviewState &&
             imgPreviewState.map((imageUrl, index) => (
               <GeneratingImgContainer
@@ -203,15 +203,25 @@ const ImageUploader = ({ payload, setImageIsLoading }) => {
       </div>
 
       {/* ///////////////////////////////////////////////////////////////// */}
-      <div className="col-12 col-sm-6 col-md-4">
         {!isUploading && imgState.length < 8 && (
-          <img
-            style={{ borderRadius: "15px", cursor: "pointer" }}
-            src="images/add-more.jpg"
-            className="w-100 mt-3 img-fluid border border-dark"
-            alt="ajouter un photo"
+
+          <button
+            type="button"
+            style={{
+              border: "2px dashed #6b7280",
+              borderRadius: "15px",
+              padding: "30px 20px",
+              width: "100%",
+              backgroundColor: "#fafafa",
+              color: "#6b7280",
+              fontSize: "14px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
             onClick={handleImageClick}
-          />
+          >
+            📷 Cliquez pour ajouter vos photos ici
+          </button>
         )}
 
         <div className="form-group">
@@ -238,7 +248,6 @@ const ImageUploader = ({ payload, setImageIsLoading }) => {
             </small>
           </div>
         )}
-      </div>
     </>
   );
 };

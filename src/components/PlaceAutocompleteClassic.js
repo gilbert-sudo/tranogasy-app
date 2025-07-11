@@ -1,4 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useLocation } from "wouter";
+
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./css/googlemaps.css";
 import { LuSettings2 } from "react-icons/lu";
@@ -9,9 +11,20 @@ import { useDispatch } from "react-redux";
 
 const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
+  const [isInTranogasyMap, setIsInTranogasyMap] = useState(false);
+  const [location,] = useLocation();
   const inputRef = useRef(null);
   const dispatch = useDispatch();
   const places = useMapsLibrary("places");
+
+  useEffect(() => {
+    async function loadPage() {
+      if (location.startsWith("/tranogasyMap")) {
+        setIsInTranogasyMap(true);
+      }
+    }
+    loadPage();
+  }, [location]);
 
   useEffect(() => {
     if (!places || !inputRef.current) return;
@@ -75,56 +88,57 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       />
 
       {/* Group buttons on the right */}
-      <div
-        className="d-flex"
-        style={{
-          gap: "10px",
-        }}
-      >
-        <button
-          className="btn"
-          onClick={() => dispatch(setReduxFormFilter({ formFilter: true }))}
+      {isInTranogasyMap &&
+        <div
+          className="d-flex"
           style={{
-            borderRadius: "30px",
-            padding: "10px 14px",
-            fontSize: "1.2rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#FFFFFF",
-            color: "#000",
-            border: "2px solid #ccc",
-            boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s, transform 0.3s",
-            cursor: "pointer",
-            flexShrink: 0,
+            gap: "10px",
           }}
         >
-          <LuSettings2 />
-        </button>
+          <button
+            className="btn"
+            onClick={() => dispatch(setReduxFormFilter({ formFilter: true }))}
+            style={{
+              borderRadius: "30px",
+              padding: "10px 14px",
+              fontSize: "1.2rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#FFFFFF",
+              color: "#000",
+              border: "2px solid #ccc",
+              boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s, transform 0.3s",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <LuSettings2 />
+          </button>
 
-        <button
-          className="btn"
-          onClick={() => alert("Fonctionnalité en cours de développement")}
-          style={{
-            borderRadius: "30px",
-            padding: "10px 14px",
-            fontSize: "1.2rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#FFFFFF",
-            color: "#000",
-            border: "2px solid #ccc",
-            boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s, transform 0.3s",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          <LuBellPlus />
-        </button>
-      </div>
+          <button
+            className="btn"
+            onClick={() => alert("Fonctionnalité en cours de développement")}
+            style={{
+              borderRadius: "30px",
+              padding: "10px 14px",
+              fontSize: "1.2rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#FFFFFF",
+              color: "#000",
+              border: "2px solid #ccc",
+              boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s, transform 0.3s",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <LuBellPlus />
+          </button>
+        </div>}
     </div>
 
 

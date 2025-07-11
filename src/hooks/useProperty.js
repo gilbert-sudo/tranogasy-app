@@ -33,10 +33,16 @@ export const useProperty = () => {
   //redux
   const properties = useSelector((state) => state.properties);
 
-  //add house function
+  // Utility to check for undefined or null or empty string
+  const isEmpty = (val) => val === undefined || val === null || (typeof val === 'string' && val.trim() === '');
+
   const addProperty = async (newProperty) => {
+    console.log("Adding new property:", newProperty);
+    
     setIsLoading(true);
-    const {
+
+    // Destructure all necessary fields from newProperty
+    let {
       title,
       description,
       city,
@@ -55,144 +61,154 @@ export const useProperty = () => {
       phone2,
       motoAccess,
       carAccess,
-      wifiAvailability,
       parkingSpaceAvailable,
-      waterPumpSupply,
-      electricityPower,
-      securitySystem,
-      waterWellSupply,
-      surroundedByWalls,
-      electricityJirama,
-      waterPumpSupplyJirama,
-      kitchenFacilities,
-      airConditionerAvailable,
-      smokeDetectorsAvailable,
-      terrace,
+      elevator,
+      garden,
+      courtyard,
+      balcony,
+      roofTop,
       swimmingPool,
-      furnishedProperty,
-      hotWaterAvailable,
+      surroundedByWalls,
+      independentHouse,
+      garage,
+      guardianHouse,
+      kitchenFacilities,
+      placardKitchen,
       insideToilet,
       insideBathroom,
+      bathtub,
+      fireplace,
+      airConditionerAvailable,
+      hotWaterAvailable,
+      furnishedProperty,
+      electricityPower,
+      electricityJirama,
+      waterPumpSupply,
+      waterPumpSupplyJirama,
+      waterWellSupply,
+      securitySystem,
+      wifiAvailability,
+      fiberOpticReady,
+      seaView,
+      mountainView,
+      panoramicView,
+      solarPanels,
     } = newProperty;
 
-    if (
-      title === undefined ||
-      description === undefined ||
-      city === undefined ||
-      price === undefined ||
-      rent === undefined ||
-      type === undefined ||
-      images === undefined ||
-      owner === undefined ||
-      phone1 === undefined ||
-      phone2 === undefined ||
-      motoAccess === undefined ||
-      carAccess === undefined ||
-      wifiAvailability === undefined ||
-      parkingSpaceAvailable === undefined ||
-      waterPumpSupply === undefined ||
-      electricityPower === undefined ||
-      securitySystem === undefined ||
-      waterWellSupply === undefined ||
-      surroundedByWalls === undefined ||
-      electricityJirama === undefined ||
-      waterPumpSupplyJirama === undefined ||
-      kitchenFacilities === undefined ||
-      airConditionerAvailable === undefined ||
-      hotWaterAvailable === undefined ||
-      furnishedProperty === undefined ||
-      smokeDetectorsAvailable === undefined
-    ) {
+    // Simple required fields check (you can customize required fields list)
+    const requiredFields = [title, description, city, ( price || rent) , type, images, owner, phone1];
+    if (requiredFields.some(isEmpty)) {
       setBootstrap("alert alert-danger");
-      setMsgError("Veuilléz remplir toutes les champs correctemment");
+      setMsgError("Veuillez remplir tous les champs obligatoires correctement.");
+      console.log("Veuillez remplir tous les champs obligatoires correctement.", requiredFields);
       setIsLoading(false);
-    } else {
-      title.trim().replace(/\s+/g, " ");
-      description.trim().replace(/\s+/g, " ");
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-          body: JSON.stringify({
-            title,
-            description,
-            city,
-            price,
-            rent,
-            rooms,
-            bathrooms,
-            area,
-            type,
-            toilet,
-            kitchen,
-            livingRoom,
-            images,
-            owner,
-            phone1,
-            phone2,
-            motoAccess,
-            carAccess,
-            wifiAvailability,
-            parkingSpaceAvailable,
-            waterPumpSupply,
-            electricityPower,
-            securitySystem,
-            waterWellSupply,
-            surroundedByWalls,
-            electricityJirama,
-            waterPumpSupplyJirama,
-            kitchenFacilities,
-            airConditionerAvailable,
-            smokeDetectorsAvailable,
-            terrace,
-            swimmingPool,
-            furnishedProperty,
-            hotWaterAvailable,
-            insideToilet,
-            insideBathroom,
-          }),
-        });
+      return;
+    }
 
-        const json = await response.json();
+    console.log("Property creating : step 2");
+    
 
-        if (response.ok) {
-          dispatch(resetImg());
-          dispatch(resetImgPreview());
-          setBootstrap(null);
-          setMsgError(null);
-          setIsLoading(false);
-          dispatch(addUsersProperty(json));
-          dispatch(pushProperty(json));
-          Swal.fire({
-            title: "<h6><strong>Succès!<strong><h6/>",
-            icon: "success",
-            html: `Votre annonce a été créée.`,
-            showCloseButton: true,
-            focusConfirm: false,
-            confirmButtonText: "Ok",
-            confirmButtonColor: "#7cbd1e",
-            customClass: {
-              popup: "smaller-sweet-alert",
-            },
-          });
-          setLocation("/mylisting");
-        }
-        if (!response.ok) {
-          setBootstrap("alert alert-danger");
-          setMsgError(json.message);
-          setIsLoading(false);
-          console.log(json.message);
-        }
-      } catch (error) {
+    // Clean title and description whitespace
+    title = title.trim().replace(/\s+/g, " ");
+    description = description.trim().replace(/\s+/g, " ");
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          city,
+          price,
+          rent,
+          rooms,
+          bathrooms,
+          area,
+          type,
+          toilet,
+          kitchen,
+          livingRoom,
+          images,
+          owner,
+          phone1,
+          phone2,
+          motoAccess,
+          carAccess,
+          parkingSpaceAvailable,
+          elevator,
+          garden,
+          courtyard,
+          balcony,
+          roofTop,
+          swimmingPool,
+          surroundedByWalls,
+          independentHouse,
+          garage,
+          guardianHouse,
+          kitchenFacilities,
+          placardKitchen,
+          insideToilet,
+          insideBathroom,
+          bathtub,
+          fireplace,
+          airConditionerAvailable,
+          hotWaterAvailable,
+          furnishedProperty,
+          electricityPower,
+          electricityJirama,
+          waterPumpSupply,
+          waterPumpSupplyJirama,
+          waterWellSupply,
+          securitySystem,
+          wifiAvailability,
+          fiberOpticReady,
+          seaView,
+          mountainView,
+          panoramicView,
+          solarPanels,
+        }),
+      });
+
+      const json = await response.json();
+
+      if (response.ok) {
+        dispatch(resetImg());
+        dispatch(resetImgPreview());
+        setBootstrap(null);
+        setMsgError(null);
         setIsLoading(false);
-        setLocation("/nosignal");
-        console.log(error);
+        dispatch(addUsersProperty(json));
+        dispatch(pushProperty(json));
+        Swal.fire({
+          title: "<h6><strong>Succès!<strong><h6/>",
+          icon: "success",
+          html: `Votre annonce a été créée.`,
+          showCloseButton: true,
+          focusConfirm: false,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#7cbd1e",
+          customClass: {
+            popup: "smaller-sweet-alert",
+          },
+        });
+        setLocation("/mylisting");
+      } else {
+        setBootstrap("alert alert-danger");
+        setMsgError(json.message);
+        setIsLoading(false);
+        console.log(json.message);
       }
+    } catch (error) {
+      setIsLoading(false);
+      setLocation("/nosignal");
+      console.log(error);
     }
   };
+
 
   const updateProperty = async (oldPropertyDetails, newUpdate) => {
     setIsLoading(true);
@@ -294,8 +310,8 @@ export const useProperty = () => {
 
       if (response.ok) {
 
-        console.log("the property id :",  json._id);
-        
+        console.log("the property id :", json._id);
+
         //deleting all unnesesary old images in the image-server
         for (let j = 0; j < oldPropertyDetails.images.length; j++) {
           let existInTheNewUpdate = updatedProperty.images.filter(
@@ -510,7 +526,7 @@ export const useProperty = () => {
       propertyNumber,
       nearbyLocations,
     } = parameters;
-   
+
 
     let results = [];
 
@@ -535,7 +551,7 @@ export const useProperty = () => {
                 (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
                 (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
                 (budgetMin && property.price ? property.price >= budgetMin : true) &&
-                (budgetMax && property.price ? property.price <= budgetMax : true) 
+                (budgetMax && property.price ? property.price <= budgetMax : true)
             );
             results = results.concat(resultSlice);
           }
@@ -555,10 +571,10 @@ export const useProperty = () => {
             (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
             (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
             (budgetMin && property.price ? property.price >= budgetMin : true) &&
-            (budgetMax && property.price ? property.price <= budgetMax : true) 
+            (budgetMax && property.price ? property.price <= budgetMax : true)
         );
         console.log(results);
-        
+
       }
     }
 
@@ -577,7 +593,7 @@ export const useProperty = () => {
               : true) &&
             (parkingSpaceAvailable
               ? property.features.parkingSpaceAvailable ===
-                parkingSpaceAvailable
+              parkingSpaceAvailable
               : true) &&
             (waterPumpSupply
               ? property.features.waterPumpSupply === waterPumpSupply
@@ -599,7 +615,7 @@ export const useProperty = () => {
               : true) &&
             (waterPumpSupplyJirama
               ? property.features.waterPumpSupplyJirama ===
-                waterPumpSupplyJirama
+              waterPumpSupplyJirama
               : true) &&
             (kitchenFacilities
               ? property.features.kitchenFacilities === kitchenFacilities
@@ -609,11 +625,11 @@ export const useProperty = () => {
               : true) &&
             (airConditionerAvailable
               ? property.features.airConditionerAvailable ===
-                airConditionerAvailable
+              airConditionerAvailable
               : true) &&
             (smokeDetectorsAvailable
               ? property.features.smokeDetectorsAvailable ===
-                smokeDetectorsAvailable
+              smokeDetectorsAvailable
               : true) &&
             (terrace ? property.features.terrace === terrace : true) &&
             (swimmingPool
@@ -649,12 +665,12 @@ export const useProperty = () => {
     return price;
   };
 
-  const  getPriceAndRentRanges = (properties) => {
+  const getPriceAndRentRanges = (properties) => {
     let minPrice = Infinity;
     let maxPrice = -Infinity;
     let minRent = Infinity;
     let maxRent = -Infinity;
-  
+
     properties.forEach(property => {
       if (property.price !== null) {
         minPrice = Math.min(minPrice, property.price);
@@ -665,15 +681,15 @@ export const useProperty = () => {
         maxRent = Math.max(maxRent, property.rent);
       }
     });
-  
+
     // If there are no valid price values, set min and max price to null
     if (minPrice === Infinity) minPrice = null;
     if (maxPrice === -Infinity) maxPrice = null;
-  
+
     // If there are no valid rent values, set min and max rent to null
     if (minRent === Infinity) minRent = null;
     if (maxRent === -Infinity) maxRent = null;
-  
+
     return { minPrice, maxPrice, minRent, maxRent };
   }
 

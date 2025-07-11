@@ -255,7 +255,7 @@ function MyMap({ properties }) {
           {/* Close button to hide the sliding div */}
           {searchForm.formFilter && (
             <div style={{ padding: "5.5vh 1vh 2vh 1vh" }}>
-              <HouseSearchForm />
+              <HouseSearchForm handleCloseSlideClick={handleCloseSlideClick} />
             </div>
           )}
           {selectedProperty && (

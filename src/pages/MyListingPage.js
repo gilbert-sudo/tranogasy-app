@@ -6,7 +6,6 @@ import { setPreviousUrl, resetImg, resetImgPreview } from "../redux/redux";
 import { useEffect, useState } from "react";
 import NotLogedIn from "../components/NotLogedIn";
 import { FcHome, FcLandscape } from "react-icons/fc";
-import { MdAdd } from "react-icons/md";
 import { useLoader } from "../hooks/useLoader";
 import { usePopup } from "../hooks/usePopup";
 import { useImage } from "../hooks/useImage";
@@ -49,7 +48,7 @@ const MyListingPage = () => {
     <div className="mylisting">
       {user && user ? (
         <div className="mylisting mt-5 pt-1">
-          <div className="site-section site-section-sm bg-light">
+          <div className="site-section site-section-sm">
             <div className="custom-container" style={{ paddingBottom: "80px" }}>
               <h5 className="mt-3 mb-3 heading-line font-weight-light">
                 Annonces
@@ -166,8 +165,18 @@ const MyListingPage = () => {
                   className="btn btn-success add-ad-btn m-4"
                   onClick={() => listingOptionPopup()}
                   type="button"
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex",
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    borderRadius: "20px",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    color: "#fff",
+                  }}
                 >
-                  <MdAdd /> Créer une annonce
+                  Créer une annonce
                 </button>
               </div>
             </div>

@@ -47,7 +47,7 @@ import {
   FaKitchenSet,
 } from "react-icons/fa6";
 
-const HouseSearchForm = () => {
+const HouseSearchForm = ({ handleCloseSlideClick }) => {
   const targetDivRef = useRef(null);
   const advancedOptionRef = useRef(null);
 
@@ -476,7 +476,7 @@ const HouseSearchForm = () => {
                     <div
                       style={{
                         position: "relative",
-                        border: "1px solid #6b7280",
+                        border: "1px solid #ced4da",
                         borderRadius: "20px",
                         padding: "20px",
                       }}
@@ -694,7 +694,7 @@ const HouseSearchForm = () => {
                     <div
                       style={{
                         position: "relative",
-                        border: "1px solid #6b7280",
+                        border: "1px solid #ced4da",
                         borderRadius: "20px",
                         padding: "20px",
                         marginTop: "40px",
@@ -722,7 +722,7 @@ const HouseSearchForm = () => {
                           gap: "8px",
                         }}
                       >
-                        <span style={{ width: "100px", fontWeight: "500" }}>Sélection :</span>
+                        <span style={{ width: "100px", fontWeight: "400" }}>Sélection :</span>
 
                         <div
                           style={{
@@ -875,19 +875,19 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<TbBuildingCastle />}
                           state={terrace}
-                          label={"Terrasse."}
+                          label={"Terrasse"}
                           onClickFunction={() => setTerrace(!terrace)}
                         />
                         <GenerateCheckbox
                           icon={<FaSwimmingPool />}
                           state={swimmingPool}
-                          label={"Piscine."}
+                          label={"Piscine"}
                           onClickFunction={() => setSwimmingPool(!swimmingPool)}
                         />
                         <GenerateCheckbox
                           icon={<FaKitchenSet />}
                           state={kitchenFacilities}
-                          label={"Cuisine déjà équipée"}
+                          label={"Cuisine équipée"}
                           onClickFunction={() =>
                             setKitchenFacilities(!kitchenFacilities)
                           }
@@ -895,7 +895,7 @@ const HouseSearchForm = () => {
                         <GenerateCheckbox
                           icon={<MdOutlineLiving />}
                           state={furnishedProperty}
-                          label={"Logement Meublé"}
+                          label={"Meublé"}
                           onClickFunction={() =>
                             setFurnishedProperty(!furnishedProperty)
                           }
@@ -933,7 +933,7 @@ const HouseSearchForm = () => {
                 <div
                   style={{
                     position: "relative",
-                    border: "1px solid #6b7280",
+                    border: "1px solid #ced4da",
                     borderRadius: "20px",
                     padding: "20px",
                     marginTop: "20px",
@@ -961,7 +961,7 @@ const HouseSearchForm = () => {
                       marginBottom: "15px",
                     }}
                   >
-                    <span style={{ width: "80px", fontWeight: "500" }}>WC:</span>
+                    <small style={{ width: "80px", fontWeight: "400" }}>WC:</small>
                     <div
                       style={{
                         display: "inline-flex",
@@ -1002,7 +1002,7 @@ const HouseSearchForm = () => {
                           transition: "all 0.2s ease",
                         }}
                       >
-                        Int
+                        Intérieur
                       </button>
 
                       <button
@@ -1020,7 +1020,7 @@ const HouseSearchForm = () => {
                           transition: "all 0.2s ease",
                         }}
                       >
-                        Ext
+                        Extérieur
                       </button>
                     </div>
                   </div>
@@ -1032,7 +1032,7 @@ const HouseSearchForm = () => {
                       alignItems: "center",
                     }}
                   >
-                    <span style={{ width: "80px", fontWeight: "500" }}>Douche:</span>
+                    <small style={{ width: "80px", fontWeight: "400" }}>Douche:</small>
                     <div
                       style={{
                         display: "inline-flex",
@@ -1073,7 +1073,7 @@ const HouseSearchForm = () => {
                           transition: "all 0.2s ease",
                         }}
                       >
-                        Int
+                        Intérieur
                       </button>
 
                       <button
@@ -1091,7 +1091,7 @@ const HouseSearchForm = () => {
                           transition: "all 0.2s ease",
                         }}
                       >
-                        Ext
+                        Extérieur
                       </button>
                     </div>
                   </div>
@@ -1118,7 +1118,7 @@ const HouseSearchForm = () => {
               <div
                 style={{
                   flex: 1,
-                  borderRadius: "12px",
+                  borderRadius: "20px",
                   backgroundColor: "white",
                   border: "1px solid #ddd",
                   color: "#333",
@@ -1144,10 +1144,11 @@ const HouseSearchForm = () => {
                 <button
                   type="submit"
                   name="submitType"
+                  onClick={() => handleCloseSlideClick()}
                   value="map"
                   style={{
                     flex: 1,
-                    borderRadius: "12px",
+                    borderRadius: "20px",
                     backgroundColor: "#222",
                     border: "none",
                     color: "white",
@@ -1162,10 +1163,6 @@ const HouseSearchForm = () => {
                     maxWidth: "200px",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                   }}
-                  disabled={
-                    !(searchResults && searchResults.length > 0) ||
-                    !(selectedCity || selectedDistrict || selectedCommune || selectedMapType === "gmap")
-                  }
                 >
                   <FcGoogle size={20} /> Voir carte
                 </button>
