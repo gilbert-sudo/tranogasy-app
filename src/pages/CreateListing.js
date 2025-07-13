@@ -1106,219 +1106,53 @@ const CreateListing = () => {
                       }}
                       ref={myRef}
                     >
-                      {/* 🚪 Accessibilité */}
+                      {/* ⚡ Eau & électricité */}
+                      <GenerateCheckbox icon={<FaPlugCircleBolt />} state={electricityJirama} label={"Électricité JIRAMA"} onClickFunction={() => setElectricityJirama(!electricityJirama)} />
+                      <GenerateCheckbox icon={<FaFaucetDrip />} state={waterPumpSupplyJirama} label={"Pompe JIRAMA"} onClickFunction={() => setWaterPumpSupplyJirama(!waterPumpSupplyJirama)} />
+                      <GenerateCheckbox icon={<GiWell />} state={waterWellSupply} label={"Puits d'eau"} onClickFunction={() => setWaterWellSupply(!waterWellSupply)} />
+                      <GenerateCheckbox icon={<FaPlugCircleCheck />} state={electricityPower} label={"Électricité privée"} onClickFunction={() => setElectricityPower(!electricityPower)} />
+                      <GenerateCheckbox icon={<FaOilWell />} state={waterPumpSupply} label={"Pompe à eau privée"} onClickFunction={() => setWaterPumpSupply(!waterPumpSupply)} />
+                      <GenerateCheckbox icon={<GiSolarPower />} state={solarPanels} label={"Panneaux solaires"} onClickFunction={() => setSolarPanels(!solarPanels)} />
 
-                      <GenerateCheckbox
-                        icon={<FaMotorcycle />}
-                        state={motoAccess}
-                        label={"Accès moto"}
-                        onClickFunction={() => {
-                          setMotoAccess(!motoAccess);
-                          if (carAccess === true) setMotoAccess(true);
-                        }}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaCar />}
-                        state={carAccess}
-                        label={"Accès voiture"}
-                        onClickFunction={() => {
-                          setCarAccess(!carAccess);
-                          if (carAccess === false) setMotoAccess(true);
-                        }}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaParking />}
-                        state={parkingSpaceAvailable}
-                        label={"Parking"}
-                        onClickFunction={() => setParkingSpaceAvailable(!parkingSpaceAvailable)}
-                      />
-                      <GenerateCheckbox
-                        icon={<TbBuildingCastle />}
-                        state={elevator}
-                        label={"Ascenseur"}
-                        onClickFunction={() => setElevator(!elevator)}
-                      />
-
-                      {/* 🏡 Extérieur */}
-                      <GenerateCheckbox
-                        icon={<GiWell />}
-                        state={garden}
-                        label={"Jardin"}
-                        onClickFunction={() => setGarden(!garden)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiBrickWall />}
-                        state={courtyard}
-                        label={"Cour"}
-                        onClickFunction={() => setCourtyard(!courtyard)}
-                      />
-                      <GenerateCheckbox
-                        icon={<MdBalcony />}
-                        state={balcony}
-                        label={"Balcon"}
-                        onClickFunction={() => setBalcony(!balcony)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiCastle />}
-                        state={roofTop}
-                        label={"Toit terrasse"}
-                        onClickFunction={() => setRoofTop(!roofTop)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaSwimmingPool />}
-                        state={swimmingPool}
-                        label={"Piscine"}
-                        onClickFunction={() => setSwimmingPool(!swimmingPool)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiBrickWall />}
-                        state={surroundedByWalls}
-                        label={"Clôturée"}
-                        onClickFunction={() => setSurroundedByWalls(!surroundedByWalls)}
-                      />
-                      <GenerateCheckbox
-                        icon={<TbBuildingCastle />}
-                        state={independentHouse}
-                        label={"Indépendante"}
-                        onClickFunction={() => setIndependentHouse(!independentHouse)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaCar />}
-                        state={garage}
-                        label={"Garage"}
-                        onClickFunction={() => setGarage(!garage)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaShieldAlt />}
-                        state={guardianHouse}
-                        label={"Maison pour gardien"}
-                        onClickFunction={() => setGuardianHouse(!guardianHouse)}
-                      />
+                      {/* 🚪 Accessibilité & extérieur */}
+                      <GenerateCheckbox icon={<FaMotorcycle />} state={motoAccess} label={"Accès moto"} onClickFunction={() => { setMotoAccess(!motoAccess); if (carAccess === true) setMotoAccess(true); }} />
+                      <GenerateCheckbox icon={<FaCar />} state={carAccess} label={"Accès voiture"} onClickFunction={() => { setCarAccess(!carAccess); if (carAccess === false) setMotoAccess(true); }} />
+                      <GenerateCheckbox icon={<GiBrickWall />} state={surroundedByWalls} label={"Clôturée"} onClickFunction={() => setSurroundedByWalls(!surroundedByWalls)} />
+                      <GenerateCheckbox icon={<GiBrickWall />} state={courtyard} label={"Cour"} onClickFunction={() => setCourtyard(!courtyard)} />
+                      <GenerateCheckbox icon={<FaParking />} state={parkingSpaceAvailable} label={"Parking"} onClickFunction={() => setParkingSpaceAvailable(!parkingSpaceAvailable)} />
+                      <GenerateCheckbox icon={<FaCar />} state={garage} label={"Garage"} onClickFunction={() => setGarage(!garage)} />
+                      <GenerateCheckbox icon={<GiWell />} state={garden} label={"Jardin"} onClickFunction={() => setGarden(!garden)} />
+                      <GenerateCheckbox icon={<TbBuildingCastle />} state={independentHouse} label={"Indépendante"} onClickFunction={() => setIndependentHouse(!independentHouse)} />
+                      <GenerateCheckbox icon={<FaShieldAlt />} state={guardianHouse} label={"Maison pour gardien"} onClickFunction={() => setGuardianHouse(!guardianHouse)} />
 
                       {/* 🏠 Confort intérieur */}
-                      <GenerateCheckbox
-                        icon={<FaKitchenSet />}
-                        state={kitchenFacilities}
-                        label={"Cuisine équipée"}
-                        onClickFunction={() => setKitchenFacilities(!kitchenFacilities)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaBed />}
-                        state={placardKitchen}
-                        label={"Cuisine placardée"}
-                        onClickFunction={() => setPlacardKitchen(!placardKitchen)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiBathtub />}
-                        state={bathtub}
-                        label={"Baignoire"}
-                        onClickFunction={() => setBathtub(!bathtub)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiFireplace />}
-                        state={fireplace}
-                        label={"Cheminée"}
-                        onClickFunction={() => setFireplace(!fireplace)}
-                      />
-                      <GenerateCheckbox
-                        icon={<TbAirConditioning />}
-                        state={airConditionerAvailable}
-                        label={"Climatisation"}
-                        onClickFunction={() => setAirConditionerAvailable(!airConditionerAvailable)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaHotTub />}
-                        state={hotWaterAvailable}
-                        label={"Eau chaude"}
-                        onClickFunction={() => setHotWaterAvailable(!hotWaterAvailable)}
-                      />
-                      <GenerateCheckbox
-                        icon={<MdOutlineLiving />}
-                        state={furnishedProperty}
-                        label={"Meublé"}
-                        onClickFunction={() => setFurnishedProperty(!furnishedProperty)}
-                      />
+                      <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
+                      <GenerateCheckbox icon={<FaBed />} state={placardKitchen} label={"Cuisine placardée"} onClickFunction={() => setPlacardKitchen(!placardKitchen)} />
+                      <GenerateCheckbox icon={<FaHotTub />} state={hotWaterAvailable} label={"Eau chaude"} onClickFunction={() => setHotWaterAvailable(!hotWaterAvailable)} />
+                      <GenerateCheckbox icon={<MdOutlineLiving />} state={furnishedProperty} label={"Meublé"} onClickFunction={() => setFurnishedProperty(!furnishedProperty)} />
+                      <GenerateCheckbox icon={<TbAirConditioning />} state={airConditionerAvailable} label={"Climatisation"} onClickFunction={() => setAirConditionerAvailable(!airConditionerAvailable)} />
+                      <GenerateCheckbox icon={<GiBathtub />} state={bathtub} label={"Baignoire"} onClickFunction={() => setBathtub(!bathtub)} />
+                      <GenerateCheckbox icon={<GiFireplace />} state={fireplace} label={"Cheminée"} onClickFunction={() => setFireplace(!fireplace)} />
+                      <GenerateCheckbox icon={<TbBuildingCastle />} state={elevator} label={"Ascenseur"} onClickFunction={() => setElevator(!elevator)} />
 
-                      {/* ⚡ Eau & électricité */}
-                      <GenerateCheckbox
-                        icon={<FaPlugCircleBolt />}
-                        state={electricityJirama}
-                        label={"Électricité JIRAMA"}
-                        onClickFunction={() => setElectricityJirama(!electricityJirama)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaPlugCircleCheck />}
-                        state={electricityPower}
-                        label={"Électricité privée"}
-                        onClickFunction={() => setElectricityPower(!electricityPower)}
-                      />
-                       <GenerateCheckbox
-                        icon={<GiSolarPower />}
-                        state={solarPanels}
-                        label={"Panneaux solaires"}
-                        onClickFunction={() => setSolarPanels(!solarPanels)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaOilWell />}
-                        state={waterPumpSupply}
-                        label={"Pompe à eau privée"}
-                        onClickFunction={() => setWaterPumpSupply(!waterPumpSupply)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaFaucetDrip />}
-                        state={waterPumpSupplyJirama}
-                        label={"Pompe JIRAMA"}
-                        onClickFunction={() => setWaterPumpSupplyJirama(!waterPumpSupplyJirama)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiWell />}
-                        state={waterWellSupply}
-                        label={"Puits d'eau"}
-                        onClickFunction={() => setWaterWellSupply(!waterWellSupply)}
-                      />
+                      {/* 🌇 Espaces extérieurs confort */}
+                      <GenerateCheckbox icon={<MdBalcony />} state={balcony} label={"Balcon"} onClickFunction={() => setBalcony(!balcony)} />
+                      <GenerateCheckbox icon={<GiCastle />} state={roofTop} label={"Toit terrasse"} onClickFunction={() => setRoofTop(!roofTop)} />
+                      <GenerateCheckbox icon={<FaSwimmingPool />} state={swimmingPool} label={"Piscine"} onClickFunction={() => setSwimmingPool(!swimmingPool)} />
 
                       {/* 🛡️ Sécurité */}
-                      <GenerateCheckbox
-                        icon={<FaShieldAlt />}
-                        state={securitySystem}
-                        label={"Système de sécurité"}
-                        onClickFunction={() => setSecuritySystem(!securitySystem)}
-                      />
+                      <GenerateCheckbox icon={<FaShieldAlt />} state={securitySystem} label={"Système de sécurité"} onClickFunction={() => setSecuritySystem(!securitySystem)} />
 
                       {/* 🌐 Connectivité */}
-                      <GenerateCheckbox
-                        icon={<FaWifi />}
-                        state={wifiAvailability}
-                        label={"Wi-Fi"}
-                        onClickFunction={() => setWifiAvailability(!wifiAvailability)}
-                      />
-                      <GenerateCheckbox
-                        icon={<FaWifi />}
-                        state={fiberOpticReady}
-                        label={"Fibre optique"}
-                        onClickFunction={() => setFiberOpticReady(!fiberOpticReady)}
-                      />
-                      {/* 🌅 Vue */}
-                      <GenerateCheckbox
-                        icon={<GiSeaDragon />}
-                        state={seaView}
-                        label={"Vue mer"}
-                        onClickFunction={() => setSeaView(!seaView)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiMountainCave />}
-                        state={mountainView}
-                        label={"Vue montagne"}
-                        onClickFunction={() => setMountainView(!mountainView)}
-                      />
-                      <GenerateCheckbox
-                        icon={<GiSeatedMouse />}
-                        state={panoramicView}
-                        label={"Vue panoramique"}
-                        onClickFunction={() => setPanoramicView(!panoramicView)}
-                      />
+                      <GenerateCheckbox icon={<FaWifi />} state={wifiAvailability} label={"Wi-Fi"} onClickFunction={() => setWifiAvailability(!wifiAvailability)} />
+                      <GenerateCheckbox icon={<FaWifi />} state={fiberOpticReady} label={"Fibre optique"} onClickFunction={() => setFiberOpticReady(!fiberOpticReady)} />
 
+                      {/* 🌅 Vue */}
+                      <GenerateCheckbox icon={<GiSeaDragon />} state={seaView} label={"Vue mer"} onClickFunction={() => setSeaView(!seaView)} />
+                      <GenerateCheckbox icon={<GiMountainCave />} state={mountainView} label={"Vue montagne"} onClickFunction={() => setMountainView(!mountainView)} />
+                      <GenerateCheckbox icon={<GiSeatedMouse />} state={panoramicView} label={"Vue panoramique"} onClickFunction={() => setPanoramicView(!panoramicView)} />
                     </div>
+
                   </div>
                   {noFeatureSet && (
                     <div className="alert alert-danger">

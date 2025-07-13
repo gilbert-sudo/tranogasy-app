@@ -13,7 +13,7 @@ import useSound from "use-sound";
 
 const CarouselDetails = ({ property, handleShowContact }) => {
 
-  const [, setLocation] = useLocation("");
+  const [location, setLocation] = useLocation("");
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
   const [play] = useSound("sounds/Like Sound Effect.mp3");
@@ -28,8 +28,8 @@ const CarouselDetails = ({ property, handleShowContact }) => {
     timeZone: "Indian/Antananarivo",
   }).format(new Date(property.created_at));
 
-   //click the like button
-   const handleLike = async (e) => {
+  //click the like button
+  const handleLike = async (e) => {
     e.preventDefault();
     if (user) {
       play();
@@ -47,8 +47,8 @@ const CarouselDetails = ({ property, handleShowContact }) => {
     disLike(property);
   };
 
-   //check the like button state
-   useEffect(() => {
+  //check the like button state
+  useEffect(() => {
     function loadingPage() {
       if (user && user?.favorites?.includes(property._id)) {
         setIsliked(true);
@@ -62,14 +62,23 @@ const CarouselDetails = ({ property, handleShowContact }) => {
   return (
     <div>
       <div
-        className="site-blocks-cover inner-page-cover overlay pb-4"
-        style={{ backgroundImage: `url(${property.images[0].src})` }}
-        data-aos="fade"
-        data-stellar-background-ratio="0.5"
+        className="inner-page-cover overlay"
+        style={{
+          backgroundImage: `url(${property.images[0].src})`,
+          backgroundSize: "cover",            // fill the container fully
+          backgroundPosition: "center",       // always centered
+          backgroundRepeat: "no-repeat",                 // adjust height as needed (ex: 40-60vh)
+          width: "100%",
+          position: "relative",
+          color: "#fff",
+          borderBottomLeftRadius: "20px",
+          borderBottomRightRadius: "20px",
+          overflow: "hidden",
+        }}
       >
         <div
           className="container"
-          style={{ backgroundColor: `rgb(0, 0, 0, 0.5)` }}
+          style={{ backgroundColor: `rgb(0, 0, 0, 0.5)`, height: "150%" }}
         >
           <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)}>
             <img
@@ -94,19 +103,19 @@ const CarouselDetails = ({ property, handleShowContact }) => {
           </div>
 
           <div className="row align-items-center justify-content-center text-center">
-            <div className="col-md-10 mt-5">
-              <span className="d-inline-block text-white px-3 mb-3 property-offer-type rounded h6">
-                Détails de la propriété{" "}
+            <div className="col-md-10 mt-5 pt-1">
+              <span className="d-inline-block text-white px-3 mb-3 property-offer-type rounded h6 mt-5">
+                <small> Détails de la propriété </small>
                 <num className="h6 text-danger">
                   n°:{property.propertyNumber}
                 </num>
               </span>
-              <h6 className="text-light-custom mb-2 h6">
+              <h6 className="text-light-custom mb-2">
                 {" "}
                 <ImLocation className="text-danger mr-2" />
                 {property.city.fokontany} {property.city.commune}
               </h6>
-              <p className="mb-3 h4">
+              <p className="mb-3 h5">
                 {property.type === "rent" ? (
                   <strong className="h4 text-success font-weight-bold">
                     {property.rent.toLocaleString("en-US")}{" "}
@@ -121,9 +130,22 @@ const CarouselDetails = ({ property, handleShowContact }) => {
               <div className="col-md-12">
                 <p>
                   <button
-                    style={{ borderRadius: "15px" }}
+                    style={{
+                      borderRadius: "20px",
+                      backgroundColor: "#222",
+                      border: "none",
+                      color: "white",
+                      padding: "12px",
+                      textAlign: "center",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.5rem",
+                      maxWidth: "200px",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    }}
                     onClick={() => handleShowContact()}
-                    className="btn btn-white btn-outline-white py-1 px-2 btn-2"
                   >
                     <FaPhoneAlt className="mr-2" />{" "}
                     {user && user
@@ -141,23 +163,23 @@ const CarouselDetails = ({ property, handleShowContact }) => {
 
           <div className="position-relative d-flex items-align-end justify-content-end text-danger">
             <div style={{ marginBottom: "20px", bottom: "-100%" }} className="position-absolute ">
-                  {isliked && isliked ? (
-                    <div
-                      className="d-flex justify-content-center align-items-center property-favoriten"
-                      style={{ background: "#f23a2e", zIndex: "1" , height: "50px", width: "50px", borderRadius: "50%" }}
-                      onClick={handleDisLike}
-                    >
-                      <BsHeartFill className="text-white" />
-                    </div>
-                  ) : (
-                    <div
-                      className="d-flex justify-content-center align-items-center property-favoriten"
-                      style={{ background: "white", color: "black", zIndex: "2", height: "50px", width: "50px", borderRadius: "50%" }}
-                      onClick={handleLike}
-                    >
-                      <FaHeart />
-                    </div>
-                  )}
+              {isliked && isliked ? (
+                <div
+                  className="d-flex justify-content-center align-items-center property-favoriten"
+                  style={{ background: "#f23a2e", zIndex: "1", height: "50px", width: "50px", borderRadius: "50%" }}
+                  onClick={handleDisLike}
+                >
+                  <BsHeartFill className="text-white" />
+                </div>
+              ) : (
+                <div
+                  className="d-flex justify-content-center align-items-center property-favoriten"
+                  style={{ background: "white", color: "black", zIndex: "2", height: "50px", width: "50px", borderRadius: "50%" }}
+                  onClick={handleLike}
+                >
+                  <FaHeart />
+                </div>
+              )}
             </div>
           </div>
         </div>

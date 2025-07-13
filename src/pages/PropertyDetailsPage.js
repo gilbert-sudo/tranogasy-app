@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
-import { MdArrowBackIos, MdOutlineLiving } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { GiWell, GiCheckMark, GiCircle, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
 import { HashLoader } from "react-spinners";
 import Linkify from "linkify-react";
 import {
@@ -15,6 +12,7 @@ import {
   FaPhoneAlt,
   FaSwimmingPool,
   FaHotTub,
+  FaBed,
 } from "react-icons/fa";
 import {
   FaPlugCircleBolt,
@@ -23,6 +21,15 @@ import {
   FaKitchenSet,
   FaFaucetDrip,
 } from "react-icons/fa6";
+import { MdArrowBackIos, MdOutlineLiving, MdBalcony } from "react-icons/md";
+import {
+  GiWell,
+  GiBrickWall,
+  GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
+} from "react-icons/gi";
+import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { IoMdShareAlt } from "react-icons/io";
+
 import { useRoute } from "wouter";
 import CarouselDetails from "../components/CarouselDetails";
 import CardDetails from "../components/CardDetails";
@@ -104,27 +111,6 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   const { notSubscribedPopup } = useSubscription();
   const { unpaidBillPopup } = usePopup();
 
-  const copyToClipboard = () => {
-    // Get the current URL
-    const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${propertiesDetails._id}`;
-
-    // Create a textarea element to hold the URL temporarily
-    const textarea = document.createElement("textarea");
-    textarea.value = currentUrl;
-    document.body.appendChild(textarea);
-
-    // Select the text in the textarea
-    textarea.select();
-
-    // Copy the selected text to clipboard
-    document.execCommand("copy");
-
-    // Remove the textarea from the DOM
-    document.body.removeChild(textarea);
-
-    // Show the popup
-    alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
-  };
 
   const handleShare = () => {
     // Get the current URL
@@ -150,12 +136,25 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
 
   const GenerateFeaturebox = ({ icon, label }) => {
     return (
-      <h6 className="mb-0">
-        {icon && React.isValidElement(icon) ? ( // Check if icon prop is a valid React element
-          React.cloneElement(icon, { className: `h6 mr-1 mt-1 ${icon.props.className || ''}` }) // Clone and add/merge classes
-        ) : null}
-        <span className="font-weight-light">{label}</span>
-      </h6>
+      <div
+        style={{ borderRadius: "20px", padding: "10px", cursor: "pointer", border: "1px solid #ccc" }}
+        className={`btn-group bg-light`}
+        role="group"
+      >
+        <div className="form-check pl-0" style={{ cursor: "pointer" }}>
+          <label
+            className="form-check-label"
+            htmlFor={label}
+            style={{ cursor: "pointer" }}
+          >
+            {icon && icon}
+            {" "}
+            <small>
+              {label}
+            </small>
+          </label>
+        </div>
+      </div>
     );
   };
 
@@ -204,149 +203,131 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
             property={propertiesDetails}
           />
           <div className="site-section site-section-sm">
-            <div className={`container ${fastPreviewProperty ? "" : "pb-5"}`}>
+            <div className={`container ${fastPreviewProperty ? "" : "pb-3"}`}>
               <div className="row">
-                <div className="col-lg-12 pb-3">
-                  <div className="bg-white widget mt-3 p-3 mb-0 rounded">
-                    <div
-                      style={{ cursor: "pointer" }}
-                      className="d-flex justify-content-between"
+                <div className="col-lg-12 pb-1 pt-4">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "16px",
+                      padding: "0 4px",
+                      width: "100%",
+                    }}
+                  >
+                    <h4
+                      style={{
+                        fontSize: "20px",            // Slightly bigger for mobile impact
+                        fontWeight: "500",           // Medium, elegant weight
+                        margin: 0,
+                        color: "#222",               // Slightly darker for better contrast
+                        flex: 1,
+                        lineHeight: "1.3",
+                        letterSpacing: "0.3px",     // Subtle spacing to breathe
+                        fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
                     >
-                      <h3 className="h4 text-black widget-title">
-                        {propertiesDetails && propertiesDetails.title}
-                      </h3>
-                      <div
-                        onClick={handleShare}
-                        style={{ height: "0px", overflow: "visible" }}
-                        title="copied"
-                        className="share-button d-flex flex-column share-btn align-self-start align-items-center"
-                      >
-                        <img
-                          src="images/share-button.png"
-                          alt="share-btn"
-                          style={{ height: "25px" }}
-                        />
-                        <> Partager</>
-                      </div>
-                    </div>
-                    <div
-                      style={{ whiteSpace: "break-spaces", wordBreak: "break-word" }}
-                      className="font-weight-normal"
+                      {propertiesDetails && propertiesDetails.title}
+                    </h4>
+
+
+                    <button
+                      onClick={handleShare}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        padding: "6px 10px",
+                        border: "1px solid #ddd",
+                        borderRadius: "20px",
+                        backgroundColor: "transparent",
+                        color: "#333",
+                        fontSize: "13px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f5f5f5";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }}
+                      title="Partager"
                     >
-                      <Linkify options={options}>
-                        {propertiesDetails && propertiesDetails.description}
-                      </Linkify>
-                    </div>
-                    <p className="mt-3 mb-0">
-                      {propertiesDetails.features.motoAccess && (
-                        <GenerateFeaturebox
-                          icon={<FaMotorcycle />}
-                          label={"Accès pour moto"}
-                        />
-                      )}
-                      {propertiesDetails.features.carAccess && (
-                        <GenerateFeaturebox
-                          icon={<FaCar />}
-                          label={"Accès pour voiture"}
-                        />
-                      )}
-                      {propertiesDetails.features.wifiAvailability && (
-                        <GenerateFeaturebox
-                          icon={<FaWifi />}
-                          label={"De la connexion Wi-Fi"}
-                        />
-                      )}
-                      {propertiesDetails.features.parkingSpaceAvailable && (
-                        <GenerateFeaturebox
-                          icon={<FaParking />}
-                          label={"Espace de stationnement"}
-                        />
-                      )}
-                      {propertiesDetails.features.waterPumpSupplyJirama && (
-                        <GenerateFeaturebox
-                          icon={<FaFaucetDrip />}
-                          label={"Robinet d'eau de la JI.RA.MA"}
-                        />
-                      )}
-                      {propertiesDetails.features.waterPumpSupply && (
-                        <GenerateFeaturebox
-                          icon={<FaOilWell />}
-                          label={"Pompe à eau privee"}
-                        />
-                      )}
-                      {propertiesDetails.features.waterWellSupply && (
-                        <GenerateFeaturebox
-                          icon={<GiWell />}
-                          label={"Un puits d'eau"}
-                        />
-                      )}
-                      {propertiesDetails.features.electricityPower && (
-                        <GenerateFeaturebox
-                          icon={<FaPlugCircleCheck />}
-                          label={"Alimentation en électricité privee"}
-                        />
-                      )}
-                      {propertiesDetails.features.electricityJirama && (
-                        <GenerateFeaturebox
-                          icon={<FaPlugCircleBolt />}
-                          label={"Électricité fournie par la JI.RA.MA"}
-                        />
-                      )}
-                      {propertiesDetails.features.surroundedByWalls && (
-                        <GenerateFeaturebox
-                          icon={<GiBrickWall />}
-                          label={"Propriété entourée de murs"}
-                        />
-                      )}
-                      {propertiesDetails.features.securitySystem && (
-                        <GenerateFeaturebox
-                          icon={<FaShieldAlt />}
-                          label={"Domaine sécurisé"}
-                        />
-                      )}
-                      {propertiesDetails.features.kitchenFacilities && (
-                        <GenerateFeaturebox
-                          icon={<FaKitchenSet />}
-                          label={"Cuisine déjà équipée"}
-                        />
-                      )}
-                      {propertiesDetails.features.terrace && (
-                        <GenerateFeaturebox
-                          icon={<TbBuildingCastle />}
-                          label={"Avec terrasse disponible."}
-                        />
-                      )}
-                      {propertiesDetails.features.swimmingPool && (
-                        <GenerateFeaturebox
-                          icon={<FaSwimmingPool />}
-                          label={"Avec piscine."}
-                        />
-                      )}
-                      {propertiesDetails.features.hotWaterAvailable && (
-                        <GenerateFeaturebox
-                          icon={<FaHotTub />}
-                          label={"Eau chaude disponible"}
-                        />
-                      )}
-                      {propertiesDetails.features.airConditionerAvailable && (
-                        <GenerateFeaturebox
-                          icon={<TbAirConditioning />}
-                          label={"Climatisation disponible"}
-                        />
-                      )}
-                      {propertiesDetails.features.smokeDetectorsAvailable && (
-                        <GenerateFeaturebox
-                          icon={<GiSmokeBomb />}
-                          label={"Détecteurs de fumée"}
-                        />
-                      )}
-                      {propertiesDetails.features.furnishedProperty && (
-                        <GenerateFeaturebox
-                          icon={<MdOutlineLiving />}
-                          label={"Logement Meublé"}
-                        />
-                      )}
-                    </p>
+                      <IoMdShareAlt style={{ fontSize: "16px" }} />
+                      Partager
+                    </button>
+                  </div>
+                  <div
+                    style={{
+                      border: "1px solid #ddd",
+                      borderRadius: "20px",
+                      padding: "16px",
+                      marginBottom: "5px",
+                      color: "#333",
+                      backgroundColor: "transparent",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                      whiteSpace: "break-spaces",
+                      wordBreak: "break-word",
+                      fontWeight: "400",
+                      fontSize: "14px",
+                      lineHeight: "1.5",
+                    }}
+                  >
+                    <Linkify options={options}>
+                      {propertiesDetails && propertiesDetails.description}
+                    </Linkify>
+                  </div>
+                  <div
+                    className="d-flex flex-wrap p-3"
+                    style={{
+                      gap: "4px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {/* ⚡ Eau & électricité */}
+                    {propertiesDetails.features?.electricityJirama && <GenerateFeaturebox icon={<FaPlugCircleBolt />} label={"Électricité JIRAMA"} />}
+                    {propertiesDetails.features?.waterPumpSupplyJirama && <GenerateFeaturebox icon={<FaFaucetDrip />} label={"Pompe JIRAMA"} />}
+                    {propertiesDetails.features?.waterWellSupply && <GenerateFeaturebox icon={<GiWell />} label={"Puits d'eau"} />}
+                    {propertiesDetails.features?.electricityPower && <GenerateFeaturebox icon={<FaPlugCircleCheck />} label={"Électricité privée"} />}
+                    {propertiesDetails.features?.waterPumpSupply && <GenerateFeaturebox icon={<FaOilWell />} label={"Pompe à eau privée"} />}
+                    {propertiesDetails.features?.solarPanels && <GenerateFeaturebox icon={<GiSolarPower />} label={"Panneaux solaires"} />}
+                    {/* 🚪 Accessibilité & extérieur */}
+                    {propertiesDetails.features?.motoAccess && <GenerateFeaturebox icon={<FaMotorcycle />} label={"Accès moto"} />}
+                    {propertiesDetails.features?.carAccess && <GenerateFeaturebox icon={<FaCar />} label={"Accès voiture"} />}
+                    {propertiesDetails.features?.surroundedByWalls && <GenerateFeaturebox icon={<GiBrickWall />} label={"Clôturée"} />}
+                    {propertiesDetails.features?.courtyard && <GenerateFeaturebox icon={<GiBrickWall />} label={"Cour"} />}
+                    {propertiesDetails.features?.parkingSpaceAvailable && <GenerateFeaturebox icon={<FaParking />} label={"Parking"} />}
+                    {propertiesDetails.features?.garage && <GenerateFeaturebox icon={<FaCar />} label={"Garage"} />}
+                    {propertiesDetails.features?.garden && <GenerateFeaturebox icon={<GiWell />} label={"Jardin"} />}
+                    {propertiesDetails.features?.independentHouse && <GenerateFeaturebox icon={<TbBuildingCastle />} label={"Indépendante"} />}
+                    {propertiesDetails.features?.guardianHouse && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Maison pour gardien"} />}
+                    {/* 🏠 Confort intérieur */}
+                    {propertiesDetails.features?.kitchenFacilities && <GenerateFeaturebox icon={<FaKitchenSet />} label={"Cuisine équipée"} />}
+                    {propertiesDetails.features?.placardKitchen && <GenerateFeaturebox icon={<FaBed />} label={"Cuisine placardée"} />}
+                    {propertiesDetails.features?.hotWaterAvailable && <GenerateFeaturebox icon={<FaHotTub />} label={"Eau chaude"} />}
+                    {propertiesDetails.features?.furnishedProperty && <GenerateFeaturebox icon={<MdOutlineLiving />} label={"Meublé"} />}
+                    {propertiesDetails.features?.airConditionerAvailable && <GenerateFeaturebox icon={<TbAirConditioning />} label={"Climatisation"} />}
+                    {propertiesDetails.features?.bathtub && <GenerateFeaturebox icon={<GiBathtub />} label={"Baignoire"} />}
+                    {propertiesDetails.features?.fireplace && <GenerateFeaturebox icon={<GiFireplace />} label={"Cheminée"} />}
+                    {propertiesDetails.features?.elevator && <GenerateFeaturebox icon={<TbBuildingCastle />} label={"Ascenseur"} />}
+                    {/* 🌇 Espaces extérieurs confort */}
+                    {propertiesDetails.features?.balcony && <GenerateFeaturebox icon={<MdBalcony />} label={"Balcon"} />}
+                    {propertiesDetails.features?.roofTop && <GenerateFeaturebox icon={<GiCastle />} label={"Toit terrasse"} />}
+                    {propertiesDetails.features?.swimmingPool && <GenerateFeaturebox icon={<FaSwimmingPool />} label={"Piscine"} />}
+                    {/* 🛡️ Sécurité */}
+                    {propertiesDetails.features?.securitySystem && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Système de sécurité"} />}
+                    {/* 🌐 Connectivité */}
+                    {propertiesDetails.features?.wifiAvailability && <GenerateFeaturebox icon={<FaWifi />} label={"Wi-Fi"} />}
+                    {propertiesDetails.features?.fiberOpticReady && <GenerateFeaturebox icon={<FaWifi />} label={"Fibre optique"} />}
+                    {/* 🌅 Vue */}
+                    {propertiesDetails.features?.seaView && <GenerateFeaturebox icon={<GiSeaDragon />} label={"Vue mer"} />}
+                    {propertiesDetails.features?.mountainView && <GenerateFeaturebox icon={<GiMountainCave />} label={"Vue montagne"} />}
+                    {propertiesDetails.features?.panoramicView && <GenerateFeaturebox icon={<GiSeatedMouse />} label={"Vue panoramique"} />}
                   </div>
                   <CardDetails property={propertiesDetails} />
                   <PhotoGallery images={propertiesDetails.images} />
@@ -383,7 +364,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
               <button
                 onClick={handleShowContact}
                 className="btn btn-success text-white font-weight-bold my-2 my-sm-0"
-                style={{ padding: "1.5vh", borderRadius: "10px" }}
+                style={{ padding: "1.5vh", borderRadius: "20px" }}
                 type="submit"
               >
                 <FaPhoneAlt className="mr-2 mb-1" />

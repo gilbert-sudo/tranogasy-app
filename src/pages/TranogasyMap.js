@@ -259,13 +259,11 @@ function MyMap({ properties }) {
             </div>
           )}
           {selectedProperty && (
-            <div style={{ padding: "5.5vh 1vh 2vh 1vh" }}>
               <PropertyDetailsPage
                 key={selectedProperty._id}
                 fastPreviewProperty={selectedProperty}
                 handleCloseSlideClick={handleCloseSlideClick}
               />
-            </div>
           )}
 
         </div>
