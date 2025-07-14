@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "wouter";
-import { getCenterOfBounds, getBounds, getDistance } from "geolib";
+import { useState, useEffect, useRef } from "react";
+import { getCenterOfBounds } from "geolib";
 import { useSelector, useDispatch } from "react-redux";
-import NoResultFound from "../components/NoResultFound";
-import SearchLoader from "../components/SearchLoader";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
@@ -21,14 +18,10 @@ import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
-import { ImLocation } from "react-icons/im";
 
 export default function TranogasyMap() {
 
   const properties = useSelector((state) => state.properties);
-
-  const searchForm = useSelector((state) => state.searchForm);
-  console.log("Search Form: ", searchForm);
 
   const searchResults = useSelector((state) => state.searchResults);
 
@@ -50,13 +43,13 @@ export default function TranogasyMap() {
     return cleanupFunction;
   }, []);
 
-  if (searchResults && searchResults.length !== 0) {
+  if (searchResults) {
     if (!isLoaded) return <div>Chargement de la carte...</div>;
     return <MyMap properties={searchResults} />;
   }
-  if (searchResults && searchResults.length === 0) {
-    return <NoResultFound searchForm={searchForm} />;
-  }
+  // if (searchResults && searchResults.length === 0) {
+  //   return <NoResultFound searchForm={searchForm} />;
+  // }
   if (!searchResults) {
     // return <SearchLoader />;
     return <MyMap properties={properties} />;
@@ -74,11 +67,8 @@ function MyMap({ properties }) {
   const [defaultposition, setDefaultPosition] = useState(
     geolocation.userCurrentPosition
   );
-  const [radius, setRadius] = useState(500);
   const dispatch = useDispatch();
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
-
-  const [location, setLocation] = useLocation("");
 
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isDetailsVisible, setIsSlideVisible] = useState(false);
@@ -119,8 +109,6 @@ function MyMap({ properties }) {
         setCenter({ lat: centerCoord.latitude, lng: centerCoord.longitude });
 
       const zoomLevel = calculateZoomLevel(properties);
-
-      console.log(`Calculated Zoom Level: ${zoomLevel}`);
       setMapZoomLevel(zoomLevel);
     }
   }, [properties]);
@@ -153,7 +141,6 @@ function MyMap({ properties }) {
   useEffect(() => {
     let formFilter = searchForm.formFilter;
     formFilter ? setIsSlideVisible(true) : setIsSlideVisible(false);
-    console.log("Form Filter: ", formFilter);
   }, [searchForm.formFilter]);
 
   return (
@@ -248,6 +235,9 @@ function MyMap({ properties }) {
                 top: "10px",
                 right: "10px",
                 zIndex: "9999",
+                backgroundColor: "#fff",
+                borderRadius: "50%",
+                cursor: "pointer",
               }}
               onClick={handleCloseSlideClick}
             />

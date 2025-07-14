@@ -38,7 +38,7 @@ export const useProperty = () => {
 
   const addProperty = async (newProperty) => {
     console.log("Adding new property:", newProperty);
-    
+
     setIsLoading(true);
 
     // Destructure all necessary fields from newProperty
@@ -96,7 +96,7 @@ export const useProperty = () => {
     } = newProperty;
 
     // Simple required fields check (you can customize required fields list)
-    const requiredFields = [title, description, city, ( price || rent) , type, images, owner, phone1];
+    const requiredFields = [title, description, city, (price || rent), type, images, owner, phone1];
     if (requiredFields.some(isEmpty)) {
       setBootstrap("alert alert-danger");
       setMsgError("Veuillez remplir tous les champs obligatoires correctement.");
@@ -106,7 +106,7 @@ export const useProperty = () => {
     }
 
     console.log("Property creating : step 2");
-    
+
 
     // Clean title and description whitespace
     title = title.trim().replace(/\s+/g, " ");
@@ -492,167 +492,147 @@ export const useProperty = () => {
     }
   };
 
-  const searchProperty = (parameters) => {
-    const {
-      selectedMapType,
-      type,
-      budgetMax,
-      budgetMin,
-      numberOfRooms,
-      fokontany,
-      selectedDistrict,
-      selectedCommune,
-      carAccess,
-      motoAccess,
-      wifiAvailability,
-      parkingSpaceAvailable,
-      waterPumpSupply,
-      electricityPower,
-      securitySystem,
-      waterWellSupply,
-      surroundedByWalls,
-      electricityJirama,
-      waterPumpSupplyJirama,
-      kitchenFacilities,
-      airConditionerAvailable,
-      smokeDetectorsAvailable,
-      terrace,
-      swimmingPool,
-      furnishedProperty,
-      hotWaterAvailable,
-      insideToilet,
-      insideBathroom,
-      byNumber,
-      propertyNumber,
-      nearbyLocations,
-    } = parameters;
+const searchProperty = (parameters) => {
+  const {
+    type,
+    budgetMax,
+    budgetMin,
+    numberOfRooms,
+    motoAccess,
+    carAccess,
+    parkingSpaceAvailable,
+    elevator,
+    garden,
+    courtyard,
+    balcony,
+    roofTop,
+    swimmingPool,
+    surroundedByWalls,
+    independentHouse,
+    garage,
+    guardianHouse,
+    kitchenFacilities,
+    placardKitchen,
+    insideToilet,
+    insideBathroom,
+    bathtub,
+    fireplace,
+    airConditionerAvailable,
+    hotWaterAvailable,
+    furnishedProperty,
+    electricityPower,
+    electricityJirama,
+    waterPumpSupply,
+    waterPumpSupplyJirama,
+    waterWellSupply,
+    securitySystem,
+    wifiAvailability,
+    fiberOpticReady,
+    seaView,
+    mountainView,
+    panoramicView,
+    solarPanels,
+  } = parameters;
 
+  let results = [];
 
-    let results = [];
+  // Simple search
+  results = properties.filter(
+    (property) =>
+      property.type === type &&
+      (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
+      (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
+      (budgetMin && property.price ? property.price >= budgetMin : true) &&
+      (budgetMax && property.price ? property.price <= budgetMax : true)
+  );
 
-    // the simple search mode
-    if (byNumber) {
-      dispatch(setReduxPropertyNumber({ propertyNumber }));
-      results = properties.filter(
-        (property) =>
-          property.propertyNumber && property.propertyNumber == propertyNumber
-      );
-      console.log(propertyNumber);
-    } else {
-      if (selectedMapType === "gmap" && nearbyLocations?.length) {
-        // console.log("nearby locations: ", nearbyLocations);
-        if (nearbyLocations.length > 0) {
-          for (let i = 0; i < nearbyLocations.length; i++) {
-            const location = nearbyLocations[i].location;
-            const resultSlice = properties.filter(
-              (property) =>
-                property.type === type &&
-                (location ? property.city._id === location._id : true) &&
-                (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
-                (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
-                (budgetMin && property.price ? property.price >= budgetMin : true) &&
-                (budgetMax && property.price ? property.price <= budgetMax : true)
-            );
-            results = results.concat(resultSlice);
-          }
-        }
-      }
-      if (selectedMapType !== "gmap") {
-        results = properties.filter(
-          (property) =>
-            property.type === type &&
-            (fokontany ? property.city._id === fokontany : true) &&
-            (selectedDistrict
-              ? property.city.district === selectedDistrict.district
-              : true) &&
-            (selectedCommune
-              ? property.city.commune === selectedCommune.commune
-              : true) &&
-            (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
-            (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
-            (budgetMin && property.price ? property.price >= budgetMin : true) &&
-            (budgetMax && property.price ? property.price <= budgetMax : true)
-        );
-        console.log(results);
+  if (results.length === 0) {
+    dispatch(setSearchResults([]));
+  } else {
+    // Advanced search
+    results = results.filter(
+      (property) =>
+        (numberOfRooms
+          ? (property.rooms + property.livingRoom + property.kitchen) >= numberOfRooms
+          : true) &&
+        (carAccess ? property.features.carAccess === carAccess : true) &&
+        (motoAccess ? property.features.motoAccess === motoAccess : true) &&
+        (parkingSpaceAvailable
+          ? property.features.parkingSpaceAvailable === parkingSpaceAvailable
+          : true) &&
+        (elevator ? property.features.elevator === elevator : true) &&
+        (garden ? property.features.garden === garden : true) &&
+        (courtyard ? property.features.courtyard === courtyard : true) &&
+        (balcony ? property.features.balcony === balcony : true) &&
+        (roofTop ? property.features.roofTop === roofTop : true) &&
+        (swimmingPool ? property.features.swimmingPool === swimmingPool : true) &&
+        (surroundedByWalls
+          ? property.features.surroundedByWalls === surroundedByWalls
+          : true) &&
+        (independentHouse
+          ? property.features.independentHouse === independentHouse
+          : true) &&
+        (garage ? property.features.garage === garage : true) &&
+        (guardianHouse
+          ? property.features.guardianHouse === guardianHouse
+          : true) &&
+        (kitchenFacilities
+          ? property.features.kitchenFacilities === kitchenFacilities
+          : true) &&
+        (placardKitchen
+          ? property.features.placardKitchen === placardKitchen
+          : true) &&
+        (insideToilet === "all"
+          ? true
+          : property.features.insideToilet === insideToilet) &&
+        (insideBathroom === "all"
+          ? true
+          : property.features.insideBathroom === insideBathroom) &&
+        (bathtub ? property.features.bathtub === bathtub : true) &&
+        (fireplace ? property.features.fireplace === fireplace : true) &&
+        (airConditionerAvailable
+          ? property.features.airConditionerAvailable === airConditionerAvailable
+          : true) &&
+        (hotWaterAvailable
+          ? property.features.hotWaterAvailable === hotWaterAvailable
+          : true) &&
+        (furnishedProperty
+          ? property.features.furnishedProperty === furnishedProperty
+          : true) &&
+        (electricityPower
+          ? property.features.electricityPower === electricityPower
+          : true) &&
+        (electricityJirama
+          ? property.features.electricityJirama === electricityJirama
+          : true) &&
+        (waterPumpSupply
+          ? property.features.waterPumpSupply === waterPumpSupply
+          : true) &&
+        (waterPumpSupplyJirama
+          ? property.features.waterPumpSupplyJirama === waterPumpSupplyJirama
+          : true) &&
+        (waterWellSupply
+          ? property.features.waterWellSupply === waterWellSupply
+          : true) &&
+        (securitySystem
+          ? property.features.securitySystem === securitySystem
+          : true) &&
+        (wifiAvailability
+          ? property.features.wifiAvailability === wifiAvailability
+          : true) &&
+        (fiberOpticReady
+          ? property.features.fiberOpticReady === fiberOpticReady
+          : true) &&
+        (seaView ? property.features.seaView === seaView : true) &&
+        (mountainView ? property.features.mountainView === mountainView : true) &&
+        (panoramicView ? property.features.panoramicView === panoramicView : true) &&
+        (solarPanels ? property.features.solarPanels === solarPanels : true)
+    );
 
-      }
-    }
-
-    if (results.length === 0) {
-      dispatch(setSearchResults([]));
-    } else {
-      if (!byNumber) {
-        // the advanced search mode
-        results = results.filter(
-          (property) =>
-            (numberOfRooms ? (property.rooms + property.livingRoom + property.kitchen) >= numberOfRooms : true) &&
-            (carAccess ? property.features.carAccess === carAccess : true) &&
-            (motoAccess ? property.features.motoAccess === motoAccess : true) &&
-            (wifiAvailability
-              ? property.features.wifiAvailability === wifiAvailability
-              : true) &&
-            (parkingSpaceAvailable
-              ? property.features.parkingSpaceAvailable ===
-              parkingSpaceAvailable
-              : true) &&
-            (waterPumpSupply
-              ? property.features.waterPumpSupply === waterPumpSupply
-              : true) &&
-            (electricityPower
-              ? property.features.electricityPower === electricityPower
-              : true) &&
-            (securitySystem
-              ? property.features.securitySystem === securitySystem
-              : true) &&
-            (waterWellSupply
-              ? property.features.waterWellSupply === waterWellSupply
-              : true) &&
-            (surroundedByWalls
-              ? property.features.surroundedByWalls === surroundedByWalls
-              : true) &&
-            (electricityJirama
-              ? property.features.electricityJirama === electricityJirama
-              : true) &&
-            (waterPumpSupplyJirama
-              ? property.features.waterPumpSupplyJirama ===
-              waterPumpSupplyJirama
-              : true) &&
-            (kitchenFacilities
-              ? property.features.kitchenFacilities === kitchenFacilities
-              : true) &&
-            (hotWaterAvailable
-              ? property.features.hotWaterAvailable === hotWaterAvailable
-              : true) &&
-            (airConditionerAvailable
-              ? property.features.airConditionerAvailable ===
-              airConditionerAvailable
-              : true) &&
-            (smokeDetectorsAvailable
-              ? property.features.smokeDetectorsAvailable ===
-              smokeDetectorsAvailable
-              : true) &&
-            (terrace ? property.features.terrace === terrace : true) &&
-            (swimmingPool
-              ? property.features.swimmingPool === swimmingPool
-              : true) &&
-            (furnishedProperty
-              ? property.features.furnishedProperty === furnishedProperty
-              : true) &&
-            (insideToilet === "all"
-              ? true
-              : property.features.insideToilet === insideToilet) &&
-            (insideBathroom === "all"
-              ? true
-              : property.features.insideBathroom === insideBathroom)
-        );
-      }
-
-      console.log(results);
-
-      dispatch(setSearchResults(results));
-    }
-    return results;
-  };
+    dispatch(setSearchResults(results));
+  }
+  return results;
+};
 
   const formatPrice = (price = 0) => {
     if (price >= 1000000000) {

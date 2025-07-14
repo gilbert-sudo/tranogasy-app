@@ -31,7 +31,6 @@ export const useMap = () => {
      const calculateZoomLevel = (properties) => {
       // Get bounds
       const bounds = getBounds(getLocationsCoords(properties));
-      console.log(bounds);
 
       // Calculate the distance between the diagonal corners of the bounding box
       const topLeft = { latitude: bounds.maxLat, longitude: bounds.minLng };

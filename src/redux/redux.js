@@ -1,5 +1,4 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { BsDisplay } from "react-icons/bs";
 
 //connected user
 const userSlice = createSlice({
@@ -225,13 +224,13 @@ const historyStackSlice = createSlice({
   reducers: {
     pushHistoryStack: (state, action) => {
       const newPath = action.payload;
-      
+
       if (state.value.length > 10) {
         state.value.shift();
       }
       state.value.push(newPath);
     },
-    setSteps:  (state, action) => {
+    setSteps: (state, action) => {
       const goBackSteps = action.payload;
       state.steps = goBackSteps;
     },
@@ -453,51 +452,76 @@ export const {
 } = notificationStatusSlice.actions;
 
 //searchForm state
+
 const searchFormSlice = createSlice({
   name: "searchForm",
   initialState: {
-    byNumber: false,
-    propertyNumber: null,
-    selectedCity: null,
-    selectedCommune: null,
-    selectedDistrict: null,
     gmapValue: null,
     formFilter: false,
+    isRent: true,
+    isSale: false,
+    isColoc: false,
+    budgetMax: null,
+    budgetMin: null,
+    rangeValue: [0, 0],
+    selectedRoom: "1+",
+    customRoom: "",
+    carAccess: false,
+    motoAccess: false,
+    wifiAvailability: false,
+    parkingSpaceAvailable: false,
+    waterPumpSupply: false,
+    electricityPower: false,
+    securitySystem: false,
+    waterWellSupply: false,
+    surroundedByWalls: false,
+    electricityJirama: false,
+    waterPumpSupplyJirama: false,
+    kitchenFacilities: false,
+    airConditionerAvailable: false,
+    swimmingPool: false,
+    furnishedProperty: false,
+    hotWaterAvailable: false,
+    insideToilet: "all",
+    insideBathroom: "all",
+    elevator: false,
+    garden: false,
+    courtyard: false,
+    balcony: false,
+    roofTop: false,
+    independentHouse: false,
+    garage: false,
+    guardianHouse: false,
+    placardKitchen: false,
+    bathtub: false,
+    fireplace: false,
+    fiberOpticReady: false,
+    seaView: false,
+    mountainView: false,
+    panoramicView: false,
+    solarPanels: false,
   },
   reducers: {
-    setReduxByNumber: (state, action) => {
-      state.byNumber = action.payload.byNumber;
-    },
-    setReduxPropertyNumber: (state, action) => {
-      state.propertyNumber = action.payload.propertyNumber;
-    },
-    setReduxSelectedCity: (state, action) => {
-      state.selectedCity = action.payload.selectedCity;
-    },
-    setReduxSelectedDistrict: (state, action) => {
-      state.selectedDistrict = action.payload.selectedDistrict;
-    },
-    setReduxSelectedCommune: (state, action) => {
-      state.selectedCommune = action.payload.selectedCommune;
-    },
     setReduxGmapValue: (state, action) => {
       state.gmapValue = action.payload.gmapValue;
     },
     setReduxFormFilter: (state, action) => {
       state.formFilter = action.payload.formFilter;
     },
+    setSearchFormState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
   },
 });
 
 export const {
-  setReduxByNumber,
-  setReduxPropertyNumber,
-  setReduxSelectedCity,
-  setReduxSelectedCommune,
-  setReduxSelectedDistrict,
   setReduxGmapValue,
   setReduxFormFilter,
+  setSearchFormState,
 } = searchFormSlice.actions;
+
+export default searchFormSlice.reducer;
+
 
 
 //search results
@@ -529,7 +553,7 @@ const likedPropertiesSlice = createSlice({
     },
     deleteLike: (state, action) => {
       const index = state.findIndex((like) => like._id === action.payload);
-      if (index > -1) state.splice(index, 1) 
+      if (index > -1) state.splice(index, 1)
     },
     // Update a specific property
     updateLikedProperties: (state, action) => {
@@ -606,7 +630,7 @@ const paymentSlice = createSlice({
   },
 });
 
-export const { setPayments, addPayment , updatePayment } = paymentSlice.actions;
+export const { setPayments, addPayment, updatePayment } = paymentSlice.actions;
 
 //Plan slice
 

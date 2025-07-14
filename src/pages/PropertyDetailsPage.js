@@ -61,6 +61,11 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   const propertyData = match ? params.propertyData : null;
   const propertyId = match ? params.propertyId : null;
 
+  if (oneTimeTask === null) {
+    window.scrollTo(0, 0);
+    setOneTimeTask("done");
+  }
+
   const fetchProperty = async () => {
     try {
       const response = await fetch(

@@ -1094,7 +1094,7 @@ const CreateListing = () => {
                       }}
                     >
                       <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280" }}>
-                        Cliquez sur ce que vous souhaitez trouver :
+                        Ce que propose ce logement :
                       </label>
                     </div>
 
