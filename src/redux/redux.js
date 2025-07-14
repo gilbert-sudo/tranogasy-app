@@ -451,56 +451,58 @@ export const {
   setNotificationBellStatus
 } = notificationStatusSlice.actions;
 
-//searchForm state
+
+const initialState = {
+  gmapValue: null,
+  formFilter: false,
+  isRent: true,
+  isSale: false,
+  isColoc: false,
+  budgetMax: null,
+  budgetMin: null,
+  rangeValue: [0, 0],
+  selectedRoom: "1+",
+  customRoom: "",
+  carAccess: false,
+  motoAccess: false,
+  wifiAvailability: false,
+  parkingSpaceAvailable: false,
+  waterPumpSupply: false,
+  electricityPower: false,
+  securitySystem: false,
+  waterWellSupply: false,
+  surroundedByWalls: false,
+  electricityJirama: false,
+  waterPumpSupplyJirama: false,
+  kitchenFacilities: false,
+  airConditionerAvailable: false,
+  swimmingPool: false,
+  furnishedProperty: false,
+  hotWaterAvailable: false,
+  insideToilet: "all",
+  insideBathroom: "all",
+  elevator: false,
+  garden: false,
+  courtyard: false,
+  balcony: false,
+  roofTop: false,
+  independentHouse: false,
+  garage: false,
+  guardianHouse: false,
+  placardKitchen: false,
+  bathtub: false,
+  fireplace: false,
+  fiberOpticReady: false,
+  seaView: false,
+  mountainView: false,
+  panoramicView: false,
+  solarPanels: false,
+  hasAnimated: false,
+};
 
 const searchFormSlice = createSlice({
   name: "searchForm",
-  initialState: {
-    gmapValue: null,
-    formFilter: false,
-    isRent: true,
-    isSale: false,
-    isColoc: false,
-    budgetMax: null,
-    budgetMin: null,
-    rangeValue: [0, 0],
-    selectedRoom: "1+",
-    customRoom: "",
-    carAccess: false,
-    motoAccess: false,
-    wifiAvailability: false,
-    parkingSpaceAvailable: false,
-    waterPumpSupply: false,
-    electricityPower: false,
-    securitySystem: false,
-    waterWellSupply: false,
-    surroundedByWalls: false,
-    electricityJirama: false,
-    waterPumpSupplyJirama: false,
-    kitchenFacilities: false,
-    airConditionerAvailable: false,
-    swimmingPool: false,
-    furnishedProperty: false,
-    hotWaterAvailable: false,
-    insideToilet: "all",
-    insideBathroom: "all",
-    elevator: false,
-    garden: false,
-    courtyard: false,
-    balcony: false,
-    roofTop: false,
-    independentHouse: false,
-    garage: false,
-    guardianHouse: false,
-    placardKitchen: false,
-    bathtub: false,
-    fireplace: false,
-    fiberOpticReady: false,
-    seaView: false,
-    mountainView: false,
-    panoramicView: false,
-    solarPanels: false,
-  },
+  initialState,
   reducers: {
     setReduxGmapValue: (state, action) => {
       state.gmapValue = action.payload.gmapValue;
@@ -511,6 +513,11 @@ const searchFormSlice = createSlice({
     setSearchFormState: (state, action) => {
       Object.assign(state, action.payload);
     },
+    setSearchFormField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetSearchForm: () => initialState,
   },
 });
 
@@ -518,9 +525,12 @@ export const {
   setReduxGmapValue,
   setReduxFormFilter,
   setSearchFormState,
+  setSearchFormField,
+  resetSearchForm,
 } = searchFormSlice.actions;
 
 export default searchFormSlice.reducer;
+
 
 
 
@@ -532,10 +542,13 @@ const searchResultsSlice = createSlice({
     setSearchResults: (state, action) => {
       return (state = action.payload);
     },
+    resetSearchResults: (state, action) => {
+      return null;
+    },  
   },
 });
 
-export const { setSearchResults } = searchResultsSlice.actions;
+export const { setSearchResults, resetSearchResults } = searchResultsSlice.actions;
 
 //liked properties
 const likedPropertiesSlice = createSlice({

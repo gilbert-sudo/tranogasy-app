@@ -5,7 +5,7 @@ import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
 
-import { setReduxFormFilter } from "../redux/redux";
+import { setReduxFormFilter, setSearchResults, resetSearchForm, resetSearchResults } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import {
@@ -25,6 +25,8 @@ export default function TranogasyMap() {
 
   const searchResults = useSelector((state) => state.searchResults);
 
+  const dispatch = useDispatch();
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs",
     libraries: ["places"],
@@ -37,8 +39,10 @@ export default function TranogasyMap() {
       Array.from(pacContainers).forEach((container) => {
         container.remove();
       });
+      console.log("Component unmount — reset states");
+      dispatch(resetSearchResults());
+      dispatch(resetSearchForm());
     };
-
     // Call the cleanup function when the component unmounts
     return cleanupFunction;
   }, []);
@@ -52,7 +56,7 @@ export default function TranogasyMap() {
   // }
   if (!searchResults) {
     // return <SearchLoader />;
-    return <MyMap properties={properties} />;
+    return <MyMap properties={properties.filter((property) => property.rent)} />;
   }
 }
 
@@ -60,6 +64,7 @@ export default function TranogasyMap() {
 function MyMap({ properties }) {
   const geolocation = useSelector((state) => state.geolocation);
   const searchForm = useSelector((state) => state.searchForm);
+  const initialPropertiesState = useSelector((state) => state.properties);
   const [selected, setSelected] = useState(null);
   const [center, setCenter] = useState(null);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
@@ -71,9 +76,8 @@ function MyMap({ properties }) {
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
 
   const [selectedProperty, setSelectedProperty] = useState(null);
-  const [isDetailsVisible, setIsSlideVisible] = useState(false);
+  const [isSliderVisible, setIsSlideVisible] = useState(false);
   const sliderRef = useRef(null);
-  const map = useMap();
   const [mapTypeId, setMapTypeId] = useState("roadmap");
 
   const handleMarkerClick = (property) => {
@@ -135,15 +139,14 @@ function MyMap({ properties }) {
 
   useEffect(() => {
     // get the selected place coordinates
-    console.log("center: ", center);
-    
-    console.log("Selected Place Coordinates: ", selectedPlace);
     if (selectedPlace) {
-      setCenter(selectedPlace);
-      setMapZoomLevel(15); // Set a higher zoom level when a place is selected
-      setSelectedProperty(null); // Reset selected property when a place is selected
+      dispatch(setSearchResults(initialPropertiesState.filter(property => property.rent)));
+      setTimeout(() => {
+        setCenter(selectedPlace);
+        setMapZoomLevel(15); // Set a higher zoom level when a place is selected
+        dispatch(resetSearchForm());
+      }, 1000);
     }
-
   }, [selectedPlace]);
 
   useEffect(() => {
@@ -184,13 +187,13 @@ function MyMap({ properties }) {
           </small>
         </button> */}
         <Map
-          zoom={properties && mapZoomLevel ? mapZoomLevel : 13}
           minZoom={6}
-          onZoomChanged={(e) => {
-            const newZoomLevel = e.detail.zoom;
-            // 👇 Change the map type based on zoom level
-            if (newZoomLevel > 16) setMapTypeId("hybrid");
-            if (newZoomLevel <= 16) setMapTypeId("roadmap");
+          zoom={mapZoomLevel}
+          onZoomChanged={e => {
+            const z = e.detail.zoom;
+            setMapZoomLevel(z);        // mirror user zoom into state
+            if (z > 15) setMapTypeId("hybrid");
+            else setMapTypeId("roadmap");
           }}
           center={properties && center ? center : defaultposition}
           mapId="80e7a8f8db80acb5"
@@ -205,12 +208,12 @@ function MyMap({ properties }) {
           <Markers points={properties} onMarkerClick={handleMarkerClick} />
         </Map>
         <div
-          className={`property-details-slide ${isDetailsVisible ? "show" : ""}`}
+          className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
           style={{
             position: "fixed",
             left: "50%",
             bottom: 0,
-            transform: isDetailsVisible
+            transform: isSliderVisible
               ? "translate(-50%, 0)"
               : "translate(-50%, 100%)",
             width: "100%",
@@ -381,7 +384,6 @@ function MyMap({ properties }) {
 //     </>
 //   );
 // };
-
 const Markers = ({ points, onMarkerClick }) => {
   const map = useMap();
   const { formatPrice } = useProperty();
@@ -391,7 +393,6 @@ const Markers = ({ points, onMarkerClick }) => {
 
   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
   const [usedCoords, setUsedCoords] = useState(new Set());
-  const [visiblePoints, setVisiblePoints] = useState([]);
 
   const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
     if (adjustedCoordsCache[id]) {
@@ -417,7 +418,6 @@ const Markers = ({ points, onMarkerClick }) => {
     return newCoords;
   };
 
-
   const createCustomMarkerIcon = (property) => {
     const price = formatPrice(property.rent || property.price);
     const width = 80;
@@ -432,62 +432,9 @@ const Markers = ({ points, onMarkerClick }) => {
     return {
       url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
       scaledSize: new window.google.maps.Size(width, rectHeight + tipHeight + 10),
-      anchor: new window.google.maps.Point(
-        width / 2,
-        rectHeight + tipHeight + 10
-      ),
+      anchor: new window.google.maps.Point(width / 2, rectHeight + tipHeight + 10),
     };
   };
-
-
-
-  useEffect(() => {
-    if (!map) return;
-
-    const updateVisiblePoints = () => {
-      const bounds = map.getBounds();
-      if (!bounds) return;
-
-      const ne = bounds.getNorthEast();
-      const sw = bounds.getSouthWest();
-
-      // Add margin buffer
-      const latMargin = (ne.lat() - sw.lat()) * 0.1;
-      const lngMargin = (ne.lng() - sw.lng()) * 0.1;
-
-      const extendedBounds = {
-        north: ne.lat() + latMargin,
-        south: sw.lat() - latMargin,
-        east: ne.lng() + lngMargin,
-        west: sw.lng() - lngMargin,
-      };
-
-      const filtered = points.filter((property) => {
-        const coords = property?.coords ? property.coords : property.city.coords;
-        const lat = coords.lat;
-        const lng = coords.lng;
-        return (
-          lat >= extendedBounds.south &&
-          lat <= extendedBounds.north &&
-          lng >= extendedBounds.west &&
-          lng <= extendedBounds.east
-        );
-      });
-
-      setVisiblePoints(filtered);
-    };
-
-    // Update points initially
-    updateVisiblePoints();
-
-    // Add listener for map move or zoom
-    map.addListener("idle", updateVisiblePoints);
-
-    // Cleanup
-    return () => {
-      google.maps.event.clearListeners(map, "idle");
-    };
-  }, [points, map]);
 
   useEffect(() => {
     if (!map) return;
@@ -497,7 +444,7 @@ const Markers = ({ points, onMarkerClick }) => {
     markersRef.current = [];
 
     // Create new markers
-    const newMarkers = visiblePoints.map((property) => {
+    const newMarkers = points.map((property) => {
       const finalCoords = property?.coords
         ? property.coords
         : adjustCoordsRandomlyUnique(property.city.coords, property._id);
@@ -515,7 +462,6 @@ const Markers = ({ points, onMarkerClick }) => {
       return marker;
     });
 
-    // Update clusterer
     if (clusterer.current) {
       clusterer.current.clearMarkers();
       clusterer.current.addMarkers(newMarkers);
@@ -525,11 +471,11 @@ const Markers = ({ points, onMarkerClick }) => {
 
     markersRef.current = newMarkers;
 
-    // Cleanup on unmount
     return () => {
       newMarkers.forEach((marker) => marker.setMap(null));
     };
-  }, [visiblePoints, map]);
+  }, [points, map]);
 
   return null;
 };
+

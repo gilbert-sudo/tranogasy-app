@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
-import { setSearchFormState } from "../redux/redux";
+import { setSearchFormField } from "../redux/redux";
 
 import RangeSlider from "react-range-slider-input";
 import "./css/range-slider.css";
@@ -50,6 +50,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
 
   const dispatch = useDispatch();
   const [, setLocation] = useLocation("");
+  const [hasAnimated, setHasAnimated] = useState(false);
   const [budgetMax, setBudgetMax] = useState(null);
   const [budgetMin, setBudgetMin] = useState(null);
   const { searchProperty, getPriceAndRentRanges } = useProperty();
@@ -252,100 +253,183 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
       setMountainView(searchForm.mountainView);
       setPanoramicView(searchForm.panoramicView);
       setSolarPanels(searchForm.solarPanels);
+      setHasAnimated(searchForm.hasAnimated);
     }
-    
+
   }, []);
 
-  useEffect(() => {
-    
-    dispatch(setSearchFormState({
-      isRent,
-      isSale,
-      isColoc,
-      budgetMax,
-      budgetMin,
-      rangeValue,
-      selectedRoom,
-      customRoom,
-      carAccess,
-      motoAccess,
-      wifiAvailability,
-      parkingSpaceAvailable,
-      waterPumpSupply,
-      electricityPower,
-      securitySystem,
-      waterWellSupply,
-      surroundedByWalls,
-      electricityJirama,
-      waterPumpSupplyJirama,
-      kitchenFacilities,
-      airConditionerAvailable,
-      swimmingPool,
-      furnishedProperty,
-      hotWaterAvailable,
-      insideToilet,
-      insideBathroom,
-      elevator,
-      garden,
-      courtyard,
-      balcony,
-      roofTop,
-      independentHouse,
-      garage,
-      guardianHouse,
-      placardKitchen,
-      bathtub,
-      fireplace,
-      fiberOpticReady,
-      seaView,
-      mountainView,
-      panoramicView,
-      solarPanels,
-    }));
-  }, [
-    isRent,
-    isSale,
-    isColoc,
-    budgetMax,
-    budgetMin,
-    rangeValue,
-    selectedRoom,
-    customRoom,
-    carAccess,
-    motoAccess,
-    wifiAvailability,
-    parkingSpaceAvailable,
-    waterPumpSupply,
-    electricityPower,
-    securitySystem,
-    waterWellSupply,
-    surroundedByWalls,
-    electricityJirama,
-    waterPumpSupplyJirama,
-    kitchenFacilities,
-    airConditionerAvailable,
-    swimmingPool,
-    furnishedProperty,
-    hotWaterAvailable,
-    insideToilet,
-    insideBathroom,
-    elevator,
-    garden,
-    courtyard,
-    balcony,
-    roofTop,
-    independentHouse,
-    garage,
-    guardianHouse,
-    placardKitchen,
-    bathtub,
-    fireplace,
-    fiberOpticReady,
-    seaView,
-    mountainView,
-    panoramicView,
-    solarPanels,
-  ]);
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "isRent", value: isRent }));
+}, [isRent]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "isSale", value: isSale }));
+}, [isSale]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "isColoc", value: isColoc }));
+}, [isColoc]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "budgetMax", value: budgetMax }));
+}, [budgetMax]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "budgetMin", value: budgetMin }));
+}, [budgetMin]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "rangeValue", value: rangeValue }));
+}, [rangeValue]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "selectedRoom", value: selectedRoom }));
+}, [selectedRoom]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "customRoom", value: customRoom }));
+}, [customRoom]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "carAccess", value: carAccess }));
+}, [carAccess]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "motoAccess", value: motoAccess }));
+}, [motoAccess]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "wifiAvailability", value: wifiAvailability }));
+}, [wifiAvailability]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "parkingSpaceAvailable", value: parkingSpaceAvailable }));
+}, [parkingSpaceAvailable]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "waterPumpSupply", value: waterPumpSupply }));
+}, [waterPumpSupply]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "electricityPower", value: electricityPower }));
+}, [electricityPower]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "securitySystem", value: securitySystem }));
+}, [securitySystem]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "waterWellSupply", value: waterWellSupply }));
+}, [waterWellSupply]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "surroundedByWalls", value: surroundedByWalls }));
+}, [surroundedByWalls]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "electricityJirama", value: electricityJirama }));
+}, [electricityJirama]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "waterPumpSupplyJirama", value: waterPumpSupplyJirama }));
+}, [waterPumpSupplyJirama]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "kitchenFacilities", value: kitchenFacilities }));
+}, [kitchenFacilities]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "airConditionerAvailable", value: airConditionerAvailable }));
+}, [airConditionerAvailable]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "swimmingPool", value: swimmingPool }));
+}, [swimmingPool]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "furnishedProperty", value: furnishedProperty }));
+}, [furnishedProperty]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "hotWaterAvailable", value: hotWaterAvailable }));
+}, [hotWaterAvailable]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "insideToilet", value: insideToilet }));
+}, [insideToilet]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "insideBathroom", value: insideBathroom }));
+}, [insideBathroom]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "elevator", value: elevator }));
+}, [elevator]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "garden", value: garden }));
+}, [garden]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "courtyard", value: courtyard }));
+}, [courtyard]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "balcony", value: balcony }));
+}, [balcony]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "roofTop", value: roofTop }));
+}, [roofTop]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "independentHouse", value: independentHouse }));
+}, [independentHouse]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "garage", value: garage }));
+}, [garage]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "guardianHouse", value: guardianHouse }));
+}, [guardianHouse]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "placardKitchen", value: placardKitchen }));
+}, [placardKitchen]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "bathtub", value: bathtub }));
+}, [bathtub]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "fireplace", value: fireplace }));
+}, [fireplace]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "fiberOpticReady", value: fiberOpticReady }));
+}, [fiberOpticReady]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "seaView", value: seaView }));
+}, [seaView]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "mountainView", value: mountainView }));
+}, [mountainView]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "panoramicView", value: panoramicView }));
+}, [panoramicView]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "solarPanels", value: solarPanels }));
+}, [solarPanels]);
+
+useEffect(() => {
+  dispatch(setSearchFormField({ key: "hasAnimated", value: hasAnimated }));
+}, [hasAnimated]);
+
 
 
 
@@ -441,7 +525,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
     seaView,
     mountainView,
     panoramicView,
-    solarPanels, searchForm]);
+    solarPanels]);
 
   useEffect(() => {
     if (properties) {
@@ -454,41 +538,47 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
     setBudgetMin(Math.min(...rangeValue));
   }, [rangeValue]);
 
-useEffect(() => {
-  if (!priceRange) return;
+  useEffect(() => {
+    let intervalId;
+    let startMin = 0;
+    let startMax = 0;
 
-  // If we have Redux value, use it directly
-  if (searchForm.rangeValue && searchForm.rangeValue[0] !== 0 && searchForm.rangeValue[1] !== 0) {
-    setRangeValue(searchForm.rangeValue);
-    return;
-  }
+    if (!searchForm.hasAnimated) {
+      // Define ending values based on conditions
+      const endMin = priceRange
+        ? (isRent && priceRange.minRent) || (isSale && priceRange.minPrice)
+        : 0;
+      const endMax = priceRange
+        ? (isRent && priceRange.maxRent) || (isSale && priceRange.maxPrice)
+        : 0;
 
-  let startMin = 0;
-  let startMax = 0;
+      // Define faster animation speed
+      const interval = 5; // Faster interval (lower value = quicker updates)
+      const stepMin = Math.ceil(endMin / 10); // Larger step size for quicker animation
+      const stepMax = Math.ceil(endMax / 10);
 
-  // Ending values
-  const endMin = (isRent && priceRange.minRent) || (isSale && priceRange.minPrice) || 0;
-  const endMax = (isRent && priceRange.maxRent) || (isSale && priceRange.maxPrice) || 0;
+      intervalId = setInterval(() => {
+        // Increment startMin and startMax
+        startMin = Math.min(startMin + stepMin, endMin);
+        startMax = Math.min(startMax + stepMax, endMax);
 
-  // Animation speed
-  const interval = 5;
-  const stepMin = Math.ceil(endMin / 10);
-  const stepMax = Math.ceil(endMax / 10);
+        setRangeValue([startMin, startMax]);
 
-  const intervalId = setInterval(() => {
-    startMin = Math.min(startMin + stepMin, endMin);
-    startMax = Math.min(startMax + stepMax, endMax);
-
-    setRangeValue([startMin, startMax]);
-
-    if (startMin >= endMin && startMax >= endMax) {
-      clearInterval(intervalId);
+        // Stop the animation when end values are reached
+        if (startMin >= endMin && startMax >= endMax) {
+          clearInterval(intervalId);
+        }
+      }, interval);
     }
-  }, interval);
 
-  return () => clearInterval(intervalId);
-}, [isRent, isSale, priceRange, searchForm.rangeValue]);
+    console.log("Animation started with values:", hasAnimated);
+    
+    setHasAnimated(true);
 
+    return () =>clearInterval(intervalId);
+
+    
+  }, [isRent, isSale]);
 
 
 
