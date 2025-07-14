@@ -135,7 +135,15 @@ function MyMap({ properties }) {
 
   useEffect(() => {
     // get the selected place coordinates
+    console.log("center: ", center);
+    
     console.log("Selected Place Coordinates: ", selectedPlace);
+    if (selectedPlace) {
+      setCenter(selectedPlace);
+      setMapZoomLevel(15); // Set a higher zoom level when a place is selected
+      setSelectedProperty(null); // Reset selected property when a place is selected
+    }
+
   }, [selectedPlace]);
 
   useEffect(() => {
@@ -249,11 +257,11 @@ function MyMap({ properties }) {
             </div>
           )}
           {selectedProperty && (
-              <PropertyDetailsPage
-                key={selectedProperty._id}
-                fastPreviewProperty={selectedProperty}
-                handleCloseSlideClick={handleCloseSlideClick}
-              />
+            <PropertyDetailsPage
+              key={selectedProperty._id}
+              fastPreviewProperty={selectedProperty}
+              handleCloseSlideClick={handleCloseSlideClick}
+            />
           )}
 
         </div>
