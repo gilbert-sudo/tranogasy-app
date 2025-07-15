@@ -4,7 +4,7 @@ import PlaceAutocompleteClassic from './PlaceAutocompleteClassic';
 const CustomMapControl = ({ controlPosition, onPlaceSelect }) => {
   return (
     <MapControl position={controlPosition}>
-      <div className="autocomplete-control">
+      <div className="autocomplete-control w-100">
         <PlaceAutocompleteClassic onPlaceSelect={onPlaceSelect}/>
       </div>
     </MapControl>

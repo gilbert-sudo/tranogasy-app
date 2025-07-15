@@ -80,7 +80,7 @@ const CarouselDetails = ({ property, handleShowContact }) => {
           className="container"
           style={{ backgroundColor: `rgb(0, 0, 0, 0.5)`, height: "150%" }}
         >
-          <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)} style={{ zIndex: 1000}}>
+          <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)} style={{ zIndex: 10}}>
             <img
               alt=""
               src={property.owner?.avatar ? property.owner.avatar : userProfile}

@@ -1,0 +1,21 @@
+
+/* Hide scrollbar but allow scrolling — for Webkit (Chrome, Edge, Safari) */
+#root
+  > div
+  > div
+  > main
+  > div
+  > div:nth-child(2)
+  > div:nth-child(2)
+  > div::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+#root > div > div > main > div > div:nth-child(2) > div:nth-child(2) > div {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+#root > div > div > main > div > div:nth-child(2) > div:nth-child(2) > div > div:last-child {
+  margin-right: 20px;
+}

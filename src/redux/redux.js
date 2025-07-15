@@ -454,6 +454,7 @@ export const {
 
 const initialState = {
   gmapValue: null,
+  selectedProperty: null,
   formFilter: false,
   isRent: true,
   isSale: false,

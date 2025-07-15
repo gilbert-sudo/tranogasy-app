@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
+import PropertyCarousel from "../components/PropertyCarousel";
 
-import { setReduxFormFilter, setSearchResults, resetSearchForm, resetSearchResults } from "../redux/redux";
+import { setReduxFormFilter, setSearchResults, resetSearchForm, resetSearchResults, setSearchFormField } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import {
@@ -56,6 +57,7 @@ export default function TranogasyMap() {
   // }
   if (!searchResults) {
     // return <SearchLoader />;
+    if (!isLoaded) return <div>Chargement de la carte...</div>;
     return <MyMap properties={properties.filter((property) => property.rent)} />;
   }
 }
@@ -64,30 +66,77 @@ export default function TranogasyMap() {
 function MyMap({ properties }) {
   const geolocation = useSelector((state) => state.geolocation);
   const searchForm = useSelector((state) => state.searchForm);
+  const selectedProperty = searchForm.selectedProperty;
   const initialPropertiesState = useSelector((state) => state.properties);
   const [selected, setSelected] = useState(null);
   const [center, setCenter] = useState(null);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
+
   const [defaultposition, setDefaultPosition] = useState(
     geolocation.userCurrentPosition
   );
   const dispatch = useDispatch();
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
 
-  const [selectedProperty, setSelectedProperty] = useState(null);
   const [isSliderVisible, setIsSlideVisible] = useState(false);
   const sliderRef = useRef(null);
-  const [mapTypeId, setMapTypeId] = useState("roadmap");
+  const [mapTypeId, setMapTypeId] = useState("hybrid");
 
-  const handleMarkerClick = (property) => {
-    setSelectedProperty(property);
-    console.log("Selected Property: ", property);
-    setIsSlideVisible(true);
+  // Define adjustCoordsRandomlyUnique here or pass it down if it's external
+  // For simplicity, defining it here to be accessible within MyMap
+  const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
+  const [usedCoords, setUsedCoords] = useState(new Set());
+
+  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
+    if (adjustedCoordsCache[id]) {
+      return adjustedCoordsCache[id];
+    }
+
+    const randomOffset = () => (Math.random() - 0.5) * maxOffset;
+    let newCoords;
+
+    do {
+      newCoords = {
+        lat: coords.lat + randomOffset(),
+        lng: coords.lng + randomOffset(),
+      };
+    } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
+
+    setUsedCoords((prev) => new Set(prev).add(`${newCoords.lat},${newCoords.lng}`));
+    setAdjustedCoordsCache((prevCache) => ({
+      ...prevCache,
+      [id]: newCoords,
+    }));
+
+    return newCoords;
+  };
+
+
+  const handleMarkerClick = async (property, markerFinalCoords, fullFunction) => {
+    dispatch(setSearchFormField({ key: "selectedProperty", value: property }));
+
+    if (fullFunction) {
+      setIsSlideVisible(true);
+    }
 
     // 👇 Reset scroll to top
     if (sliderRef.current) {
       sliderRef.current.scrollTop = 0;
+    }
+
+    // Determine the finalCoords for centering
+    const coordsToCenter = markerFinalCoords || (
+      property?.coords
+        ? property.coords
+        : (property.city?.coords ? adjustCoordsRandomlyUnique(property.city.coords, property._id) : null)
+    );
+
+    console.log("Selected Property: ", property, coordsToCenter);
+
+    if (coordsToCenter && !fullFunction) {
+      setCenter(coordsToCenter);
+      setMapZoomLevel(20); // Adjust zoom level as needed for a good view of the property
     }
   };
 
@@ -102,9 +151,7 @@ function MyMap({ properties }) {
   const handleCloseSlideClick = (event) => {
     setIsSlideVisible(false);
     dispatch(setReduxFormFilter({ formFilter: false }));
-    setSelectedProperty(null);
   };
-
 
   useEffect(() => {
     if (properties && properties.length > 0) {
@@ -168,32 +215,14 @@ function MyMap({ properties }) {
             />
           </div>
         </div>
-
-        {/* <button
-          type="button"
-          onClick={() => setLocation("/searchResult")}
-          className="btn btn-light position-absolute"
-          style={{ zIndex: "1000", marginTop: "4vh", marginLeft: "1vh" }}
-        >
-          <span style={{ fontSize: "0.9rem", fontWeight: "400" }}>
-            Résultats trouvés:{" "}
-            <strong>
-              {properties && properties.length} propriété
-              {properties && properties.length > 1 ? "s" : ""}
-            </strong>
-          </span>{" "}
-          <small style={{ color: "blue" }}>
-            <u>Cliquez ici.</u>
-          </small>
-        </button> */}
         <Map
           minZoom={6}
           zoom={mapZoomLevel}
           onZoomChanged={e => {
             const z = e.detail.zoom;
             setMapZoomLevel(z);        // mirror user zoom into state
-            if (z > 15) setMapTypeId("hybrid");
-            else setMapTypeId("roadmap");
+            // if (z > 15) setMapTypeId("hybrid");
+            // else setMapTypeId("roadmap");
           }}
           center={properties && center ? center : defaultposition}
           mapId="80e7a8f8db80acb5"
@@ -205,7 +234,13 @@ function MyMap({ properties }) {
           }}
           mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
         >
-          <Markers points={properties} onMarkerClick={handleMarkerClick} />
+          {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
+          <Markers points={properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} />
+          {/* Pass null for markerFinalCoords when clicking from the carousel */}
+          <PropertyCarousel
+            visibleProperties={properties.filter((property) => property.rent)}
+            onItemClick={handleMarkerClick}
+          />
         </Map>
         <div
           className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
@@ -273,190 +308,73 @@ function MyMap({ properties }) {
   );
 }
 
-//   const map = useMap();
-//   const { formatPrice } = useProperty();
 
-//   const [markers, setMarkers] = useState({});
-//   const clusterer = useRef(null);
-
-//   useEffect(() => {
-//     if (!map) return;
-//     if (!clusterer.current) {
-//       clusterer.current = new MarkerClusterer({ map });
-//     }
-//   }, [map]);
-
-//   useEffect(() => {
-//     clusterer.current?.clearMarkers();
-//     clusterer.current?.addMarkers(Object.values(markers));
-//   }, [markers]);
-
-
-//   const setMarkerRef = (marker, key) => {
-//   // Only update if marker is truly new or removed
-//   if (marker && markers[key] === marker) return;
-//   if (!marker && !markers[key]) return;
-
-//   setMarkers((prev) => {
-//     if (marker) {
-//       return { ...prev, [key]: marker };
-//     } else {
-//       const newMarkers = { ...prev };
-//       delete newMarkers[key];
-//       return newMarkers;
-//     }
-//   });
-// };
-
-
-//   // Cache for adjusted coordinates
-//   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
-//   const [usedCoords, setUsedCoords] = useState(new Set());
-
-//   const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
-//     if (adjustedCoordsCache[id]) {
-//       return adjustedCoordsCache[id];
-//     }
-
-//     const randomOffset = () => (Math.random() - 0.5) * maxOffset;
-//     let newCoords;
-
-//     do {
-//       newCoords = {
-//         lat: coords.lat + randomOffset(),
-//         lng: coords.lng + randomOffset(),
-//       };
-//     } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
-
-//     // Add the new unique coordinates to the used set and cache
-//     setUsedCoords((prev) => new Set(prev).add(`${newCoords.lat},${newCoords.lng}`));
-//     setAdjustedCoordsCache((prevCache) => ({
-//       ...prevCache,
-//       [id]: newCoords,
-//     }));
-
-//     return newCoords;
-//   };
-
-
-//   return (
-//     <>
-//       {points.map((property) => (
-//         <AdvancedMarker
-//           style={{ height: "100px" }}
-//           position={property?.coords ? property.coords : adjustCoordsRandomlyUnique(property.city.coords, property._id)}
-//           key={property._id}
-//           ref={(marker) => setMarkerRef(marker, property._id)}
-//           onClick={() => onMarkerClick(property)} // When marker is clicked
-//         >
-//           <Pin
-//             background={"red"}
-//             glyphColor={"white"}
-//             className={"position-relative"}
-//           >
-//             <span
-//               className="font-weight-bold p-1 position-absolute"
-//               style={{
-
-//                 backgroundColor: "#d2ff90",
-//                 left: "50%",
-//                 transform: "translate(-50%, -90%)",
-//                 marginTop: "1rem",
-//                 borderRadius: "5px",
-//                 color: "#000",
-//                 fontSize: "1rem",
-//                 border: "2px solid red",
-//                 borderRadius: "15px",
-//                 whiteSpace: "nowrap", // Prevent line breaks
-//               }}
-//             >
-//               <small>Ar</small>{(property.rent || property.price) &&
-//                 formatPrice(property.rent || property.price)}
-//               {property?.coords &&
-//                 <small>
-//                   <ImLocation style={{ marginBottom: "5px", color: "red" }} />
-//                 </small>}
-//             </span>
-
-//           </Pin>
-//         </AdvancedMarker>
-//       ))}
-//     </>
-//   );
-// };
-const Markers = ({ points, onMarkerClick }) => {
+const Markers = ({ points, onMarkerClick, adjustCoordsRandomlyUnique }) => {
   const map = useMap();
   const { formatPrice } = useProperty();
+  const selectedProperty = useSelector((state) => state.searchForm.selectedProperty);
 
   const markersRef = useRef([]);
   const clusterer = useRef(null);
 
-  const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
-  const [usedCoords, setUsedCoords] = useState(new Set());
-
-  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
-    if (adjustedCoordsCache[id]) {
-      return adjustedCoordsCache[id];
-    }
-
-    const randomOffset = () => (Math.random() - 0.5) * maxOffset;
-    let newCoords;
-
-    do {
-      newCoords = {
-        lat: coords.lat + randomOffset(),
-        lng: coords.lng + randomOffset(),
-      };
-    } while (usedCoords.has(`${newCoords.lat},${newCoords.lng}`));
-
-    setUsedCoords((prev) => new Set(prev).add(`${newCoords.lat},${newCoords.lng}`));
-    setAdjustedCoordsCache((prevCache) => ({
-      ...prevCache,
-      [id]: newCoords,
-    }));
-
-    return newCoords;
-  };
-
-  const createCustomMarkerIcon = (property) => {
+  const createCustomMarkerIcon = (property, isSelected) => {
     const price = formatPrice(property.rent || property.price);
-    const width = 80;
-    const rectHeight = 28;
+
+    // Base dimensions
+    const baseWidth = 80;
+    const baseHeight = 28;
     const tipHeight = 5;
 
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${rectHeight + tipHeight + 10}">
-      <rect x="5" y="5" rx="15" ry="15" width="${width - 10}" height="${rectHeight}" fill="#d2ff90" stroke="red" stroke-width="2"/>
-      <text x="${width / 2}" y="${5 + rectHeight / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="#000">Ar ${price}</text>
-    </svg>`;
+    // Increase size if selected
+    const width = isSelected ? baseWidth * 1.1 : baseWidth;
+    const rectHeight = isSelected ? baseHeight * 1.1 : baseHeight;
+    const svgHeight = rectHeight + tipHeight + 10;
+
+    // Colors (back to your previous choice!)
+    const fillColor = isSelected ? "#ffcccc" : "#d2ff90";
+    const strokeColor = isSelected ? "#ff0000" : "red";
+    const textColor = "#000000";
+
+    // Transparent inner border when selected
+    const innerBorder = isSelected
+      ? `<rect x="7" y="7" rx="13" ry="13" width="${width - 14}" height="${rectHeight - 4}" fill="none" stroke="transparent" stroke-width="2"/>`
+      : "";
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${svgHeight}">
+    <rect x="5" y="5" rx="15" ry="15" width="${width - 10}" height="${rectHeight}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="3"/>
+    ${innerBorder}
+    <text x="${width / 2}" y="${5 + rectHeight / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="${textColor}">Ar ${price}</text>
+  </svg>`;
 
     return {
       url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
-      scaledSize: new window.google.maps.Size(width, rectHeight + tipHeight + 10),
-      anchor: new window.google.maps.Point(width / 2, rectHeight + tipHeight + 10),
+      scaledSize: new window.google.maps.Size(width, svgHeight),
+      anchor: new window.google.maps.Point(width / 2, svgHeight),
     };
   };
+
 
   useEffect(() => {
     if (!map) return;
 
-    // Clear old markers
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
 
-    // Create new markers
     const newMarkers = points.map((property) => {
       const finalCoords = property?.coords
         ? property.coords
         : adjustCoordsRandomlyUnique(property.city.coords, property._id);
 
+      const isSelected = selectedProperty && selectedProperty._id === property._id;
+
       const marker = new window.google.maps.Marker({
         position: finalCoords,
         map,
-        icon: createCustomMarkerIcon(property),
+        icon: createCustomMarkerIcon(property, isSelected),
       });
 
       marker.addListener("click", () => {
-        onMarkerClick(property);
+        onMarkerClick(property, finalCoords, true);
       });
 
       return marker;
@@ -474,8 +392,7 @@ const Markers = ({ points, onMarkerClick }) => {
     return () => {
       newMarkers.forEach((marker) => marker.setMap(null));
     };
-  }, [points, map]);
+  }, [points, map, adjustCoordsRandomlyUnique, selectedProperty]);
 
   return null;
 };
-

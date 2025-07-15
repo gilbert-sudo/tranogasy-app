@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
@@ -46,6 +46,7 @@ import PropertyLocationDisplayer from "../components/PropertyLocationDisplayer";
 
 const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => {
   const [location, setLocation] = useLocation();
+  const myRef = useRef(null);
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
   const loader = useSelector((state) => state.loader);
@@ -61,10 +62,13 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   const propertyData = match ? params.propertyData : null;
   const propertyId = match ? params.propertyId : null;
 
-  if (oneTimeTask === null) {
-    window.scrollTo(0, 0);
-    setOneTimeTask("done");
-  }
+  useEffect(() => {
+    if (!oneTimeTask && myRef.current) {
+      myRef.current.scrollIntoView({ behavior: "smooth" });
+      setOneTimeTask(true);
+    }
+  }, [oneTimeTask]);
+
 
   const fetchProperty = async () => {
     try {
@@ -200,7 +204,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
 
 
   return (
-    <div>
+    <div ref={myRef}>
       {(propertyData !== "preview" || propertyPreview) && !(propertyData !== "preview" && !loader) && (
         <>
           <CarouselDetails

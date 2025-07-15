@@ -57,8 +57,8 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       className="autocomplete-container d-flex justify-content-between align-items-center"
       style={{
         width: "100%",
-        gap: "10px",
-        padding: "0 10px",
+        gap: "5px",
+        paddingTop:"7px"
       }}
     >
       {/* Input on the far left */}
@@ -76,6 +76,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
           transition: "border-color 0.3s, box-shadow 0.3s",
           outline: "none",
           fontFamily: "Arial, sans-serif",
+          minWidth: "30vh",
         }}
         className="map-input"
         placeholder="Où veux-tu vivre ?"
@@ -92,7 +93,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
         <div
           className="d-flex"
           style={{
-            gap: "10px",
+            gap: "5px",
           }}
         >
           <button
