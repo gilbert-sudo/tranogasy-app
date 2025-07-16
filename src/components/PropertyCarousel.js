@@ -11,7 +11,7 @@ const PropertyCarousel = ({ visibleProperties, onItemClick }) => {
     const listRef = useRef();
     const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
     const selectedPropertyId = searchForm.selectedProperty && searchForm.selectedProperty._id;
-    
+
 
     useEffect(() => {
         const initIndexes = {};
@@ -43,7 +43,7 @@ const PropertyCarousel = ({ visibleProperties, onItemClick }) => {
                     [propId]: nextIndex,
                 };
             });
-        }, 100);
+        }, 1200);
     };
 
     const formatDate = (dateStr) => {
@@ -100,9 +100,9 @@ const PropertyCarousel = ({ visibleProperties, onItemClick }) => {
                             border: isFocused ? "2px solid transparent" : "2px solid rgba(255, 255, 255, 0.7)", // white border when not focused
                             outline: isFocused ? "2px solid rgba(255, 0, 0, 0.8)" : "none", // red outline when focused
                             boxShadow: isFocused ? "0 8px 20px rgba(255, 0, 0, 0.4)" : "none",
-                            transform: isFocused ? "scale(1.02)" : "scale(1)",
                             transition: "all 0.25s ease",
                         }}
+
                         tabIndex={0} // Make the div focusable
                         onFocus={() => setFocusedPropertyId(property._id)}
                         onBlur={() => setFocusedPropertyId(null)} // Remove focus when blurred

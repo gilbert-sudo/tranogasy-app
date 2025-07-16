@@ -1138,7 +1138,7 @@ useEffect(() => {
                 position: "sticky",
                 bottom: 0,
                 borderTop: "1px solid #eee",
-                padding: "0.5rem 1rem",
+                padding: "0.5rem 0.5rem 1.2rem 0.5rem ",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -1196,7 +1196,7 @@ useEffect(() => {
               >
 
                 {(searchResults && searchResults.length > 0)
-                  ? <><FcGoogle size={20} /> Voir carte</>
+                  ? <><FcGoogle size={20} /> voir résultats</>
                   : <><LuBellPlus size={20} /> Créer une alerte</>
                 }
               </button>

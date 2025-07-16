@@ -23,7 +23,7 @@ const HomeSlider = () => {
         style={{
           width: "100%",
           backgroundImage:
-            "url(https://storage.googleapis.com/tranogasy-cdn/images/bg%20landing%201.jpg)",
+            "url(https://storage.googleapis.com/tranogasy-cdn/images/Remise%20de%20cl%C3%A9s%20%C3%A9l%C3%A9gante-Photoroom.png)",
         }}
         data-aos="fade"
         data-stellar-background-ratio="0.5"

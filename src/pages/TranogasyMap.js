@@ -81,7 +81,7 @@ function MyMap({ properties }) {
 
   const [isSliderVisible, setIsSlideVisible] = useState(false);
   const sliderRef = useRef(null);
-  const [mapTypeId, setMapTypeId] = useState("hybrid");
+  const [mapTypeId, setMapTypeId] = useState("roadmap");
 
   // Define adjustCoordsRandomlyUnique here or pass it down if it's external
   // For simplicity, defining it here to be accessible within MyMap
@@ -136,7 +136,7 @@ function MyMap({ properties }) {
 
     if (coordsToCenter && !fullFunction) {
       setCenter(coordsToCenter);
-      setMapZoomLevel(20); // Adjust zoom level as needed for a good view of the property
+      setMapZoomLevel(19); // Adjust zoom level as needed for a good view of the property
     }
   };
 
@@ -216,13 +216,14 @@ function MyMap({ properties }) {
           </div>
         </div>
         <Map
-          minZoom={6}
+          minZoom={10}
           zoom={mapZoomLevel}
           onZoomChanged={e => {
             const z = e.detail.zoom;
             setMapZoomLevel(z);        // mirror user zoom into state
-            // if (z > 15) setMapTypeId("hybrid");
-            // else setMapTypeId("roadmap");
+            // 👇 Change the map type based on zoom level
+            if (z > 14) setMapTypeId("hybrid");
+            if (z <= 14) setMapTypeId("roadmap");
           }}
           center={properties && center ? center : defaultposition}
           mapId="80e7a8f8db80acb5"
@@ -294,7 +295,8 @@ function MyMap({ properties }) {
               <HouseSearchForm handleCloseSlideClick={handleCloseSlideClick} />
             </div>
           )}
-          {selectedProperty && (
+
+          {selectedProperty && !searchForm.formFilter && (
             <PropertyDetailsPage
               key={selectedProperty._id}
               fastPreviewProperty={selectedProperty}
@@ -371,6 +373,7 @@ const Markers = ({ points, onMarkerClick, adjustCoordsRandomlyUnique }) => {
         position: finalCoords,
         map,
         icon: createCustomMarkerIcon(property, isSelected),
+        zIndex: isSelected ? 9999 : 1, // ⭐ high value for selected
       });
 
       marker.addListener("click", () => {
