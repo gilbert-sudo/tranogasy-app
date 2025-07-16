@@ -80,7 +80,7 @@ const CarouselDetails = ({ property, handleShowContact }) => {
           className="container"
           style={{ backgroundColor: `rgb(0, 0, 0, 0.5)`, height: "150%" }}
         >
-          <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)} style={{ zIndex: 10}}>
+          <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)} style={{ zIndex: 10 }}>
             <img
               alt=""
               src={property.owner?.avatar ? property.owner.avatar : userProfile}
@@ -135,9 +135,10 @@ const CarouselDetails = ({ property, handleShowContact }) => {
                       backgroundColor: "#222",
                       border: "none",
                       color: "white",
-                      padding: "12px",
+                      padding: "10px 20px",
                       textAlign: "center",
                       fontWeight: "500",
+                      fontSize: "16px",
                       cursor: "pointer",
                       alignItems: "center",
                       justifyContent: "center",
@@ -145,6 +146,7 @@ const CarouselDetails = ({ property, handleShowContact }) => {
                       maxWidth: "200px",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                     }}
+
                     onClick={() => handleShowContact()}
                   >
                     <FaPhoneAlt className="mr-2" />{" "}

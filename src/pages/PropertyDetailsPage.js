@@ -378,7 +378,16 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
               <button
                 onClick={handleShowContact}
                 className="btn btn-success text-white font-weight-bold my-2 my-sm-0"
-                style={{ padding: "1.5vh", borderRadius: "20px" }}
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  padding: "10px 20px",
+                  fontSize: "16px",
+                  borderRadius: "20px",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  color: "#fff",
+                }}
                 type="submit"
               >
                 <FaPhoneAlt className="mr-2 mb-1" />

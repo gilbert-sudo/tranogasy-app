@@ -216,7 +216,7 @@ function MyMap({ properties }) {
           </div>
         </div>
         <Map
-          minZoom={6}
+          minZoom={9}
           zoom={mapZoomLevel}
           onZoomChanged={e => {
             const z = e.detail.zoom;

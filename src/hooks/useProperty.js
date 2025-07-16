@@ -232,24 +232,38 @@ export const useProperty = () => {
       phone2,
       motoAccess,
       carAccess,
-      wifiAvailability,
       parkingSpaceAvailable,
-      waterPumpSupply,
-      electricityPower,
-      securitySystem,
-      waterWellSupply,
-      surroundedByWalls,
-      electricityJirama,
-      waterPumpSupplyJirama,
-      kitchenFacilities,
-      airConditionerAvailable,
-      smokeDetectorsAvailable,
-      terrace,
+      elevator,
+      garden,
+      courtyard,
+      balcony,
+      roofTop,
       swimmingPool,
-      furnishedProperty,
-      hotWaterAvailable,
+      surroundedByWalls,
+      independentHouse,
+      garage,
+      guardianHouse,
+      kitchenFacilities,
+      placardKitchen,
       insideToilet,
       insideBathroom,
+      bathtub,
+      fireplace,
+      airConditionerAvailable,
+      hotWaterAvailable,
+      furnishedProperty,
+      electricityPower,
+      electricityJirama,
+      waterPumpSupply,
+      waterPumpSupplyJirama,
+      waterWellSupply,
+      securitySystem,
+      wifiAvailability,
+      fiberOpticReady,
+      seaView,
+      mountainView,
+      panoramicView,
+      solarPanels,
     } = newUpdate;
 
     const updatedProperty = {
@@ -280,13 +294,27 @@ export const useProperty = () => {
         waterPumpSupplyJirama,
         kitchenFacilities,
         airConditionerAvailable,
-        smokeDetectorsAvailable,
-        terrace,
         swimmingPool,
         furnishedProperty,
         hotWaterAvailable,
         insideToilet,
         insideBathroom,
+        elevator,
+        garden,
+        courtyard,
+        balcony,
+        roofTop,
+        independentHouse,
+        garage,
+        guardianHouse,
+        placardKitchen,
+        bathtub,
+        fireplace,
+        fiberOpticReady,
+        seaView,
+        mountainView,
+        panoramicView,
+        solarPanels,
       },
       images,
       coords,
@@ -492,147 +520,147 @@ export const useProperty = () => {
     }
   };
 
-const searchProperty = (parameters) => {
-  const {
-    type,
-    budgetMax,
-    budgetMin,
-    numberOfRooms,
-    motoAccess,
-    carAccess,
-    parkingSpaceAvailable,
-    elevator,
-    garden,
-    courtyard,
-    balcony,
-    roofTop,
-    swimmingPool,
-    surroundedByWalls,
-    independentHouse,
-    garage,
-    guardianHouse,
-    kitchenFacilities,
-    placardKitchen,
-    insideToilet,
-    insideBathroom,
-    bathtub,
-    fireplace,
-    airConditionerAvailable,
-    hotWaterAvailable,
-    furnishedProperty,
-    electricityPower,
-    electricityJirama,
-    waterPumpSupply,
-    waterPumpSupplyJirama,
-    waterWellSupply,
-    securitySystem,
-    wifiAvailability,
-    fiberOpticReady,
-    seaView,
-    mountainView,
-    panoramicView,
-    solarPanels,
-  } = parameters;
+  const searchProperty = (parameters) => {
+    const {
+      type,
+      budgetMax,
+      budgetMin,
+      numberOfRooms,
+      motoAccess,
+      carAccess,
+      parkingSpaceAvailable,
+      elevator,
+      garden,
+      courtyard,
+      balcony,
+      roofTop,
+      swimmingPool,
+      surroundedByWalls,
+      independentHouse,
+      garage,
+      guardianHouse,
+      kitchenFacilities,
+      placardKitchen,
+      insideToilet,
+      insideBathroom,
+      bathtub,
+      fireplace,
+      airConditionerAvailable,
+      hotWaterAvailable,
+      furnishedProperty,
+      electricityPower,
+      electricityJirama,
+      waterPumpSupply,
+      waterPumpSupplyJirama,
+      waterWellSupply,
+      securitySystem,
+      wifiAvailability,
+      fiberOpticReady,
+      seaView,
+      mountainView,
+      panoramicView,
+      solarPanels,
+    } = parameters;
 
-  let results = [];
+    let results = [];
 
-  // Simple search
-  results = properties.filter(
-    (property) =>
-      property.type === type &&
-      (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
-      (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
-      (budgetMin && property.price ? property.price >= budgetMin : true) &&
-      (budgetMax && property.price ? property.price <= budgetMax : true)
-  );
-
-  if (results.length === 0) {
-    dispatch(setSearchResults([]));
-  } else {
-    // Advanced search
-    results = results.filter(
+    // Simple search
+    results = properties.filter(
       (property) =>
-        (numberOfRooms
-          ? (property.rooms + property.livingRoom + property.kitchen) >= numberOfRooms
-          : true) &&
-        (carAccess ? property.features.carAccess === carAccess : true) &&
-        (motoAccess ? property.features.motoAccess === motoAccess : true) &&
-        (parkingSpaceAvailable
-          ? property.features.parkingSpaceAvailable === parkingSpaceAvailable
-          : true) &&
-        (elevator ? property.features.elevator === elevator : true) &&
-        (garden ? property.features.garden === garden : true) &&
-        (courtyard ? property.features.courtyard === courtyard : true) &&
-        (balcony ? property.features.balcony === balcony : true) &&
-        (roofTop ? property.features.roofTop === roofTop : true) &&
-        (swimmingPool ? property.features.swimmingPool === swimmingPool : true) &&
-        (surroundedByWalls
-          ? property.features.surroundedByWalls === surroundedByWalls
-          : true) &&
-        (independentHouse
-          ? property.features.independentHouse === independentHouse
-          : true) &&
-        (garage ? property.features.garage === garage : true) &&
-        (guardianHouse
-          ? property.features.guardianHouse === guardianHouse
-          : true) &&
-        (kitchenFacilities
-          ? property.features.kitchenFacilities === kitchenFacilities
-          : true) &&
-        (placardKitchen
-          ? property.features.placardKitchen === placardKitchen
-          : true) &&
-        (insideToilet === "all"
-          ? true
-          : property.features.insideToilet === insideToilet) &&
-        (insideBathroom === "all"
-          ? true
-          : property.features.insideBathroom === insideBathroom) &&
-        (bathtub ? property.features.bathtub === bathtub : true) &&
-        (fireplace ? property.features.fireplace === fireplace : true) &&
-        (airConditionerAvailable
-          ? property.features.airConditionerAvailable === airConditionerAvailable
-          : true) &&
-        (hotWaterAvailable
-          ? property.features.hotWaterAvailable === hotWaterAvailable
-          : true) &&
-        (furnishedProperty
-          ? property.features.furnishedProperty === furnishedProperty
-          : true) &&
-        (electricityPower
-          ? property.features.electricityPower === electricityPower
-          : true) &&
-        (electricityJirama
-          ? property.features.electricityJirama === electricityJirama
-          : true) &&
-        (waterPumpSupply
-          ? property.features.waterPumpSupply === waterPumpSupply
-          : true) &&
-        (waterPumpSupplyJirama
-          ? property.features.waterPumpSupplyJirama === waterPumpSupplyJirama
-          : true) &&
-        (waterWellSupply
-          ? property.features.waterWellSupply === waterWellSupply
-          : true) &&
-        (securitySystem
-          ? property.features.securitySystem === securitySystem
-          : true) &&
-        (wifiAvailability
-          ? property.features.wifiAvailability === wifiAvailability
-          : true) &&
-        (fiberOpticReady
-          ? property.features.fiberOpticReady === fiberOpticReady
-          : true) &&
-        (seaView ? property.features.seaView === seaView : true) &&
-        (mountainView ? property.features.mountainView === mountainView : true) &&
-        (panoramicView ? property.features.panoramicView === panoramicView : true) &&
-        (solarPanels ? property.features.solarPanels === solarPanels : true)
+        property.type === type &&
+        (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
+        (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
+        (budgetMin && property.price ? property.price >= budgetMin : true) &&
+        (budgetMax && property.price ? property.price <= budgetMax : true)
     );
 
-    dispatch(setSearchResults(results));
-  }
-  return results;
-};
+    if (results.length === 0) {
+      dispatch(setSearchResults([]));
+    } else {
+      // Advanced search
+      results = results.filter(
+        (property) =>
+          (numberOfRooms
+            ? (property.rooms + property.livingRoom + property.kitchen) >= numberOfRooms
+            : true) &&
+          (carAccess ? property.features.carAccess === carAccess : true) &&
+          (motoAccess ? property.features.motoAccess === motoAccess : true) &&
+          (parkingSpaceAvailable
+            ? property.features.parkingSpaceAvailable === parkingSpaceAvailable
+            : true) &&
+          (elevator ? property.features.elevator === elevator : true) &&
+          (garden ? property.features.garden === garden : true) &&
+          (courtyard ? property.features.courtyard === courtyard : true) &&
+          (balcony ? property.features.balcony === balcony : true) &&
+          (roofTop ? property.features.roofTop === roofTop : true) &&
+          (swimmingPool ? property.features.swimmingPool === swimmingPool : true) &&
+          (surroundedByWalls
+            ? property.features.surroundedByWalls === surroundedByWalls
+            : true) &&
+          (independentHouse
+            ? property.features.independentHouse === independentHouse
+            : true) &&
+          (garage ? property.features.garage === garage : true) &&
+          (guardianHouse
+            ? property.features.guardianHouse === guardianHouse
+            : true) &&
+          (kitchenFacilities
+            ? property.features.kitchenFacilities === kitchenFacilities
+            : true) &&
+          (placardKitchen
+            ? property.features.placardKitchen === placardKitchen
+            : true) &&
+          (insideToilet === "all"
+            ? true
+            : property.features.insideToilet === insideToilet) &&
+          (insideBathroom === "all"
+            ? true
+            : property.features.insideBathroom === insideBathroom) &&
+          (bathtub ? property.features.bathtub === bathtub : true) &&
+          (fireplace ? property.features.fireplace === fireplace : true) &&
+          (airConditionerAvailable
+            ? property.features.airConditionerAvailable === airConditionerAvailable
+            : true) &&
+          (hotWaterAvailable
+            ? property.features.hotWaterAvailable === hotWaterAvailable
+            : true) &&
+          (furnishedProperty
+            ? property.features.furnishedProperty === furnishedProperty
+            : true) &&
+          (electricityPower
+            ? property.features.electricityPower === electricityPower
+            : true) &&
+          (electricityJirama
+            ? property.features.electricityJirama === electricityJirama
+            : true) &&
+          (waterPumpSupply
+            ? property.features.waterPumpSupply === waterPumpSupply
+            : true) &&
+          (waterPumpSupplyJirama
+            ? property.features.waterPumpSupplyJirama === waterPumpSupplyJirama
+            : true) &&
+          (waterWellSupply
+            ? property.features.waterWellSupply === waterWellSupply
+            : true) &&
+          (securitySystem
+            ? property.features.securitySystem === securitySystem
+            : true) &&
+          (wifiAvailability
+            ? property.features.wifiAvailability === wifiAvailability
+            : true) &&
+          (fiberOpticReady
+            ? property.features.fiberOpticReady === fiberOpticReady
+            : true) &&
+          (seaView ? property.features.seaView === seaView : true) &&
+          (mountainView ? property.features.mountainView === mountainView : true) &&
+          (panoramicView ? property.features.panoramicView === panoramicView : true) &&
+          (solarPanels ? property.features.solarPanels === solarPanels : true)
+      );
+
+      dispatch(setSearchResults(results));
+    }
+    return results;
+  };
 
   const formatPrice = (price = 0) => {
     if (price >= 1000000000) {

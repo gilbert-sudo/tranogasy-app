@@ -70,6 +70,7 @@ class AutosuggestInput extends Component {
               border: "none",
               backgroundColor: "#fff",
               textAlign: "left",
+              color: "black",
               padding: "12px",
               width: "100%",
               cursor: "pointer",
