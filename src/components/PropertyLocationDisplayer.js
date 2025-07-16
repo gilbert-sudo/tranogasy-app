@@ -23,8 +23,15 @@ function MyMap({ position, circle }) {
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-      <div className="mt-2 mb-4" style={{ height: "50vh", width: "100%" }}>
-        <Map zoom={15} minZoom={6} center={position} mapId="80e7a8f8db80acb5">
+      <div className="mt-2 mb-4"
+        style={{
+          height: "50vh",
+          width: "100%",
+          position: "relative", // important for z-index to work
+          zIndex: 1500,
+        }}
+      >
+        <Map zoom={15} minZoom={6} center={position} mapId="80e7a8f8db80acb5" options={{ gestureHandling: 'cooperative' }}>
           <AdvancedMarker
             style={{ height: "100px" }}
             position={position}

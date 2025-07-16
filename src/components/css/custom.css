@@ -19,3 +19,7 @@
 #root > div > div > main > div > div:nth-child(2) > div:nth-child(2) > div > div:last-child {
   margin-right: 20px;
 }
+
+.gm-style-mtc-bbw {
+  z-index: 2000 !important;
+}

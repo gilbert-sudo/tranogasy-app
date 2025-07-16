@@ -216,7 +216,7 @@ function MyMap({ properties }) {
           </div>
         </div>
         <Map
-          minZoom={10}
+          minZoom={6}
           zoom={mapZoomLevel}
           onZoomChanged={e => {
             const z = e.detail.zoom;
@@ -268,7 +268,7 @@ function MyMap({ properties }) {
             className="fixed-top"
             style={{
               width: "100%",
-              zIndex: 9999,
+              zIndex: 1000,
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -296,7 +296,7 @@ function MyMap({ properties }) {
             </div>
           )}
 
-          {selectedProperty && !searchForm.formFilter && (
+          {selectedProperty && !searchForm.formFilter && isSliderVisible && (
             <PropertyDetailsPage
               key={selectedProperty._id}
               fastPreviewProperty={selectedProperty}

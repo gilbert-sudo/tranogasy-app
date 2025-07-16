@@ -204,7 +204,12 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
 
 
   return (
-    <div ref={myRef}>
+    <div
+      style={{
+        zIndex: 2000,
+      }}
+      ref={myRef}
+    >
       {(propertyData !== "preview" || propertyPreview) && !(propertyData !== "preview" && !loader) && (
         <>
           <CarouselDetails
