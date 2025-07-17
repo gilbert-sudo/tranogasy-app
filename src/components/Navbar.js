@@ -57,7 +57,7 @@ const ActiveLink = (
 };
 
 const ShowNavbar = (isActive) => {
-  const navBarStyle = isActive ? { display: "block" } : { display: "none" };
+  const navBarStyle = isActive ? { display: "block", zindex: 2000 } : { display: "none" };
   return navBarStyle;
 };
 

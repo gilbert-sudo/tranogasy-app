@@ -13,6 +13,7 @@ import NoInternetPage from "./pages/NoInternet";
 import LoginPage from "./pages/LoginPage";
 import PageLoader from "./pages/PageLoader";
 import ExplorePage from "./pages/ExplorePage";
+import TranogasyFeed from "./pages/TranogasyFeed";
 import SearchPage from "./pages/SearchPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import TranogasyMap from "./pages/TranogasyMap";
@@ -80,6 +81,7 @@ const useHashLocation = () => {
 const routes = [
   { path: "/login", component: LoginPage, private: true },
   { path: "/explore", component: ExplorePage, private: false },
+  { path: "/TranogasyFeed", component: TranogasyFeed, private: false },
   { path: "/search", component: SearchPage, private: false },
   { path: "/tranogasyMap", component: TranogasyMap, private: false },
   { path: "/create-land-listing", component: PropertyLandsAreaSelector, private: false },

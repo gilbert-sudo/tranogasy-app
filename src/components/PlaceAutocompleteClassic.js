@@ -5,7 +5,7 @@ import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./css/googlemaps.css";
 import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
-import { LuBellPlus } from "react-icons/lu";
+import { LiaBinocularsSolid } from "react-icons/lia";
 
 import { setReduxFormFilter } from "../redux/redux";
 import { useDispatch } from "react-redux";
@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
   const [isInTranogasyMap, setIsInTranogasyMap] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const inputRef = useRef(null);
   const dispatch = useDispatch();
   const places = useMapsLibrary("places");
@@ -196,7 +196,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
           {/* Other button */}
           <button
             className="btn"
-            onClick={() => alert("Fonctionnalité en cours de développement")}
+            onClick={() => setLocation("/TranogasyFeed")}
             style={{
               borderRadius: "30px",
               padding: "10px 14px",
@@ -213,7 +213,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
               flexShrink: 0,
             }}
           >
-            <LuBellPlus />
+            <LiaBinocularsSolid />
           </button>
         </div>
       )}
