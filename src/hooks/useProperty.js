@@ -57,6 +57,8 @@ export const useProperty = () => {
       livingRoom,
       images,
       owner,
+      houseType,
+      floor,
       phone1,
       phone2,
       motoAccess,
@@ -96,7 +98,7 @@ export const useProperty = () => {
     } = newProperty;
 
     // Simple required fields check (you can customize required fields list)
-    const requiredFields = [title, description, city, (price || rent), type, images, owner, phone1];
+    const requiredFields = [title, description, city, (price || rent), type, images, owner, phone1, houseType];
     if (requiredFields.some(isEmpty)) {
       setBootstrap("alert alert-danger");
       setMsgError("Veuillez remplir tous les champs obligatoires correctement.");
@@ -106,7 +108,6 @@ export const useProperty = () => {
     }
 
     console.log("Property creating : step 2");
-
 
     // Clean title and description whitespace
     title = title.trim().replace(/\s+/g, " ");
@@ -134,6 +135,8 @@ export const useProperty = () => {
           livingRoom,
           images,
           owner,
+          houseType,
+          floor,
           phone1,
           phone2,
           motoAccess,

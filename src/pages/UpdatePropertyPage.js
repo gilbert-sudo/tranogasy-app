@@ -465,6 +465,7 @@ const UpdatePropertyPage = () => {
                             WebkitAppearance: "none",
                             MozAppearance: "none",
                             cursor: "pointer",
+                            color: "black",
                           }}
                         >
                           <option value="available">Disponible</option>
