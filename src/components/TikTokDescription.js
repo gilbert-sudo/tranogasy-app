@@ -30,6 +30,7 @@ const TikTokDescription = ({ description }) => {
                   color: "#ccc",
                   cursor: "pointer",
                   textDecoration: "underline",
+                  pointerEvents: "auto",
                 }}
               >
                 voir plus
@@ -46,6 +47,7 @@ const TikTokDescription = ({ description }) => {
               color: "#ccc",
               cursor: "pointer",
               textDecoration: "underline",
+              pointerEvents: "auto",
             }}
           >
             voir moins

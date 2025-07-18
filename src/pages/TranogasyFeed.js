@@ -11,9 +11,11 @@ const TranogasyFeed = () => {
         width: "100%",
         overflowY: "scroll",
         scrollSnapType: "y mandatory",
+        WebkitOverflowScrolling: "touch", // smoother iOS scroll
+        overscrollBehaviorY: "contain", // prevent bouncing scroll
       }}
     >
-      {properties.map((property, index) => (
+      {properties && properties.length > 0 && properties.map((property, index) => (
         <div
           key={index}
           style={{

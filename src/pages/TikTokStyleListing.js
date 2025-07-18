@@ -1,4 +1,7 @@
-import TikTokDescription from "../components/TikTokDescription ";
+import TikTokDescription from "../components/TikTokDescription";
+
+import  { useScrollDirectionLock }  from "../hooks/useScrollDirectionLock";
+
 import {
   ChevronLeft,
   Heart,
@@ -31,6 +34,8 @@ import {
 
 const TikTokStyleListing = ({ data }) => {
 
+  const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
+
   return (
     <div
       style={{
@@ -47,12 +52,16 @@ const TikTokStyleListing = ({ data }) => {
     >
       {/* Image slider */}
       <div
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         style={{
           display: "flex",
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
+          overflowX: "scroll",
           width: "100%",
           height: "100%",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch", // smoother iOS scroll
+          overscrollBehaviorX: "contain", // prevent bouncing scroll
           zIndex: 3,
         }}
       >
@@ -62,6 +71,7 @@ const TikTokStyleListing = ({ data }) => {
             src={img.src}
             alt={`image-${index}`}
             style={{
+              marginTop: img.height > img.width ? "0" : "-80px",
               flexShrink: 0,
               width: "100%",
               height: "100%",
@@ -117,6 +127,7 @@ const TikTokStyleListing = ({ data }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          pointerEvents: "none",
           gap: 20,
         }}
       >
@@ -148,10 +159,10 @@ const TikTokStyleListing = ({ data }) => {
             <Plus style={{ color: "white", width: 12, height: 12 }} />
           </div>
         </div>
-        <Heart style={{ color: "white", width: 30, height: 30 }} />
-        <MapPinned style={{ color: "white", width: 30, height: 30 }} />
-        <Phone style={{ color: "white", width: 30, height: 30 }} />
-        <Forward style={{ color: "white", width: 30, height: 30 }} />
+        <Heart style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
+        <MapPinned style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
+        <Phone style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
+        <Forward style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
       </div>
 
       {/* Property infos */}
@@ -162,6 +173,7 @@ const TikTokStyleListing = ({ data }) => {
           left: 10,
           right: 100,
           zIndex: 3,
+          pointerEvents: "none",
         }}
       >
         <p style={{ fontWeight: "bold", fontSize: 16 }}>
