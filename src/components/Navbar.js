@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Link, useRoute, useLocation } from "wouter";
+import { Origami, Binoculars, Heart, Megaphone, Bell, UserCog } from "lucide-react";
 import {
   BsHeart,
   BsPersonGear,
   BsBell,
   BsHouseAdd,
   BsSearch,
-  BsMenuApp,
 } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
 import { RiPauseCircleFill } from "react-icons/ri";
@@ -14,8 +14,8 @@ import { MdArrowBackIos } from "react-icons/md";
 import { RiVipCrown2Fill } from "react-icons/ri";
 
 //Hooks
-import {  usePopup  } from "../hooks/usePopup";
-import {  useTimer  } from "../hooks/useTimer";
+import { usePopup } from "../hooks/usePopup";
+import { useTimer } from "../hooks/useTimer";
 
 //redux store
 import { useSelector, useDispatch } from "react-redux";
@@ -69,16 +69,16 @@ const Navbar = () => {
   const navbar = useSelector((state) => state.navbar);
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer);
-  
+
   const properties = useSelector((state) => state.properties);
   const notifications = useSelector((state) => state.notifications);
   const payments = useSelector((state) => state.payments);
   const notificationStatus = useSelector((state) => state.notificationStatus);
 
-    const [match, params] = useRoute(
-      "/property-details/:propertyId/:propertyData/:prevPath"
-    );
-    const prevPath = match ? params.prevPath : null;
+  const [match, params] = useRoute(
+    "/property-details/:propertyId/:propertyData/:prevPath"
+  );
+  const prevPath = match ? params.prevPath : null;
 
   useEffect(() => {
     async function loadPage() {
@@ -111,8 +111,8 @@ const Navbar = () => {
       } else {
         dispatch(setTopNavbar(true));
       }
-      console.log({prevPath});
-      
+      console.log({ prevPath });
+
     }
     loadPage();
   }, [location]);
@@ -152,7 +152,7 @@ const Navbar = () => {
               style={ShowNavbar(navbar)}
             >
               <ul className="nav__list">
-                <li className="nav__item mt-3">
+                <li className="nav__item mt-2">
                   <Link
                     to="/explore"
                     className="nav__link"
@@ -164,25 +164,35 @@ const Navbar = () => {
                       "/payment-recovery"
                     )}
                   >
-                    <BsMenuApp className="nav__icon" />
+                    <Origami size={30} strokeWidth={1} />
                     <span className="nav__name font-weight-light">Aceuil</span>
                   </Link>
                 </li>
-                <li className="nav__item mt-3">
+                <li className="nav__item mt-2">
+                  <Link
+                    to="/TranogasyFeed"
+                    className="nav__link"
+                    style={ActiveLink("/TranogasyFeed")}
+                  >
+                    <Binoculars size={30} strokeWidth={1} />
+                    <span className="nav__name font-weight-light">Explorer</span>
+                  </Link>
+                </li>
+                <li className="nav__item mt-2">
                   <Link
                     to="/favorite"
                     className="nav__link"
                     style={ActiveLink("/favorite")}
                   >
-                    <BsHeart className="nav__icon" />
+                    <Heart size={30} strokeWidth={1} />
                     <span className="nav__name font-weight-light">Favoris</span>
                   </Link>
                 </li>
 
-                <li className="nav__item center-navitem">
+                <li className="nav__item mt-2">
                   <Link
                     to="/mylisting"
-                    className="nav__link center-navlink"
+                    className="nav__link"
                     style={ActiveLink(
                       "/mylisting",
                       "/create-listing",
@@ -190,22 +200,23 @@ const Navbar = () => {
                       "/payment"
                     )}
                   >
-                    <BsHouseAdd className="nav__icon" />
+                    <Megaphone size={30} strokeWidth={1} />
                     <span className="nav__name font-weight-light">
                       Annonces
                     </span>
                   </Link>
                 </li>
-                <li className="nav__item mt-3">
+                <li className="nav__item mt-2">
                   <span
                     style={{
                       borderRadius: "50%",
                       padding: "0px 7px 1.5px 7px",
                       marginTop: "-9px",
+                      minWidth: "20px",
+                      minHeight: "20px",
                     }}
-                    className={`font-weight-bold position-absolute text-white ml-3 ${
-                      notificationStatus.counter > 0 && "bg-danger"
-                    }`}
+                    className={`font-weight-bold position-absolute text-white ml-3 ${notificationStatus.counter > 0 && "bg-danger"
+                      }`}
                   >
                     {notificationStatus.counter > 0 && (
                       <small>{notificationStatus.counter}</small>
@@ -216,11 +227,11 @@ const Navbar = () => {
                     className="nav__link"
                     style={ActiveLink("/notification")}
                   >
-                    <BsBell className="nav__icon" />
+                    <Bell size={30} strokeWidth={1} />
                     <span className="nav__name font-weight-light">Notifs</span>
                   </Link>
                 </li>
-                <li className="nav__item mt-3">
+                <li className="nav__item mt-2">
                   <Link
                     to="/login"
                     className="nav__link"
@@ -234,7 +245,7 @@ const Navbar = () => {
                       "/userProfile/:userId"
                     )}
                   >
-                    <BsPersonGear className="nav__icon" />
+                    <UserCog size={30} strokeWidth={1} />
                     <span className="nav__name font-weight-light">Compte</span>
                   </Link>
                 </li>
@@ -246,20 +257,20 @@ const Navbar = () => {
                   {" "}
                   <h4>
                     {timer.timer && <RiVipCrown2Fill style={{ color: "#FFD700" }} />}
-                    {user.leftTime && <RiPauseCircleFill style={{ color: "red",  fontSize: "1.2rem", marginTop: "3px" }} />}
+                    {user.leftTime && <RiPauseCircleFill style={{ color: "red", fontSize: "1.2rem", marginTop: "3px" }} />}
                   </h4>
                   <small>{timer.timer && timer.display}</small>
-                  <small>{user.leftTime && formatMillisecondToDisplay(user.leftTime)}</small> 
+                  <small>{user.leftTime && formatMillisecondToDisplay(user.leftTime)}</small>
                 </>
               )}
-               {!properties && (
+              {!properties && (
                 <button
                   style={{ borderRadius: "20px", position: "relative", paddingRight: "25px" }}
                   className="ml-1 btn btn-sm btn-outline-success"
                   type="button"
                 >
                   Chargement{" "}
-                  <img src="images/Animation - 17331.gif" style={{width: "20px", height: "20px", position: "absolute", marginLeft: "2px" }}/>
+                  <img src="images/Animation - 17331.gif" style={{ width: "20px", height: "20px", position: "absolute", marginLeft: "2px" }} />
                 </button>
               )}
               {location === "/search" && location !== "/searchResult" && properties && (
@@ -281,7 +292,7 @@ const Navbar = () => {
                   className="ml-1 btn btn-sm btn-outline-success"
                   type="button"
                   onClick={(e) => {
-                   (payments && payments.filter((payment) => (payment.status === "refused" || payment.status === "redone")).length > 0) ? unpaidBillPopup() : setLocation("/tranogasyMap");
+                    (payments && payments.filter((payment) => (payment.status === "refused" || payment.status === "redone")).length > 0) ? unpaidBillPopup() : setLocation("/tranogasyMap");
                   }}
                 >
                   Chercher{" "}
@@ -291,7 +302,7 @@ const Navbar = () => {
                   />
                 </button>
               )}
-              {(location === "/searchResult" || location === "/tranogasyMap" || prevPath === "searchResult" || prevPath === "tranogasyMap" ) && properties && (
+              {(location === "/searchResult" || location === "/tranogasyMap" || prevPath === "searchResult" || prevPath === "tranogasyMap") && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-danger"
@@ -310,7 +321,7 @@ const Navbar = () => {
                     className="ml-1"
                     src={user?.avatar ? user.avatar : userProfile}
                     alt="profile picture"
-                    style={{objectFit: "cover", height: "30px",width: "30px", borderRadius: "50%" }}
+                    style={{ objectFit: "cover", height: "30px", width: "30px", borderRadius: "50%" }}
                   />
                 </Link>
               )}
@@ -320,7 +331,7 @@ const Navbar = () => {
                     className="ml-1"
                     src="images/notification-bell.gif"
                     alt="profile picture"
-                    style={{height: "30px",width: "30px", cursor: "pointer" }}
+                    style={{ height: "30px", width: "30px", cursor: "pointer" }}
                   />
                 </Link>
               )}

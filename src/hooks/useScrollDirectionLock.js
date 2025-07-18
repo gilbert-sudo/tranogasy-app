@@ -33,7 +33,7 @@ export const useScrollDirectionLock = () => {
             const direction = Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
             setScrollDirection(direction);
 
-            // Reset after 300ms so it can detect new gesture direction
+            // Reset after 200ms so it can detect new gesture direction
             lockTimeout.current = setTimeout(() => {
                 resetScrollDirection();
             }, 200);
