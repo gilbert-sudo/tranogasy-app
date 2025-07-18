@@ -1,6 +1,6 @@
 import TikTokDescription from "../components/TikTokDescription";
 
-import  { useScrollDirectionLock }  from "../hooks/useScrollDirectionLock";
+import { useScrollDirectionLock } from "../hooks/useScrollDirectionLock";
 
 import {
   ChevronLeft,
@@ -12,9 +12,13 @@ import {
   SendHorizontal
 } from "lucide-react";
 
-import { GiWell, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
+import { MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
+import {
+  GiWell,
+  GiBrickWall,
+  GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
+} from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
-import { MdOutlineLiving } from "react-icons/md";
 import {
   FaCar,
   FaMotorcycle,
@@ -23,16 +27,17 @@ import {
   FaShieldAlt,
   FaSwimmingPool,
   FaHotTub,
+  FaBed,
 } from "react-icons/fa";
 import {
+  FaFaucetDrip,
   FaPlugCircleBolt,
   FaPlugCircleCheck,
   FaOilWell,
   FaKitchenSet,
-  FaFaucetDrip,
 } from "react-icons/fa6";
 
-const TikTokStyleListing = ({ data }) => {
+const TikTokStyleListing = ({ property }) => {
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
 
@@ -65,11 +70,12 @@ const TikTokStyleListing = ({ data }) => {
           zIndex: 3,
         }}
       >
-        {data.images.map((img, index) => (
+        {property.images.map((img, index) => (
           <img
             key={index}
             src={img.src}
             alt={`image-${index}`}
+            loading="lazy" // This is the magic!
             style={{
               marginTop: img.height > img.width ? "0" : "-80px",
               flexShrink: 0,
@@ -133,7 +139,7 @@ const TikTokStyleListing = ({ data }) => {
       >
         <div style={{ position: "relative" }}>
           <img
-            src={data.owner.avatar}
+            src={property.owner.avatar}
             style={{
               width: 50,
               height: 50,
@@ -177,63 +183,50 @@ const TikTokStyleListing = ({ data }) => {
         }}
       >
         <p style={{ fontWeight: "bold", fontSize: 16 }}>
-          @{data.owner.username}
+          @{property.owner.username}
         </p>
-        <p style={{ fontSize: 14 }}>{data.title}</p>
-        <TikTokDescription description={data.description} />
+        <p style={{ fontSize: 14 }}>{property.title}</p>
+        <TikTokDescription description={property.description} />
         <p>
-          {data.features.motoAccess && (
-            <FaMotorcycle className="h6 mr-1" />
-          )}
-          {data.features.carAccess && <FaCar className="h6 mr-1" />}
-          {data.features.wifiAvailability && (
-            <FaWifi className="h6 mr-1" />
-          )}
-          {data.features.parkingSpaceAvailable && (
-            <FaParking className="h6 mr-1" />
-          )}
-          {data.features.waterPumpSupplyJirama && (
-            <FaFaucetDrip className="h6 mr-1" />
-          )}
-          {data.features.waterPumpSupply && (
-            <FaOilWell className="h6 mr-1" />
-          )}
-          {data.features.waterWellSupply && (
-            <GiWell className="h6 mr-1" />
-          )}
-          {data.features.electricityPower && (
-            <FaPlugCircleCheck className="h6 mr-1" />
-          )}
-          {data.features.electricityJirama && (
-            <FaPlugCircleBolt className="h6 mr-1" />
-          )}
-          {data.features.surroundedByWalls && (
-            <GiBrickWall className="h6 mr-1" />
-          )}
-          {data.features.securitySystem && (
-            <FaShieldAlt className="h6 mr-1" />
-          )}
-          {data.features.kitchenFacilities && (
-            <FaKitchenSet className="h6 mr-1" />
-          )}
-          {data.features.terrace && (
-            <TbBuildingCastle className="h6 mr-1" />
-          )}
-          {data.features.swimmingPool && (
-            <FaSwimmingPool className="h6 mr-1" />
-          )}
-          {data.features.furnishedProperty && (
-            <MdOutlineLiving className="h6 mr-1" />
-          )}
-          {data.features.hotWaterAvailable && (
-            <FaHotTub className="h6 mr-1" />
-          )}
-          {data.features.airConditionerAvailable && (
-            <TbAirConditioning className="h6 mr-1" />
-          )}
-          {data.features.smokeDetectorsAvailable && (
-            <GiSmokeBomb className="h6 mr-1" />
-          )}
+          {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
+          {property.features.waterPumpSupplyJirama && <FaFaucetDrip className="h6 mr-1" />}
+          {property.features.waterWellSupply && <GiWell className="h6 mr-1" />}
+          {property.features.electricityPower && <FaPlugCircleCheck className="h6 mr-1" />}
+          {property.features.waterPumpSupply && <FaOilWell className="h6 mr-1" />}
+          {property.features.solarPanels && <GiSolarPower className="h6 mr-1" />}
+
+          {property.features.motoAccess && <FaMotorcycle className="h6 mr-1" />}
+          {property.features.carAccess && <FaCar className="h6 mr-1" />}
+          {property.features.surroundedByWalls && <GiBrickWall className="h6 mr-1" />}
+          {property.features.courtyard && <MdLandscape className="h6 mr-1" />}
+          {property.features.parkingSpaceAvailable && <FaParking className="h6 mr-1" />}
+          {property.features.garage && <FaCar className="h6 mr-1" />}
+          {property.features.garden && <GiWell className="h6 mr-1" />}
+          {property.features.independentHouse && <TbBuildingCastle className="h6 mr-1" />}
+          {property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
+
+          {property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
+          {property.features.placardKitchen && <FaBed className="h6 mr-1" />}
+          {property.features.hotWaterAvailable && <FaHotTub className="h6 mr-1" />}
+          {property.features.furnishedProperty && <MdOutlineLiving className="h6 mr-1" />}
+          {property.features.airConditionerAvailable && <TbAirConditioning className="h6 mr-1" />}
+          {property.features.bathtub && <GiBathtub className="h6 mr-1" />}
+          {property.features.fireplace && <GiFireplace className="h6 mr-1" />}
+          {property.features.elevator && <TbBuildingCastle className="h6 mr-1" />}
+
+          {property.features.balcony && <MdBalcony className="h6 mr-1" />}
+          {property.features.roofTop && <GiCastle className="h6 mr-1" />}
+          {property.features.swimmingPool && <FaSwimmingPool className="h6 mr-1" />}
+
+          {property.features.securitySystem && <FaShieldAlt className="h6 mr-1" />}
+
+          {property.features.wifiAvailability && <FaWifi className="h6 mr-1" />}
+          {property.features.fiberOpticReady && <FaWifi className="h6 mr-1" />}
+
+          {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
+          {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}
+          {property.features.panoramicView && <GiSeatedMouse className="h6 mr-1" />}
+
         </p>
       </div>
 

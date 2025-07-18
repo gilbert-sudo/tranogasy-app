@@ -21,7 +21,7 @@ import {
   FaKitchenSet,
   FaFaucetDrip,
 } from "react-icons/fa6";
-import { MdArrowBackIos, MdOutlineLiving, MdBalcony } from "react-icons/md";
+import { MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
 import {
   GiWell,
   GiBrickWall,
@@ -316,7 +316,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
                     {propertiesDetails.features?.motoAccess && <GenerateFeaturebox icon={<FaMotorcycle />} label={"Accès moto"} />}
                     {propertiesDetails.features?.carAccess && <GenerateFeaturebox icon={<FaCar />} label={"Accès voiture"} />}
                     {propertiesDetails.features?.surroundedByWalls && <GenerateFeaturebox icon={<GiBrickWall />} label={"Clôturée"} />}
-                    {propertiesDetails.features?.courtyard && <GenerateFeaturebox icon={<GiBrickWall />} label={"Cour"} />}
+                    {propertiesDetails.features?.courtyard && <GenerateFeaturebox icon={<MdLandscape />} label={"Cour"} />}
                     {propertiesDetails.features?.parkingSpaceAvailable && <GenerateFeaturebox icon={<FaParking />} label={"Parking"} />}
                     {propertiesDetails.features?.garage && <GenerateFeaturebox icon={<FaCar />} label={"Garage"} />}
                     {propertiesDetails.features?.garden && <GenerateFeaturebox icon={<GiWell />} label={"Jardin"} />}

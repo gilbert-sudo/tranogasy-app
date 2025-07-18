@@ -8,7 +8,7 @@ import AutosuggestInput from "../components/AutosuggestInput";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
-import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLocationOn } from "react-icons/md";
+import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLocationOn, MdLandscape } from "react-icons/md";
 import {
   GiCheckMark,
   GiCircle,
@@ -1254,7 +1254,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox icon={<FaMotorcycle />} state={motoAccess} label={"Accès moto"} onClickFunction={() => { setMotoAccess(!motoAccess); if (carAccess === true) setMotoAccess(true); }} />
                         <GenerateCheckbox icon={<FaCar />} state={carAccess} label={"Accès voiture"} onClickFunction={() => { setCarAccess(!carAccess); if (carAccess === false) setMotoAccess(true); }} />
                         <GenerateCheckbox icon={<GiBrickWall />} state={surroundedByWalls} label={"Clôturée"} onClickFunction={() => setSurroundedByWalls(!surroundedByWalls)} />
-                        <GenerateCheckbox icon={<GiBrickWall />} state={courtyard} label={"Cour"} onClickFunction={() => setCourtyard(!courtyard)} />
+                        <GenerateCheckbox icon={<MdLandscape />} state={courtyard} label={"Cour"} onClickFunction={() => setCourtyard(!courtyard)} />
                         <GenerateCheckbox icon={<FaParking />} state={parkingSpaceAvailable} label={"Parking"} onClickFunction={() => setParkingSpaceAvailable(!parkingSpaceAvailable)} />
                         <GenerateCheckbox icon={<FaCar />} state={garage} label={"Garage"} onClickFunction={() => setGarage(!garage)} />
                         <GenerateCheckbox icon={<GiWell />} state={garden} label={"Jardin"} onClickFunction={() => setGarden(!garden)} />

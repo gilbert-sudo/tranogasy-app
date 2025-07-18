@@ -6,10 +6,15 @@ import { useLike } from "../hooks/useLike";
 import { useLogin } from "../hooks/useLogin";
 import { useEffect, useState } from "react";
 import MiniCarousel from "../components/MiniCarousel";
+
 import { ImLocation } from "react-icons/im";
-import { GiWell, GiBrickWall, GiSmokeBomb } from "react-icons/gi";
+import { MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
+import {
+  GiWell,
+  GiBrickWall,
+  GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
+} from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
-import { MdOutlineLiving } from "react-icons/md";
 import {
   FaCar,
   FaMotorcycle,
@@ -18,13 +23,14 @@ import {
   FaShieldAlt,
   FaSwimmingPool,
   FaHotTub,
+  FaBed,
 } from "react-icons/fa";
 import {
+  FaFaucetDrip,
   FaPlugCircleBolt,
   FaPlugCircleCheck,
   FaOilWell,
   FaKitchenSet,
-  FaFaucetDrip,
 } from "react-icons/fa6";
 
 import useSound from "use-sound";
@@ -143,59 +149,45 @@ function PropertyDetails({ property }) {
           </span>
           <div className="d-flex justify-content-between align-items-center">
             <div className="mt-2 ml-2">
-              {" "}
-              {property.features.motoAccess && (
-                <FaMotorcycle className="h6 mr-1" />
-              )}
+              {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
+              {property.features.waterPumpSupplyJirama && <FaFaucetDrip className="h6 mr-1" />}
+              {property.features.waterWellSupply && <GiWell className="h6 mr-1" />}
+              {property.features.electricityPower && <FaPlugCircleCheck className="h6 mr-1" />}
+              {property.features.waterPumpSupply && <FaOilWell className="h6 mr-1" />}
+              {property.features.solarPanels && <GiSolarPower className="h6 mr-1" />}
+
+              {property.features.motoAccess && <FaMotorcycle className="h6 mr-1" />}
               {property.features.carAccess && <FaCar className="h6 mr-1" />}
-              {property.features.wifiAvailability && (
-                <FaWifi className="h6 mr-1" />
-              )}
-              {property.features.parkingSpaceAvailable && (
-                <FaParking className="h6 mr-1" />
-              )}
-              {property.features.waterPumpSupplyJirama && (
-                <FaFaucetDrip className="h6 mr-1" />
-              )}
-              {property.features.waterPumpSupply && (
-                <FaOilWell className="h6 mr-1" />
-              )}
-              {property.features.waterWellSupply && (
-                <GiWell className="h6 mr-1" />
-              )}
-              {property.features.electricityPower && (
-                <FaPlugCircleCheck className="h6 mr-1" />
-              )}
-              {property.features.electricityJirama && (
-                <FaPlugCircleBolt className="h6 mr-1" />
-              )}
-              {property.features.surroundedByWalls && (
-                <GiBrickWall className="h6 mr-1" />
-              )}
-              {property.features.securitySystem && (
-                <FaShieldAlt className="h6 mr-1" />
-              )}
-              {property.features.kitchenFacilities && (
-                <FaKitchenSet className="h6 mr-1" />
-              )}
-              {property.features.terrace && (
-                <TbBuildingCastle className="h6 mr-1" />
-              )}
-              {property.features.swimmingPool && (
-                <FaSwimmingPool className="h6 mr-1" />
-              )}
-              {property.features.furnishedProperty && (
-                <MdOutlineLiving className="h6 mr-1" />
-              )}
-              {property.features.hotWaterAvailable && (
-                <FaHotTub className="h6 mr-1" />
-              )}
-              {property.features.airConditionerAvailable && (
-                <TbAirConditioning className="h6 mr-1" />
-              )}
-              {property.features.smokeDetectorsAvailable && (
-                <GiSmokeBomb className="h6 mr-1" />
-              )}
+              {property.features.surroundedByWalls && <GiBrickWall className="h6 mr-1" />}
+              {property.features.courtyard && <MdLandscape className="h6 mr-1" />}
+              {property.features.parkingSpaceAvailable && <FaParking className="h6 mr-1" />}
+              {property.features.garage && <FaCar className="h6 mr-1" />}
+              {property.features.garden && <GiWell className="h6 mr-1" />}
+              {property.features.independentHouse && <TbBuildingCastle className="h6 mr-1" />}
+              {property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
+
+              {property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
+              {property.features.placardKitchen && <FaBed className="h6 mr-1" />}
+              {property.features.hotWaterAvailable && <FaHotTub className="h6 mr-1" />}
+              {property.features.furnishedProperty && <MdOutlineLiving className="h6 mr-1" />}
+              {property.features.airConditionerAvailable && <TbAirConditioning className="h6 mr-1" />}
+              {property.features.bathtub && <GiBathtub className="h6 mr-1" />}
+              {property.features.fireplace && <GiFireplace className="h6 mr-1" />}
+              {property.features.elevator && <TbBuildingCastle className="h6 mr-1" />}
+
+              {property.features.balcony && <MdBalcony className="h6 mr-1" />}
+              {property.features.roofTop && <GiCastle className="h6 mr-1" />}
+              {property.features.swimmingPool && <FaSwimmingPool className="h6 mr-1" />}
+
+              {property.features.securitySystem && <FaShieldAlt className="h6 mr-1" />}
+
+              {property.features.wifiAvailability && <FaWifi className="h6 mr-1" />}
+              {property.features.fiberOpticReady && <FaWifi className="h6 mr-1" />}
+
+              {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
+              {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}
+              {property.features.panoramicView && <GiSeatedMouse className="h6 mr-1" />}
+
             </div>
             <div className="mt-2 property-title">
               {property.type === "rent" ? (
