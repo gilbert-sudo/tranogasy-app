@@ -1,6 +1,15 @@
-import TikTokDescription from "../components/TikTokDescription";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import { useSelector } from "react-redux";
+
+import TikTokDescription from "./TikTokDescription";
 
 import { useScrollDirectionLock } from "../hooks/useScrollDirectionLock";
+import { useProperty } from "../hooks/useProperty";
+import { useLike } from "../hooks/useLike";
+import { useLogin } from "../hooks/useLogin";
+import { usePopup } from "../hooks/usePopup";
+import useSound from "use-sound";
 
 import {
   ChevronLeft,
@@ -40,6 +49,49 @@ import {
 const TikTokStyleListing = ({ property }) => {
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
+  const { shareProperty } = useProperty();
+  const { featureUnderConstructionPopup } = usePopup();
+  const [location, setLocation] = useLocation();
+  const { like, disLike } = useLike();
+  const { notLogedPopUp } = useLogin();
+  const [play] = useSound("sounds/Like Sound Effect.mp3");
+  const [isliked, setIsliked] = useState(false);
+  const user = useSelector((state) => state.user);
+
+  //stringify the property data to pass it as parameter
+  const propertyDataString = JSON.stringify(property);
+
+
+  //click the like button
+  const handleLike = async (e) => {
+    e.preventDefault();
+    if (user) {
+      play();
+      setIsliked(true);
+      like(property);
+    }
+    if (!user) {
+      notLogedPopUp();
+    }
+  };
+  //click the disLike button
+  const handleDisLike = async (e) => {
+    e.preventDefault();
+    setIsliked(false);
+    disLike(property);
+  };
+
+  //check the like button state
+  useEffect(() => {
+    function loadingPage() {
+      if (user && user?.favorites?.includes(property._id)) {
+        setIsliked(true);
+      } else {
+        setIsliked(false);
+      }
+    }
+    loadingPage();
+  }, []);
 
   return (
     <div
@@ -127,7 +179,7 @@ const TikTokStyleListing = ({ property }) => {
       <div
         style={{
           position: "absolute",
-          bottom: 185,
+          bottom: 160,
           right: 10,
           zIndex: 2000,
           display: "flex",
@@ -140,11 +192,13 @@ const TikTokStyleListing = ({ property }) => {
         <div style={{ position: "relative" }}>
           <img
             src={property.owner.avatar}
+            onClick={() => setLocation(`/userProfile/${property.owner._id}`)}
             style={{
               width: 50,
               height: 50,
               borderRadius: "50%",
               border: "2px solid white",
+              pointerEvents: "auto"
             }}
           />
           <div
@@ -162,30 +216,41 @@ const TikTokStyleListing = ({ property }) => {
               justifyContent: "center",
             }}
           >
-            <Plus style={{ color: "white", width: 12, height: 12 }} />
+            <Plus onClick={() => featureUnderConstructionPopup()} style={{ color: "white", width: 12, height: 12, pointerEvents: "auto"}} />
           </div>
         </div>
-        <Heart style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
-        <MapPinned style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
-        <Phone style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
-        <Forward style={{ color: "white", width: 30, height: 30, pointerEvents: "auto" }} />
+        {isliked && isliked ? (
+          <Heart style={{ pointerEvents: "auto" }} size={30} color="white" fill="red" onClick={handleDisLike} />
+        ) : (
+          <Heart style={{ pointerEvents: "auto" }} size={30} color="white" fill="none" onClick={handleLike} />
+        )}
+        <MapPinned onClick={() => featureUnderConstructionPopup()} style={{ pointerEvents: "auto" }} size={30} color="white" />
+        <Phone onClick={() => featureUnderConstructionPopup()} style={{ pointerEvents: "auto" }} size={30} color="white" />
+        <Forward onClick={() => shareProperty(property)} style={{ pointerEvents: "auto" }} size={30} color="white" />
       </div>
 
       {/* Property infos */}
       <div
         style={{
           position: "absolute",
-          bottom: 155,
+          bottom: 130,
           left: 10,
           right: 100,
           zIndex: 3,
           pointerEvents: "none",
         }}
       >
-        <p style={{ fontWeight: "bold", fontSize: 16 }}>
+        <p style={{ fontWeight: "bold", fontSize: 16, pointerEvents: "auto", width: "max-content" }} onClick={() => setLocation(`/userProfile/${property.owner._id}`)}>
           @{property.owner.username}
         </p>
-        <p style={{ fontSize: 14 }}>{property.title}</p>
+        <p
+          style={{ fontSize: 14, pointerEvents: "auto", width: "max-content" }}
+          onClick={() => setLocation(`/property-details/${property._id}/${encodeURIComponent(
+            propertyDataString
+          )}/${location.split("/")[1]}`)}
+        >
+          {property.title}
+        </p>
         <TikTokDescription description={property.description} />
         <p>
           {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
@@ -226,7 +291,7 @@ const TikTokStyleListing = ({ property }) => {
           {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
           {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}
           {property.features.panoramicView && <GiSeatedMouse className="h6 mr-1" />}
-
+          <br /><strong style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: "30px", padding: "5px" }}>{property.rent.toLocaleString("en-US")} <small>Ar / mois</small></strong>
         </p>
       </div>
 
@@ -234,7 +299,7 @@ const TikTokStyleListing = ({ property }) => {
       <div
         style={{
           position: "absolute",
-          bottom: 115,
+          bottom: 95,
           left: 10,
           right: 10,
           zIndex: 10,
@@ -259,9 +324,10 @@ const TikTokStyleListing = ({ property }) => {
             }}
           />
           <button
+            type="button"
             onClick={() => {
-              // Add your send logic here
-              console.log("Message sent!");
+              // Add send logic here
+              featureUnderConstructionPopup();
             }}
             style={{
               position: "absolute",

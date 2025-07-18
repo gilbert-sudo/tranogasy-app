@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
-import React from "react";
 import { FixedSizeList as List } from "react-window"; // Import FixedSizeList
-import TikTokStyleListing from "./TikTokStyleListing";
+import TikTokStyleListing from "../components/TikTokStyleListing";
 
 // Component to render individual rows in the virtualized list
 // It receives 'index' and 'style' props from react-window

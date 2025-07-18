@@ -36,6 +36,7 @@ import CardDetails from "../components/CardDetails";
 import PhotoGallery from "../components/PhotoGallery";
 
 import { useLogin } from "../hooks/useLogin";
+import { useProperty } from "../hooks/useProperty";
 import { useSubscription } from "../hooks/useSubscription";
 import { usePopup } from "../hooks/usePopup";
 
@@ -45,8 +46,11 @@ import PropertyLocationDisplayer from "../components/PropertyLocationDisplayer";
 //redux data
 
 const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => {
+
   const [location, setLocation] = useLocation();
   const myRef = useRef(null);
+  const { shareProperty } = useProperty();
+
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
   const loader = useSelector((state) => state.loader);
@@ -119,29 +123,6 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   const { notLogedPopUp } = useLogin();
   const { notSubscribedPopup } = useSubscription();
   const { unpaidBillPopup } = usePopup();
-
-
-  const handleShare = () => {
-    // Get the current URL
-    const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${propertiesDetails._id}`;
-    // Build the full title
-    const metaTitle = `${propertiesDetails.title} à ${propertiesDetails.location} - ${propertiesDetails.formattedPrice}`;
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: metaTitle,
-          text: "Découvrez cette propriété sur TranoGasy!",
-          url: currentUrl,
-        })
-        .catch((error) => console.log("Error sharing", error));
-    } else {
-      // fallback for desktop
-      navigator.clipboard.writeText(currentUrl);
-      alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
-    }
-  };
-
 
   const GenerateFeaturebox = ({ icon, label }) => {
     return (
@@ -252,7 +233,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
 
 
                     <button
-                      onClick={handleShare}
+                      onClick={() => shareProperty(propertiesDetails)}
                       style={{
                         display: "flex",
                         alignItems: "center",

@@ -483,6 +483,27 @@ export const useProperty = () => {
     });
   };
 
+    const shareProperty = async (property) => {
+    // Get the current URL
+    const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${property._id}`;
+    // Build the full title
+    const metaTitle = `${property.title} à ${property.location} - ${property.formattedPrice}`;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: metaTitle,
+          text: "Découvrez cette propriété sur TranoGasy!",
+          url: currentUrl,
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      // fallback for desktop
+      navigator.clipboard.writeText(currentUrl);
+      alert("Vous venez de copier le lien vers cette annonce! Vous pouvez maintenant le coller où vous voulez.");
+    }
+  };
+
   const publishProperty = async (propertyId) => {
     try {
       const response = await fetch(
@@ -708,6 +729,7 @@ export const useProperty = () => {
     addProperty,
     updateProperty,
     deleteProperty,
+    shareProperty,
     publishProperty,
     searchProperty,
     formatPrice,
