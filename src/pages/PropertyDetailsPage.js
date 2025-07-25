@@ -342,7 +342,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
               position: "sticky",
               bottom: 0,
               width: "100%",
-              zIndex: 100,
+              zIndex: 100000,
               borderTop: "1px solid #eee",
             }}
           >

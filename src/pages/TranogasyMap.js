@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getCenterOfBounds } from "geolib";
 import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
@@ -24,8 +24,6 @@ export default function TranogasyMap() {
 
   const properties = useSelector((state) => state.properties);
 
-  const searchResults = useSelector((state) => state.searchResults);
-
   const dispatch = useDispatch();
 
   const { isLoaded } = useLoadScript({
@@ -48,30 +46,26 @@ export default function TranogasyMap() {
     return cleanupFunction;
   }, []);
 
-  if (searchResults) {
+  if (properties) {
     if (!isLoaded) return <div>Chargement de la carte...</div>;
-    return <MyMap properties={searchResults} />;
-  }
-  // if (searchResults && searchResults.length === 0) {
-  //   return <NoResultFound searchForm={searchForm} />;
-  // }
-  if (!searchResults) {
-    // return <SearchLoader />;
-    if (!isLoaded) return <div>Chargement de la carte...</div>;
-    return <MyMap properties={properties.filter((property) => property.rent)} />;
+    return <MyMap />;
   }
 }
 
 
-function MyMap({ properties }) {
+function MyMap() {
+
+  const properties = useSelector((state) => state.properties);
+  const searchResults = useSelector((state) => state.searchResults);
   const geolocation = useSelector((state) => state.geolocation);
   const searchForm = useSelector((state) => state.searchForm);
   const selectedProperty = searchForm.selectedProperty;
   const initialPropertiesState = useSelector((state) => state.properties);
   const [selected, setSelected] = useState(null);
-  const [center, setCenter] = useState(null);
+  const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [showCarousel, setShowCarousel] = useState(true);
 
   const [defaultposition, setDefaultPosition] = useState(
     geolocation.userCurrentPosition
@@ -88,12 +82,12 @@ function MyMap({ properties }) {
   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
   const [usedCoords, setUsedCoords] = useState(new Set());
 
-  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.00027) => {
+  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.002) => {
     if (adjustedCoordsCache[id]) {
       return adjustedCoordsCache[id];
     }
 
-    const randomOffset = () => (Math.random() - 0.5) * maxOffset;
+    const randomOffset = () => (Math.random() - 0.7) * maxOffset;
     let newCoords;
 
     do {
@@ -153,6 +147,38 @@ function MyMap({ properties }) {
     dispatch(setReduxFormFilter({ formFilter: false }));
   };
 
+  const zoomTimerRef = useRef(null);
+
+  const handleZoomChange = useCallback((event) => {
+    const newZoom = event.detail.zoom;
+
+    // Immediately hide the carousel when zoom starts changing
+    setShowCarousel(false);
+
+    // Clear any previous timeout to avoid multiple triggers
+    if (zoomTimerRef.current) {
+      clearTimeout(zoomTimerRef.current);
+    }
+
+    // Update zoom and map type immediately
+    setMapZoomLevel(newZoom);
+    setMapTypeId(newZoom > 14 ? "hybrid" : "roadmap");
+
+    // Set a new timeout to show carousel only after zoom settles
+    zoomTimerRef.current = setTimeout(() => {
+      setShowCarousel(true);
+    }, 500); // Adjust delay (ms) based on user experience
+  }, []);
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (zoomTimerRef.current) {
+        clearTimeout(zoomTimerRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (properties && properties.length > 0) {
       const centerCoord = getCenterOfBounds(getLocationsCoords(properties));
@@ -163,6 +189,17 @@ function MyMap({ properties }) {
       setMapZoomLevel(zoomLevel);
     }
   }, [properties]);
+
+  useEffect(() => {
+    if (searchResults && searchResults.length > 0) {
+      const centerCoord = getCenterOfBounds(getLocationsCoords(searchResults));
+      if (centerCoord)
+        setCenter({ lat: centerCoord.latitude, lng: centerCoord.longitude });
+
+      const zoomLevel = calculateZoomLevel(searchResults);
+      setMapZoomLevel(zoomLevel);
+    }
+  }, [searchResults]);
 
 
   useEffect(() => {
@@ -218,31 +255,32 @@ function MyMap({ properties }) {
         <Map
           minZoom={9}
           zoom={mapZoomLevel}
-          onZoomChanged={e => {
-            const z = e.detail.zoom;
-            setMapZoomLevel(z);        // mirror user zoom into state
-            // 👇 Change the map type based on zoom level
-            if (z > 14) setMapTypeId("hybrid");
-            if (z <= 14) setMapTypeId("roadmap");
-          }}
-          center={properties && center ? center : defaultposition}
+          onZoomChanged={handleZoomChange}
+          center={searchResults ? center : {
+            lat: -18.905195365917766,
+            lng: 47.52370521426201,
+          }} // Default center if no search results Antananarivo
           mapId="80e7a8f8db80acb5"
           onClick={handleMapClick}
           mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
           options={{
             fullscreenControl: false,
             streetViewControl: false, // 👈 disable Pegman
+            gestureHandling: 'greedy'
           }}
           mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
         >
           {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-          <Markers points={properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} />
+          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} />
           {/* Pass null for markerFinalCoords when clicking from the carousel */}
-          <PropertyCarousel
-            visibleProperties={properties.filter((property) => property.rent)}
-            onItemClick={handleMarkerClick}
-          />
+          {showCarousel &&
+            <PropertyCarousel
+              visibleProperties={properties.filter((property) => property.rent)}
+              onItemClick={handleMarkerClick}
+            />
+          }
         </Map>
+
         <div
           className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
           style={{

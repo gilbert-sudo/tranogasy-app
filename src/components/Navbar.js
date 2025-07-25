@@ -2,10 +2,6 @@ import { useEffect } from "react";
 import { Link, useRoute, useLocation } from "wouter";
 import { Origami, Binoculars, Heart, Megaphone, Bell, UserCog } from "lucide-react";
 import {
-  BsHeart,
-  BsPersonGear,
-  BsBell,
-  BsHouseAdd,
   BsSearch,
 } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
@@ -71,6 +67,7 @@ const Navbar = () => {
   const timer = useSelector((state) => state.timer);
 
   const properties = useSelector((state) => state.properties);
+  const searchResults = useSelector((state) => state.searchResults);
   const notifications = useSelector((state) => state.notifications);
   const payments = useSelector((state) => state.payments);
   const notificationStatus = useSelector((state) => state.notificationStatus);
@@ -286,7 +283,7 @@ const Navbar = () => {
                   />
                 </button>
               )}{" "}
-              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && prevPath !== "searchResult" && prevPath !== "tranogasyMap" && properties && (
+              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && prevPath !== "searchResult" && prevPath !== "tranogasyMap" && properties &&(
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-outline-success"

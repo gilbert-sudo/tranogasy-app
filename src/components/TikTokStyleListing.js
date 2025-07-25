@@ -28,6 +28,7 @@ import {
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { ImLocation } from "react-icons/im";
 import {
   FaCar,
   FaMotorcycle,
@@ -181,7 +182,7 @@ const TikTokStyleListing = ({ property }) => {
           position: "absolute",
           bottom: 160,
           right: 10,
-          zIndex: 2000,
+          zIndex: 10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -216,7 +217,7 @@ const TikTokStyleListing = ({ property }) => {
               justifyContent: "center",
             }}
           >
-            <Plus onClick={() => featureUnderConstructionPopup()} style={{ color: "white", width: 12, height: 12, pointerEvents: "auto"}} />
+            <Plus onClick={() => featureUnderConstructionPopup()} style={{ color: "white", width: 12, height: 12, pointerEvents: "auto" }} />
           </div>
         </div>
         {isliked && isliked ? (
@@ -251,6 +252,11 @@ const TikTokStyleListing = ({ property }) => {
         >
           {property.title}
         </p>
+        <small>
+          {" "}
+          <ImLocation className="text-danger mr-1 mb-2" />
+          {property.city.fokontany} {property.city.commune}
+        </small>
         <TikTokDescription description={property.description} />
         <p>
           {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
@@ -291,7 +297,7 @@ const TikTokStyleListing = ({ property }) => {
           {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
           {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}
           {property.features.panoramicView && <GiSeatedMouse className="h6 mr-1" />}
-          <br /><strong style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: "30px", padding: "5px" }}>{property.rent.toLocaleString("en-US")} <small>Ar / mois</small></strong>
+          <br /><strong style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: "30px", padding: "5px" }}>{property.rent && property.rent.toLocaleString("en-US")} <small>Ar / mois</small></strong>
         </p>
       </div>
 

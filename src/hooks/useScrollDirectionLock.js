@@ -36,7 +36,7 @@ export const useScrollDirectionLock = () => {
             // Reset after 200ms so it can detect new gesture direction
             lockTimeout.current = setTimeout(() => {
                 resetScrollDirection();
-            }, 200);
+            }, 100);
         }
 
         // Apply lock if direction is active
