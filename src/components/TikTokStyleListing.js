@@ -96,7 +96,7 @@ const TikTokStyleListing = ({ property }) => {
 
   return (
     <div
-    className="tikTokStyleListing"
+      className="tikTokStyleListing"
       style={{
         width: "100%",
         height: "100vh",
@@ -107,6 +107,12 @@ const TikTokStyleListing = ({ property }) => {
         backgroundColor: "#000",
         color: "#fff",
         fontFamily: "sans-serif",
+        overscrollBehavior: "contain",
+        scrollbarWidth: "none", // Firefox
+        msOverflowStyle: "none", // IE
+        "&::-webkit-scrollbar": { // Chrome/Safari
+          display: "none"
+        }
       }}
     >
       {/* Image slider */}

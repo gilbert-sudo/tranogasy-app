@@ -9,6 +9,28 @@ html {
 html::-webkit-scrollbar {
   display: none !important; /* hide scrollbar for Chrome, Safari and Opera */
 }
+/* For iOS momentum scrolling */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .tranogasy-feed-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    height: 100vh;
+    /* Fix for iOS 15+ */
+    @supports (height: 100dvh) {
+      height: 100dvh;
+    }
+  }
+  
+  /* Prevent elastic bounce effect */
+  body {
+    overscroll-behavior-y: contain;
+  }
+}
 
 body {
   line-height: 1.3;

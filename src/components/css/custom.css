@@ -28,3 +28,8 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
+#root > div > div > main > div > div.mylisting.mt-5.pt-1 > div > div > div.row.mt-3 > div {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
