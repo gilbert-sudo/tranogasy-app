@@ -96,6 +96,7 @@ const TikTokStyleListing = ({ property }) => {
 
   return (
     <div
+    className="tikTokStyleListing"
       style={{
         width: "100%",
         height: "100vh",

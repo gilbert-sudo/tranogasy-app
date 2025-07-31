@@ -2,12 +2,11 @@ import { Switch, Route, Router, Redirect } from "wouter";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import io from "socket.io-client"; // Import Socket.io client library
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import Darkreader from "react-darkreader";
 import { useLocationProperty, navigate } from "wouter/use-location";
 import { WonderPush } from 'react-wonderpush';
-import {fullWidthClassName} from 'react-remove-scroll-bar';
 
 // all pages
 import NoInternetPage from "./pages/NoInternet";
@@ -342,7 +341,7 @@ function App() {
   return (
     <WonderPush options={{ webKey: 'ad242738aead9587c7ee3a981f65e2acabfa82bbe33620c0d14cf1ced5b0b5a1' }}>
       <AutoSubscribe />
-      <div className={fullWidthClassName}>
+      <div className="app">
         <SkeletonTheme>
           <Router hook={useHashLocation}>
             <div className="App">

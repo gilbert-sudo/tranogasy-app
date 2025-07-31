@@ -1,6 +1,13 @@
 /* Base */
 html {
   scroll-behavior: smooth;
+  
+  /* hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none !important; /* hide scrollbar for Chrome, Safari and Opera */
 }
 
 body {

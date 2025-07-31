@@ -23,3 +23,8 @@
 .gm-style-mtc-bbw {
   z-index: 9999 !important;
 }
+
+#root > div > div > main > div {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

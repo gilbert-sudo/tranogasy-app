@@ -3,6 +3,7 @@
 .custom-bg-white {
   background-color: white;
 }
+
 .button-7 {
   background-color: #4267b2;
   width: 100%;
@@ -50,6 +51,14 @@ tionDetails .button-7:active {
   margin-left: auto;
   padding-right: 15px;
   padding-left: 15px;
+  overflow-y: auto;
+
+  /* hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+.custom-container::-webkit-scrollbar {
+  display: none !important; /* hide scrollbar for Chrome, Safari and Opera */
 }
 
 .btn-custum {
@@ -225,4 +234,3 @@ tionDetails .button-7:active {
 .GMAMP-maps-pin-view {
   margin-left: 17px;
 }
-
