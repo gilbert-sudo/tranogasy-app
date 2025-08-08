@@ -38,6 +38,9 @@ import {
   FaPlugCircleCheck,
   FaOilWell,
   FaKitchenSet,
+  FaDollarSign,
+  FaHouseChimney,
+  FaBuilding,
 } from "react-icons/fa6";
 
 import ImageUploader from "../components/ImageUploader";
@@ -47,6 +50,7 @@ import Swal from "sweetalert2";
 
 const UpdatePropertyPage = () => {
   const myRef = useRef(null);
+  const floorRef = useRef(null);
   const user = useSelector((state) => state.user);
   const imgState = useSelector((state) => state.img);
   const dispatch = useDispatch();
@@ -131,6 +135,10 @@ const UpdatePropertyPage = () => {
 
   const [imageError, setImageError] = useState(false);
   const [noFeatureSet, setNoFeatureSet] = useState(false);
+
+  const [houseType, setHouseType] = useState(oldPropertyDetails.houseType || "maison");
+  const [floor, setFloor] = useState(oldPropertyDetails.floor || "");
+  const [floorError, setFloorError] = useState(false);
 
   const areSameCity =
     selectedCity &&
@@ -285,6 +293,18 @@ const UpdatePropertyPage = () => {
       setImageError(false);
     }
 
+    if (houseType === "appartement" && !floor) {
+      setFloorError(true);
+      setTimeout(() => {
+        setFloorError(false);
+      }, 5000);
+      floorRef.current?.scrollIntoView({ behavior: "smooth" });
+      return;
+    } else {
+      setFloorError(false);
+    }
+
+
     const newProperty = {
       propertyId: oldPropertyDetails._id,
       title,
@@ -301,6 +321,8 @@ const UpdatePropertyPage = () => {
       livingRoom,
       images,
       owner,
+      houseType,
+      floor: houseType === "appartement" ? floor : null,
       coords,
       phone1,
       phone2,
@@ -354,6 +376,8 @@ const UpdatePropertyPage = () => {
         allowOutsideClick: false,
         showConfirmButton: false,
       });
+    } else {
+      Swal.close();
     }
     let nearbyLocations = [];
     if (coords) {
@@ -368,6 +392,8 @@ const UpdatePropertyPage = () => {
         if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
       }
     }
+
+
   }, [isLoading, coords]);
 
   return (
@@ -698,11 +724,13 @@ const UpdatePropertyPage = () => {
                     </div>
 
                     <div
+                      ref={floorRef}
                       style={{
                         position: "relative",
                         border: "1px solid #ced4da",
                         borderRadius: "20px",
                         padding: "20px",
+                        marginBottom: "15px",
                       }}
                     >
                       <label
@@ -719,6 +747,7 @@ const UpdatePropertyPage = () => {
                         Type d'offre
                       </label>
 
+                      {/* First row: Location, Vente, Colocation */}
                       <div
                         style={{
                           display: "flex",
@@ -771,7 +800,7 @@ const UpdatePropertyPage = () => {
                             fontSize: "12px",
                           }}
                         >
-                          <FaHome />
+                          <FaDollarSign />
                           Vente
                         </button>
 
@@ -799,6 +828,166 @@ const UpdatePropertyPage = () => {
                           Colocation
                         </button>
                       </div>
+
+                      {/* Second row title */}
+                      <div
+                        style={{
+                          marginTop: "14px",
+                          marginBottom: "4px",
+                          fontSize: "13px",
+                          fontWeight: "500",
+                          color: "#6b7280",
+                          textAlign: "left",
+                          paddingLeft: "4px",
+                        }}
+                      >
+                        Plus de critères :
+                      </div>
+
+                      {/* Second row: Maison / Appartement */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          gap: "10px",
+                          flexWrap: "nowrap",
+                          marginTop: "10px",
+                          paddingLeft: "15px"
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => setHouseType("maison")}
+                          style={{
+                            minWidth: "100px",
+                            minHeight: "80px",
+                            padding: "10px 10px",
+                            borderRadius: "16px",
+                            border: houseType === "maison" ? "2px solid #6b7280" : "1px solid #aaa",
+                            backgroundColor: houseType === "maison" ? "#6b7280" : "#fff",
+                            color: houseType === "maison" ? "#fff" : "#333",
+                            fontWeight: "500",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            transition: "all 0.2s ease",
+                            cursor: "pointer",
+                            fontSize: "13px",
+                          }}
+                        >
+                          <FaHouseChimney size={20} />
+                          Maison
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setHouseType("appartement")}
+                          style={{
+                            minWidth: "100px",
+                            minHeight: "80px",
+                            padding: "10px 10px",
+                            borderRadius: "16px",
+                            border: houseType === "appartement" ? "2px solid #6b7280" : "1px solid #aaa",
+                            backgroundColor: houseType === "appartement" ? "#6b7280" : "#fff",
+                            color: houseType === "appartement" ? "#fff" : "#333",
+                            fontWeight: "500",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            transition: "all 0.2s ease",
+                            cursor: "pointer",
+                            fontSize: "13px",
+                          }}
+                        >
+                          <FaBuilding size={20} />
+                          Appartement
+                        </button>
+                      </div>
+
+                      {/* Étage input */}
+                      {houseType === "appartement" &&
+                        <div style={{ marginTop: "14px" }}>
+                          <label
+                            style={{
+                              fontSize: "14px",
+                              color: "#6b7280",
+                              marginBottom: "6px",
+                              display: "block",
+                            }}
+                          >
+                            Étage
+                          </label>
+
+                          <div
+                            style={{
+                              position: "relative",
+                              display: "flex",
+                              alignItems: "center",
+                              marginTop: "8px",
+                              paddingLeft: "15px"
+                            }}
+                          >
+                            <select
+                              value={floor}
+                              onChange={(e) => setFloor(e.target.value)}
+                              style={{
+                                width: "100%",
+                                padding: "10px 40px 10px 12px",
+                                borderRadius: "30px",
+                                border: "1px solid #ddd",
+                                background: "#f9f9f9",
+                                fontSize: "14px",
+                                outline: "none",
+                                appearance: "none",
+                                WebkitAppearance: "none",
+                                MozAppearance: "none",
+                                cursor: "pointer",
+                                color: "black",
+                              }}
+                            >
+                              <option value="">Sélectionner l'étage</option>
+                              <option value="rez-de-chaussée">Rez-de-chaussée</option>
+                              <option value="1">1er étage</option>
+                              <option value="2">2e étage</option>
+                              <option value="3">3e étage</option>
+                              <option value="4">4e étage</option>
+                              <option value="5+">5e étage ou plus</option>
+                            </select>
+
+                            <ImCircleDown
+                              size={18}
+                              color="#555"
+                              style={{
+                                position: "absolute",
+                                right: "12px",
+                                pointerEvents: "none",
+                              }}
+                            />
+                          </div>
+                          {floorError && (
+                            <div
+                              style={{
+                                color: "#b91c1c",
+                                backgroundColor: "#fee2e2",
+                                border: "1px solid #fca5a5",
+                                padding: "6px 10px",
+                                borderRadius: "8px",
+                                marginTop: "6px",
+                                fontSize: "13px",
+                              }}
+                            >
+                              Veuillez préciser l’étage pour un appartement.
+                            </div>
+                          )}
+
+                        </div>
+                      }
+
+
                     </div>
 
                     {isRent && (

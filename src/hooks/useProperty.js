@@ -230,6 +230,8 @@ export const useProperty = () => {
       kitchen,
       livingRoom,
       images,
+      houseType,
+      floor,
       coords,
       phone1,
       phone2,
@@ -320,6 +322,8 @@ export const useProperty = () => {
         solarPanels,
       },
       images,
+      houseType,
+      floor,
       coords,
       type,
     };
@@ -338,6 +342,8 @@ export const useProperty = () => {
       );
 
       const json = await response.json();
+
+      console.log("Response from updateProperty:", json);
 
       if (response.ok) {
 
