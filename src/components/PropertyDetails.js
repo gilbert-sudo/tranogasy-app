@@ -14,7 +14,7 @@ import {
   GiBrickWall,
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import {
   FaCar,
   FaMotorcycle,
@@ -165,6 +165,7 @@ function PropertyDetails({ property }) {
               {property.features.garden && <GiWell className="h6 mr-1" />}
               {property.features.independentHouse && <TbBuildingCastle className="h6 mr-1" />}
               {property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
+              {property.features.bassin && <TbWash className="h6 mr-1" />}
 
               {property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
               {property.features.placardKitchen && <FaBed className="h6 mr-1" />}

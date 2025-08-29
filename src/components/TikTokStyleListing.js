@@ -47,6 +47,8 @@ import {
   FaKitchenSet,
 } from "react-icons/fa6";
 
+import userProfile from "../img/user-avatar.png";
+
 const TikTokStyleListing = ({ property }) => {
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
@@ -199,8 +201,8 @@ const TikTokStyleListing = ({ property }) => {
       >
         <div style={{ position: "relative" }}>
           <img
-            src={property.owner.avatar}
-            onClick={() => setLocation(`/userProfile/${property.owner._id}`)}
+            src={property.owner.role === "admin" ? "images/Gilbert AI dark square.png" : property.owner.avatar || userProfile}
+            onClick={() => property.owner.role === "user" ? setLocation(`/userProfile/${property.owner._id}`) : null}
             style={{
               width: 50,
               height: 50,
@@ -248,8 +250,8 @@ const TikTokStyleListing = ({ property }) => {
           pointerEvents: "none",
         }}
       >
-        <p style={{ fontWeight: "bold", fontSize: 16, pointerEvents: "auto", width: "max-content" }} onClick={() => setLocation(`/userProfile/${property.owner._id}`)}>
-          @{property.owner.username}
+        <p style={{ fontWeight: "bold", fontSize: 16, pointerEvents: "auto", width: "max-content" }} onClick={() => property.owner.role === "user" ? setLocation(`/userProfile/${property.owner._id}`) : null}>
+          @{property.owner.role === "admin" ? "Gilbert AI" : property.owner.username}
         </p>
         <p
           style={{ fontSize: 14, pointerEvents: "auto", width: "max-content" }}

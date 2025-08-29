@@ -16,7 +16,7 @@ import {
   GiBrickWall,
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { ImCircleDown } from "react-icons/im";
 import {
   FaCar,
@@ -68,6 +68,8 @@ const CreateListing = () => {
   const [livingRoom, setLivingRoom] = useState(0);
   const [phone1, setPhone1] = useState(user.phone);
   const [phone2, setPhone2] = useState(null);
+  const [phone3, setPhone3] = useState(null);
+  const [showPhone3, setShowPhone3] = useState(false);
 
   const { loadMap } = offlineLoader();
   const { addProperty, isLoading } = useProperty();
@@ -110,6 +112,7 @@ const CreateListing = () => {
   const [independentHouse, setIndependentHouse] = useState(false);
   const [garage, setGarage] = useState(false);
   const [guardianHouse, setGuardianHouse] = useState(false);
+  const [bassin, setBassin] = useState(false);
   const [placardKitchen, setPlacardKitchen] = useState(false);
   const [bathtub, setBathtub] = useState(false);
   const [fireplace, setFireplace] = useState(false);
@@ -229,6 +232,7 @@ const CreateListing = () => {
         independentHouse,
         garage,
         guardianHouse,
+        bassin,
         kitchenFacilities,
         placardKitchen,
         bathtub,
@@ -297,6 +301,7 @@ const CreateListing = () => {
       floor: houseType === "appartement" ? floor : null,
       phone1,
       phone2,
+      phone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -310,6 +315,7 @@ const CreateListing = () => {
       independentHouse,
       garage,
       guardianHouse,
+      bassin,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -1310,6 +1316,7 @@ const CreateListing = () => {
                       <GenerateCheckbox icon={<GiWell />} state={garden} label={"Jardin"} onClickFunction={() => setGarden(!garden)} />
                       <GenerateCheckbox icon={<TbBuildingCastle />} state={independentHouse} label={"Indépendante"} onClickFunction={() => setIndependentHouse(!independentHouse)} />
                       <GenerateCheckbox icon={<FaShieldAlt />} state={guardianHouse} label={"Maison pour gardien"} onClickFunction={() => setGuardianHouse(!guardianHouse)} />
+                      <GenerateCheckbox icon={<TbWash />} state={bassin} label={"Bassin"} onClickFunction={() => setBassin(!bassin)} />
 
                       {/* 🏠 Confort intérieur */}
                       <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
@@ -1450,7 +1457,67 @@ const CreateListing = () => {
                           }}
                         />
                       </div>
+
+                      {/* Téléphone 3 (only if user clicks Add More) */}
+                      {showPhone3 && (
+                        <div style={{ position: "relative", marginTop: "10px" }}>
+                          <label
+                            style={{
+                              position: "absolute",
+                              top: "-10px",
+                              left: "10px",
+                              background: "#fff",
+                              padding: "0 4px",
+                              fontSize: "12px",
+                              color: "#6b7280",
+                            }}
+                          >
+                            Facultatif
+                          </label>
+                          <input
+                            type="tel"
+                            placeholder="Téléphone 3"
+                            style={{
+                              width: "100%",
+                              border: "1px solid #999",
+                              borderRadius: "16px",
+                              padding: "10px",
+                              fontSize: "13px",
+                              textAlign: "center",
+                            }}
+                            value={phone3}
+                            maxLength={10}
+                            pattern="[0-9]*"
+                            onChange={(e) => {
+                              const numericValue = e.target.value.replace(/\D/g, "");
+                              setPhone3(numericValue);
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
+
+                    {/* Add more button on border bottom-left */}
+                    {!showPhone3 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowPhone3(true)}
+                        style={{
+                          position: "absolute",
+                          bottom: "-12px",
+                          right: "20px",
+                          fontSize: "12px",
+                          padding: "3px 8px",
+                          border: "1px solid #999",
+                          borderRadius: "10px",
+                          backgroundColor: "rgb(107, 114, 128)",
+                          color: "rgb(255, 255, 255)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        + Ajouter plus
+                      </button>
+                    )}
                   </div>
 
                   <div
@@ -1549,11 +1616,11 @@ const CreateListing = () => {
             </nav>
           </div>
           {/* bottom navbar */}
-        </div>
+        </div >
       ) : (
         <NotLogedIn />
       )}
-    </div>
+    </div >
   );
 };
 

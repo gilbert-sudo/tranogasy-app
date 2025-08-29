@@ -273,12 +273,12 @@ function MyMap() {
           {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
           <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} />
           {/* Pass null for markerFinalCoords when clicking from the carousel */}
-          {showCarousel &&
+          {/* {showCarousel &&
             <PropertyCarousel
               visibleProperties={properties.filter((property) => property.rent)}
               onItemClick={handleMarkerClick}
             />
-          }
+          } */}
         </Map>
 
         <div

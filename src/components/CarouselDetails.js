@@ -80,10 +80,10 @@ const CarouselDetails = ({ property, handleShowContact }) => {
           className="container"
           style={{ backgroundColor: `rgb(0, 0, 0, 0.5)`, height: "150%" }}
         >
-          <div className="position-absolute media mt-5" onClick={() => setLocation(`/userProfile/${property.owner._id}`)} style={{ zIndex: 10 }}>
+          <div className="position-absolute media mt-5" onClick={() => property.owner.role === "user" ? setLocation(`/userProfile/${property.owner._id}`) : null} style={{ zIndex: 10 }}>
             <img
               alt=""
-              src={property.owner?.avatar ? property.owner.avatar : userProfile}
+              src={property.owner.role === "admin" ? "images/Gilbert AI dark square.png" : property.owner.avatar || userProfile}
               style={{ objectFit: "cover", width: "40px", height: "40px", border: "2px solid #fff", outline: "2px solid #00000080", borderRadius: "50%" }}
               className="img-fluid mr-1 align-self-start"
             />
@@ -91,7 +91,7 @@ const CarouselDetails = ({ property, handleShowContact }) => {
               <div className="d-flex flex-row justify-content-between">
                 <h6 className="text-light mb-0">
                   <small>
-                    {property.owner.username}
+                    {property.owner.role === "admin" ? "Gilbert AI" : property.owner.username}
                   </small>
                 </h6>
                 <i className="fas fa-angle-down mr-3 text-muted"> </i>

@@ -16,7 +16,7 @@ import {
   GiBrickWall,
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { ImCircleDown } from "react-icons/im";
 import {
   FaCar,
@@ -88,6 +88,7 @@ const UpdatePropertyPage = () => {
   const [livingRoom, setLivingRoom] = useState(oldPropertyDetails.livingRoom);
   const [phone1, setPhone1] = useState(oldPropertyDetails.phone1);
   const [phone2, setPhone2] = useState(oldPropertyDetails.phone2);
+  const [phone3, setPhone3] = useState(oldPropertyDetails.phone3);
 
   const { loadMap } = offlineLoader();
   const { updateProperty, isLoading } = useProperty();
@@ -124,6 +125,7 @@ const UpdatePropertyPage = () => {
   const [independentHouse, setIndependentHouse] = useState(oldPropertyDetails.features.independentHouse);
   const [garage, setGarage] = useState(oldPropertyDetails.features.garage);
   const [guardianHouse, setGuardianHouse] = useState(oldPropertyDetails.features.guardianHouse);
+  const [bassin, setBassin] = useState(oldPropertyDetails.features.bassin);
   const [placardKitchen, setPlacardKitchen] = useState(oldPropertyDetails.features.placardKitchen);
   const [bathtub, setBathtub] = useState(oldPropertyDetails.features.bathtub);
   const [fireplace, setFireplace] = useState(oldPropertyDetails.features.fireplace);
@@ -256,6 +258,7 @@ const UpdatePropertyPage = () => {
         independentHouse,
         garage,
         guardianHouse,
+        bassin,
         kitchenFacilities,
         placardKitchen,
         bathtub,
@@ -326,6 +329,7 @@ const UpdatePropertyPage = () => {
       coords,
       phone1,
       phone2,
+      phone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -339,6 +343,7 @@ const UpdatePropertyPage = () => {
       independentHouse,
       garage,
       guardianHouse,
+      bassin,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -1449,7 +1454,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox icon={<GiWell />} state={garden} label={"Jardin"} onClickFunction={() => setGarden(!garden)} />
                         <GenerateCheckbox icon={<TbBuildingCastle />} state={independentHouse} label={"Indépendante"} onClickFunction={() => setIndependentHouse(!independentHouse)} />
                         <GenerateCheckbox icon={<FaShieldAlt />} state={guardianHouse} label={"Maison pour gardien"} onClickFunction={() => setGuardianHouse(!guardianHouse)} />
-
+                        <GenerateCheckbox icon={<TbWash />} state={bassin} label={"Bassin"} onClickFunction={() => setBassin(!bassin)} />
                         {/* 🏠 Confort intérieur */}
                         <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
                         <GenerateCheckbox icon={<FaBed />} state={placardKitchen} label={"Cuisine placardée"} onClickFunction={() => setPlacardKitchen(!placardKitchen)} />
@@ -1587,6 +1592,42 @@ const UpdatePropertyPage = () => {
                             onChange={(e) => {
                               const numericValue = e.target.value.replace(/\D/g, "");
                               setPhone2(numericValue);
+                            }}
+                          />
+                        </div>
+
+                        {/* Téléphone 3 */}
+                        <div style={{ position: "relative", marginTop: "10px" }}>
+                          <label
+                            style={{
+                              position: "absolute",
+                              top: "-10px",
+                              left: "10px",
+                              background: "#fff",
+                              padding: "0 4px",
+                              fontSize: "12px",
+                              color: "#6b7280",
+                            }}
+                          >
+                            Facultatif
+                          </label>
+                          <input
+                            type="tel"
+                            placeholder="Téléphone 3"
+                            style={{
+                              width: "100%",
+                              border: "1px solid #999",
+                              borderRadius: "16px",
+                              padding: "10px",
+                              fontSize: "13px",
+                              textAlign: "center",
+                            }}
+                            value={phone3}
+                            maxLength={10}
+                            pattern="[0-9]*"
+                            onChange={(e) => {
+                              const numericValue = e.target.value.replace(/\D/g, "");
+                              setPhone3(numericValue);
                             }}
                           />
                         </div>

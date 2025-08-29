@@ -27,7 +27,7 @@ import {
   GiBrickWall,
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { IoMdShareAlt } from "react-icons/io";
 
 import { useRoute } from "wouter";
@@ -303,6 +303,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
                     {propertiesDetails.features?.garden && <GenerateFeaturebox icon={<GiWell />} label={"Jardin"} />}
                     {propertiesDetails.features?.independentHouse && <GenerateFeaturebox icon={<TbBuildingCastle />} label={"Indépendante"} />}
                     {propertiesDetails.features?.guardianHouse && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Maison pour gardien"} />}
+                    {propertiesDetails.features?.bassin && <GenerateFeaturebox icon={<TbWash />} label={"Bassin"} />}
                     {/* 🏠 Confort intérieur */}
                     {propertiesDetails.features?.kitchenFacilities && <GenerateFeaturebox icon={<FaKitchenSet />} label={"Cuisine équipée"} />}
                     {propertiesDetails.features?.placardKitchen && <GenerateFeaturebox icon={<FaBed />} label={"Cuisine placardée"} />}

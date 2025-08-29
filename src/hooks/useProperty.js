@@ -61,6 +61,7 @@ export const useProperty = () => {
       floor,
       phone1,
       phone2,
+      phone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -74,6 +75,7 @@ export const useProperty = () => {
       independentHouse,
       garage,
       guardianHouse,
+      bassin,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -111,7 +113,6 @@ export const useProperty = () => {
 
     // Clean title and description whitespace
     title = title.trim().replace(/\s+/g, " ");
-    description = description.trim().replace(/\s+/g, " ");
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties`, {
@@ -139,6 +140,7 @@ export const useProperty = () => {
           floor,
           phone1,
           phone2,
+          phone3,
           motoAccess,
           carAccess,
           parkingSpaceAvailable,
@@ -152,6 +154,7 @@ export const useProperty = () => {
           independentHouse,
           garage,
           guardianHouse,
+          bassin,
           kitchenFacilities,
           placardKitchen,
           insideToilet,
@@ -235,6 +238,7 @@ export const useProperty = () => {
       coords,
       phone1,
       phone2,
+      phone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -248,6 +252,7 @@ export const useProperty = () => {
       independentHouse,
       garage,
       guardianHouse,
+      bassin,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -284,6 +289,7 @@ export const useProperty = () => {
       livingRoom,
       phone1,
       phone2,
+      phone3,
       area,
       features: {
         motoAccess,
@@ -312,6 +318,7 @@ export const useProperty = () => {
         independentHouse,
         garage,
         guardianHouse,
+        bassin,
         placardKitchen,
         bathtub,
         fireplace,
@@ -569,6 +576,7 @@ export const useProperty = () => {
       independentHouse,
       garage,
       guardianHouse,
+      bassin,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -633,6 +641,9 @@ export const useProperty = () => {
           (garage ? property.features.garage === garage : true) &&
           (guardianHouse
             ? property.features.guardianHouse === guardianHouse
+            : true) &&
+          (bassin
+            ? property.features.bassin === bassin
             : true) &&
           (kitchenFacilities
             ? property.features.kitchenFacilities === kitchenFacilities
