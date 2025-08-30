@@ -55,11 +55,12 @@ function MyMap({ position, circle }) {
             <Circle
               center={position}
               radius={600}
-              strokeColor={"#0c4cb3"}
+              strokeColor={"#7cbd1e"}
               strokeOpacity={1}
               strokeWeight={2}
               fillColor={"#3b82f6"}
-              fillOpacity={0.2}
+              fillOpacity={0.1}
+              clickable={false} // Add this line to make it click-through
             />
           )}
 

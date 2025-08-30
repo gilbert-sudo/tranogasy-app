@@ -10,6 +10,7 @@ import {
   ControlPosition,
 } from "@vis.gl/react-google-maps";
 import { useLoadScript } from "@react-google-maps/api";
+import Circle from "../components/Circle";
 import CustomMapControl from "../components/CustomMapControl";
 
 export default function PropertyLocationSelector({ defaultPosition, setCoords }) {
@@ -17,7 +18,7 @@ export default function PropertyLocationSelector({ defaultPosition, setCoords })
     googleMapsApiKey: "AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs",
     libraries: ["places"],
   });
-  
+
 
   useEffect(() => {
     // Cleanup function to remove all pac-container elements when component unmounts
@@ -80,7 +81,7 @@ function MyMap({ defaultPosition, setCoords }) {
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-      <div style={{ height: "50vh", width: "100%" , marginBottom: "30px" }}>
+      <div style={{ height: "50vh", width: "100%", marginBottom: "30px" }}>
         <div className="places-container">
           <CustomMapControl
             controlPosition={ControlPosition.LEFT_TOP}
@@ -121,6 +122,18 @@ function MyMap({ defaultPosition, setCoords }) {
               <p>Votre propriété</p>
             </InfoWindow>
           )} */}
+          {defaultPosition && !selected && (
+            <Circle
+              center={defaultPosition}
+              radius={600}
+              strokeColor={"#7cbd1e"}
+              strokeOpacity={1}
+              strokeWeight={2}
+              fillColor={"#3b82f6"}
+              fillOpacity={0.1}
+              clickable={false} // Add this line to make it click-through
+            />
+          )}
         </Map>
       </div>
     </APIProvider>

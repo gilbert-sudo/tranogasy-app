@@ -60,6 +60,7 @@ const CreateListing = () => {
   const [price, setPrice] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [coords, setCoords] = useState(null);
+  const [coordsFromGoogle, setCoordsFromGoogle] = useState(null);
   const [rooms, setRooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
   const [area, setArea] = useState(0);
@@ -73,7 +74,6 @@ const CreateListing = () => {
 
   const { loadMap } = offlineLoader();
   const { addProperty, isLoading } = useProperty();
-  const { featureUnderConstructionPopup } = usePopup();
   const { findLocationsWithinDistance } = useLocalMapHook();
 
   const [isRent, setIsRent] = useState(true);
@@ -302,8 +302,8 @@ const CreateListing = () => {
       houseType,
       floor: houseType === "appartement" ? floor : null,
       phone1,
-      phone2 : newPhone2,
-      phone3 : newPhone3,
+      phone2: newPhone2,
+      phone3: newPhone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -370,6 +370,27 @@ const CreateListing = () => {
       }
     }
   }, [isLoading, coords]);
+
+  useEffect(() => {
+    if (selectedCity) { 
+      console.log("Selected city changed:", selectedCity);
+        
+          let nearbyLocations = [];
+    if (selectedCity.isGoogleResult === true && selectedCity.coords) {
+      nearbyLocations = findLocationsWithinDistance(
+        mapData,
+        selectedCity.coords,
+        15000
+      ).sort((a, b) => a.distance - b.distance);
+      const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+      // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
+      if (nearbyLocations.length > 0) {
+        if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
+      }
+    }
+    }
+  }, [selectedCity]);
+
 
   return (
     <div className="create-listing">
@@ -529,7 +550,7 @@ const CreateListing = () => {
                           marginBottom: "15px",
                         }}
                       >
-                        Si vous le souhaitez, vous pouvez indiquer sur la carte l'emplacement exact de la propriété.
+                        Si vous le souhaitez, vous pouvez indiquer sur la carte l'emplacement exact de la propriété en cliquant.
                       </label>
                       <PropertyLocationSelector
                         defaultPosition={

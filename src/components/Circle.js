@@ -13,6 +13,7 @@ function useCircle(props) {
     onCenterChanged,
     radius,
     center,
+    clickable = false, // Add clickable prop with default false
     ...circleOptions
   } = props;
 
@@ -31,7 +32,11 @@ function useCircle(props) {
 
   const circle = useRef(new google.maps.Circle()).current;
 
-  circle.setOptions(circleOptions);
+  // Set circle options including clickable
+  circle.setOptions({
+    ...circleOptions,
+    clickable: clickable // Make circle non-clickable by default
+  });
 
   useEffect(() => {
     if (!center) return;
@@ -65,20 +70,24 @@ function useCircle(props) {
 
     const gme = google.maps.event;
 
-    [
-      ['click', 'onClick'],
-      ['drag', 'onDrag'],
-      ['dragstart', 'onDragStart'],
-      ['dragend', 'onDragEnd'],
-      ['mouseover', 'onMouseOver'],
-      ['mouseout', 'onMouseOut']
-    ].forEach(([eventName, eventCallback]) => {
-      gme.addListener(circle, eventName, (e) => {
-        const callback = callbacks.current[eventCallback];
-        if (callback) callback(e);
+    // Only add event listeners if circle is clickable
+    if (clickable) {
+      [
+        ['click', 'onClick'],
+        ['drag', 'onDrag'],
+        ['dragstart', 'onDragStart'],
+        ['dragend', 'onDragEnd'],
+        ['mouseover', 'onMouseOver'],
+        ['mouseout', 'onMouseOut']
+      ].forEach(([eventName, eventCallback]) => {
+        gme.addListener(circle, eventName, (e) => {
+          const callback = callbacks.current[eventCallback];
+          if (callback) callback(e);
+        });
       });
-    });
+    }
 
+    // These can stay since they don't interfere with map clicks
     gme.addListener(circle, 'radius_changed', () => {
       const newRadius = circle.getRadius();
       callbacks.current.onRadiusChanged?.(newRadius);
@@ -92,7 +101,7 @@ function useCircle(props) {
     return () => {
       gme.clearInstanceListeners(circle);
     };
-  }, [circle]);
+  }, [circle, clickable]); // Add clickable to dependency array
 
   return circle;
 }

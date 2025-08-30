@@ -633,7 +633,7 @@ const UpdatePropertyPage = () => {
                             marginBottom: "15px",
                           }}
                         >
-                          Si vous le souhaitez, vous pouvez indiquer sur la carte l'emplacement exact de la propriété.
+                          Si vous le souhaitez, vous pouvez indiquer sur la carte l'emplacement exact de la propriété en cliquant.
                         </label>
                         <PropertyLocationSelector
                           defaultPosition={
