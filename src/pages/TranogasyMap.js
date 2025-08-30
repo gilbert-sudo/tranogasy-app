@@ -9,6 +9,8 @@ import PropertyCarousel from "../components/PropertyCarousel";
 import { setReduxFormFilter, setSearchResults, resetSearchForm, resetSearchResults, setSearchFormField } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
+import { useImage } from "../hooks/useImage";
+import { HashLoader } from "react-spinners";
 import {
   APIProvider,
   Map,
@@ -65,13 +67,14 @@ function MyMap() {
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
-  const [showCarousel, setShowCarousel] = useState(true);
+  const [showMapLoader, setShowMapLoader] = useState(true);
 
   const [defaultposition, setDefaultPosition] = useState(
     geolocation.userCurrentPosition
   );
   const dispatch = useDispatch();
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
+  const { tranogasyMapImg } = useImage();
 
   const [isSliderVisible, setIsSlideVisible] = useState(false);
   const sliderRef = useRef(null);
@@ -147,36 +150,11 @@ function MyMap() {
     dispatch(setReduxFormFilter({ formFilter: false }));
   };
 
-  const zoomTimerRef = useRef(null);
-
   const handleZoomChange = useCallback((event) => {
     const newZoom = event.detail.zoom;
-
-    // Immediately hide the carousel when zoom starts changing
-    setShowCarousel(false);
-
-    // Clear any previous timeout to avoid multiple triggers
-    if (zoomTimerRef.current) {
-      clearTimeout(zoomTimerRef.current);
-    }
-
     // Update zoom and map type immediately
     setMapZoomLevel(newZoom);
     setMapTypeId(newZoom > 14 ? "hybrid" : "roadmap");
-
-    // Set a new timeout to show carousel only after zoom settles
-    zoomTimerRef.current = setTimeout(() => {
-      setShowCarousel(true);
-    }, 500); // Adjust delay (ms) based on user experience
-  }, []);
-
-  // Clean up timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (zoomTimerRef.current) {
-        clearTimeout(zoomTimerRef.current);
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -187,6 +165,15 @@ function MyMap() {
 
       const zoomLevel = calculateZoomLevel(properties);
       setMapZoomLevel(zoomLevel);
+      if (showMapLoader) {
+        const timeoutDuration = 2500; // Duration in milliseconds to show the loader
+        setTimeout(() => {
+          setMapZoomLevel(14);
+          setTimeout(() => {
+            setShowMapLoader(false);
+          }, 250);
+        }, timeoutDuration);
+      }
     }
   }, [properties]);
 
@@ -198,6 +185,15 @@ function MyMap() {
 
       const zoomLevel = calculateZoomLevel(searchResults);
       setMapZoomLevel(zoomLevel);
+      if (showMapLoader) {
+        const timeoutDuration = 2500; // Duration in milliseconds to show the loader
+        setTimeout(() => {
+          setMapZoomLevel(14);
+          setTimeout(() => {
+            setShowMapLoader(false);
+          }, 250);
+        }, timeoutDuration);
+      }
     }
   }, [searchResults]);
 
@@ -252,6 +248,54 @@ function MyMap() {
             />
           </div>
         </div>
+        {showMapLoader && (
+          <>
+            {/* Overlay */}
+            <div
+              style={{
+                position: "fixed",
+                top: 47,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(0,0,0,0.4)",
+                zIndex: 9999,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {/* Centered Loader Box */}
+              <div
+                style={{
+                  background: "#fff",
+                  marginTop: "-80px",
+                  padding: "12px 16px",
+                  borderRadius: "20px",
+                  textAlign: "center",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                  zIndex: 10000,
+                }}
+              >
+                {/* SVG logo on top */}
+                <img
+                  src={tranogasyMapImg()}
+                  alt="TranoGasy logo"
+                  style={{ width: "80px", height: "80px" }}
+                />
+
+                {/* Spinner + text */}
+                <div className="d-flex justify-content-center align-items-center">
+                  <small className="mr-2" style={{ color: "#c59d45" }}>
+                    Chargement
+                  </small>
+                  <HashLoader color="#c59d45" size={20} />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         <Map
           minZoom={9}
           zoom={mapZoomLevel}

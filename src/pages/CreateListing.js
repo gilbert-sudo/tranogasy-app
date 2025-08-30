@@ -281,6 +281,8 @@ const CreateListing = () => {
       setFloorError(false);
     }
 
+    const newPhone2 = phone2 ? phone2 : phone3;
+    const newPhone3 = phone3 && phone3 !== newPhone2 ? phone3 : null;
 
     const newProperty = {
       title,
@@ -300,8 +302,8 @@ const CreateListing = () => {
       houseType,
       floor: houseType === "appartement" ? floor : null,
       phone1,
-      phone2,
-      phone3,
+      phone2 : newPhone2,
+      phone3 : newPhone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
