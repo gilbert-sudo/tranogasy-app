@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useSelector } from "react-redux";
 
 import TikTokDescription from "./TikTokDescription";
+import PropertyLocationDisplayer from "./PropertyLocationDisplayer";
 
 import { useScrollDirectionLock } from "../hooks/useScrollDirectionLock";
 import { useProperty } from "../hooks/useProperty";
@@ -48,10 +49,11 @@ import {
   FaOilWell,
   FaKitchenSet,
 } from "react-icons/fa6";
+import { IoMdCloseCircle } from "react-icons/io";
 
 import userProfile from "../img/user-avatar.png";
 
-const TikTokStyleListing = ({ property }) => {
+const TikTokStyleListing = ({ property, active }) => {
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
   const { shareProperty } = useProperty();
@@ -65,6 +67,7 @@ const TikTokStyleListing = ({ property }) => {
 
   // slider state
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showMap, setShowMap] = useState(false);
   const scrollRef = useRef(null);
 
   const propertyDataString = JSON.stringify(property);
@@ -94,6 +97,8 @@ const TikTokStyleListing = ({ property }) => {
     } else {
       setIsliked(false);
     }
+
+
   }, []);
 
   // navigation functions
@@ -114,6 +119,13 @@ const TikTokStyleListing = ({ property }) => {
   const nextImage = () => {
     if (currentIndex < property.images.length - 1) goToImage(currentIndex + 1);
   };
+
+   // 👇 Close map whenever this property is no longer active
+  useEffect(() => {
+    if (!active) {
+      setShowMap(false);
+    }
+  }, [active]);
 
   return (
     <div
@@ -225,7 +237,7 @@ const TikTokStyleListing = ({ property }) => {
             borderRadius: "50%",
             padding: 8,
             cursor: "pointer",
-            zIndex: 20,
+            zIndex: 10,
           }}
         >
           <LeftArrow color="white" />
@@ -246,7 +258,7 @@ const TikTokStyleListing = ({ property }) => {
             borderRadius: "50%",
             padding: 8,
             cursor: "pointer",
-            zIndex: 20,
+            zIndex: 10,
           }}
         >
           <RightArrow color="white" />
@@ -337,7 +349,7 @@ const TikTokStyleListing = ({ property }) => {
         ) : (
           <Heart style={{ pointerEvents: "auto" }} size={30} color="white" fill="none" onClick={handleLike} />
         )}
-        <MapPinned onClick={() => featureUnderConstructionPopup()} style={{ pointerEvents: "auto" }} size={30} color="white" />
+        <MapPinned onClick={() => setShowMap(true)} style={{ pointerEvents: "auto" }} size={30} color="white" />
         <Phone onClick={() => featureUnderConstructionPopup()} style={{ pointerEvents: "auto" }} size={30} color="white" />
         <Forward onClick={() => shareProperty(property)} style={{ pointerEvents: "auto" }} size={30} color="white" />
       </div>
@@ -369,7 +381,7 @@ const TikTokStyleListing = ({ property }) => {
           <ImLocation className="text-danger mr-1 mb-2" />
           {property.city.fokontany} {property.city.commune}
         </small>
-        <TikTokDescription description={property.description} />
+        <TikTokDescription description={property.description} coords={{ city: property.city?.coords, property: property?.coords }} />
         <p>
           {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
           {property.features.waterPumpSupplyJirama && <FaFaucetDrip className="h6 mr-1" />}
@@ -429,6 +441,61 @@ const TikTokStyleListing = ({ property }) => {
             width: "100%",
           }}
         >
+          {showMap &&
+            <div
+              className="property-location"
+              style={{
+                position: "absolute",
+                minHeight: "100%",
+                minWidth: "100%",
+                top: "-53vh",
+                padding: "20px 10px 5px 10px",
+                backgroundColor: "white",
+                borderRadius: 20,
+                zIndex: 3000,
+                display: "block",
+              }}
+            >
+              {/* mini navbar for the lose button to hide the sliding div */}
+              <div
+                className="fixed-top"
+                style={{
+                  width: "100%",
+                  zIndex: 1000,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "sticky",
+                }}
+              >
+                {/* Close button to hide the sliding div */}
+                <IoMdCloseCircle
+                  style={{
+                    fontSize: "2rem",
+                    position: "absolute",
+                    top: "-15px",
+                    left: 0,
+                    zIndex: "9999",
+                    backgroundColor: "#fff",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    color: "#333",
+                  }}
+                  onClick={() => setShowMap(false)}
+                />
+              </div>
+              <PropertyLocationDisplayer
+                position={property.coords
+                  ? property.coords
+                  : property.city.coords
+                    ? property.city.coords
+                    : {
+                      lat: -18.905195365917766,
+                      lng: 47.52370521426201,
+                    }}
+                circle={property.coords ? false : true}
+              />
+            </div>}
           <input
             type="text"
             placeholder="Écrivez un message au propriétaire..."

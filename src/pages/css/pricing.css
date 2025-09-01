@@ -3,7 +3,6 @@ body{margin-top:20px;}
   Pricing
 *******************************************************************************/
 .pricing {
-  background-color: #fff;
   margin: 0 auto 40px;
   position: relative;
   text-align: left;
@@ -12,8 +11,6 @@ body{margin-top:20px;}
   position: relative;
 }
 .pricing:before {
-  background: #f7f7f7;
-  background: rgba(30,30,30,.06);
   bottom: 0;
   content: "";
   left: 0;
@@ -39,7 +36,6 @@ body{margin-top:20px;}
   padding: 0 20px 20px;
 }
 .pricing .price-box .icon {
-  background: #fff;
   color: #505050;
   height: 60px;
   text-align: center;

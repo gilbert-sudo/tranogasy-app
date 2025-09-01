@@ -713,7 +713,7 @@ const CreateListing = () => {
                           fontSize: "12px",
                         }}
                       >
-                        <FaUsers />
+                        <FaUsers style={{minWidth: "20px"}}/>
                         Colocation
                       </button>
                     </div>

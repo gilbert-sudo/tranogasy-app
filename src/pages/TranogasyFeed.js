@@ -91,7 +91,7 @@ const TranogasyFeed = () => {
         WebkitTransform: "translate3d(0,0,0)" // iOS hardware acceleration
       }}
     >
-      <TikTokStyleListing property={properties[index]} />
+      <TikTokStyleListing property={properties[index]} active={index === currentIndex}/>
     </div>
   ), [properties]);
 
