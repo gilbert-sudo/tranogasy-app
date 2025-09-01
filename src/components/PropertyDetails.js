@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import MiniCarousel from "../components/MiniCarousel";
 
 import { ImLocation } from "react-icons/im";
-import { MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
+import { MdOutlineLiving, MdBalcony, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
   GiWell,
   GiBrickWall,
@@ -183,7 +183,7 @@ function PropertyDetails({ property }) {
               {property.features.securitySystem && <FaShieldAlt className="h6 mr-1" />}
 
               {property.features.wifiAvailability && <FaWifi className="h6 mr-1" />}
-              {property.features.fiberOpticReady && <FaWifi className="h6 mr-1" />}
+              {property.features.fiberOpticReady && <MdOutlineFiberSmartRecord className="h6 mr-1" />}
 
               {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
               {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}

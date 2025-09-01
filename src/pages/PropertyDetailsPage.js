@@ -21,7 +21,7 @@ import {
   FaKitchenSet,
   FaFaucetDrip,
 } from "react-icons/fa6";
-import { MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
+import { MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
   GiWell,
   GiBrickWall,
@@ -321,7 +321,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
                     {propertiesDetails.features?.securitySystem && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Système de sécurité"} />}
                     {/* 🌐 Connectivité */}
                     {propertiesDetails.features?.wifiAvailability && <GenerateFeaturebox icon={<FaWifi />} label={"Wi-Fi"} />}
-                    {propertiesDetails.features?.fiberOpticReady && <GenerateFeaturebox icon={<FaWifi />} label={"Fibre optique"} />}
+                    {propertiesDetails.features?.fiberOpticReady && <GenerateFeaturebox icon={<MdOutlineFiberSmartRecord />} label={"FPré-fibrée"} />}
                     {/* 🌅 Vue */}
                     {propertiesDetails.features?.seaView && <GenerateFeaturebox icon={<GiSeaDragon />} label={"Vue mer"} />}
                     {propertiesDetails.features?.mountainView && <GenerateFeaturebox icon={<GiMountainCave />} label={"Vue montagne"} />}

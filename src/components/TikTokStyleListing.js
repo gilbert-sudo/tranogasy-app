@@ -23,7 +23,7 @@ import {
   ChevronRight as RightArrow
 } from "lucide-react";
 
-import { MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
+import { MdOutlineLiving, MdBalcony, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
   GiWell,
   GiBrickWall,
@@ -404,7 +404,7 @@ const TikTokStyleListing = ({ property }) => {
           {property.features.securitySystem && <FaShieldAlt className="h6 mr-1" />}
 
           {property.features.wifiAvailability && <FaWifi className="h6 mr-1" />}
-          {property.features.fiberOpticReady && <FaWifi className="h6 mr-1" />}
+          {property.features.fiberOpticReady && <MdOutlineFiberSmartRecord className="h6 mr-1" />}
 
           {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
           {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}

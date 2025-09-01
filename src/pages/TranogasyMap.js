@@ -270,10 +270,10 @@ function MyMap() {
                 style={{
                   background: "#fff",
                   marginTop: "-80px",
-                  padding: "12px 16px",
-                  borderRadius: "20px",
+                  padding: "25px",
+                  borderRadius: "50%",
                   textAlign: "center",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
                   zIndex: 10000,
                 }}
               >

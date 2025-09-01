@@ -12,7 +12,7 @@ import { useMap } from "../hooks/useMap";
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
 import { FcGoogle } from "react-icons/fc";
-import { MdOutlineLiving, MdBalcony, } from "react-icons/md";
+import { MdOutlineLiving, MdBalcony, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
   GiCheckMark,
   GiCircle,
@@ -38,8 +38,6 @@ import {
 import {
   FaFaucetDrip,
   FaPlugCircleBolt,
-  FaPlugCircleCheck,
-  FaOilWell,
   FaKitchenSet,
 } from "react-icons/fa6";
 
@@ -70,13 +68,11 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
   const [motoAccess, setMotoAccess] = useState(false);
   const [wifiAvailability, setWifiAvailability] = useState(false);
   const [parkingSpaceAvailable, setParkingSpaceAvailable] = useState(false);
-  const [waterPumpSupply, setWaterPumpSupply] = useState(false);
-  const [electricityPower, setElectricityPower] = useState(false);
   const [securitySystem, setSecuritySystem] = useState(false);
   const [waterWellSupply, setWaterWellSupply] = useState(false);
   const [surroundedByWalls, setSurroundedByWalls] = useState(false);
-  const [electricityJirama, setElectricityJirama] = useState(false);
-  const [waterPumpSupplyJirama, setWaterPumpSupplyJirama] = useState(false);
+  const [electricity, setElectricity] = useState(false);
+  const [waterPumpSupply, setWaterPumpSupply] = useState(false);
   const [kitchenFacilities, setKitchenFacilities] = useState(false);
   const [airConditionerAvailable, setAirConditionerAvailable] = useState(false);
   const [swimmingPool, setSwimmingPool] = useState(false);
@@ -193,10 +189,8 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
       airConditionerAvailable,
       hotWaterAvailable,
       furnishedProperty,
-      electricityPower,
-      electricityJirama,
+      electricity,
       waterPumpSupply,
-      waterPumpSupplyJirama,
       waterWellSupply,
       securitySystem,
       wifiAvailability,
@@ -223,13 +217,11 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
       setMotoAccess(searchForm.motoAccess);
       setWifiAvailability(searchForm.wifiAvailability);
       setParkingSpaceAvailable(searchForm.parkingSpaceAvailable);
-      setWaterPumpSupply(searchForm.waterPumpSupply);
-      setElectricityPower(searchForm.electricityPower);
       setSecuritySystem(searchForm.securitySystem);
-      setWaterWellSupply(searchForm.waterWellSupply);
       setSurroundedByWalls(searchForm.surroundedByWalls);
-      setElectricityJirama(searchForm.electricityJirama);
-      setWaterPumpSupplyJirama(searchForm.waterPumpSupplyJirama);
+      setElectricity(searchForm.electricity);
+      setWaterPumpSupply(searchForm.waterPumpSupply);
+      setWaterWellSupply(searchForm.waterWellSupply);
       setKitchenFacilities(searchForm.kitchenFacilities);
       setAirConditionerAvailable(searchForm.airConditionerAvailable);
       setSwimmingPool(searchForm.swimmingPool);
@@ -311,8 +303,8 @@ useEffect(() => {
 }, [waterPumpSupply]);
 
 useEffect(() => {
-  dispatch(setSearchFormField({ key: "electricityPower", value: electricityPower }));
-}, [electricityPower]);
+  dispatch(setSearchFormField({ key: "electricity", value: electricity }));
+}, [electricity]);
 
 useEffect(() => {
   dispatch(setSearchFormField({ key: "securitySystem", value: securitySystem }));
@@ -325,14 +317,6 @@ useEffect(() => {
 useEffect(() => {
   dispatch(setSearchFormField({ key: "surroundedByWalls", value: surroundedByWalls }));
 }, [surroundedByWalls]);
-
-useEffect(() => {
-  dispatch(setSearchFormField({ key: "electricityJirama", value: electricityJirama }));
-}, [electricityJirama]);
-
-useEffect(() => {
-  dispatch(setSearchFormField({ key: "waterPumpSupplyJirama", value: waterPumpSupplyJirama }));
-}, [waterPumpSupplyJirama]);
 
 useEffect(() => {
   dispatch(setSearchFormField({ key: "kitchenFacilities", value: kitchenFacilities }));
@@ -470,10 +454,8 @@ useEffect(() => {
         airConditionerAvailable,
         hotWaterAvailable,
         furnishedProperty,
-        electricityPower,
-        electricityJirama,
+        electricity,
         waterPumpSupply,
-        waterPumpSupplyJirama,
         waterWellSupply,
         securitySystem,
         wifiAvailability,
@@ -514,10 +496,8 @@ useEffect(() => {
     airConditionerAvailable,
     hotWaterAvailable,
     furnishedProperty,
-    electricityPower,
-    electricityJirama,
+    electricity,
     waterPumpSupply,
-    waterPumpSupplyJirama,
     waterWellSupply,
     securitySystem,
     wifiAvailability,
@@ -912,11 +892,9 @@ useEffect(() => {
                       }}
                     >
                       {/* ⚡ Eau & électricité */}
-                      <GenerateCheckbox icon={<FaPlugCircleBolt />} state={electricityJirama} label={"Électricité JIRAMA"} onClickFunction={() => setElectricityJirama(!electricityJirama)} />
-                      <GenerateCheckbox icon={<FaFaucetDrip />} state={waterPumpSupplyJirama} label={"Pompe JIRAMA"} onClickFunction={() => setWaterPumpSupplyJirama(!waterPumpSupplyJirama)} />
+                      <GenerateCheckbox icon={<FaPlugCircleBolt />} state={electricity} label={"Électricité"} onClickFunction={() => setElectricity(!electricity)} />
+                      <GenerateCheckbox icon={<FaFaucetDrip />} state={waterPumpSupply} label={"Eau courante"} onClickFunction={() => setWaterPumpSupply(!waterPumpSupply)} />
                       <GenerateCheckbox icon={<GiWell />} state={waterWellSupply} label={"Puits d'eau"} onClickFunction={() => setWaterWellSupply(!waterWellSupply)} />
-                      <GenerateCheckbox icon={<FaPlugCircleCheck />} state={electricityPower} label={"Électricité privée"} onClickFunction={() => setElectricityPower(!electricityPower)} />
-                      <GenerateCheckbox icon={<FaOilWell />} state={waterPumpSupply} label={"Pompe à eau privée"} onClickFunction={() => setWaterPumpSupply(!waterPumpSupply)} />
                       <GenerateCheckbox icon={<GiSolarPower />} state={solarPanels} label={"Panneaux solaires"} onClickFunction={() => setSolarPanels(!solarPanels)} />
 
                       {/* 🚪 Accessibilité & extérieur */}
@@ -950,7 +928,7 @@ useEffect(() => {
 
                       {/* 🌐 Connectivité */}
                       <GenerateCheckbox icon={<FaWifi />} state={wifiAvailability} label={"Wi-Fi"} onClickFunction={() => setWifiAvailability(!wifiAvailability)} />
-                      <GenerateCheckbox icon={<FaWifi />} state={fiberOpticReady} label={"Fibre optique"} onClickFunction={() => setFiberOpticReady(!fiberOpticReady)} />
+                      <GenerateCheckbox icon={<MdOutlineFiberSmartRecord />} state={fiberOpticReady} label={"Pré-fibrée"} onClickFunction={() => setFiberOpticReady(!fiberOpticReady)} />
 
                       {/* 🌅 Vue */}
                       <GenerateCheckbox icon={<GiSeaDragon />} state={seaView} label={"Vue mer"} onClickFunction={() => setSeaView(!seaView)} />

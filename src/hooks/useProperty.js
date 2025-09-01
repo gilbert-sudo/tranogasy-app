@@ -586,10 +586,8 @@ export const useProperty = () => {
       airConditionerAvailable,
       hotWaterAvailable,
       furnishedProperty,
-      electricityPower,
-      electricityJirama,
+      electricity,
       waterPumpSupply,
-      waterPumpSupplyJirama,
       waterWellSupply,
       securitySystem,
       wifiAvailability,
@@ -668,17 +666,11 @@ export const useProperty = () => {
           (furnishedProperty
             ? property.features.furnishedProperty === furnishedProperty
             : true) &&
-          (electricityPower
-            ? property.features.electricityPower === electricityPower
-            : true) &&
-          (electricityJirama
-            ? property.features.electricityJirama === electricityJirama
+          (electricity
+            ? (property.features.electricityPower || property.features.electricityJirama || property.features.solarPanels) === electricity
             : true) &&
           (waterPumpSupply
-            ? property.features.waterPumpSupply === waterPumpSupply
-            : true) &&
-          (waterPumpSupplyJirama
-            ? property.features.waterPumpSupplyJirama === waterPumpSupplyJirama
+            ? (property.features.waterPumpSupply || property.features.waterPumpSupplyJirama) === waterPumpSupply
             : true) &&
           (waterWellSupply
             ? property.features.waterWellSupply === waterWellSupply

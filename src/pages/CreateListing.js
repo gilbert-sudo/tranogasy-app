@@ -8,7 +8,7 @@ import AutosuggestInput from "../components/AutosuggestInput";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
-import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLocationOn, MdLandscape } from "react-icons/md";
+import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLocationOn, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
   GiCheckMark,
   GiCircle,
@@ -1361,7 +1361,7 @@ const CreateListing = () => {
 
                       {/* 🌐 Connectivité */}
                       <GenerateCheckbox icon={<FaWifi />} state={wifiAvailability} label={"Wi-Fi"} onClickFunction={() => setWifiAvailability(!wifiAvailability)} />
-                      <GenerateCheckbox icon={<FaWifi />} state={fiberOpticReady} label={"Fibre optique"} onClickFunction={() => setFiberOpticReady(!fiberOpticReady)} />
+                      <GenerateCheckbox icon={<MdOutlineFiberSmartRecord />} state={fiberOpticReady} label={"Pré-fibrée"} onClickFunction={() => setFiberOpticReady(!fiberOpticReady)} />
 
                       {/* 🌅 Vue */}
                       <GenerateCheckbox icon={<GiSeaDragon />} state={seaView} label={"Vue mer"} onClickFunction={() => setSeaView(!seaView)} />
