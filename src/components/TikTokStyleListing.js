@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useSelector } from "react-redux";
 
@@ -18,7 +18,9 @@ import {
   Phone,
   Forward,
   Plus,
-  SendHorizontal
+  SendHorizontal,
+  ChevronLeft as LeftArrow,
+  ChevronRight as RightArrow
 } from "lucide-react";
 
 import { MdOutlineLiving, MdBalcony, MdLandscape } from "react-icons/md";
@@ -61,40 +63,57 @@ const TikTokStyleListing = ({ property }) => {
   const [isliked, setIsliked] = useState(false);
   const user = useSelector((state) => state.user);
 
-  //stringify the property data to pass it as parameter
+  // slider state
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollRef = useRef(null);
+
   const propertyDataString = JSON.stringify(property);
 
-
-  //click the like button
+  // Like handler
   const handleLike = async (e) => {
     e.preventDefault();
     if (user) {
       play();
       setIsliked(true);
       like(property);
-    }
-    if (!user) {
+    } else {
       notLogedPopUp();
     }
   };
-  //click the disLike button
+
   const handleDisLike = async (e) => {
     e.preventDefault();
     setIsliked(false);
     disLike(property);
   };
 
-  //check the like button state
+  // check like state
   useEffect(() => {
-    function loadingPage() {
-      if (user && user?.favorites?.includes(property._id)) {
-        setIsliked(true);
-      } else {
-        setIsliked(false);
-      }
+    if (user && user?.favorites?.includes(property._id)) {
+      setIsliked(true);
+    } else {
+      setIsliked(false);
     }
-    loadingPage();
   }, []);
+
+  // navigation functions
+  const goToImage = (index) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: scrollRef.current.offsetWidth * index,
+        behavior: "smooth",
+      });
+      setCurrentIndex(index);
+    }
+  };
+
+  const prevImage = () => {
+    if (currentIndex > 0) goToImage(currentIndex - 1);
+  };
+
+  const nextImage = () => {
+    if (currentIndex < property.images.length - 1) goToImage(currentIndex + 1);
+  };
 
   return (
     <div
@@ -110,25 +129,66 @@ const TikTokStyleListing = ({ property }) => {
         color: "#fff",
         fontFamily: "sans-serif",
         overscrollBehavior: "contain",
-        scrollbarWidth: "none", // Firefox
-        msOverflowStyle: "none", // IE
-        "&::-webkit-scrollbar": { // Chrome/Safari
-          display: "none"
-        }
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
       }}
     >
+
+      {/* Mini horizontal gallery (responsive) */}
+      <div
+        style={{
+          position: "absolute",
+          top: 75,                          // margin top
+          left: "50%",                      // center horizontally
+          transform: "translateX(-50%)",
+          zIndex: 20,
+          display: "flex",
+          flexDirection: "row",             // horizontal
+          gap: 5,
+          maxWidth: "98%",                  // responsive width
+          overflowX: "auto",                // scroll if too many images
+          padding: "4px 8px",
+          borderRadius: 8,
+          background: "rgba(0,0,0,0.4)",    // subtle background for visibility
+        }}
+      >
+        {property.images.map((img, index) => (
+          <img
+            key={index}
+            src={img.src}
+            alt={`thumb-${index}`}
+            onClick={() => goToImage(index)}
+            style={{
+              width: 43,
+              height: 43,
+              objectFit: "cover",
+              borderRadius: 6,
+              cursor: "pointer",
+              border: currentIndex === index ? "3px solid #fff" : "1px solid #555",
+              transition: "all 0.3s ease",
+              flexShrink: 0,                // prevent shrinking on small screens
+            }}
+          />
+        ))}
+      </div>
+
       {/* Image slider */}
       <div
+        ref={scrollRef}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onScroll={(e) => {
+          const newIndex = Math.round(e.target.scrollLeft / e.target.offsetWidth);
+          setCurrentIndex(newIndex);
+        }}
         style={{
           display: "flex",
           overflowX: "scroll",
           width: "100%",
           height: "100%",
           scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch", // smoother iOS scroll
-          overscrollBehaviorX: "contain", // prevent bouncing scroll
+          WebkitOverflowScrolling: "touch",
+          overscrollBehaviorX: "contain",
           zIndex: 3,
         }}
       >
@@ -137,7 +197,7 @@ const TikTokStyleListing = ({ property }) => {
             key={index}
             src={img.src}
             alt={`image-${index}`}
-            loading="lazy" // This is the magic!
+            loading="lazy"
             style={{
               marginTop: img.height > img.width ? "0" : "-80px",
               flexShrink: 0,
@@ -150,6 +210,49 @@ const TikTokStyleListing = ({ property }) => {
           />
         ))}
       </div>
+
+      {/* Navigation buttons */}
+      {currentIndex > 0 && (
+        <button
+          onClick={prevImage}
+          style={{
+            position: "absolute",
+            top: "45%",
+            left: 10,
+            transform: "translateY(-50%)",
+            background: "rgba(0,0,0,0.5)",
+            border: "none",
+            borderRadius: "50%",
+            padding: 8,
+            cursor: "pointer",
+            zIndex: 20,
+          }}
+        >
+          <LeftArrow color="white" />
+        </button>
+      )}
+
+
+      {currentIndex < property.images.length - 1 && (
+        <button
+          onClick={nextImage}
+          style={{
+            position: "absolute",
+            top: "45%",
+            right: 10,
+            transform: "translateY(-50%)",
+            background: "rgba(0,0,0,0.5)",
+            border: "none",
+            borderRadius: "50%",
+            padding: 8,
+            cursor: "pointer",
+            zIndex: 20,
+          }}
+        >
+          <RightArrow color="white" />
+        </button>
+      )}
+
 
       {/* Black gradient bottom */}
       <div
@@ -170,7 +273,7 @@ const TikTokStyleListing = ({ property }) => {
         onClick={() => window.history.back()}
         style={{
           position: "absolute",
-          top: 50,
+          top: 30,
           left: 5,
           zIndex: 2000,
           display: "flex",
@@ -229,7 +332,7 @@ const TikTokStyleListing = ({ property }) => {
             <Plus onClick={() => featureUnderConstructionPopup()} style={{ color: "white", width: 12, height: 12, pointerEvents: "auto" }} />
           </div>
         </div>
-        {isliked && isliked ? (
+        {isliked ? (
           <Heart style={{ pointerEvents: "auto" }} size={30} color="white" fill="red" onClick={handleDisLike} />
         ) : (
           <Heart style={{ pointerEvents: "auto" }} size={30} color="white" fill="none" onClick={handleLike} />
@@ -310,7 +413,7 @@ const TikTokStyleListing = ({ property }) => {
         </p>
       </div>
 
-      {/* Message input with send button */}
+      {/* Message input */}
       <div
         style={{
           position: "absolute",
@@ -341,7 +444,6 @@ const TikTokStyleListing = ({ property }) => {
           <button
             type="button"
             onClick={() => {
-              // Add send logic here
               featureUnderConstructionPopup();
             }}
             style={{
