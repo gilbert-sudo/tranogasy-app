@@ -149,14 +149,8 @@ const CarouselDetails = ({ property, handleShowContact }) => {
 
                     onClick={() => handleShowContact()}
                   >
-                    <FaPhoneAlt className="mr-2" />{" "}
-                    {user && user
-                      ? property.owner._id === user._id
-                        ? property.phone1
-                        : !user || !timer || user.leftTime
-                          ? "Voir contact"
-                          : property.phone1
-                      : "Voir contact"}
+                    <FaPhoneAlt className="mr-2 mb-1" />
+                    Voir contact
                   </button>
                 </p>
               </div>

@@ -34,6 +34,7 @@ import { useRoute } from "wouter";
 import CarouselDetails from "../components/CarouselDetails";
 import CardDetails from "../components/CardDetails";
 import PhotoGallery from "../components/PhotoGallery";
+import ContactCard from "../components/ContactCard";
 
 import { useLogin } from "../hooks/useLogin";
 import { useProperty } from "../hooks/useProperty";
@@ -58,6 +59,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   const payments = useSelector((state) => state.payments);
   const [oneTimeTask, setOneTimeTask] = useState(null);
   const [propertyPreview, setPropertyPreview] = useState(null);
+  const [showContact, setShowContact] = useState(false);
 
 
   const [match, params] = useRoute(
@@ -152,17 +154,29 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
     propertyData !== "preview" ? window.history.back() : setLocation("/explore");
   };
   const handleShowContact = () => {
-    if (user) {
-      if (!timer && !user.leftTime && propertiesDetails.owner._id !== user._id) {
-        notSubscribedPopup();
-      }
-      if (payments.filter((payment) => (payment.status === "refused" || payment.status === "redone")).length > 0) {
-        unpaidBillPopup();
-      }
-    } else {
+    // Guard clause 1: User not logged in
+    if (!user) {
       notLogedPopUp();
+      return; // Exit early
     }
 
+    // Guard clause 2: Check for specific subscription/timer conditions
+    if (!timer && !user.leftTime && propertiesDetails.owner._id !== user._id) {
+      notSubscribedPopup();
+      return; // Exit early
+    }
+
+    // Guard clause 3: Check for unpaid bills
+    const hasUnpaidBills = payments.some(
+      (payment) => payment.status === "refused" || payment.status === "redone"
+    );
+    if (hasUnpaidBills) {
+      unpaidBillPopup();
+      return; // Exit early
+    }
+
+    // Happy Path: All conditions passed, show contact
+    setShowContact(true);
   };
 
   let position;
@@ -182,9 +196,9 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
     target: '_blank',
     rel: 'noopener noreferrer'
   };
- 
+
   console.log(propertiesDetails);
-  
+
 
   return (
     <div
@@ -347,6 +361,11 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
               borderTop: "1px solid #eee",
             }}
           >
+            {showContact &&
+              <ContactCard
+                setShowContact={setShowContact}
+                property={propertiesDetails}
+              />}
             <nav className="d-flex justify-content-between navbar navbar-expand-lg navbar-light">
               <button
                 onClick={fastPreviewProperty ? () => handleCloseSlideClick() : handleGoBack}
@@ -375,19 +394,14 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
                 type="submit"
               >
                 <FaPhoneAlt className="mr-2 mb-1" />
-                {user && user
-                  ? propertiesDetails.owner._id === user._id
-                    ? propertiesDetails.phone1
-                    : !user || !timer || user.leftTime
-                      ? "Voir contact"
-                      : propertiesDetails.phone1
-                  : "Voir contact"}
+                Voir contact
               </button>
             </nav>
           </div>
           {/* details navbar */}
         </>
       )}
+
       {(!(propertyData !== "preview" || propertyPreview) || (propertyData !== "preview" && !loader)) && (
         <div>
           <div className="logo-loader"></div>
