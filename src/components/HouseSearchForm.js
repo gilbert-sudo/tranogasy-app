@@ -12,7 +12,7 @@ import { useMap } from "../hooks/useMap";
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
 import { FcGoogle } from "react-icons/fc";
-import { MdOutlineLiving, MdBalcony, MdOutlineFiberSmartRecord } from "react-icons/md";
+import { MdOutlineLiving, MdBalcony, MdOutlineFiberSmartRecord, MdLandscape } from "react-icons/md";
 import {
   GiCheckMark,
   GiCircle,
@@ -20,7 +20,7 @@ import {
   GiBrickWall,
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { LuBellPlus } from "react-icons/lu";
 import {
   FaCar,
@@ -88,6 +88,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
   const [independentHouse, setIndependentHouse] = useState(false);
   const [garage, setGarage] = useState(false);
   const [guardianHouse, setGuardianHouse] = useState(false);
+  const [bassin, setBassin] = useState(false);
   const [placardKitchen, setPlacardKitchen] = useState(false);
   const [bathtub, setBathtub] = useState(false);
   const [fireplace, setFireplace] = useState(false);
@@ -180,6 +181,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
       independentHouse,
       garage,
       guardianHouse,
+      bassin,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -237,6 +239,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
       setIndependentHouse(searchForm.independentHouse);
       setGarage(searchForm.garage);
       setGuardianHouse(searchForm.guardianHouse);
+      setBassin(searchForm.bassin);
       setPlacardKitchen(searchForm.placardKitchen);
       setBathtub(searchForm.bathtub);
       setFireplace(searchForm.fireplace);
@@ -379,6 +382,10 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
   }, [guardianHouse]);
 
   useEffect(() => {
+    dispatch(setSearchFormField({ key: "bassin", value: bassin }));
+  }, [bassin]);
+
+  useEffect(() => {
     dispatch(setSearchFormField({ key: "placardKitchen", value: placardKitchen }));
   }, [placardKitchen]);
 
@@ -445,6 +452,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
         independentHouse,
         garage,
         guardianHouse,
+        bassin,
         kitchenFacilities,
         placardKitchen,
         insideToilet,
@@ -487,6 +495,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
     independentHouse,
     garage,
     guardianHouse,
+    bassin,
     kitchenFacilities,
     placardKitchen,
     insideToilet,
@@ -668,7 +677,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                           fontSize: "12px",
                         }}
                       >
-                        <FaUsers style={{minWidth: "20px"}} />
+                        <FaUsers style={{ minWidth: "20px" }} />
                         Colocation
                       </button>
                     </div>
@@ -901,13 +910,13 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                       <GenerateCheckbox icon={<FaMotorcycle />} state={motoAccess} label={"Accès moto"} onClickFunction={() => { setMotoAccess(!motoAccess); if (carAccess === true) setMotoAccess(true); }} />
                       <GenerateCheckbox icon={<FaCar />} state={carAccess} label={"Accès voiture"} onClickFunction={() => { setCarAccess(!carAccess); if (carAccess === false) setMotoAccess(true); }} />
                       <GenerateCheckbox icon={<GiBrickWall />} state={surroundedByWalls} label={"Clôturée"} onClickFunction={() => setSurroundedByWalls(!surroundedByWalls)} />
-                      <GenerateCheckbox icon={<GiBrickWall />} state={courtyard} label={"Cour"} onClickFunction={() => setCourtyard(!courtyard)} />
+                      <GenerateCheckbox icon={<MdLandscape />} state={courtyard} label={"Cour"} onClickFunction={() => setCourtyard(!courtyard)} />
                       <GenerateCheckbox icon={<FaParking />} state={parkingSpaceAvailable} label={"Parking"} onClickFunction={() => setParkingSpaceAvailable(!parkingSpaceAvailable)} />
                       <GenerateCheckbox icon={<FaCar />} state={garage} label={"Garage"} onClickFunction={() => setGarage(!garage)} />
                       <GenerateCheckbox icon={<GiWell />} state={garden} label={"Jardin"} onClickFunction={() => setGarden(!garden)} />
                       <GenerateCheckbox icon={<TbBuildingCastle />} state={independentHouse} label={"Indépendante"} onClickFunction={() => setIndependentHouse(!independentHouse)} />
                       <GenerateCheckbox icon={<FaShieldAlt />} state={guardianHouse} label={"Maison pour gardien"} onClickFunction={() => setGuardianHouse(!guardianHouse)} />
-
+                      <GenerateCheckbox icon={<TbWash />} state={bassin} label={"Bassin"} onClickFunction={() => setBassin(!bassin)} />
                       {/* 🏠 Confort intérieur */}
                       <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
                       <GenerateCheckbox icon={<FaBed />} state={placardKitchen} label={"Cuisine placardée"} onClickFunction={() => setPlacardKitchen(!placardKitchen)} />

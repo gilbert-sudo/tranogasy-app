@@ -6,7 +6,7 @@ import "./css/googlemaps.css";
 import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
 import { LiaBinocularsSolid } from "react-icons/lia";
-
+import { IoMdCloseCircle } from "react-icons/io";
 import { setReduxFormFilter } from "../redux/redux";
 import { useDispatch } from "react-redux";
 
@@ -20,6 +20,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
   const alreadySeen = localStorage.getItem("tranogasy_filter_tooltip_seen");
 
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showClearButton, setShowClearButton] = useState(false);
 
   useEffect(() => {
     if (location.startsWith("/tranogasyMap")) {
@@ -62,40 +63,101 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
     }
   }, []);
 
+  // Function to clear the input value
+  const clearInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+      inputRef.current.focus();
+      setShowClearButton(false);
+      onPlaceSelect(null);
+
+      // Trigger input event to reset Google Autocomplete
+      const event = new Event('input', { bubbles: true });
+      inputRef.current.dispatchEvent(event);
+    }
+  };
+
+  // Check input value to show/hide clear button
+  const checkInputValue = () => {
+    if (inputRef.current) {
+      setShowClearButton(inputRef.current.value.length > 0);
+    }
+  };
+
   return (
     <div
       className="autocomplete-container d-flex justify-content-between align-items-center"
       style={{
         width: "100%",
-        gap: "5px",
+        gap: "2px",
         paddingTop: "7px",
+        position: "relative",
       }}
     >
-      <input
-        style={{
-          flexGrow: 1,
-          padding: "10px 20px",
-          borderRadius: "30px",
-          height: "50px",
-          border: "1px solid #ccc",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          fontSize: "16px",
-          color: "#333",
-          backgroundColor: "#fff",
-          transition: "border-color 0.3s, box-shadow 0.3s",
-          outline: "none",
-          fontFamily: "Arial, sans-serif",
-          minWidth: "30vh",
-        }}
-        className="map-input"
-        placeholder="Où veux-tu vivre ?"
-        ref={inputRef}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-          }
-        }}
-      />
+      <div style={{ position: "relative", flexGrow: 1 }}>
+        <input
+          style={{
+            flexGrow: 1,
+            padding: "10px 40px 10px 20px", // Added right padding for clear button
+            borderRadius: "30px",
+            height: "50px",
+            border: "1px solid #ccc",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            fontSize: "16px",
+            color: "#333",
+            backgroundColor: "#fff",
+            transition: "border-color 0.3s, box-shadow 0.3s",
+            outline: "none",
+            fontFamily: "Arial, sans-serif",
+            minWidth: "35vh",
+            width: "100%",
+          }}
+          className="map-input"
+          placeholder="Où veux-tu vivre ?"
+          ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
+          onInput={checkInputValue} // Check input value on change
+        />
+
+        {/* Clear button (X) - only shown when there's text */}
+        {showClearButton && (
+          <button
+            onClick={clearInput}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "4px",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#999",
+              transition: "color 0.2s, background 0.2s",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.color = "#666";
+              e.currentTarget.style.background = "#f0f0f0";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.color = "#999";
+              e.currentTarget.style.background = "transparent";
+            }}
+            aria-label="Clear input"
+            type="button"
+          >
+            <IoMdCloseCircle size={20} />
+          </button>
+        )}
+      </div>
 
       {isInTranogasyMap && (
         <div className="d-flex" style={{ gap: "5px", position: "relative" }}>
@@ -121,7 +183,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
                 backgroundColor: "#FFFFFF",
                 color: "#000",
                 border: "2px solid #ccc",
-                boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                 transition: "background-color 0.3s, transform 0.3s",
                 cursor: "pointer",
                 flexShrink: 0,
@@ -192,29 +254,6 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
               </>
             )}
           </div>
-
-          {/* Other button */}
-          <button
-            className="btn"
-            onClick={() => setLocation("/TranogasyFeed")}
-            style={{
-              borderRadius: "30px",
-              padding: "10px 14px",
-              fontSize: "1.2rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#FFFFFF",
-              color: "#000",
-              border: "2px solid #ccc",
-              boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-              transition: "background-color 0.3s, transform 0.3s",
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            <LiaBinocularsSolid />
-          </button>
         </div>
       )}
     </div>

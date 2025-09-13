@@ -488,6 +488,7 @@ const initialState = {
   independentHouse: false,
   garage: false,
   guardianHouse: false,
+  bassin: false,
   placardKitchen: false,
   bathtub: false,
   fireplace: false,

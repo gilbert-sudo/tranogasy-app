@@ -5,6 +5,7 @@ import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
 import PropertyCarousel from "../components/PropertyCarousel";
+import Circle from "../components/Circle";
 
 import { setReduxFormFilter, setSearchResults, resetSearchForm, resetSearchResults, setSearchFormField } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
@@ -21,6 +22,8 @@ import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
+import { MdEditLocationAlt } from "react-icons/md";
+import { Turtle } from "lucide-react";
 
 export default function TranogasyMap() {
 
@@ -85,7 +88,7 @@ function MyMap() {
   const [adjustedCoordsCache, setAdjustedCoordsCache] = useState({});
   const [usedCoords, setUsedCoords] = useState(new Set());
 
-  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.002) => {
+  const adjustCoordsRandomlyUnique = (coords, id, maxOffset = 0.0025) => {
     if (adjustedCoordsCache[id]) {
       return adjustedCoordsCache[id];
     }
@@ -222,9 +225,12 @@ function MyMap() {
     if (selectedPlace) {
       dispatch(setSearchResults(initialPropertiesState.filter(property => property.rent)));
       setTimeout(() => {
-        setCenter(selectedPlace);
         setMapZoomLevel(15); // Set a higher zoom level when a place is selected
+        setCenter(selectedPlace);
         dispatch(resetSearchForm());
+        // setTimeout(() => {
+        //   dispatch(setReduxFormFilter({ formFilter: true }));
+        // }, 0);
       }, 1000);
     }
   }, [selectedPlace]);
@@ -232,6 +238,10 @@ function MyMap() {
   useEffect(() => {
     let formFilter = searchForm.formFilter;
     formFilter ? setIsSlideVisible(true) : setIsSlideVisible(false);
+    console.log("formFilter changed: ", formFilter);
+    console.log("selectedPlace: ", selectedPlace);
+
+
   }, [searchForm.formFilter]);
 
   return (
@@ -323,7 +333,56 @@ function MyMap() {
               onItemClick={handleMarkerClick}
             />
           } */}
+          <Circle
+            center={searchResults ? center : {
+              lat: -18.905195365917766,
+              lng: 47.52370521426201,
+            }} // Default center if no search results Antananarivo
+            radius={800}
+            strokeColor={"#7cbd1e"}
+            strokeOpacity={1}
+            fillOpacity={0}
+            strokeWeight={2}
+            clickable={false} // Add this line to make it click-through
+          />
         </Map>
+        {/* Zone de recherche info card */}
+        {selectedPlace &&
+          <div
+            style={{
+              position: "absolute",
+              top: "97px",
+              left: "10px",
+              backgroundColor: "rgba(0,0,0,0.6)",
+              color: "white",
+              padding: "5px 8px",
+              borderRadius: "12px",
+              fontSize: "13px",
+              zIndex: 20,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <strong>Antananarivo — Rayon : 15 km</strong>
+            <button
+              onClick={() => setIsSlideVisible(true)}
+              style={{
+                border: "none",
+                padding: "4px",
+                borderRadius: "50%",
+                background: "#7cbd1e",
+                color: "white",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                fontSize: "18px",
+              }}
+            >
+              <MdEditLocationAlt />
+            </button>
+          </div>
+        }
 
         <div
           className={`property-details-slide ${isSliderVisible ? "show" : ""}`}

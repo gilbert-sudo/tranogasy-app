@@ -1,13 +1,20 @@
 import React, { useState } from "react";
+import Linkify from "linkify-react";
 
 const TikTokDescription = ({ description }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const maxChars = 130; // ~2 lines on most phones
+  const maxChars = 60; // ~3 lines on most phones
   const shouldTruncate = description.length > maxChars;
   const visibleText = shouldTruncate
     ? description.slice(0, maxChars).trim()
     : description;
+
+  const options = {
+    target: '_blank',
+    rel: 'noopener noreferrer'
+  };
+
 
   return (
     <p
@@ -16,11 +23,15 @@ const TikTokDescription = ({ description }) => {
         color: "#f0f0f0",
         marginBottom: 6,
         lineHeight: 1.4,
+        whiteSpace: "break-spaces",
+        wordBreak: "break-word",
       }}
     >
       {!expanded ? (
         <>
-          {visibleText}
+          <Linkify options={options}>
+            {visibleText}
+          </Linkify>
           {shouldTruncate && (
             <>
               ...{" "}
@@ -40,7 +51,10 @@ const TikTokDescription = ({ description }) => {
         </>
       ) : (
         <>
-          {description}{" "}
+          <Linkify options={options}>
+            {description}
+          </Linkify>
+          {" "}
           <span
             onClick={() => setExpanded(false)}
             style={{
