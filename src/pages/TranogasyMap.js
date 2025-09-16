@@ -17,13 +17,17 @@ import {
   Map,
   ControlPosition,
   useMap,
+  AdvancedMarker
 } from "@vis.gl/react-google-maps";
 import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdEditLocationAlt } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import { Turtle } from "lucide-react";
+
+import "./css/custom-advanced-marker.css";
 
 export default function TranogasyMap() {
 
@@ -64,8 +68,8 @@ function MyMap() {
   const searchResults = useSelector((state) => state.searchResults);
   const geolocation = useSelector((state) => state.geolocation);
   const searchForm = useSelector((state) => state.searchForm);
+  const tranogasyMap = useSelector((state) => state.tranogasyMap);
   const selectedProperty = searchForm.selectedProperty;
-  const initialPropertiesState = useSelector((state) => state.properties);
   const [selected, setSelected] = useState(null);
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
@@ -218,31 +222,27 @@ function MyMap() {
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
+    console.log("User's current position:", geolocation.userCurrentPosition);
+
   }, []);
 
   useEffect(() => {
     // get the selected place coordinates
     if (selectedPlace) {
-      dispatch(setSearchResults(initialPropertiesState.filter(property => property.rent)));
       setTimeout(() => {
         setMapZoomLevel(15); // Set a higher zoom level when a place is selected
         setCenter(selectedPlace);
-        dispatch(resetSearchForm());
-        // setTimeout(() => {
-        //   dispatch(setReduxFormFilter({ formFilter: true }));
-        // }, 0);
+        setTimeout(() => {
+          dispatch(setReduxFormFilter({ formFilter: true }));
+        }, 0);
       }, 1000);
     }
   }, [selectedPlace]);
 
   useEffect(() => {
-    let formFilter = searchForm.formFilter;
+    let formFilter = tranogasyMap.formFilter;
     formFilter ? setIsSlideVisible(true) : setIsSlideVisible(false);
-    console.log("formFilter changed: ", formFilter);
-    console.log("selectedPlace: ", selectedPlace);
-
-
-  }, [searchForm.formFilter]);
+  }, [tranogasyMap.formFilter]);
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
@@ -326,6 +326,32 @@ function MyMap() {
         >
           {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
           <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} />
+          {geolocation.userCurrentPosition && (
+            <>
+              {console.log("Position actuelle de l'utilisateur :", geolocation.userCurrentPosition)}
+              <AdvancedMarker
+                position={geolocation.userCurrentPosition}
+                title="Vous êtes ici"
+                className="user-marker"
+              >
+                <div className="user-marker-pin">
+                  <FaUser size={16} style={{ marginRight: '4px' }} />
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
+                </div>
+              </AdvancedMarker>
+              <Circle
+                center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
+                radius={1000}
+                strokeColor={"#4285F4"}
+                strokeOpacity={2}
+                fillOpacity={0}
+                strokeWeight={3}
+                clickable={false} // Add this line to make it click-through
+              />
+            </>
+          )}
+
+
           {/* Pass null for markerFinalCoords when clicking from the carousel */}
           {/* {showCarousel &&
             <PropertyCarousel
@@ -333,18 +359,16 @@ function MyMap() {
               onItemClick={handleMarkerClick}
             />
           } */}
-          <Circle
-            center={searchResults ? center : {
-              lat: -18.905195365917766,
-              lng: 47.52370521426201,
-            }} // Default center if no search results Antananarivo
-            radius={800}
-            strokeColor={"#7cbd1e"}
-            strokeOpacity={1}
-            fillOpacity={0}
-            strokeWeight={2}
-            clickable={false} // Add this line to make it click-through
-          />
+          {selectedPlace &&
+            <Circle
+              center={selectedPlace} // Default center if no search results Antananarivo
+              radius={800}
+              strokeColor={"#7cbd1e"}
+              strokeOpacity={2}
+              fillOpacity={0}
+              strokeWeight={4}
+              clickable={false} // Add this line to make it click-through
+            />}
         </Map>
         {/* Zone de recherche info card */}
         {selectedPlace &&
@@ -431,13 +455,21 @@ function MyMap() {
             />
           </div>
           {/* Close button to hide the sliding div */}
-          {searchForm.formFilter && (
-            <div style={{ padding: "5.5vh 1vh 2vh 1vh" }}>
-              <HouseSearchForm handleCloseSlideClick={handleCloseSlideClick} />
-            </div>
-          )}
+          <div
+            style={{
+              padding: "5.5vh 1vh 2vh 1vh",
+              width: tranogasyMap.formFilter ? "auto" : "0",
+              height: tranogasyMap.formFilter ? "auto" : "0",
+              overflow: tranogasyMap.formFilter ? "visible" : "hidden",
+              opacity: tranogasyMap.formFilter ? 1 : 0,
+              transition: "all 0.3s ease"
+            }}
+          >
+            <HouseSearchForm handleCloseSlideClick={handleCloseSlideClick} />
+          </div>
 
-          {selectedProperty && !searchForm.formFilter && isSliderVisible && (
+
+          {selectedProperty && !tranogasyMap.formFilter && isSliderVisible && (
             <PropertyDetailsPage
               key={selectedProperty._id}
               fastPreviewProperty={selectedProperty}

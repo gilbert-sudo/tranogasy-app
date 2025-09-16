@@ -455,7 +455,6 @@ export const {
 const initialState = {
   gmapValue: null,
   selectedProperty: null,
-  formFilter: false,
   isRent: true,
   isSale: false,
   isColoc: false,
@@ -498,6 +497,11 @@ const initialState = {
   panoramicView: false,
   solarPanels: false,
   hasAnimated: false,
+  seachArea: null,
+  searchCoordinates: null,
+  searchRadius: 0,
+  address: null,
+  alreadySeen: false,
 };
 
 const searchFormSlice = createSlice({
@@ -506,9 +510,6 @@ const searchFormSlice = createSlice({
   reducers: {
     setReduxGmapValue: (state, action) => {
       state.gmapValue = action.payload.gmapValue;
-    },
-    setReduxFormFilter: (state, action) => {
-      state.formFilter = action.payload.formFilter;
     },
     setSearchFormState: (state, action) => {
       Object.assign(state, action.payload);
@@ -523,16 +524,40 @@ const searchFormSlice = createSlice({
 
 export const {
   setReduxGmapValue,
-  setReduxFormFilter,
   setSearchFormState,
   setSearchFormField,
   resetSearchForm,
 } = searchFormSlice.actions;
 
-export default searchFormSlice.reducer;
+//tranogasy map 
+const tranogasyMapInitialState = {
+  formFilter: false,
+};
 
+const tranogasyMapSlice = createSlice({
+  name: "tranogasyMap",
+  initialState: tranogasyMapInitialState,
+  reducers: {
+    setReduxFormFilter: (state, action) => {
+      state.formFilter = action.payload.formFilter;
+    },
+    setTranogasyMapState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setTranogasyMapField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetTranogasyMap: () => tranogasyMapInitialState,
+  },
+});
 
-
+export const {
+  setReduxFormFilter,
+  setTranogasyMapState,
+  setTranogasyMapField,
+  resetTranogasyMap
+} = tranogasyMapSlice.actions;
 
 //search results
 const searchResultsSlice = createSlice({
@@ -544,7 +569,7 @@ const searchResultsSlice = createSlice({
     },
     resetSearchResults: (state, action) => {
       return null;
-    },  
+    },
   },
 });
 
@@ -682,6 +707,7 @@ export const store = configureStore({
     likedProperties: likedPropertiesSlice.reducer,
     searchResults: searchResultsSlice.reducer,
     searchForm: searchFormSlice.reducer,
+    tranogasyMap: tranogasyMapSlice.reducer,
     quarter: quarterSlice.reducer,
     payments: paymentSlice.reducer,
     plans: planSlice.reducer,

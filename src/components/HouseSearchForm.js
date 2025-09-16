@@ -528,45 +528,17 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
   }, [rangeValue]);
 
   useEffect(() => {
-    let intervalId;
-    let startMin = 0;
-    let startMax = 0;
 
     if (!searchForm.hasAnimated) {
       // Define ending values based on conditions
-      const endMin = priceRange
+      const budgetMin = priceRange
         ? (isRent && priceRange.minRent) || (isSale && priceRange.minPrice)
         : 0;
-      const endMax = priceRange
+      const budgetMax = priceRange
         ? (isRent && priceRange.maxRent) || (isSale && priceRange.maxPrice)
         : 0;
-
-      // Define faster animation speed
-      const interval = 5; // Faster interval (lower value = quicker updates)
-      const stepMin = Math.ceil(endMin / 10); // Larger step size for quicker animation
-      const stepMax = Math.ceil(endMax / 10);
-
-      intervalId = setInterval(() => {
-        // Increment startMin and startMax
-        startMin = Math.min(startMin + stepMin, endMin);
-        startMax = Math.min(startMax + stepMax, endMax);
-
-        setRangeValue([startMin, startMax]);
-
-        // Stop the animation when end values are reached
-        if (startMin >= endMin && startMax >= endMax) {
-          clearInterval(intervalId);
-        }
-      }, interval);
+      setRangeValue([budgetMin, budgetMax]);
     }
-
-    console.log("Animation started with values:", hasAnimated);
-
-    setHasAnimated(true);
-
-    return () => clearInterval(intervalId);
-
-
   }, [isRent, isSale]);
 
 

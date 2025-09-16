@@ -7,7 +7,7 @@ import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
 import { LiaBinocularsSolid } from "react-icons/lia";
 import { IoMdCloseCircle } from "react-icons/io";
-import { setReduxFormFilter } from "../redux/redux";
+import { setReduxFormFilter, setSearchFormField } from "../redux/redux";
 import { useDispatch } from "react-redux";
 
 const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
@@ -44,6 +44,15 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       if (!placeAutocomplete.getPlace().geometry) {
         console.log("No details available for input: '" + placeAutocomplete.getPlace().name + "'");
       } else {
+        console.log(placeAutocomplete.getPlace());
+        dispatch(setSearchFormField({
+          key: "searchCoordinates", value: {
+            lat: placeAutocomplete.getPlace().geometry.location.lat(),
+            lng: placeAutocomplete.getPlace().geometry.location.lng(),
+          }
+        }));
+        dispatch(setSearchFormField({ key: "address", value: placeAutocomplete.getPlace().formatted_address }));
+        dispatch(setSearchFormField({ key: "searchRadius", value: 5000 })); // default 5km radius
         onPlaceSelect({
           lat: placeAutocomplete.getPlace().geometry.location.lat(),
           lng: placeAutocomplete.getPlace().geometry.location.lng(),
@@ -70,6 +79,9 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       inputRef.current.focus();
       setShowClearButton(false);
       onPlaceSelect(null);
+      dispatch(setSearchFormField({ key: "searchCoordinates", value: null }));
+      dispatch(setSearchFormField({ key: "address", value: null }));
+      dispatch(setSearchFormField({ key: "searchRadius", value: 0 }));
 
       // Trigger input event to reset Google Autocomplete
       const event = new Event('input', { bubbles: true });
