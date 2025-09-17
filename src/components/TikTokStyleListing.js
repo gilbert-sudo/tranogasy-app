@@ -382,6 +382,36 @@ const TikTokStyleListing = ({ property, active }) => {
         <MapPinned onClick={() => { setShowMap(true); setShowContact(false) }} style={{ pointerEvents: "auto" }} size={30} color="white" />
         <Phone onClick={() => { setShowMap(false); setShowContact(true) }} style={{ pointerEvents: "auto" }} size={30} color="white" />
         <Forward onClick={() => shareProperty(property)} style={{ pointerEvents: "auto" }} size={30} color="white" />
+
+        <div style={{ position: "relative", pointerEvents: "none", height: 10, width: 30 }}>
+          <button
+            type="button"
+            style={{
+              position: "absolute",
+              transform: "translateX(-70%)",
+              top: -13,
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "max-content",
+              pointerEvents: "auto",
+              backgroundColor: "#7cbd1e",
+              border: "none",
+              borderRadius: 30,
+              padding: "12px 15px",
+              fontSize: 14,
+              fontFamily: "inherit",
+              color: "white",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+            onClick={() => alert("Vous etes deja sur la page de details.")}
+          >
+            Voir détails
+          </button>
+        </div>
+
       </div>
 
       {/* Property infos */}

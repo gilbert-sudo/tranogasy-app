@@ -118,6 +118,7 @@ function MyMap() {
   };
 
   const createCustomMarkerIcon = (property, isSelected) => {
+
     const price = formatPrice(property.rent || property.price);
 
     // Base dimensions

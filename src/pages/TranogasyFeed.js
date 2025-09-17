@@ -1,6 +1,7 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { FixedSizeList as List } from "react-window";
+import TranogasyFeedSkeleton from "../components/skeletons/TranogasyFeedSkeleton";
 import TikTokStyleListing from "../components/TikTokStyleListing";
 
 // Detect iOS
@@ -96,7 +97,7 @@ const TranogasyFeed = () => {
   ), [properties]);
 
   return (
-    properties &&
+    properties ? 
     <List
       height={ITEM_HEIGHT}
       itemCount={properties.length}
@@ -113,8 +114,9 @@ const TranogasyFeed = () => {
       }}
       outerElementType={isIOS ? "div" : undefined} // Custom outer element for iOS
     >
-      {Row}
-    </List>
+      {Row}                                                    
+    </List> 
+    : <TranogasyFeedSkeleton />
   );
 };
 
