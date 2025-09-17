@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
+import TranogasyMapSkeleton from "../components/skeletons/TranogasyMapSkeleton";
 import Circle from "../components/Circle";
 
 import { setReduxFormFilter, resetSearchForm, resetSearchResults, setTranogasyMapField } from "../redux/redux";
@@ -55,7 +56,7 @@ export default function TranogasyMap() {
   }, []);
 
   if (properties) {
-    if (!isLoaded) return <div>Chargement de la carte...</div>;
+    if (!isLoaded) return <TranogasyMapSkeleton />;
     return <MyMap />;
   }
 }

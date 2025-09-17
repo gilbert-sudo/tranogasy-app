@@ -1,5 +1,5 @@
 import Skeleton from "react-loading-skeleton";
-import "./css/mylisting.css";
+import "../css/mylisting.css";
 
 function MyListingDetailsSkeleton() {
   return (

@@ -1,5 +1,5 @@
 import MyListingDetails from "../components/MyListingDetails";
-import MyListingDetailsSkeleton from "../components/MyListingDetailsSkeleton";
+import MyListingDetailsSkeleton from "../components/skeletons/MyListingDetailsSkeleton";
 import { Link, useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
 import {

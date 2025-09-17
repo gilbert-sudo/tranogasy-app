@@ -1,6 +1,6 @@
 import { useRoute } from "wouter";
 import FavoritePropertyDetails from "../components/FavoritePropertyDetails";
-import FavoritePropertyDetailsSkeleton from "../components/FavoritePropertyDetailsSkeleton";
+import FavoritePropertyDetailsSkeleton from "../components/skeletons/FavoritePropertyDetailsSkeleton";
 import { useSelector } from "react-redux";
 import { useLoader } from "../hooks/useLoader";
 import { useUser } from "../hooks/useUser";
