@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useSelector } from "react-redux";
+import Linkify from "linkify-react";
 
 import TikTokDescription from "./TikTokDescription";
 import PropertyLocationDisplayer from "./PropertyLocationDisplayer";
 import ContactCard from "./ContactCard";
-
+import CardDetails from "./CardDetails";
 
 import { useScrollDirectionLock } from "../hooks/useScrollDirectionLock";
 import { useProperty } from "../hooks/useProperty";
@@ -32,7 +33,7 @@ import {
   GiBrickWall,
   GiFireplace, GiBathtub, GiSolarPower, GiMountainCave, GiSeatedMouse, GiSeaDragon, GiCastle
 } from "react-icons/gi";
-import { TbAirConditioning, TbBuildingCastle } from "react-icons/tb";
+import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { ImLocation } from "react-icons/im";
 import {
   FaCar,
@@ -55,7 +56,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 
 import userProfile from "../img/user-avatar.png";
 
-const TikTokStyleListing = ({ property, active }) => {
+const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
   const { shareProperty } = useProperty();
@@ -71,9 +72,15 @@ const TikTokStyleListing = ({ property, active }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [isSliderVisible, setIsSlideVisible] = useState(false);
   const scrollRef = useRef(null);
 
   const propertyDataString = JSON.stringify(property);
+
+  const options = {
+    target: '_blank',
+    rel: 'noopener noreferrer'
+  };
 
   // Like handler
   const handleLike = async (e) => {
@@ -130,20 +137,45 @@ const TikTokStyleListing = ({ property, active }) => {
     timeZone: "Indian/Antananarivo",
   }).format(new Date(property.created_at));
 
+  const GenerateFeaturebox = ({ icon, label }) => {
+    return (
+      <div
+        style={{ borderRadius: "20px", padding: "10px", cursor: "pointer", border: "1px solid #ccc" }}
+        className={`btn-group bg-light`}
+        role="group"
+      >
+        <div className="form-check pl-0" style={{ cursor: "pointer" }}>
+          <label
+            className="form-check-label"
+            htmlFor={label}
+            style={{ cursor: "pointer", color: "#333", fontWeight: "500" }}
+          >
+            {icon && icon}
+            {" "}
+            <small>
+              {label}
+            </small>
+          </label>
+        </div>
+      </div>
+    );
+  };
+
   // 👇 Close map whenever this property is no longer active
   useEffect(() => {
-    if (!active) {
-      setShowMap(false);
-      setShowContact(false);
+    if (isSliderVisible || showMap || showContact) {
+      lockScroll();
+    } else {
+      unlockScroll();
     }
-  }, [active]);
+  }, [isSliderVisible, showMap, showContact]);
 
   return (
     <div
       className="tikTokStyleListing"
       style={{
         width: "100%",
-        height: "100vh",
+        height: (isSliderVisible || showMap || showContact) ? "98vh" : "100vh",
         maxWidth: "1025px",
         margin: "0 auto",
         position: "relative",
@@ -318,7 +350,7 @@ const TikTokStyleListing = ({ property, active }) => {
           position: "absolute",
           top: 38,
           right: 10,
-          zIndex: 2000,
+          zIndex: 10,
           display: "flex",
           backgroundColor: "rgba(0, 0, 0, 0.3)",
           alignItems: "center",
@@ -406,7 +438,7 @@ const TikTokStyleListing = ({ property, active }) => {
               fontWeight: "bold",
               cursor: "pointer",
             }}
-            onClick={() => alert("Vous etes deja sur la page de details.")}
+            onClick={() => setIsSlideVisible(true)}
           >
             Voir détails
           </button>
@@ -429,10 +461,16 @@ const TikTokStyleListing = ({ property, active }) => {
           @{property.owner.role === "admin" ? "Gilbert AI" : property.owner.username}
         </p>
         <p
-          style={{ fontSize: 14, pointerEvents: "auto", width: "max-content" }}
-          onClick={() => setLocation(`/property-details/${property._id}/${encodeURIComponent(
-            propertyDataString
-          )}/${location.split("/")[1]}`)}
+          style={{
+            fontSize: 14,
+            fontWeight: "bold",
+            pointerEvents: "auto",
+            width: "40ch",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+          onClick={() => setIsSlideVisible(true)}
         >
           {property.title}
         </p>
@@ -441,7 +479,7 @@ const TikTokStyleListing = ({ property, active }) => {
           <ImLocation className="text-danger mr-1 mb-2" />
           {property.city.fokontany} {property.city.commune}
         </small>
-        <TikTokDescription description={property.description} coords={{ city: property.city?.coords, property: property?.coords }} />
+        <TikTokDescription description={property.description} coords={{ city: property.city?.coords, property: property?.coords }} setIsSlideVisible={setIsSlideVisible} />
         <p>
           {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
           {property.features.waterPumpSupplyJirama && <FaFaucetDrip className="h6 mr-1" />}
@@ -501,69 +539,265 @@ const TikTokStyleListing = ({ property, active }) => {
           }}
         >
           {showMap &&
-            <div
-              className="property-location"
-              style={{
-                position: "absolute",
-                minHeight: "100%",
-                minWidth: "100%",
-                top: "-63vh",
-                padding: "20px 10px 5px 10px",
-                backgroundColor: "white",
-                borderRadius: 20,
-                zIndex: 3000,
-                display: "block",
-              }}
-            >
-              {/* mini navbar for the lose button to hide the sliding div */}
+            <>
+              {/* Semi-transparent backdrop */}
               <div
-                className="fixed-top"
                 style={{
-                  width: "100%",
-                  zIndex: 1000,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  position: "sticky",
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  zIndex: 10,
+                  cursor: "pointer",
+                }}
+                onClick={() => setShowMap(false)}
+              />
+              <div
+                className="property-location"
+                style={{
+                  position: "absolute",
+                  minHeight: "100%",
+                  minWidth: "100%",
+                  top: "-63vh",
+                  padding: "20px 10px 5px 10px",
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                  zIndex: 3000,
+                  display: "block",
                 }}
               >
-                {/* Close button to hide the sliding div */}
-                <IoMdCloseCircle
+                {/* mini navbar for the lose button to hide the sliding div */}
+                <div
+                  className="fixed-top"
                   style={{
-                    fontSize: "2rem",
-                    position: "absolute",
-                    top: "-15px",
-                    left: 0,
-                    zIndex: "9999",
-                    backgroundColor: "#fff",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                    color: "#333",
+                    width: "100%",
+                    zIndex: 1000,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "sticky",
                   }}
-                  onClick={() => setShowMap(false)}
+                >
+                  {/* Close button to hide the sliding div */}
+                  <IoMdCloseCircle
+                    style={{
+                      fontSize: "2rem",
+                      position: "absolute",
+                      top: "-15px",
+                      left: 0,
+                      zIndex: "9999",
+                      backgroundColor: "#fff",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      color: "#333",
+                    }}
+                    onClick={() => setShowMap(false)}
+                  />
+                </div>
+                <PropertyLocationDisplayer
+                  position={property.coords
+                    ? property.coords
+                    : property.city.coords
+                      ? property.city.coords
+                      : {
+                        lat: -18.905195365917766,
+                        lng: 47.52370521426201,
+                      }}
+                  circle={property.coords ? false : true}
                 />
               </div>
-              <PropertyLocationDisplayer
-                position={property.coords
-                  ? property.coords
-                  : property.city.coords
-                    ? property.city.coords
-                    : {
-                      lat: -18.905195365917766,
-                      lng: 47.52370521426201,
-                    }}
-                circle={property.coords ? false : true}
-              />
-            </div>}
+            </>
+
+          }
         </div>
       </div>
 
-      {showContact &&
+      {
+        showContact &&
         <ContactCard
           setShowContact={setShowContact}
           property={property}
-        />}
-    </div>
+        />
+      }
+
+      <div
+        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+        style={{
+          position: "fixed",
+          left: "50%",
+          bottom: 0,
+          paddingBottom: "80px",
+          transform: isSliderVisible
+            ? "translate(-50%, 0)"
+            : "translate(-50%, 100%)",
+          width: "100%",
+          height: "95vh",
+          overflowY: "auto",
+          backgroundColor: "#fff",
+          borderRadius: "30px 30px 0 0",
+          boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
+          transition: "transform 0.5s ease",
+          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+          zIndex: 1000,
+        }}
+      >
+        {/* mini navbar for the lose button to hide the sliding div */}
+        <div
+          className="fixed-top"
+          style={{
+            width: "100%",
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "sticky",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              fontWeight: "bold",
+              fontSize: "15px",
+              padding: "10px",
+              borderRadius: "30px",
+              backgroundColor: "white",
+              color: "#333",
+              textAlign: "center",
+              display: "inline-block",
+            }}
+          >
+            <small>
+              Détails de la propriété {" "}
+              <num className="text-danger font-weight-bold" style={{ border: "1px solid #ccc", padding: "2px 6px", borderRadius: "8px" }}>
+                n°:{property.propertyNumber}
+              </num>
+            </small>
+          </div>
+          <IoMdCloseCircle
+            style={{
+              fontSize: "2rem",
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              zIndex: 9999,
+              backgroundColor: "#fff",
+              borderRadius: "50%",
+              cursor: "pointer",
+              color: "#333",
+            }}
+            onClick={() => setIsSlideVisible(false)}
+          />
+        </div>
+
+        {/* Close button to hide the sliding div */}
+        {isSliderVisible && (
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12 pb-1 pt-4">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "16px",
+                    padding: "0 4px",
+                    width: "100%",
+                  }}
+                >
+                  <h5
+                    style={{
+                      fontSize: "16px",            // Slightly bigger for mobile impact
+                      fontWeight: "500",           // Medium, elegant weight
+                      margin: "0 10px 0 10px",      // Top margin for spacing
+                      color: "#222",               // Slightly darker for better contrast
+                      flex: 1,
+                      letterSpacing: "0.3px",     // Subtle spacing to breathe
+                      fontFamily: "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+                    }}
+                  >
+                    {property && property.title}
+                  </h5>
+                </div>
+                <div
+                  style={{
+                    border: "1px solid #ddd",
+                    borderRadius: "20px",
+                    padding: "16px",
+                    marginBottom: "5px",
+                    color: "#333",
+                    backgroundColor: "transparent",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                    whiteSpace: "break-spaces",
+                    wordBreak: "break-word",
+                    fontWeight: "400",
+                    fontSize: "14px",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  <Linkify options={options}>
+                    {property && property.description}
+                  </Linkify>
+                </div>
+
+                <div
+                  className="d-flex flex-wrap p-3"
+                  style={{
+                    gap: "4px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  {/* ⚡ Eau & électricité */}
+                  {property.features?.electricityJirama && <GenerateFeaturebox icon={<FaPlugCircleBolt />} label={"Électricité JIRAMA"} />}
+                  {property.features?.waterPumpSupplyJirama && <GenerateFeaturebox icon={<FaFaucetDrip />} label={"Pompe JIRAMA"} />}
+                  {property.features?.waterWellSupply && <GenerateFeaturebox icon={<GiWell />} label={"Puits d'eau"} />}
+                  {property.features?.electricityPower && <GenerateFeaturebox icon={<FaPlugCircleCheck />} label={"Électricité privée"} />}
+                  {property.features?.waterPumpSupply && <GenerateFeaturebox icon={<FaOilWell />} label={"Pompe à eau privée"} />}
+                  {property.features?.solarPanels && <GenerateFeaturebox icon={<GiSolarPower />} label={"Panneaux solaires"} />}
+                  {/* 🚪 Accessibilité & extérieur */}
+                  {property.features?.motoAccess && <GenerateFeaturebox icon={<FaMotorcycle />} label={"Accès moto"} />}
+                  {property.features?.carAccess && <GenerateFeaturebox icon={<FaCar />} label={"Accès voiture"} />}
+                  {property.features?.surroundedByWalls && <GenerateFeaturebox icon={<GiBrickWall />} label={"Clôturée"} />}
+                  {property.features?.courtyard && <GenerateFeaturebox icon={<MdLandscape />} label={"Cour"} />}
+                  {property.features?.parkingSpaceAvailable && <GenerateFeaturebox icon={<FaParking />} label={"Parking"} />}
+                  {property.features?.garage && <GenerateFeaturebox icon={<FaCar />} label={"Garage"} />}
+                  {property.features?.garden && <GenerateFeaturebox icon={<GiWell />} label={"Jardin"} />}
+                  {property.features?.independentHouse && <GenerateFeaturebox icon={<TbBuildingCastle />} label={"Indépendante"} />}
+                  {property.features?.guardianHouse && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Maison pour gardien"} />}
+                  {property.features?.bassin && <GenerateFeaturebox icon={<TbWash />} label={"Bassin"} />}
+                  {/* 🏠 Confort intérieur */}
+                  {property.features?.kitchenFacilities && <GenerateFeaturebox icon={<FaKitchenSet />} label={"Cuisine équipée"} />}
+                  {property.features?.placardKitchen && <GenerateFeaturebox icon={<FaBed />} label={"Cuisine placardée"} />}
+                  {property.features?.hotWaterAvailable && <GenerateFeaturebox icon={<FaHotTub />} label={"Eau chaude"} />}
+                  {property.features?.furnishedProperty && <GenerateFeaturebox icon={<MdOutlineLiving />} label={"Meublé"} />}
+                  {property.features?.airConditionerAvailable && <GenerateFeaturebox icon={<TbAirConditioning />} label={"Climatisation"} />}
+                  {property.features?.bathtub && <GenerateFeaturebox icon={<GiBathtub />} label={"Baignoire"} />}
+                  {property.features?.fireplace && <GenerateFeaturebox icon={<GiFireplace />} label={"Cheminée"} />}
+                  {property.features?.elevator && <GenerateFeaturebox icon={<TbBuildingCastle />} label={"Ascenseur"} />}
+                  {/* 🌇 Espaces extérieurs confort */}
+                  {property.features?.balcony && <GenerateFeaturebox icon={<MdBalcony />} label={"Balcon"} />}
+                  {property.features?.roofTop && <GenerateFeaturebox icon={<GiCastle />} label={"Toit terrasse"} />}
+                  {property.features?.swimmingPool && <GenerateFeaturebox icon={<FaSwimmingPool />} label={"Piscine"} />}
+                  {/* 🛡️ Sécurité */}
+                  {property.features?.securitySystem && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Système de sécurité"} />}
+                  {/* 🌐 Connectivité */}
+                  {property.features?.wifiAvailability && <GenerateFeaturebox icon={<FaWifi />} label={"Wi-Fi"} />}
+                  {property.features?.fiberOpticReady && <GenerateFeaturebox icon={<MdOutlineFiberSmartRecord />} label={"FPré-fibrée"} />}
+                  {/* 🌅 Vue */}
+                  {property.features?.seaView && <GenerateFeaturebox icon={<GiSeaDragon />} label={"Vue mer"} />}
+                  {property.features?.mountainView && <GenerateFeaturebox icon={<GiMountainCave />} label={"Vue montagne"} />}
+                  {property.features?.panoramicView && <GenerateFeaturebox icon={<GiSeatedMouse />} label={"Vue panoramique"} />}
+                </div>
+
+                <CardDetails property={property} />
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div >
   );
 };
 

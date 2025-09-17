@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Linkify from "linkify-react";
 
-const TikTokDescription = ({ description }) => {
-  const [expanded, setExpanded] = useState(false);
+const TikTokDescription = ({ description, setIsSlideVisible }) => {
 
   const maxChars = 60; // ~3 lines on most phones
   const shouldTruncate = description.length > maxChars;
@@ -27,7 +26,6 @@ const TikTokDescription = ({ description }) => {
         wordBreak: "break-word",
       }}
     >
-      {!expanded ? (
         <>
           <Linkify options={options}>
             {visibleText}
@@ -36,7 +34,7 @@ const TikTokDescription = ({ description }) => {
             <>
               ...{" "}
               <span
-                onClick={() => setExpanded(true)}
+                onClick={() => setIsSlideVisible(true)}
                 style={{
                   color: "#ccc",
                   cursor: "pointer",
@@ -49,25 +47,6 @@ const TikTokDescription = ({ description }) => {
             </>
           )}
         </>
-      ) : (
-        <>
-          <Linkify options={options}>
-            {description}
-          </Linkify>
-          {" "}
-          <span
-            onClick={() => setExpanded(false)}
-            style={{
-              color: "#ccc",
-              cursor: "pointer",
-              textDecoration: "underline",
-              pointerEvents: "auto",
-            }}
-          >
-            voir moins
-          </span>
-        </>
-      )}
     </p>
   );
 };

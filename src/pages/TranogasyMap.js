@@ -7,7 +7,7 @@ import HouseSearchForm from "../components/HouseSearchForm";
 import TranogasyMapSkeleton from "../components/skeletons/TranogasyMapSkeleton";
 import Circle from "../components/Circle";
 
-import { setReduxFormFilter, resetSearchForm, resetSearchResults, setTranogasyMapField } from "../redux/redux";
+import { setReduxFormFilter, resetSearchForm, resetSearchResults, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { useImage } from "../hooks/useImage";
@@ -25,7 +25,6 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdEditLocationAlt } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { Turtle } from "lucide-react";
 
 import "./css/custom-advanced-marker.css";
 
@@ -119,7 +118,7 @@ function MyMap() {
 
   const createCustomMarkerIcon = (property, isSelected) => {
 
-    const price = formatPrice(property.rent || property.price);
+    const price = formatPrice(property?.rent || property?.price);
 
     // Base dimensions
     const baseWidth = 80;
@@ -263,6 +262,10 @@ function MyMap() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
+          dispatch(setUserCurrentPosition({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }));
         },
         (error) => {
           console.error(error);
@@ -273,7 +276,7 @@ function MyMap() {
     }
     console.log("User's current position:", geolocation.userCurrentPosition);
 
-  }, []);
+  }, [geolocation.userCurrentPosition]);
 
   useEffect(() => {
     // get the selected place coordinates

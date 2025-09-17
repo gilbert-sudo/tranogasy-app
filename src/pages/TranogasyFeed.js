@@ -12,6 +12,8 @@ const TranogasyFeed = () => {
   const properties = useSelector((state) => state.properties);
   const listRef = useRef();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [scrollLocked, setScrollLocked] = useState(false);
+
   const ITEM_HEIGHT = window.innerHeight;
   const isScrolling = useRef(false);
   const touchStartY = useRef(0);
@@ -92,31 +94,36 @@ const TranogasyFeed = () => {
         WebkitTransform: "translate3d(0,0,0)" // iOS hardware acceleration
       }}
     >
-      <TikTokStyleListing property={properties[index]} active={index === currentIndex}/>
+      <TikTokStyleListing
+        property={properties[index]}
+        lockScroll={() => setScrollLocked(true)}
+        unlockScroll={() => setScrollLocked(false)}
+      />
     </div>
   ), [properties]);
 
   return (
-    properties ? 
-    <List
-      height={ITEM_HEIGHT}
-      itemCount={properties.length}
-      itemSize={ITEM_HEIGHT}
-      width="100%"
-      ref={listRef}
-      overscanCount={1}
-      initialScrollOffset={currentIndex * ITEM_HEIGHT}
-      style={{
-        WebkitOverflowScrolling: "touch",
-        scrollSnapType: "y mandatory",
-        overflowY: "auto",
-        transform: "translate3d(0,0,0)", // iOS performance boost
-      }}
-      outerElementType={isIOS ? "div" : undefined} // Custom outer element for iOS
-    >
-      {Row}                                                    
-    </List> 
-    : <TranogasyFeedSkeleton />
+    properties ?
+      <List
+        height={ITEM_HEIGHT}
+        itemCount={properties.length}
+        itemSize={ITEM_HEIGHT}
+        width="100%"
+        ref={listRef}
+        overscanCount={1}
+        initialScrollOffset={currentIndex * ITEM_HEIGHT}
+        style={{
+          WebkitOverflowScrolling: "touch",
+          scrollSnapType: "y mandatory",
+          overflowY: scrollLocked ? "hidden" : "auto",
+          height: scrollLocked ? "98vh" : "100vh",
+          transform: "translate3d(0,0,0)", // iOS performance boost
+        }}
+        outerElementType={isIOS ? "div" : undefined} // Custom outer element for iOS
+      >
+        {Row}
+      </List>
+      : <TranogasyFeedSkeleton />
   );
 };
 
