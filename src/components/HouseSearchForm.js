@@ -48,7 +48,6 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
 
   const dispatch = useDispatch();
   const [, setLocation] = useLocation("");
-  const [hasAnimated, setHasAnimated] = useState(false);
   const [budgetMax, setBudgetMax] = useState(null);
   const [budgetMin, setBudgetMin] = useState(null);
   const { searchProperty, getPriceAndRentRanges } = useProperty();
@@ -248,7 +247,6 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
       setMountainView(searchForm.mountainView);
       setPanoramicView(searchForm.panoramicView);
       setSolarPanels(searchForm.solarPanels);
-      setHasAnimated(searchForm.hasAnimated);
     }
 
   }, []);
@@ -417,9 +415,6 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
     dispatch(setSearchFormField({ key: "solarPanels", value: solarPanels }));
   }, [solarPanels]);
 
-  useEffect(() => {
-    dispatch(setSearchFormField({ key: "hasAnimated", value: hasAnimated }));
-  }, [hasAnimated]);
 
 
 
@@ -528,8 +523,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
   }, [rangeValue]);
 
   useEffect(() => {
-
-    if (!searchForm.hasAnimated) {
+    if (rangeValue[0] === 0 && rangeValue[1] === 0) {
       // Define ending values based on conditions
       const budgetMin = priceRange
         ? (isRent && priceRange.minRent) || (isSale && priceRange.minPrice)

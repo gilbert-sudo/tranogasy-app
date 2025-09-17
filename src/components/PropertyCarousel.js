@@ -4,13 +4,13 @@ import { FixedSizeList as List } from "react-window";
 import "./css/custom.css";
 
 const PropertyCarousel = ({ visibleProperties, onItemClick }) => {
-    const searchForm = useSelector((state) => state.searchForm);
+    const tranogasyMap = useSelector((state) => state.tranogasyMap);
     const [currentImageIndexes, setCurrentImageIndexes] = useState({});
     const [focusedPropertyId, setFocusedPropertyId] = useState(null);
 
     const listRef = useRef();
     const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
-    const selectedPropertyId = searchForm.selectedProperty && searchForm.selectedProperty._id;
+    const selectedPropertyId = tranogasyMap.selectedProperty && tranogasyMap.selectedProperty._id;
 
 
     useEffect(() => {

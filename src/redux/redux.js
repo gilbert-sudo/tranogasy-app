@@ -454,7 +454,6 @@ export const {
 
 const initialState = {
   gmapValue: null,
-  selectedProperty: null,
   isRent: true,
   isSale: false,
   isColoc: false,
@@ -496,12 +495,10 @@ const initialState = {
   mountainView: false,
   panoramicView: false,
   solarPanels: false,
-  hasAnimated: false,
   seachArea: null,
   searchCoordinates: null,
   searchRadius: 0,
   address: null,
-  alreadySeen: false,
 };
 
 const searchFormSlice = createSlice({
@@ -532,6 +529,7 @@ export const {
 //tranogasy map 
 const tranogasyMapInitialState = {
   formFilter: false,
+  selectedProperty: null,
 };
 
 const tranogasyMapSlice = createSlice({

@@ -16,3 +16,24 @@
   transform: scale(1.1);
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
+
+
+.custom-marker {
+  padding: 6px 10px;
+  background: #d2ff90;
+  border: 2px solid red;
+  border-radius: 15px;
+  font-weight: bold;
+  white-space: nowrap;
+  transition: transform 0.2s ease;
+}
+
+.custom-marker.active {
+  background: #ffcccc;
+  border-color: #ff0000;
+  transform: scale(1.2);
+}
+
+.yNHHyP-marker-view.active {
+  z-index: 9999 !important;
+}

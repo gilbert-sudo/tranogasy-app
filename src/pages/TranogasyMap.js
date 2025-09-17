@@ -4,10 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
-import PropertyCarousel from "../components/PropertyCarousel";
 import Circle from "../components/Circle";
 
-import { setReduxFormFilter, setSearchResults, resetSearchForm, resetSearchResults, setSearchFormField } from "../redux/redux";
+import { setReduxFormFilter, resetSearchForm, resetSearchResults, setTranogasyMapField } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { useImage } from "../hooks/useImage";
@@ -67,9 +66,8 @@ function MyMap() {
   const properties = useSelector((state) => state.properties);
   const searchResults = useSelector((state) => state.searchResults);
   const geolocation = useSelector((state) => state.geolocation);
-  const searchForm = useSelector((state) => state.searchForm);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
-  const selectedProperty = searchForm.selectedProperty;
+  const selectedProperty = tranogasyMap.selectedProperty;
   const [selected, setSelected] = useState(null);
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
@@ -82,9 +80,11 @@ function MyMap() {
   const dispatch = useDispatch();
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
   const { tranogasyMapImg } = useImage();
+  const { formatPrice } = useProperty();
 
   const [isSliderVisible, setIsSlideVisible] = useState(false);
   const sliderRef = useRef(null);
+  const activeMarkerRef = useRef(null);
   const [mapTypeId, setMapTypeId] = useState("roadmap");
 
   // Define adjustCoordsRandomlyUnique here or pass it down if it's external
@@ -116,33 +116,80 @@ function MyMap() {
     return newCoords;
   };
 
+  const createCustomMarkerIcon = (property, isSelected) => {
+    const price = formatPrice(property.rent || property.price);
 
-  const handleMarkerClick = async (property, markerFinalCoords, fullFunction) => {
-    dispatch(setSearchFormField({ key: "selectedProperty", value: property }));
+    // Base dimensions
+    const baseWidth = 80;
+    const baseHeight = 28;
+    const tipHeight = 5;
 
-    if (fullFunction) {
-      setIsSlideVisible(true);
-    }
+    // Increase size if selected
+    const width = baseWidth * 1.1;
+    const rectHeight = isSelected ? baseHeight * 1.1 : baseHeight;
+    const svgHeight = rectHeight + tipHeight + 10;
 
-    // 👇 Reset scroll to top
+    // Colors (back to your previous choice!)
+    const fillColor = isSelected ? "#ffcccc" : "#d2ff90";
+    const strokeColor = isSelected ? "#ff0000" : "red";
+    const textColor = "#000000";
+
+    // Transparent inner border when selected
+    const innerBorder = isSelected
+      ? `<rect x="7" y="7" rx="13" ry="13" width="${width - 14}" height="${rectHeight - 4}" fill="none" stroke="transparent" stroke-width="2"/>`
+      : "";
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${svgHeight}">
+                      <rect x="5" y="5" rx="15" ry="15" width="${width - 10}" height="${rectHeight}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="3"/>
+                      ${innerBorder}
+                      <text x="${width / 2}" y="${5 + rectHeight / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="${textColor}">Ar ${price}</text>
+                    </svg>`;
+
+    return {
+      url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
+      scaledSize: new window.google.maps.Size(width, svgHeight),
+      anchor: new window.google.maps.Point(width / 2, svgHeight),
+    };
+  };
+
+
+  const handleMarkerClick = async (property, marker) => {
+    dispatch(setTranogasyMapField({ key: "selectedProperty", value: property }));
+
+    setIsSlideVisible(true);
+
+    // Reset scroll
     if (sliderRef.current) {
       sliderRef.current.scrollTop = 0;
     }
 
-    // Determine the finalCoords for centering
-    const coordsToCenter = markerFinalCoords || (
-      property?.coords
-        ? property.coords
-        : (property.city?.coords ? adjustCoordsRandomlyUnique(property.city.coords, property._id) : null)
-    );
+    // 👉 Add active to clicked one
+    if (marker) {
+      // 👉 Remove active from all markers
+      // This is handled by resetting the icon of the previously active marker
+      if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
+        const prevProperty = tranogasyMap.selectedProperty;
+        activeMarkerRef.current.setIcon(createCustomMarkerIcon(prevProperty, false));
+        activeMarkerRef.current.setZIndex(1); // Reset previous marker zIndex
+      }
+      //Change the marker's icon to indicate it's active
+      marker.setIcon(createCustomMarkerIcon(property, true));
 
-    console.log("Selected Property: ", property, coordsToCenter);
+      //change the marker size or icon to indicate it's active
+      marker.setAnimation(window.google.maps.Animation.BOUNCE);
+      setTimeout(() => {
+        marker.setAnimation(null);
+      }, 1400);
 
-    if (coordsToCenter && !fullFunction) {
-      setCenter(coordsToCenter);
-      setMapZoomLevel(19); // Adjust zoom level as needed for a good view of the property
+      //bring the marker to front
+      marker.setZIndex(google.maps.Marker.MAX_ZINDEX + 1); // Bring to front
+      if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
+        activeMarkerRef.current.setZIndex(1); // Reset previous marker zIndex
+      }
+      activeMarkerRef.current = marker;
     }
   };
+
 
 
   const handleMapClick = (event) => {
@@ -325,10 +372,9 @@ function MyMap() {
           mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
         >
           {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} />
+          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
           {geolocation.userCurrentPosition && (
             <>
-              {console.log("Position actuelle de l'utilisateur :", geolocation.userCurrentPosition)}
               <AdvancedMarker
                 position={geolocation.userCurrentPosition}
                 title="Vous êtes ici"
@@ -351,14 +397,6 @@ function MyMap() {
             </>
           )}
 
-
-          {/* Pass null for markerFinalCoords when clicking from the carousel */}
-          {/* {showCarousel &&
-            <PropertyCarousel
-              visibleProperties={properties.filter((property) => property.rent)}
-              onItemClick={handleMarkerClick}
-            />
-          } */}
           {selectedPlace &&
             <Circle
               center={selectedPlace} // Default center if no search results Antananarivo
@@ -368,7 +406,8 @@ function MyMap() {
               fillOpacity={0}
               strokeWeight={4}
               clickable={false} // Add this line to make it click-through
-            />}
+            />
+          }
         </Map>
         {/* Zone de recherche info card */}
         {selectedPlace &&
@@ -379,8 +418,8 @@ function MyMap() {
               left: "10px",
               backgroundColor: "rgba(0,0,0,0.6)",
               color: "white",
-              padding: "5px 8px",
-              borderRadius: "12px",
+              padding: "6px 8px",
+              borderRadius: "30px",
               fontSize: "13px",
               zIndex: 20,
               display: "flex",
@@ -390,11 +429,11 @@ function MyMap() {
           >
             <strong>Antananarivo — Rayon : 15 km</strong>
             <button
-              onClick={() => setIsSlideVisible(true)}
+              onClick={() => alert("Fonctionnalité à venir")}
               style={{
                 border: "none",
-                padding: "4px",
-                borderRadius: "50%",
+                padding: "5px",
+                borderRadius: "30px",
                 background: "#7cbd1e",
                 color: "white",
                 cursor: "pointer",
@@ -403,7 +442,7 @@ function MyMap() {
                 fontSize: "18px",
               }}
             >
-              <MdEditLocationAlt />
+              <MdEditLocationAlt /> <small style={{ fontSize: "9px", fontWeight: "bold" }}>Changer</small>
             </button>
           </div>
         }
@@ -484,53 +523,17 @@ function MyMap() {
 }
 
 
-const Markers = ({ points, onMarkerClick, adjustCoordsRandomlyUnique }) => {
+const Markers = ({ points, onMarkerClick, adjustCoordsRandomlyUnique, createCustomMarkerIcon }) => {
   const map = useMap();
-  const { formatPrice } = useProperty();
-  const selectedProperty = useSelector((state) => state.searchForm.selectedProperty);
-
   const markersRef = useRef([]);
   const clusterer = useRef(null);
-
-  const createCustomMarkerIcon = (property, isSelected) => {
-    const price = formatPrice(property.rent || property.price);
-
-    // Base dimensions
-    const baseWidth = 80;
-    const baseHeight = 28;
-    const tipHeight = 5;
-
-    // Increase size if selected
-    const width = isSelected ? baseWidth * 1.1 : baseWidth;
-    const rectHeight = isSelected ? baseHeight * 1.1 : baseHeight;
-    const svgHeight = rectHeight + tipHeight + 10;
-
-    // Colors (back to your previous choice!)
-    const fillColor = isSelected ? "#ffcccc" : "#d2ff90";
-    const strokeColor = isSelected ? "#ff0000" : "red";
-    const textColor = "#000000";
-
-    // Transparent inner border when selected
-    const innerBorder = isSelected
-      ? `<rect x="7" y="7" rx="13" ry="13" width="${width - 14}" height="${rectHeight - 4}" fill="none" stroke="transparent" stroke-width="2"/>`
-      : "";
-
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${svgHeight}">
-    <rect x="5" y="5" rx="15" ry="15" width="${width - 10}" height="${rectHeight}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="3"/>
-    ${innerBorder}
-    <text x="${width / 2}" y="${5 + rectHeight / 2 + 5}" text-anchor="middle" font-size="14" font-weight="bold" fill="${textColor}">Ar ${price}</text>
-  </svg>`;
-
-    return {
-      url: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
-      scaledSize: new window.google.maps.Size(width, svgHeight),
-      anchor: new window.google.maps.Point(width / 2, svgHeight),
-    };
-  };
-
+  const formFilter = useSelector((state) => state.tranogasyMap.formFilter);
 
   useEffect(() => {
     if (!map) return;
+    if (formFilter) return;
+
+    console.log("Updating markers...");
 
     markersRef.current.forEach((marker) => marker.setMap(null));
     markersRef.current = [];
@@ -540,17 +543,15 @@ const Markers = ({ points, onMarkerClick, adjustCoordsRandomlyUnique }) => {
         ? property.coords
         : adjustCoordsRandomlyUnique(property.city.coords, property._id);
 
-      const isSelected = selectedProperty && selectedProperty._id === property._id;
-
       const marker = new window.google.maps.Marker({
         position: finalCoords,
         map,
-        icon: createCustomMarkerIcon(property, isSelected),
-        zIndex: isSelected ? 9999 : 1, // ⭐ high value for selected
+        icon: createCustomMarkerIcon(property, false),
+        zIndex: 1,
       });
 
       marker.addListener("click", () => {
-        onMarkerClick(property, finalCoords, true);
+        onMarkerClick(property, marker);
       });
 
       return marker;
@@ -568,7 +569,8 @@ const Markers = ({ points, onMarkerClick, adjustCoordsRandomlyUnique }) => {
     return () => {
       newMarkers.forEach((marker) => marker.setMap(null));
     };
-  }, [points, map, adjustCoordsRandomlyUnique, selectedProperty]);
+  }, [points, formFilter]);
+
 
   return null;
 };
