@@ -44,7 +44,6 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       if (!placeAutocomplete.getPlace().geometry) {
         console.log("No details available for input: '" + placeAutocomplete.getPlace().name + "'");
       } else {
-        console.log(placeAutocomplete.getPlace());
         dispatch(setSearchFormField({
           key: "searchCoordinates", value: {
             lat: placeAutocomplete.getPlace().geometry.location.lat(),

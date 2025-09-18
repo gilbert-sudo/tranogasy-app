@@ -32,10 +32,7 @@ export const {
 const geolocationSlice = createSlice({
   name: "geolocation",
   initialState: {
-    userCurrentPosition: {
-      lat: -18.905195365917766,
-      lng: 47.52370521426201,
-    },
+    userCurrentPosition: null,
   },
   reducers: {
     setUserCurrentPosition: (state, action) => {

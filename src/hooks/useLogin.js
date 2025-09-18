@@ -104,7 +104,7 @@ export const useLogin = () => {
     } else {
       // Phone number has invalid format
       setBootstrap("alert alert-danger");
-      setError("votre numéro de téléphone n'est pas correct.");
+      setError("Ce numéro ne possède pas de compte.");
       setIsLoading(false);
     }
   };

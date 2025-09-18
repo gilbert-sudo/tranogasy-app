@@ -36,7 +36,7 @@ export const useUser = () => {
       );
 
       const json = await response.json();
-      console.log(json);
+      console.log(json, {params});
 
       if (!response.ok) {
         setError(json.error);
@@ -45,8 +45,10 @@ export const useUser = () => {
       }
 
       if (response.ok) {
-        //delete the old avatar of the connected user
-        if (oldAvatar && oldAvatar.startsWith("http") && oldAvatar !== newAvatar) {
+        console.log("the response is ok ");
+        
+        // delete the old avatar of the connected user
+        if (oldAvatar && newAvatar && oldAvatar.startsWith("http") && newAvatar.startsWith("http") && oldAvatar !== newAvatar) {
           deleteImg(oldAvatar);
           console.log("deleted the old avatar", oldAvatar);
         }
@@ -60,6 +62,7 @@ export const useUser = () => {
         }
       }
     } catch (error) {
+      console.log("the response is not ok ", error);
       setIsLoading(false);
       setLocation("/nosignal");
     }

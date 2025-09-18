@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getCenterOfBounds } from "geolib";
-import { setUserCurrentPosition } from "../redux/redux";
 import {
   APIProvider,
   Map,
@@ -31,48 +30,36 @@ function MyMap({ position, circle }) {
 
   const dispatch = useDispatch();
   const { calculateZoomLevel } = useLocalMapHook();
-  const [mapzoom, setMapZoom] = useState(15);
-  const [center, setCenter] = useState(position);
+  const [mapZoom, setMapZoom] = useState(null);
+  const [center, setCenter] = useState(null);
 
   useEffect(() => {
-    // Get user's current position
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (userPosition) => {
-          const userCoords = {
-            lat: userPosition.coords.latitude,
-            lng: userPosition.coords.longitude,
-          };
+   
+    if (geolocation.userCurrentPosition) {
+      const newLocations = [
+        { coords: position },
+        { coords: geolocation.userCurrentPosition },
+      ];
 
-          dispatch(setUserCurrentPosition(userCoords));
+      const centerCoord = getCenterOfBounds([position, geolocation.userCurrentPosition]);
 
-          const newLocations = [
-            { coords: position },
-            { coords: userCoords },
-          ];
-          console.log("New locations to display on map:", newLocations);
-
-          const centerCoord = getCenterOfBounds([position, userCoords]);
-
-          if (centerCoord) {
-            const newCenter = {
-              lat: centerCoord.latitude,
-              lng: centerCoord.longitude,
-            };
-            setCenter(newCenter);
-          }
-          if (newLocations) {
-            setMapZoom(calculateZoomLevel(newLocations));
-          }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
+      if (centerCoord) {
+        const newCenter = {
+          lat: centerCoord.latitude,
+          lng: centerCoord.longitude,
+        };
+        setCenter(newCenter);
+      }
+      if (newLocations) {
+        setMapZoom(calculateZoomLevel(newLocations));
+      }
+      console.log("the users current position", geolocation.userCurrentPosition);
     } else {
-      console.error("Geolocation is not supported by this browser.");
+      setCenter(position);
+      setMapZoom(15);
     }
-  }, [geolocation.userCurrentPosition, position, dispatch, calculateZoomLevel]);
+
+  }, [geolocation.userCurrentPosition]);
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
@@ -84,82 +71,84 @@ function MyMap({ position, circle }) {
           position: "relative", // important for z-index to work
         }}
       >
-        <Map
-          zoom={mapzoom}
-          minZoom={6}
-          center={center}
-          mapId="80e7a8f8db80acb5"
-          options={{ gestureHandling: "cooperative" }}
-        >
-          <AdvancedMarker
-            style={{ height: "100px" }}
-            position={position}
-            onClick={() => setOpen(true)}
+        {mapZoom && center &&
+          <Map
+            zoom={mapZoom}
+            minZoom={6}
+            center={center}
+            mapId="80e7a8f8db80acb5"
+            options={{ gestureHandling: "cooperative" }}
           >
-            <Pin background={"red"} glyphColor={"white"}>
-              <img
-                src="images/logo.png"
-                alt=""
-                style={{
-                  borderRadius: "50%",
-                  border: "2px solid red",
-                  height: "45px",
-                  position: "absolute",
-                  left: "13%",
-                  top: "-55%",
-                }}
-              />
-            </Pin>
-          </AdvancedMarker>
+            <AdvancedMarker
+              style={{ height: "100px" }}
+              position={position}
+              onClick={() => setOpen(true)}
+            >
+              <Pin background={"red"} glyphColor={"white"}>
+                <img
+                  src="images/logo.png"
+                  alt=""
+                  style={{
+                    borderRadius: "50%",
+                    border: "2px solid red",
+                    height: "45px",
+                    position: "absolute",
+                    left: "13%",
+                    top: "-55%",
+                  }}
+                />
+              </Pin>
+            </AdvancedMarker>
 
-          {circle && (
-            <Circle
-              center={position}
-              radius={600}
-              strokeColor={"#7cbd1e"}
-              strokeOpacity={1}
-              strokeWeight={2}
-              fillColor={"#3b82f6"}
-              fillOpacity={0.1}
-              clickable={false}
-            />
-          )}
-
-          {geolocation.userCurrentPosition && (
-            <>
-              <AdvancedMarker
-                position={geolocation.userCurrentPosition}
-                title="Vous êtes ici"
-                className="user-marker"
-              >
-                <div className="user-marker-pin">
-                  <FaUser
-                    size={16}
-                    style={{ color: "black", marginRight: "4px" }}
-                  />
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      color: "#4285F4",
-                    }}
-                  >
-                    Vous
-                  </span>
-                </div>
-              </AdvancedMarker>
+            {circle && (
               <Circle
-                center={geolocation.userCurrentPosition}
-                radius={1000}
-                strokeColor={"#4285F4"}
-                strokeOpacity={2}
-                fillOpacity={0}
-                strokeWeight={3}
+                center={position}
+                radius={600}
+                strokeColor={"#7cbd1e"}
+                strokeOpacity={1}
+                strokeWeight={2}
+                fillColor={"#3b82f6"}
+                fillOpacity={0.1}
                 clickable={false}
               />
-            </>
-          )}
-        </Map>
+            )}
+
+            {geolocation.userCurrentPosition && (
+              <>
+                <AdvancedMarker
+                  position={geolocation.userCurrentPosition}
+                  title="Vous êtes ici"
+                  className="user-marker"
+                >
+                  <div className="user-marker-pin">
+                    <FaUser
+                      size={16}
+                      style={{ color: "black", marginRight: "4px" }}
+                    />
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: "#4285F4",
+                      }}
+                    >
+                      Vous
+                    </span>
+                  </div>
+                </AdvancedMarker>
+                <Circle
+                  center={geolocation.userCurrentPosition}
+                  radius={1000}
+                  strokeColor={"#4285F4"}
+                  strokeOpacity={2}
+                  fillOpacity={0}
+                  strokeWeight={3}
+                  clickable={false}
+                />
+              </>
+            )}
+          </Map>
+        }
       </div>
     </APIProvider>
   );

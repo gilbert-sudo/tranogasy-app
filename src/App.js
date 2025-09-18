@@ -43,6 +43,7 @@ import { useTimer } from "./hooks/useTimer";
 import { useMap } from "./hooks/useMap";
 import { useRedux } from "./hooks/useRedux";
 import { useNotification } from "./hooks/useNotification";
+import { useUser } from "./hooks/useUser";
 
 //all components
 import Navbar from "./components/Navbar";
@@ -124,6 +125,7 @@ function App() {
   const { findLocationsWithinDistance } = useMap();
   const { updateReduxProperty } = useRedux();
   const { pushNotification } = useNotification();
+  const { updateUser } = useUser();
 
   // Render the main content
 
@@ -146,16 +148,31 @@ function App() {
     const coordinates = await Geolocation.getCurrentPosition();
 
     if (coordinates.coords.latitude && coordinates.coords.longitude) {
-      console.log("dispatching Current position:", {
+      const userNewCoords = {
         lat: coordinates.coords.latitude,
         lng: coordinates.coords.longitude,
-      });
+      };
+
+      const isSameCoords = (JSON.stringify(user?.coords || null) === JSON.stringify(userNewCoords));
+      console.log("dispatching users Current position:", userNewCoords);
       dispatch(
-        setUserCurrentPosition({
-          lat: coordinates.coords.latitude,
-          lng: coordinates.coords.longitude,
-        })
+        setUserCurrentPosition(userNewCoords)
       );
+
+      if (user) {
+        if (!isSameCoords) {
+          console.log("updating the user's current coords ", user, { userNewCoords }, (JSON.stringify(user?.coords || null) !== JSON.stringify(userNewCoords)));
+          updateUser({
+            userId: user._id,
+            coords: {
+              lat: coordinates.coords.latitude,
+              lng: coordinates.coords.longitude,
+            }
+          });
+        } else {
+          console.log("don't update the user's current coords because it is the same", user, { userNewCoords }, (JSON.stringify(user?.coords || null) !== JSON.stringify(userNewCoords)));
+        }
+      }
     }
   };
 

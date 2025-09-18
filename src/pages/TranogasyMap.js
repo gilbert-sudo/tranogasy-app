@@ -65,6 +65,7 @@ function MyMap() {
 
   const properties = useSelector((state) => state.properties);
   const searchResults = useSelector((state) => state.searchResults);
+  const searchForm = useSelector((state) => state.searchForm);
   const geolocation = useSelector((state) => state.geolocation);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
   const selectedProperty = tranogasyMap.selectedProperty;
@@ -74,9 +75,7 @@ function MyMap() {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
 
-  const [defaultposition, setDefaultPosition] = useState(
-    geolocation.userCurrentPosition
-  );
+  const [defaultposition, setDefaultPosition] = useState(null);
   const dispatch = useDispatch();
   const { getLocationsCoords, calculateZoomLevel } = useLocalMapHook();
   const { tranogasyMapImg } = useImage();
@@ -86,6 +85,7 @@ function MyMap() {
   const sliderRef = useRef(null);
   const activeMarkerRef = useRef(null);
   const [mapTypeId, setMapTypeId] = useState("roadmap");
+  const [area, setArea] = useState("Antananarivo");
 
   // Define adjustCoordsRandomlyUnique here or pass it down if it's external
   // For simplicity, defining it here to be accessible within MyMap
@@ -254,6 +254,11 @@ function MyMap() {
 
 
   useEffect(() => {
+    const defaultCoords = {
+      lat: -18.905195365917766,
+      lng: 47.52370521426201,
+    };
+    (geolocation.userCurrentPosition) && setDefaultPosition(geolocation.userCurrentPosition)
     // Get user's current position
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -269,10 +274,12 @@ function MyMap() {
         },
         (error) => {
           console.error(error);
+          setDefaultPosition(defaultCoords);
         }
       );
     } else {
-      console.error("Geolocation is not supported by this browser.");
+      setDefaultPosition(defaultCoords);
+      console.log("Geolocation is not supported by this browser.");
     }
     console.log("User's current position:", geolocation.userCurrentPosition);
 
@@ -284,9 +291,10 @@ function MyMap() {
       setTimeout(() => {
         setMapZoomLevel(15); // Set a higher zoom level when a place is selected
         setCenter(selectedPlace);
-        setTimeout(() => {
-          dispatch(setReduxFormFilter({ formFilter: true }));
-        }, 0);
+        console.log("set selected place to center", selectedPlace);
+        // setTimeout(() => {
+        //   dispatch(setReduxFormFilter({ formFilter: true }));
+        // }, 0);
       }, 1000);
     }
   }, [selectedPlace]);
@@ -295,6 +303,20 @@ function MyMap() {
     let formFilter = tranogasyMap.formFilter;
     formFilter ? setIsSlideVisible(true) : setIsSlideVisible(false);
   }, [tranogasyMap.formFilter]);
+
+  useEffect(() => {
+    console.log("search form redux state", searchForm);
+    if (searchForm.address) {
+      const sentence = searchForm.address;
+
+      const match = sentence.trim().match(/(\w+,?\s*\w+)/);
+
+      const firstTwoWords = match ? match[1] : '';
+
+      setArea(firstTwoWords);
+    }
+
+  }, [searchForm.address]);
 
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
@@ -357,63 +379,61 @@ function MyMap() {
             </div>
           </>
         )}
+        {defaultposition &&
+          <Map
+            minZoom={9}
+            zoom={mapZoomLevel}
+            onZoomChanged={handleZoomChange}
+            center={searchResults ? center : defaultposition} // Default center if no search results Antananarivo
+            mapId="80e7a8f8db80acb5"
+            onClick={handleMapClick}
+            mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
+            options={{
+              fullscreenControl: false,
+              streetViewControl: false, // 👈 disable Pegman
+              gestureHandling: 'greedy'
+            }}
+            mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
+          >
+            {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
+            <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
+            {geolocation.userCurrentPosition && (
+              <>
+                <AdvancedMarker
+                  position={geolocation.userCurrentPosition}
+                  title="Vous êtes ici"
+                  className="user-marker"
+                >
+                  <div className="user-marker-pin">
+                    <FaUser size={16} style={{ marginRight: '4px' }} />
+                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
+                  </div>
+                </AdvancedMarker>
+                <Circle
+                  center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
+                  radius={1000}
+                  strokeColor={"#4285F4"}
+                  strokeOpacity={2}
+                  fillOpacity={0}
+                  strokeWeight={3}
+                  clickable={false} // Add this line to make it click-through
+                />
+              </>
+            )}
 
-        <Map
-          minZoom={9}
-          zoom={mapZoomLevel}
-          onZoomChanged={handleZoomChange}
-          center={searchResults ? center : {
-            lat: -18.905195365917766,
-            lng: 47.52370521426201,
-          }} // Default center if no search results Antananarivo
-          mapId="80e7a8f8db80acb5"
-          onClick={handleMapClick}
-          mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
-          options={{
-            fullscreenControl: false,
-            streetViewControl: false, // 👈 disable Pegman
-            gestureHandling: 'greedy'
-          }}
-          mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
-        >
-          {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
-          {geolocation.userCurrentPosition && (
-            <>
-              <AdvancedMarker
-                position={geolocation.userCurrentPosition}
-                title="Vous êtes ici"
-                className="user-marker"
-              >
-                <div className="user-marker-pin">
-                  <FaUser size={16} style={{ marginRight: '4px' }} />
-                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
-                </div>
-              </AdvancedMarker>
+            {selectedPlace &&
               <Circle
-                center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
-                radius={1000}
-                strokeColor={"#4285F4"}
+                center={selectedPlace} // Default center if no search results Antananarivo
+                radius={800}
+                strokeColor={"#7cbd1e"}
                 strokeOpacity={2}
                 fillOpacity={0}
-                strokeWeight={3}
+                strokeWeight={4}
                 clickable={false} // Add this line to make it click-through
               />
-            </>
-          )}
-
-          {selectedPlace &&
-            <Circle
-              center={selectedPlace} // Default center if no search results Antananarivo
-              radius={800}
-              strokeColor={"#7cbd1e"}
-              strokeOpacity={2}
-              fillOpacity={0}
-              strokeWeight={4}
-              clickable={false} // Add this line to make it click-through
-            />
-          }
-        </Map>
+            }
+          </Map>
+        }
         {/* Zone de recherche info card */}
         {selectedPlace &&
           <div
@@ -432,7 +452,7 @@ function MyMap() {
               gap: "8px",
             }}
           >
-            <strong>Antananarivo — Rayon : 15 km</strong>
+            <strong>{area && area} — Rayon : 800 m</strong>
             <button
               onClick={() => alert("Fonctionnalité à venir")}
               style={{
