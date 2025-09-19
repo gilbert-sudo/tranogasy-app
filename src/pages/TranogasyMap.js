@@ -17,7 +17,8 @@ import {
   Map,
   ControlPosition,
   useMap,
-  AdvancedMarker
+  AdvancedMarker,
+  MapControl
 } from "@vis.gl/react-google-maps";
 import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
@@ -25,6 +26,8 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdEditLocationAlt } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
+import { BiTargetLock } from "react-icons/bi";
 
 import "./css/custom-advanced-marker.css";
 
@@ -69,7 +72,6 @@ function MyMap() {
   const geolocation = useSelector((state) => state.geolocation);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
   const selectedProperty = tranogasyMap.selectedProperty;
-  const [selected, setSelected] = useState(null);
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -191,15 +193,6 @@ function MyMap() {
     }
   };
 
-
-
-  const handleMapClick = (event) => {
-    setSelected(event.detail.latLng);
-    setSelectedPlace(null);
-    setIsSlideVisible(false);
-    console.log(event.detail.latLng);
-  };
-
   const handleCloseSlideClick = (event) => {
     setIsSlideVisible(false);
     dispatch(setReduxFormFilter({ formFilter: false }));
@@ -211,6 +204,21 @@ function MyMap() {
     setMapZoomLevel(newZoom);
     setMapTypeId(newZoom > 14 ? "hybrid" : "roadmap");
   }, []);
+
+  function MapController({ selectedPlace, mapZoomLevel }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (map && center && !selectedPlace ) {
+        map.panTo(center);
+      }
+      if (map && selectedPlace) {
+        map.panTo(selectedPlace);
+      }
+    }, [map, selectedPlace, mapZoomLevel, center]);
+
+    return null; // this component doesn’t render anything visible
+  }
 
   useEffect(() => {
     if (properties && properties.length > 0) {
@@ -235,11 +243,20 @@ function MyMap() {
   useEffect(() => {
     if (searchResults && searchResults.length > 0) {
       const centerCoord = getCenterOfBounds(getLocationsCoords(searchResults));
-      if (centerCoord)
-        setCenter({ lat: centerCoord.latitude, lng: centerCoord.longitude });
-
       const zoomLevel = calculateZoomLevel(searchResults);
-      setMapZoomLevel(zoomLevel);
+
+      if (selectedPlace) {
+        setCenter(selectedPlace);
+        setTimeout(() => {
+          setMapZoomLevel(15);
+        }, 50);
+        console.log("running set selected place to center", selectedPlace);
+      } else {
+        if (centerCoord)
+          setCenter({ lat: centerCoord.latitude, lng: centerCoord.longitude });
+        setMapZoomLevel(zoomLevel);
+        console.log("running set search results to center", centerCoord, zoomLevel);
+      }
       if (showMapLoader) {
         const timeoutDuration = 2500; // Duration in milliseconds to show the loader
         setTimeout(() => {
@@ -288,14 +305,12 @@ function MyMap() {
   useEffect(() => {
     // get the selected place coordinates
     if (selectedPlace) {
-      setTimeout(() => {
         setMapZoomLevel(15); // Set a higher zoom level when a place is selected
-        setCenter(selectedPlace);
-        console.log("set selected place to center", selectedPlace);
         // setTimeout(() => {
         //   dispatch(setReduxFormFilter({ formFilter: true }));
         // }, 0);
-      }, 1000);
+        console.log("Selected place changed:", selectedPlace);
+        
     }
   }, [selectedPlace]);
 
@@ -384,9 +399,8 @@ function MyMap() {
             minZoom={9}
             zoom={mapZoomLevel}
             onZoomChanged={handleZoomChange}
-            center={searchResults ? center : defaultposition} // Default center if no search results Antananarivo
+            center={(searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
             mapId="80e7a8f8db80acb5"
-            onClick={handleMapClick}
             mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
             options={{
               fullscreenControl: false,
@@ -395,6 +409,8 @@ function MyMap() {
             }}
             mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
           >
+            <MapController selectedPlace={selectedPlace} mapZoomLevel={mapZoomLevel} />
+
             {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
             <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
             {geolocation.userCurrentPosition && (
@@ -437,6 +453,7 @@ function MyMap() {
         {/* Zone de recherche info card */}
         {selectedPlace &&
           <div
+            className="search-area-card shadow-sm"
             style={{
               position: "absolute",
               top: "97px",
@@ -450,9 +467,30 @@ function MyMap() {
               display: "flex",
               alignItems: "center",
               gap: "8px",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setCenter(selectedPlace);
+              setMapZoomLevel(15);
             }}
           >
-            <strong>{area && area} — Rayon : 800 m</strong>
+            <strong><FaLocationDot className="mb-2" style={{ fontSize: "14px", fontWeight: "bold", color: "red" }} /> {area && area} — Rayon : 800 m</strong>
+            <button
+              type="button"
+              style={{
+                border: "none",
+                padding: "5px",
+                borderRadius: "50%",
+                background: "#7cbd1e",
+                color: "white",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                fontSize: "18px",
+              }}
+            >
+              <BiTargetLock />
+            </button>
             <button
               onClick={() => alert("Fonctionnalité à venir")}
               style={{
