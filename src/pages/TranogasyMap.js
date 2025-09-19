@@ -18,7 +18,6 @@ import {
   ControlPosition,
   useMap,
   AdvancedMarker,
-  MapControl
 } from "@vis.gl/react-google-maps";
 import { useLoadScript } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";

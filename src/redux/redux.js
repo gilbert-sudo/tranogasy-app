@@ -526,6 +526,7 @@ export const {
 //tranogasy map 
 const tranogasyMapInitialState = {
   formFilter: false,
+  activeFiltersCount: 0,
   selectedProperty: null,
   previousCenter: null,
   previousSelectedPlace: null,

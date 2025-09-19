@@ -7,8 +7,8 @@ import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
 // import { LiaBinocularsSolid } from "react-icons/lia";
 import { IoMdCloseCircle } from "react-icons/io";
-import { setReduxFormFilter, setSearchFormField, setTranogasyMapField } from "../redux/redux";
-import { useDispatch } from "react-redux";
+import { setReduxFormFilter, setSearchFormField } from "../redux/redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
@@ -21,6 +21,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [showClearButton, setShowClearButton] = useState(false);
+  const activeFiltersCount = useSelector((state) => state.tranogasyMap.activeFiltersCount || 0);
 
   useEffect(() => {
     if (location.startsWith("/tranogasyMap")) {
@@ -174,6 +175,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
         <div className="d-flex" style={{ gap: "5px", position: "relative" }}>
           {/* Search-filter button with spotlight */}
           <div style={{ position: "relative", display: "inline-block" }}>
+            {/* The button code you provided... */}
             <button
               className="search-filter btn"
               onClick={() => {
@@ -204,6 +206,32 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
             >
               <TbAdjustmentsSearch />
             </button>
+
+            {/* Start of the new counter */}
+            {activeFiltersCount > 0 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "-8px",
+                  right: "-8px",
+                  backgroundColor: "#dc3545", // Red color
+                  color: "#fff", // White text
+                  borderRadius: "50%",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  border: "2px solid #fff", // Optional white border
+                  zIndex: 10,
+                }}
+              >
+                {activeFiltersCount}
+              </div>
+            )}
+            {/* End of the new counter */}
 
             {showTooltip && (
               <>

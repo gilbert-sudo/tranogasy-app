@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
-import { setSearchFormField } from "../redux/redux";
+import { setSearchFormField, setTranogasyMapField } from "../redux/redux";
 
 import RangeSlider from "react-range-slider-input";
 import "./css/range-slider.css";
@@ -469,6 +469,44 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
         solarPanels,
       };
 
+      const counterParameters = {
+        carAccess,
+        motoAccess,
+        wifiAvailability,
+        parkingSpaceAvailable,
+        waterPumpSupply,
+        electricity,
+        securitySystem,
+        waterWellSupply,
+        surroundedByWalls,
+        kitchenFacilities,
+        airConditionerAvailable,
+        swimmingPool,
+        furnishedProperty,
+        hotWaterAvailable,
+        elevator,
+        garden,
+        courtyard,
+        balcony,
+        roofTop,
+        independentHouse,
+        garage,
+        guardianHouse,
+        bassin,
+        placardKitchen,
+        bathtub,
+        fireplace,
+        fiberOpticReady,
+        seaView,
+        mountainView,
+        panoramicView,
+        solarPanels,
+      };
+      
+      const activeFiltersCount = Object.values(counterParameters).filter(value => value === true).length;
+
+      dispatch(setTranogasyMapField({ key: "activeFiltersCount", value: activeFiltersCount }));
+      
       setSearchResults(searchProperty(parameters));
     }
   }, [
