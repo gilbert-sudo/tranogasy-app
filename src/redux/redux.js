@@ -527,6 +527,8 @@ export const {
 const tranogasyMapInitialState = {
   formFilter: false,
   selectedProperty: null,
+  previousCenter: null,
+  previousSelectedPlace: null,
 };
 
 const tranogasyMapSlice = createSlice({

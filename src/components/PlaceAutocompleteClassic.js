@@ -5,9 +5,9 @@ import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./css/googlemaps.css";
 import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
-import { LiaBinocularsSolid } from "react-icons/lia";
+// import { LiaBinocularsSolid } from "react-icons/lia";
 import { IoMdCloseCircle } from "react-icons/io";
-import { setReduxFormFilter, setSearchFormField } from "../redux/redux";
+import { setReduxFormFilter, setSearchFormField, setTranogasyMapField } from "../redux/redux";
 import { useDispatch } from "react-redux";
 
 const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {

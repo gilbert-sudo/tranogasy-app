@@ -198,24 +198,58 @@ function MyMap() {
     dispatch(setReduxFormFilter({ formFilter: false }));
   };
 
+  const setCenterTo = (coords) => {
+    if (coords) {
+      dispatch(setTranogasyMapField({ key: "previousSelectedPlace", value: null }));
+      dispatch(setTranogasyMapField({ key: "previousCenter", value: null }));
+      setTimeout(() => {
+        setCenter(coords);
+      }, 50);
+      console.log("Center set to:", coords);
+    }
+  };
+
   const handleZoomChange = useCallback((event) => {
     const newZoom = event.detail.zoom;
-    // Update zoom and map type immediately
+    // setMapZoomChange(true);
     setMapZoomLevel(newZoom);
     setMapTypeId(newZoom > 14 ? "hybrid" : "roadmap");
+    // setTimeout(() => {
+    //   setMapZoomChange(false);
+    //   console.log("Zoom move changed to:", false);
+    // }, 5000);
   }, []);
 
-  function MapController({ selectedPlace, mapZoomLevel }) {
+  function MapController({ selectedPlace }) {
     const map = useMap();
+    const dispatch = useDispatch();
+
+    const tranogasyMap = useSelector((state) => state.tranogasyMap);
 
     useEffect(() => {
-      if (map && center && !selectedPlace ) {
-        map.panTo(center);
+
+      const isSameCenter = (JSON.stringify(center || null) === JSON.stringify(tranogasyMap.previousCenter || null));
+      const isSameSelectedPlace = (JSON.stringify(selectedPlace || null) === JSON.stringify(tranogasyMap.previousSelectedPlace || null));
+      if (!isSameCenter) {
+        // console.log("11111111111111111111111111111111111111111111 is a new center");
+        dispatch(setTranogasyMapField({ key: "previousCenter", value: center }));
+        if (map && center && !selectedPlace) {
+          map.panTo(center);
+          map.setZoom(mapZoomLevel);
+          // console.log("MapController panning to center:", center, isSameCenter);
+        }
       }
-      if (map && selectedPlace) {
-        map.panTo(selectedPlace);
+      if (!isSameSelectedPlace) {
+        // console.log("11111111111111111111111111111111111111111111 is a new selectedPlace");
+        dispatch(setTranogasyMapField({ key: "previousSelectedPlace", value: selectedPlace }));
+        if (map && selectedPlace) {
+          // console.log("MapController panning to selectedPlace:", selectedPlace);
+          map.panTo(selectedPlace);
+          map.setZoom(15);
+        }
       }
-    }, [map, selectedPlace, mapZoomLevel, center]);
+
+    }, [map, tranogasyMap.previousCenter, tranogasyMap.previousSelectedPlace]);
 
     return null; // this component doesn’t render anything visible
   }
@@ -246,10 +280,7 @@ function MyMap() {
       const zoomLevel = calculateZoomLevel(searchResults);
 
       if (selectedPlace) {
-        setCenter(selectedPlace);
-        setTimeout(() => {
-          setMapZoomLevel(15);
-        }, 50);
+        setCenterTo(selectedPlace);
         console.log("running set selected place to center", selectedPlace);
       } else {
         if (centerCoord)
@@ -301,18 +332,6 @@ function MyMap() {
     console.log("User's current position:", geolocation.userCurrentPosition);
 
   }, [geolocation.userCurrentPosition]);
-
-  useEffect(() => {
-    // get the selected place coordinates
-    if (selectedPlace) {
-        setMapZoomLevel(15); // Set a higher zoom level when a place is selected
-        // setTimeout(() => {
-        //   dispatch(setReduxFormFilter({ formFilter: true }));
-        // }, 0);
-        console.log("Selected place changed:", selectedPlace);
-        
-    }
-  }, [selectedPlace]);
 
   useEffect(() => {
     let formFilter = tranogasyMap.formFilter;
@@ -409,7 +428,7 @@ function MyMap() {
             }}
             mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
           >
-            <MapController selectedPlace={selectedPlace} mapZoomLevel={mapZoomLevel} />
+            <MapController selectedPlace={selectedPlace} />
 
             {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
             <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
@@ -470,7 +489,7 @@ function MyMap() {
               cursor: "pointer",
             }}
             onClick={() => {
-              setCenter(selectedPlace);
+              setCenterTo(selectedPlace);
               setMapZoomLevel(15);
             }}
           >
