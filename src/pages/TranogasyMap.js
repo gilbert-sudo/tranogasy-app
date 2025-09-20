@@ -4,10 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
+import FilterInfoBox from "../components/FilterInfoBox";
 import TranogasyMapSkeleton from "../components/skeletons/TranogasyMapSkeleton";
 import Circle from "../components/Circle";
 
-import { setReduxFormFilter, resetSearchForm, resetSearchResults, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
+import { setReduxFormFilter, resetSearchForm, resetSearchResults, resetTranogasyMap, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { useImage } from "../hooks/useImage";
@@ -24,7 +25,7 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdEditLocationAlt } from "react-icons/md";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaMoneyBillWave } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { BiTargetLock } from "react-icons/bi";
 
@@ -51,6 +52,7 @@ export default function TranogasyMap() {
       console.log("Component unmount — reset states");
       dispatch(resetSearchResults());
       dispatch(resetSearchForm());
+      dispatch(resetTranogasyMap());
     };
     // Call the cleanup function when the component unmounts
     return cleanupFunction;
@@ -423,7 +425,8 @@ function MyMap() {
             options={{
               fullscreenControl: false,
               streetViewControl: false, // 👈 disable Pegman
-              gestureHandling: 'greedy'
+              cameraControl: false,
+              gestureHandling: 'greedy',
             }}
             mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
           >
@@ -480,11 +483,12 @@ function MyMap() {
               color: "white",
               padding: "6px 8px",
               borderRadius: "30px",
-              fontSize: "13px",
+              // BEFORE: fontSize: "13px",
+              fontSize: "clamp(12px, 2.5vw, 14px)", // 👈 RESPONSIVE
               zIndex: 20,
               display: "flex",
               alignItems: "center",
-              gap: "8px",
+              gap: "3px",
               cursor: "pointer",
             }}
             onClick={() => {
@@ -492,7 +496,10 @@ function MyMap() {
               setMapZoomLevel(15);
             }}
           >
-            <strong><FaLocationDot className="mb-2" style={{ fontSize: "14px", fontWeight: "bold", color: "red" }} /> {area && area} — Rayon : 800 m</strong>
+            <strong>
+              <FaLocationDot className="mb-2" style={{ fontSize: "14px", fontWeight: "bold", color: "red" }} />
+              {area && area} - Rayon : 800 m
+            </strong>
             <button
               type="button"
               style={{
@@ -523,10 +530,19 @@ function MyMap() {
                 fontSize: "18px",
               }}
             >
-              <MdEditLocationAlt /> <small style={{ fontSize: "9px", fontWeight: "bold" }}>Changer</small>
+              <MdEditLocationAlt />
+              <small style={{
+                fontSize: "9px",
+                fontWeight: "bold"
+              }}>
+                Changer
+              </small>
             </button>
           </div>
         }
+
+        {/* Filter info box */}
+        {!showMapLoader && <FilterInfoBox />}
 
         <div
           className={`property-details-slide ${isSliderVisible ? "show" : ""}`}

@@ -13,6 +13,9 @@ export const useLogout = () => {
     //update the user redux state
     resetReduxStore();
     setLocation("/loader");
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   return { logout };
