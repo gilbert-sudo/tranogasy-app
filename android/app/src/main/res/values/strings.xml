@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TranoGasy</string>
+    <string name="title_activity_main">TranoGasy</string>
+    <string name="package_name">com.tranogasy.app</string>
+    <string name="custom_url_scheme">com.tranogasy.app</string>
+</resources>

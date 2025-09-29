@@ -122,7 +122,7 @@ export const useLoader = () => {
       }
     } catch (error) {
       console.log(error);
-      setLocation("/nosignal");
+      // setLocation("/nosignal");
     }
   };
 

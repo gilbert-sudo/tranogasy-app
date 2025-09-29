@@ -37,7 +37,9 @@ import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import PasswordRecoveryVerificationPage from "./pages/PasswordRecoveryVerificationPage";
 import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisationPage";
 import ImageUpload from "./pages/ImageUpload";
+
 import { Geolocation } from "@capacitor/geolocation";
+import { App as CapacitorApp } from "@capacitor/app";
 
 import { useTimer } from "./hooks/useTimer";
 import { useMap } from "./hooks/useMap";
@@ -48,6 +50,7 @@ import { useUser } from "./hooks/useUser";
 //all components
 import Navbar from "./components/Navbar";
 import AutoSubscribe from "./components/AutoSubscribe";
+import BackButtonHandler from "./components/BackButtonHandler";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -355,9 +358,11 @@ function App() {
     };
   }, [window.location.href]);
 
+
   return (
     <WonderPush options={{ webKey: 'ad242738aead9587c7ee3a981f65e2acabfa82bbe33620c0d14cf1ced5b0b5a1' }}>
       <AutoSubscribe />
+      <BackButtonHandler />
       <div className="app">
         <SkeletonTheme>
           <Router hook={useHashLocation}>

@@ -77,6 +77,10 @@ function MyMap() {
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
+  const defaultCoords = {
+    lat: -18.905195365917766,
+    lng: 47.52370521426201,
+  };
 
   const [defaultposition, setDefaultPosition] = useState(null);
   const dispatch = useDispatch();
@@ -303,27 +307,38 @@ function MyMap() {
 
 
   useEffect(() => {
-    const defaultCoords = {
-      lat: -18.905195365917766,
-      lng: 47.52370521426201,
-    };
     (geolocation.userCurrentPosition) && setDefaultPosition(geolocation.userCurrentPosition)
     // Get user's current position
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
+        // SUCCESS CALLBACK
         (position) => {
-          setDefaultPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          dispatch(setUserCurrentPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }));
+          // Add a condition to check if coords are valid
+          if (position && position.coords && position.coords.latitude !== undefined) {
+            console.log("Geolocation success:", {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+
+            setDefaultPosition({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+            dispatch(setUserCurrentPosition({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            }));
+          } else {
+            // FALLBACK: If the success callback ran but coords are missing/invalid
+            console.log("Geolocation success, but no coordinates received. Using default coords.");
+            setDefaultPosition(defaultCoords);
+          }
         },
+        // ERROR CALLBACK (already handles permission denied and timeouts)
         (error) => {
           console.error(error);
           setDefaultPosition(defaultCoords);
+          console.log("Geolocation error, using default coords:", defaultCoords);
         }
       );
     } else {
@@ -333,6 +348,7 @@ function MyMap() {
     console.log("User's current position:", geolocation.userCurrentPosition);
 
   }, [geolocation.userCurrentPosition]);
+
 
   useEffect(() => {
     let formFilter = tranogasyMap.formFilter;
@@ -414,63 +430,61 @@ function MyMap() {
             </div>
           </>
         )}
-        {defaultposition &&
-          <Map
-            minZoom={9}
-            zoom={mapZoomLevel}
-            onZoomChanged={handleZoomChange}
-            center={(searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
-            mapId="80e7a8f8db80acb5"
-            mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
-            options={{
-              fullscreenControl: false,
-              streetViewControl: false, // 👈 disable Pegman
-              cameraControl: false,
-              gestureHandling: 'greedy',
-            }}
-            mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
-          >
-            <MapController selectedPlace={selectedPlace} />
+        <Map
+          minZoom={9}
+          zoom={mapZoomLevel}
+          onZoomChanged={handleZoomChange}
+          center={(searchResults ? center : defaultposition) || defaultCoords} // Default center if no search results Antananarivo
+          mapId="80e7a8f8db80acb5"
+          mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
+          options={{
+            fullscreenControl: false,
+            streetViewControl: false, // 👈 disable Pegman
+            cameraControl: false,
+            gestureHandling: 'greedy',
+          }}
+          mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
+        >
+          <MapController selectedPlace={selectedPlace} />
 
-            {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-            <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
-            {geolocation.userCurrentPosition && (
-              <>
-                <AdvancedMarker
-                  position={geolocation.userCurrentPosition}
-                  title="Vous êtes ici"
-                  className="user-marker"
-                >
-                  <div className="user-marker-pin">
-                    <FaUser size={16} style={{ marginRight: '4px' }} />
-                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
-                  </div>
-                </AdvancedMarker>
-                <Circle
-                  center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
-                  radius={1000}
-                  strokeColor={"#4285F4"}
-                  strokeOpacity={2}
-                  fillOpacity={0}
-                  strokeWeight={3}
-                  clickable={false} // Add this line to make it click-through
-                />
-              </>
-            )}
-
-            {selectedPlace &&
+          {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
+          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
+          {geolocation.userCurrentPosition && (
+            <>
+              <AdvancedMarker
+                position={geolocation.userCurrentPosition}
+                title="Vous êtes ici"
+                className="user-marker"
+              >
+                <div className="user-marker-pin">
+                  <FaUser size={16} style={{ marginRight: '4px' }} />
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
+                </div>
+              </AdvancedMarker>
               <Circle
-                center={selectedPlace} // Default center if no search results Antananarivo
-                radius={800}
-                strokeColor={"#7cbd1e"}
+                center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
+                radius={1000}
+                strokeColor={"#4285F4"}
                 strokeOpacity={2}
                 fillOpacity={0}
-                strokeWeight={4}
+                strokeWeight={3}
                 clickable={false} // Add this line to make it click-through
               />
-            }
-          </Map>
-        }
+            </>
+          )}
+
+          {selectedPlace &&
+            <Circle
+              center={selectedPlace} // Default center if no search results Antananarivo
+              radius={800}
+              strokeColor={"#7cbd1e"}
+              strokeOpacity={2}
+              fillOpacity={0}
+              strokeWeight={4}
+              clickable={false} // Add this line to make it click-through
+            />
+          }
+        </Map>
         {/* Zone de recherche info card */}
         {selectedPlace &&
           <div
