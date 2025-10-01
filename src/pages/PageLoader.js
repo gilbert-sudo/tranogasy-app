@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { v6 as uuidv6 } from "uuid";
 import { HashLoader } from "react-spinners";
 import { setSignUp, setLoader } from "../redux/redux";
@@ -12,9 +12,12 @@ const PageLoader = () => {
   //redux
   const dispatch = useDispatch();
   const [location, setLocation] = useLocation();
+  const [oneTimeTask, setOneTimeTask] = useState(false);
   const user = useSelector((state) => state.user);
   const signupWaitlist = useSelector((state) => state.signup);
   const topProperties = useSelector((state) => state.topProperties);
+  const properties = useSelector((state) => state.properties);
+
 
   const {
     loadTopProperties,
@@ -43,6 +46,11 @@ const PageLoader = () => {
     socketId = generateUniqueId();
     localStorage.setItem("socketId", socketId);
     console.log("socketId", socketId);
+  }
+
+  if (oneTimeTask === false) {
+    !properties && loadProperties();
+    setOneTimeTask(true);
   }
 
   useEffect(() => {
@@ -85,12 +93,13 @@ const PageLoader = () => {
       }
       const mapData = await loadMap();
       console.log("mapData", mapData);
-      
+
       loadPlans();
-      loadProperties();
+
     };
     fetchLastUser();
   }, [user, topProperties, location]);
+
 
   // Render the main content
   return (
@@ -99,7 +108,7 @@ const PageLoader = () => {
       <div className="page-loader mt-2"></div>
       <div className="spinner-loader mt-5">
         <div className="d-flex justify-content-center align-items-center">
-          <small className="mr-2" style={{ color: "#c59d45"}}>
+          <small className="mr-2" style={{ color: "#c59d45" }}>
             Chargement
           </small>{" "}
           <HashLoader color="#c59d45" size={20} />

@@ -1,4 +1,5 @@
 // Desc: This hook is used to load data from the server and dispatch it to the redux store
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useDispatch } from "react-redux";
 import {
@@ -16,6 +17,7 @@ import {
 export const useLoader = () => {
   const dispatch = useDispatch();
   const [, setLocation] = useLocation();
+  const [finalPropertyData, setFinalPropertyData] = useState(null);
 
   // Load liked properties
   const loadLikes = async (userId) => {
@@ -107,24 +109,49 @@ export const useLoader = () => {
   };
 
   const loadProperties = async () => {
+    let allProperties = [];
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties`, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "aplication/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/properties/paginated`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       const json = await response.json();
 
       if (response.ok) {
-        dispatch(setProperties(json));
-        dispatch(setSearchResults(json));
+        for (let page = 1; page <= json.totalPages; page++) {
+          const response = await fetch(
+            `${process.env.REACT_APP_API_URL}/api/properties/paginated?page=${page}&limit=500`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const json2 = await response.json();
+
+          if (response.ok) {
+            console.log("Fetching page:", page);
+            allProperties = [...allProperties, ...json2.properties];
+            setTimeout(() => {
+              if (page === json.totalPages) {
+                dispatch(setProperties(allProperties));
+                console.log("all propertis were loaded and ready to use", allProperties);
+              }
+            }, 50);
+          }
+        }
       }
     } catch (error) {
       console.log(error);
-      // setLocation("/nosignal");
     }
   };
+
 
   const loadPayments = async (userId) => {
     try {
@@ -166,7 +193,7 @@ export const useLoader = () => {
     }
   };
 
-  
+
   const loadUsersProperties = async (userId) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties/user/${userId}`, {
@@ -204,7 +231,7 @@ export const useLoader = () => {
       setLocation("/nosignal");
     }
   };
-  
+
   return {
     loadLikes,
     loadNotifications,

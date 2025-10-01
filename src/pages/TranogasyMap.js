@@ -77,6 +77,7 @@ function MyMap() {
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
+  const selectedMarkersHistory = [null, null];
   const defaultCoords = {
     lat: -18.905195365917766,
     lng: 47.52370521426201,
@@ -160,9 +161,17 @@ function MyMap() {
     };
   };
 
+  const updateSelectedMarkersHistory = (property) => {
+    selectedMarkersHistory.push(property);
+    const remainingElements = selectedMarkersHistory.slice(-2);
 
-  const handleMarkerClick = async (property, marker) => {
+    return remainingElements;
+  };
+
+  const handleMarkerClick = (property, marker) => {
     dispatch(setTranogasyMapField({ key: "selectedProperty", value: property }));
+
+    const updatedHistory = updateSelectedMarkersHistory(property);
 
     setIsSlideVisible(true);
 
@@ -176,8 +185,8 @@ function MyMap() {
       // 👉 Remove active from all markers
       // This is handled by resetting the icon of the previously active marker
       if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
-        const prevProperty = tranogasyMap.selectedProperty;
-        activeMarkerRef.current.setIcon(createCustomMarkerIcon(prevProperty, false));
+        console.log("Resetting previous marker icon for property:", updatedHistory);
+        activeMarkerRef.current.setIcon(createCustomMarkerIcon(updatedHistory[0], false));
         activeMarkerRef.current.setZIndex(1); // Reset previous marker zIndex
       }
       //Change the marker's icon to indicate it's active
