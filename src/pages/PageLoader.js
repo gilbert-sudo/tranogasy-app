@@ -23,7 +23,6 @@ const PageLoader = () => {
     loadTopProperties,
     loadLikes,
     loadNotifications,
-    loadUsersProperties,
     loadProperties,
     loadPayments,
     loadPlans
@@ -87,9 +86,6 @@ const PageLoader = () => {
       if (topProperties) {
         setLocation("/explore");
         dispatch(setLoader("done"));
-        if (user) {
-          loadUsersProperties(user._id);
-        }
       }
       const mapData = await loadMap();
       console.log("mapData", mapData);

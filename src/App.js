@@ -46,6 +46,7 @@ import { useMap } from "./hooks/useMap";
 import { useRedux } from "./hooks/useRedux";
 import { useNotification } from "./hooks/useNotification";
 import { useUser } from "./hooks/useUser";
+import { useLoader } from "./hooks/useLoader";
 
 //all components
 import Navbar from "./components/Navbar";
@@ -121,6 +122,8 @@ function App() {
   const user = useSelector((state) => state.user);
 
   const topNavbar = useSelector((state) => state.topNavbar);
+  const properties = useSelector((state) => state.properties);
+  const usersProperties = useSelector((state) => state.usersProperties);
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const historyStack = useSelector((state) => state.historyStack.value);
 
@@ -129,6 +132,7 @@ function App() {
   const { updateReduxProperty } = useRedux();
   const { pushNotification } = useNotification();
   const { updateUser } = useUser();
+  const { loadUsersPropertiesFromLocalState } = useLoader();
 
   // Render the main content
 
@@ -325,6 +329,12 @@ function App() {
       socket.off("user");
     };
   }, [user]);
+
+  useEffect(() => {
+    if (user && properties && properties.length > 0 && !usersProperties) {
+      loadUsersPropertiesFromLocalState(user._id, properties);
+    }
+  }, [user, properties, usersProperties]);
 
   useEffect(() => {
     const trackHistory = () => {

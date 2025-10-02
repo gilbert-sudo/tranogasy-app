@@ -16,7 +16,7 @@ const PropertyFilter = () => {
             </div>
             <div className="select-wrap">
               <MdArrowDropDown className="icon" />
-              <select className="form-control form-control-sm d-block rounded-0">
+              <select className="form-control form-control-sm d-block" style={{ borderRadius: "30px" }}>
                 <option value="">Trier par</option>
                 <option value="">Prix croissant</option>
                 <option value="">Prix décroissant</option>

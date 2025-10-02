@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation } from "wouter";
 import { useSelector } from "react-redux";
 import Linkify from "linkify-react";
@@ -73,6 +73,9 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
   const [showMap, setShowMap] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [isSliderVisible, setIsSlideVisible] = useState(false);
+
+  const [lastScrollLeft, setLastScrollLeft] = useState(0);
+
   const scrollRef = useRef(null);
 
   const propertyDataString = JSON.stringify(property);
@@ -111,24 +114,48 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
 
   }, []);
 
-  // navigation functions
-  const goToImage = (index) => {
-    if (scrollRef.current) {
+  // Enhanced navigation functions
+  const goToImage = useCallback((index) => {
+    if (scrollRef.current && index >= 0 && index < property.images.length) {
+      const scrollWidth = scrollRef.current.offsetWidth;
       scrollRef.current.scrollTo({
-        left: scrollRef.current.offsetWidth * index,
+        left: scrollWidth * index,
         behavior: "smooth",
       });
       setCurrentIndex(index);
     }
-  };
+  }, [property.images.length]);
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     if (currentIndex > 0) goToImage(currentIndex - 1);
+  }, [currentIndex, goToImage]);
+
+  const nextImage = useCallback(() => {
+    if (currentIndex < property.images.length - 1) goToImage(currentIndex + 1);
+  }, [currentIndex, property.images.length, goToImage]);
+
+  const touchStartX = useRef(0);
+
+  const handleImageTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    handleTouchStart(e); // keep your existing lock logic
   };
 
-  const nextImage = () => {
-    if (currentIndex < property.images.length - 1) goToImage(currentIndex + 1);
+  const handleImageTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchEndX - touchStartX.current;
+
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        prevImage(); // swipe right → previous image
+      } else {
+        nextImage(); // swipe left → next image
+      }
+    } else {
+      goToImage(currentIndex); // snap back if swipe too small
+    }
   };
+
 
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
     year: "numeric",
@@ -231,15 +258,17 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
       {/* Image slider */}
       <div
         ref={scrollRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
+        onTouchStart={handleImageTouchStart}
+        onTouchMove={handleTouchMove}  // still from your hook
+        onTouchEnd={handleImageTouchEnd}
         onScroll={(e) => {
           const newIndex = Math.round(e.target.scrollLeft / e.target.offsetWidth);
           setCurrentIndex(newIndex);
         }}
+
         style={{
           display: "flex",
-          overflowX: "scroll",
+          overflowX: "hidden",
           width: "100%",
           height: "100%",
           scrollSnapType: "x mandatory",

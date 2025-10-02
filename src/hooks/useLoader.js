@@ -17,7 +17,6 @@ import {
 export const useLoader = () => {
   const dispatch = useDispatch();
   const [, setLocation] = useLocation();
-  const [finalPropertyData, setFinalPropertyData] = useState(null);
 
   // Load liked properties
   const loadLikes = async (userId) => {
@@ -141,7 +140,7 @@ export const useLoader = () => {
             setTimeout(() => {
               if (page === json.totalPages) {
                 dispatch(setProperties(allProperties));
-                console.log("all propertis were loaded and ready to use", allProperties);
+                // console.log("all propertis were loaded and ready to use", allProperties);
               }
             }, 50);
           }
@@ -213,6 +212,12 @@ export const useLoader = () => {
     }
   };
 
+  const loadUsersPropertiesFromLocalState = (userId, properties) => {
+    const userProperties = properties.filter(property => property.owner._id === userId);
+    dispatch(setUsersProperties(userProperties));
+    console.log("user properties loaded from local state: ", userProperties);
+  }
+
   const loadSpesificUsersProperties = async (userId) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties/user/${userId}`, {
@@ -241,6 +246,7 @@ export const useLoader = () => {
     loadPlans,
     loadTopProperties,
     loadUsersProperties,
+    loadUsersPropertiesFromLocalState,
     loadSpesificUsersProperties
   };
 };
