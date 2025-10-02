@@ -1,4 +1,6 @@
 import OwlCarousel from "react-owl-carousel";
+import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
 import { BsFillSearchHeartFill } from "react-icons/bs";
 import { GiRobotHelmet } from "react-icons/gi";
 import { useLocation } from "wouter";
@@ -8,13 +10,14 @@ const options = {
   items: 1,
   nav: true,
   dots: false,
-  autoplay: true,
+  autoplay: false,
   loop: true,
 };
 
 const HomeSlider = () => {
   const [, setLocation] = useLocation();
   const { featureUnderConstructionPopup } = usePopup();
+  const properties = useSelector((state) => state.properties);
 
   return (
     <OwlCarousel className="slide-one-item home-slider site-blocks-cover-background owl-theme h-50" {...options}>
@@ -32,14 +35,45 @@ const HomeSlider = () => {
           <div className="row align-items-center justify-content-center text-center">
             <div className="col-md-6 align-self-end">
               <p className="align-self-end">
-                <button
-                  type="button"
-                  onClick={() => setLocation("/tranogasyMap")}
-                  className="btn btn-white btn-outline-white btn-5 font-weight-bold"
-                  style={{ borderRadius: "30px" }}
-                >
-                  <BsFillSearchHeartFill /> Rechercher un bien
-                </button>
+                {properties && properties.length > 0 ?
+                  (
+                    <button
+                      type="button"
+                      onClick={() => setLocation("/tranogasyMap")}
+                      className="btn btn-white btn-outline-white btn-5 font-weight-bold"
+                      style={{ borderRadius: "30px" }}
+                    >
+                      <BsFillSearchHeartFill /> Rechercher un bien
+                    </button>
+                  ) :
+                  <div style={{ position: "relative", display: "inline-block" }}>
+                    <Skeleton
+                      width={215}
+                      height={36}
+                      borderRadius={20}
+                      baseColor="rgba(124, 189, 30, 0.5)"
+                      highlightColor="rgba(124, 189, 30, 0.6)"
+                    />
+                    <span
+                      style={{
+                        marginTop: "2px",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        fontSize: "16px",
+                        fontWeight: "670",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <BsFillSearchHeartFill /> Préparation
+                    </span>
+                  </div>
+                }
               </p>
             </div>
           </div>
