@@ -35,17 +35,17 @@ const HomeSlider = () => {
           <div className="row align-items-center justify-content-center text-center">
             <div className="col-md-6 align-self-end">
               <p className="align-self-end">
-                {properties && properties.length > 0 ?
-                  (
-                    <button
-                      type="button"
-                      onClick={() => setLocation("/tranogasyMap")}
-                      className="btn btn-white btn-outline-white btn-5 font-weight-bold"
-                      style={{ borderRadius: "30px" }}
-                    >
-                      <BsFillSearchHeartFill /> Rechercher un bien
-                    </button>
-                  ) :
+                {properties &&
+                  <button
+                    type="button"
+                    onClick={() => setLocation("/tranogasyMap")}
+                    className="btn btn-white btn-outline-white btn-5 font-weight-bold"
+                    style={{ borderRadius: "30px" }}
+                  >
+                    <BsFillSearchHeartFill /> Rechercher un bien
+                  </button>
+                }
+                {!properties &&
                   <div style={{ position: "relative", display: "inline-block" }}>
                     <Skeleton
                       width={215}
