@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import OwlCarousel from "react-owl-carousel";
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
@@ -10,14 +11,27 @@ const options = {
   items: 1,
   nav: true,
   dots: false,
-  autoplay: false,
+  autoplay: true,
   loop: true,
 };
 
 const HomeSlider = () => {
   const [, setLocation] = useLocation();
+  const [loaded, setLoaded] = useState(false);
   const { featureUnderConstructionPopup } = usePopup();
   const properties = useSelector((state) => state.properties);
+
+
+  useEffect(() => {
+    function loadingComponent() {
+      if (properties) {
+        setLoaded(true);
+      } else {
+        setLoaded(false);
+      }
+    }
+    loadingComponent();
+  }, [properties]);
 
   return (
     <OwlCarousel className="slide-one-item home-slider site-blocks-cover-background owl-theme h-50" {...options}>
@@ -35,7 +49,7 @@ const HomeSlider = () => {
           <div className="row align-items-center justify-content-center text-center">
             <div className="col-md-6 align-self-end">
               <p className="align-self-end">
-                {properties &&
+                {loaded || properties &&
                   <button
                     type="button"
                     onClick={() => setLocation("/tranogasyMap")}
@@ -45,7 +59,7 @@ const HomeSlider = () => {
                     <BsFillSearchHeartFill /> Rechercher un bien
                   </button>
                 }
-                {!properties &&
+                {!loaded && !properties &&
                   <div style={{ position: "relative", display: "inline-block" }}>
                     <Skeleton
                       width={215}

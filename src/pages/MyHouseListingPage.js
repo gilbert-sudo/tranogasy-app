@@ -10,7 +10,10 @@ import {
 import { useEffect, useState, useRef, useCallback } from "react";
 import NotLogedIn from "../components/NotLogedIn";
 import { MdArrowBackIos } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
+import { BsSearch, BsFillHouseAddFill } from "react-icons/bs";
 import { useLoader } from "../hooks/useLoader";
+import { useImage } from "../hooks/useImage";
 import { FixedSizeGrid as Grid } from "react-window";
 
 const MyHouseListingPage = () => {
@@ -18,6 +21,7 @@ const MyHouseListingPage = () => {
   const pagination = useSelector((state) => state.pagination);
   const user = useSelector((state) => state.user);
   const { loadUsersProperties } = useLoader();
+  const { noInputValueForSearchImg, noSearchResultImg } = useImage();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [, setLocation] = useLocation();
@@ -28,6 +32,18 @@ const MyHouseListingPage = () => {
   const [gridWidth, setGridWidth] = useState(0);
   const [columnCount, setColumnCount] = useState(3);
 
+  const [showSearchInput, setShowSearchInput] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResult, setSearchResult] = useState(null);
+
+  //handle property search
+  function searchUsersProperty(propertyNumber) {
+    console.log("proertyNumber", Number(propertyNumber), usersProperties);
+    const property = usersProperties.filter((prop) => prop.propertyNumber === Number(propertyNumber));
+    setSearchResult(property);
+    console.log("Form submited, search results", property);
+  }
+
   // Initialize component and reset state if needed
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,6 +53,15 @@ const MyHouseListingPage = () => {
       dispatch(resetImgPreview());
     }
   }, [dispatch, pagination]);
+
+  //search input toggle effect
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (showSearchInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showSearchInput]);
 
   // Load user properties
   useEffect(() => {
@@ -122,19 +147,7 @@ const MyHouseListingPage = () => {
         <>
           <div className="mylisting mt-5 pt-1">
             <div className="site-section site-section-sm bg-light">
-              <div className="custom-container" style={{ paddingBottom: "80px" }}>
-                <div className="fixed-top mt-5" style={{ width: "max-content" }}>
-                  <Link
-                    to="/mylisting"
-                    onClick={() => window.history.back()}
-                    className="go-back-link-wrapper"
-                  >
-                    <h6 className="d-flex justify-content-beetween font-weight-light m-2 go-back-link p-2">
-                      <MdArrowBackIos className="back-icon" /> Retour
-                    </h6>
-                  </Link>
-                </div>
-
+              <div className="custom-container" style={showSearchInput ? { paddingTop: "9dvh" } : { paddingBottom: "9dvh" }}>
                 {usersProperties?.length === 0 ? (
                   <div className="empty-state">
                     <div className="no-booking d-flex justify-content-center align-items-center">
@@ -151,22 +164,62 @@ const MyHouseListingPage = () => {
                   </div>
                 ) : usersProperties && usersProperties.length > 0 ?
                   (
-                    <div className="row mt-3" ref={gridContainerRef}>
-                      {gridWidth > 0 && (
-                        <Grid
-                          ref={gridRef}
-                          columnCount={columnCount}
-                          columnWidth={Math.floor(gridWidth / columnCount)}
-                          height={window.innerHeight - 80} // Adjust for header
-                          rowCount={Math.ceil(usersProperties.length / columnCount)}
-                          rowHeight={ItemSize}
-                          width={gridWidth}
-                          itemData={usersProperties}
-                        >
-                          {Cell}
-                        </Grid>
-                      )}
-                    </div>
+                    <>
+                      <div className="row" ref={gridContainerRef} style={{ display: showSearchInput ? "none" : "block" }}>
+                        {gridWidth > 0 && (
+                          <Grid
+                            ref={gridRef}
+                            columnCount={columnCount}
+                            columnWidth={Math.floor(gridWidth / columnCount)}
+                            height={window.innerHeight - (showSearchInput ? 150 : 80)} // Adjust for header
+                            rowCount={Math.ceil(usersProperties.length / columnCount)}
+                            rowHeight={ItemSize}
+                            width={gridWidth}
+                            itemData={usersProperties}
+                          >
+                            {Cell}
+                          </Grid>
+                        )}
+                      </div>
+                      <div style={{ display: showSearchInput ? "block" : "none" }}>
+                        <div className="mt-5 no-booking d-flex justify-content-center align-items-center">
+                          {!searchResult && 
+                            <img
+                              src={noInputValueForSearchImg()}
+                              style={{ maxHeight: "45vh", borderRadius: "30px" }}
+                              alt="Creer vos annonces"
+                              className="img-fluid"
+                            />
+                          }
+                          {searchResult && searchResult.length === 0 &&
+                            <img
+                              src={noSearchResultImg()}
+                              style={{ maxHeight: "45vh", borderRadius: "30px" }}
+                              alt="Creer vos annonces"
+                              className="img-fluid"
+                            />
+                          }
+                        </div>
+                        <center>
+                          {" "}
+                          {!searchResult &&
+                            <p style={{ fontWeight: "400" }} className="m-2">
+                              Pour la recherche, veuillez indiquer le numéro du bien.
+                            </p>
+                          }
+                          {searchResult && searchResult.length === 0 &&
+                            <p style={{ fontWeight: "400" }} className="m-2">
+                              Ce numéro ne correspond à aucun bien que vous possédez.
+                            </p>
+                          }
+                          {searchResult && searchResult.length > 0 &&
+                            <div style={{ padding: '8px', height: '100%', maxWidth: '450px' }}>
+                              <MyListingDetails property={searchResult[0]} />
+                            </div>
+                          }
+                        </center>
+                      </div>
+                    </>
                   ) : (
                     <div className="row mt-3">
                       {Array.from({ length: 6 }).map((_, index) => (
@@ -177,15 +230,120 @@ const MyHouseListingPage = () => {
               </div>
             </div>
           </div>
-
-          <div className="fixed-bottom d-flex justify-content-end w-100">
-            <button
-              onClick={() => setLocation("/create-listing")}
-              className="btn btn-success quick-add-ad-btn mb-4 mr-3"
-              aria-label="Créer une nouvelle annonce"
+          <div
+            className="fixed-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2"
+            style={{
+              width: "96%",
+              maxWidth: "450px",
+              border: "1px solid rgba(0, 0, 0, 0.3)",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
+              borderRadius: "30px",
+              //center horizontally
+              left: "50%",
+              transform: "translateX(-50%)",
+              marginBottom: showSearchInput ? "86dvh" : "1.5dvh",
+              padding: "10px 20px",
+              zIndex: 1000
+            }}
+          >
+            {/* Go Back Button */}
+            <Link
+              to="/mylisting"
+              onClick={() => window.history.back()}
+              className="d-flex align-items-center text-dark text-decoration-none mb-2"
             >
-              +
-            </button>
+              <MdArrowBackIos />
+              <span className="fw-light">Retour</span>
+            </Link>
+
+            {/* Search Form */}
+            <form
+              className="d-flex align-items-center gap-2"
+              onSubmit={(e) => e.preventDefault()}
+              style={{ flex: showSearchInput ? "0 1 25vh" : "0 1 5vh" }} // keeps it responsive
+            >
+              <div style={{ position: "relative", flex: 1, display: showSearchInput ? "block" : "none" }}>
+                <label
+                  style={{
+                    position: "absolute",
+                    top: "-8px",
+                    left: "15px",
+                    background: "#fff",
+                    padding: "0 6px",
+                    fontSize: "10px",
+                    color: "#6b7280",
+                  }}
+                >
+                  Numéro du bien
+                </label>
+                <input
+                  className="MyListingSearchInput"
+                  ref={inputRef}
+                  type="number"
+                  max="999999"   // numeric maximum
+                  value={searchInput}
+                  onChange={(e) => {
+                    if (e.target.value.length === 0) {
+                      setSearchResult(null);
+                    }
+                    if (e.target.value.length <= 6) {
+                      setSearchInput(e.target.value);
+                    }
+                  }}
+                  placeholder="Un numéro"
+                  style={{
+                    width: "100%",
+                    minWidth: "140px",
+                    border: "1px solid #999",
+                    borderRadius: "16px",
+                    padding: "15px 12px",
+                    textAlign: "center",
+                    fontSize: "13px",
+                    right: "0",
+                  }}
+                />
+              </div>
+              <button
+                className="btn btn-dark d-flex align-items-center justify-content-center"
+                type={showSearchInput ? "submit" : "button"}
+                aria-label="Rechercher une annonce"
+                onClick={() => {
+                  if (searchInput && showSearchInput) {
+                    searchUsersProperty(searchInput);
+                  }
+                  if (!searchInput) {
+                    setShowSearchInput(!showSearchInput);
+                  }
+                }}
+                style={{ borderRadius: "20px", marginLeft: "2px", padding: "16px 14px" }}
+              >
+                <BsSearch />
+              </button>
+              {!showSearchInput &&
+                <button
+                  onClick={() => setLocation("/create-listing")}
+                  className="btn btn-success d-flex align-items-center justify-content-center"
+                  aria-label="Créer une nouvelle annonce"
+                  style={{ borderRadius: "50%", marginLeft: "2px", padding: "13px 12px" }}
+                >
+                  <BsFillHouseAddFill style={{ fontSize: "20px" }} />
+                </button>
+              }
+              {showSearchInput &&
+                <button
+                  onClick={() => {
+                    setShowSearchInput(false);
+                    setSearchInput("");
+                    setSearchResult(null);
+                  }}
+                  className="btn btn-danger d-flex align-items-center justify-content-center"
+                  aria-label="Créer une nouvelle annonce"
+                  style={{ borderRadius: "50%", marginLeft: "2px", padding: "13px 12px" }}
+                >
+                  <RxCross2 style={{ fontSize: "20px" }} />
+                </button>
+              }
+            </form>
           </div>
         </>
       ) : (
