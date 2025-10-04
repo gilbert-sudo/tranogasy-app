@@ -49,7 +49,8 @@ const HomeSlider = () => {
           <div className="row align-items-center justify-content-center text-center">
             <div className="col-md-6 align-self-end">
               <p className="align-self-end">
-                {loaded || properties &&
+                {(loaded || properties) ?
+                  (
                   <button
                     type="button"
                     onClick={() => setLocation("/tranogasyMap")}
@@ -58,9 +59,8 @@ const HomeSlider = () => {
                   >
                     <BsFillSearchHeartFill /> Rechercher un bien
                   </button>
-                }
-                {!loaded && !properties &&
-                  <div style={{ position: "relative", display: "inline-block" }}>
+                  ) : (
+                    <div style={{ position: "relative", display: "inline-block" }}>
                     <Skeleton
                       width={215}
                       height={36}
@@ -87,6 +87,7 @@ const HomeSlider = () => {
                       <BsFillSearchHeartFill /> Préparation
                     </span>
                   </div>
+                  )
                 }
               </p>
             </div>

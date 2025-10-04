@@ -1,4 +1,5 @@
 import MyListingPageSkeleton from "../components/skeletons/MyListingPageSkeleton";
+import PropertiesDashboard from "../components/PropertiesDashboard";
 import { Link, useLocation } from "wouter";
 // import ListingCardDetails from "../components/ListingCardDetails";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,6 +7,7 @@ import { setPreviousUrl, resetImg, resetImgPreview } from "../redux/redux";
 import { useEffect, useState } from "react";
 import NotLogedIn from "../components/NotLogedIn";
 import { FcHome, FcLandscape } from "react-icons/fc";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { usePopup } from "../hooks/usePopup";
 import { useImage } from "../hooks/useImage";
 import "./css/mylisting.css";
@@ -29,7 +31,6 @@ const MyListingPage = () => {
     }
     setOneTimeTask("done");
   }
-
 
   return (
     <div className="mylisting">
@@ -63,15 +64,27 @@ const MyListingPage = () => {
                   ) : (
                     <>
                       <div className="mb-3 d-flex align-items-center justify-content-start">
-                        <div className="m-3">
-                          <h6 className="font-weight-light  mt-3">
-                            {user && user.username.split(" ")[0]}, vous avez
-                          </h6>
-                          <strong className="font-weight-bold">
-                            {usersProperties && usersProperties.length} annonce
-                            {usersProperties && usersProperties.length > 1 && "s"}
-                          </strong>
-                        </div>
+                        {user.role === "admin" &&
+                          <div className="m-3">
+                            <h6 className="font-weight-light">
+                              Bienvenue, {user && user.username.split(" ")[0]} !
+                            </h6>
+                            <strong className="font-weight-bold">
+                              Compte administrateur <MdOutlineAdminPanelSettings className="mb-1" size={25} />
+                            </strong>
+                          </div>
+                        }
+                        {user.role === "user" &&
+                          <div className="m-3">
+                            <h6 className="font-weight-light  mt-3">
+                              {user && user.username.split(" ")[0]}, vous avez
+                            </h6>
+                            <strong className="font-weight-bold">
+                              {usersProperties && usersProperties.length} annonce
+                              {usersProperties && usersProperties.length > 1 && "s"}
+                            </strong>
+                          </div>
+                        }
                       </div>
                       <div className="row">
                         <div className="d-flex justify-content-center w-100">
@@ -137,6 +150,11 @@ const MyListingPage = () => {
                     >
                       Créer une annonce
                     </button>
+                  </div>
+                  <div className="d-flex">
+                    <div>
+                      <PropertiesDashboard properties={usersProperties} />
+                    </div>
                   </div>
                 </div>
               </div>
