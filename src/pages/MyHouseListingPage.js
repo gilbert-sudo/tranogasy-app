@@ -36,6 +36,9 @@ const MyHouseListingPage = () => {
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState(null);
 
+  const [isWithinAllowedHours, setIsWithinAllowedHours] = useState(false);
+  const [todayCount, setTodayCount] = useState(0);
+
   //handle property search
   function searchUsersProperty(propertyNumber) {
     console.log("proertyNumber", Number(propertyNumber), usersProperties);
@@ -43,6 +46,19 @@ const MyHouseListingPage = () => {
     setSearchResult(property);
     console.log("Form submited, search results", property);
   }
+
+  const handleCreateListing = () => {
+    if (!isWithinAllowedHours) {
+      alert("⏰ Les annonces peuvent être créées entre 6h et 18h uniquement.");
+      return;
+    }
+    if (todayCount >= 20) {
+      alert("🚫 Vous avez atteint la limite de 20 annonces pour aujourd’hui.");
+      return;
+    }
+    setLocation("/create-listing");
+  };
+
 
   // Initialize component and reset state if needed
   useEffect(() => {
@@ -62,6 +78,26 @@ const MyHouseListingPage = () => {
       inputRef.current.focus();
     }
   }, [showSearchInput]);
+
+  useEffect(() => {
+    // ✅ Check if within allowed hours
+    const now = new Date();
+    const hours = now.getHours();
+    setIsWithinAllowedHours(hours >= 6 && hours < 18);
+
+    // ✅ Count today's properties
+    if (usersProperties?.length > 0) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const count = usersProperties.filter((property) => {
+        const createdAt = new Date(property.created_at);
+        return createdAt >= today;
+      }).length;
+
+      setTodayCount(count);
+    }
+  }, [usersProperties]);
 
   // Load user properties
   useEffect(() => {
@@ -183,7 +219,7 @@ const MyHouseListingPage = () => {
                       </div>
                       <div style={{ display: showSearchInput ? "block" : "none" }}>
                         <div className="mt-5 no-booking d-flex justify-content-center align-items-center">
-                          {!searchResult && 
+                          {!searchResult &&
                             <img
                               src={noInputValueForSearchImg()}
                               style={{ maxHeight: "45vh", borderRadius: "30px" }}
@@ -247,20 +283,34 @@ const MyHouseListingPage = () => {
             }}
           >
             {/* Go Back Button */}
-            <Link
-              to="/mylisting"
-              onClick={() => window.history.back()}
-              className="d-flex align-items-center text-dark text-decoration-none mb-2"
-            >
-              <MdArrowBackIos />
-              <span className="fw-light">Retour</span>
-            </Link>
+            {!showSearchInput &&
+              <Link
+                to="/mylisting"
+                onClick={() => window.history.back()}
+                className="d-flex align-items-center text-dark text-decoration-none mb-2"
+              >
+                <MdArrowBackIos />
+                <span className="fw-light">Retour</span>
+              </Link>
+            }
+            {showSearchInput &&
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSearchInput(false);
+                  setSearchInput("");
+                  setSearchResult(null);
+                }}
+                className="d-flex align-items-center text-dark text-decoration-none mb-2 border-0 bg-light"
+              >
+                <MdArrowBackIos />
+              </button>
+            }
 
             {/* Search Form */}
             <form
               className="d-flex align-items-center gap-2"
               onSubmit={(e) => e.preventDefault()}
-              style={{ flex: showSearchInput ? "0 1 25vh" : "0 1 5vh" }} // keeps it responsive
             >
               <div style={{ position: "relative", flex: 1, display: showSearchInput ? "block" : "none" }}>
                 <label
@@ -321,7 +371,7 @@ const MyHouseListingPage = () => {
               </button>
               {!showSearchInput &&
                 <button
-                  onClick={() => setLocation("/create-listing")}
+                  onClick={handleCreateListing}
                   className="btn btn-success d-flex align-items-center justify-content-center"
                   aria-label="Créer une nouvelle annonce"
                   style={{ borderRadius: "50%", marginLeft: "2px", padding: "13px 12px" }}

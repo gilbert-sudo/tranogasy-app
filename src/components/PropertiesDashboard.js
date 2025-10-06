@@ -1,3 +1,4 @@
+import { Bold } from "lucide-react";
 import { useSelector } from "react-redux";
 import {
   BarChart,
@@ -14,7 +15,7 @@ const fakeStats = {
   statutPaie: "Non payé",
 };
 
-const PropertiesDashboard = ({ properties }) => {
+const PropertiesDashboard = ({ properties, todayCount }) => {
 
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -106,18 +107,20 @@ const PropertiesDashboard = ({ properties }) => {
         <div>
           <strong>Compte créé le :</strong> {formattedDate}
         </div>
+        <strong className="font-weight-bold">Annonces Créée:</strong>
+        <br />
         <div>
-          <strong>Annonces ce mois-ci :</strong> {propertiesThisMonth}
+          <strong>Ce mois-ci :</strong> {propertiesThisMonth}
         </div>
         <div>
-          <strong>Revenu ce mois :</strong>{" "}
+          <strong>Aujourd'hui :</strong>{"  "}
           <span
             style={{
-              color: fakeStats.statutPaie === "Non payé" ? "#ef4444" : "#22c55e",
+              color: "#22c55e",
               fontWeight: 600,
             }}
           >
-            {fakeStats.statutPaie}
+            {todayCount}
           </span>
         </div>
       </div>

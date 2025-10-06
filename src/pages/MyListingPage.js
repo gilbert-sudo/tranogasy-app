@@ -1,15 +1,19 @@
-import MyListingPageSkeleton from "../components/skeletons/MyListingPageSkeleton";
-import PropertiesDashboard from "../components/PropertiesDashboard";
+
 import { Link, useLocation } from "wouter";
-// import ListingCardDetails from "../components/ListingCardDetails";
 import { useSelector, useDispatch } from "react-redux";
 import { setPreviousUrl, resetImg, resetImgPreview } from "../redux/redux";
 import { useEffect, useState } from "react";
+
 import NotLogedIn from "../components/NotLogedIn";
+import MyListingPageSkeleton from "../components/skeletons/MyListingPageSkeleton";
+import PropertiesDashboard from "../components/PropertiesDashboard";
+
 import { FcHome, FcLandscape } from "react-icons/fc";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+
 import { usePopup } from "../hooks/usePopup";
 import { useImage } from "../hooks/useImage";
+
 import "./css/mylisting.css";
 
 const MyListingPage = () => {
@@ -21,6 +25,8 @@ const MyListingPage = () => {
   const { noListingImg } = useImage();
   const dispatch = useDispatch();
   const [oneTimeTask, setOneTimeTask] = useState(null);
+  const [isWithinAllowedHours, setIsWithinAllowedHours] = useState(false);
+  const [todayCount, setTodayCount] = useState(0);
   const [, setLocation] = useLocation();
 
   if (oneTimeTask === null) {
@@ -31,6 +37,38 @@ const MyListingPage = () => {
     }
     setOneTimeTask("done");
   }
+
+  const handleCreateListing = () => {
+    if (!isWithinAllowedHours) {
+      alert("⏰ Les annonces peuvent être créées entre 6h et 18h uniquement.");
+      return;
+    }
+    if (todayCount >= 20) {
+      alert("🚫 Vous avez atteint la limite de 20 annonces pour aujourd’hui.");
+      return;
+    }
+    listingOptionPopup();
+  };
+
+  useEffect(() => {
+    // ✅ Check if within allowed hours
+    const now = new Date();
+    const hours = now.getHours();
+    setIsWithinAllowedHours(hours >= 6 && hours < 18);
+
+    // ✅ Count today's properties
+    if (usersProperties?.length > 0) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const count = usersProperties.filter((property) => {
+        const createdAt = new Date(property.created_at);
+        return createdAt >= today;
+      }).length;
+
+      setTodayCount(count);
+    }
+  }, [usersProperties]);
 
   return (
     <div className="mylisting">
@@ -135,7 +173,7 @@ const MyListingPage = () => {
                   <div className="d-flex justify-content-center w-100">
                     <button
                       className="btn btn-success add-ad-btn m-4"
-                      onClick={() => listingOptionPopup()}
+                      onClick={handleCreateListing}
                       type="button"
                       style={{
                         alignItems: "center",
@@ -153,7 +191,7 @@ const MyListingPage = () => {
                   </div>
                   <div className="d-flex">
                     <div>
-                      <PropertiesDashboard properties={usersProperties} />
+                      {usersProperties && usersProperties.length > 0 && <PropertiesDashboard properties={usersProperties} todayCount={todayCount}/>}
                     </div>
                   </div>
                 </div>
