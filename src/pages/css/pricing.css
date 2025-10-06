@@ -168,6 +168,7 @@ body{margin-top:20px;}
 .pricing.pricing-success .bottom-box {
   border-color: rgba(132,162,0,.1);
   color: rgba(132,162,0,.4);
+  border-radius: 30px;
 }
 .pricing.pricing-success .bottom-box {
   border-top: 1px solid rgba(132,162,0,.1);
@@ -192,6 +193,7 @@ body{margin-top:20px;}
 .pricing.pricing-error .bottom-box {
   border-color: rgba(212,7,70,.1);
   color: rgba(212,7,70,.4);
+  border-radius: 30px;
 }
 .pricing.pricing-error .bottom-box {
   border-top: 1px solid rgba(212,7,70,.1);

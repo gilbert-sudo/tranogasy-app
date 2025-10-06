@@ -298,7 +298,7 @@ const MyHouseListingPage = () => {
                     borderRadius: "16px",
                     padding: "15px 12px",
                     textAlign: "center",
-                    fontSize: "13px",
+                    fontSize: "16px",
                     right: "0",
                   }}
                 />

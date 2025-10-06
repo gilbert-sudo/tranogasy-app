@@ -43,8 +43,15 @@ const Pricing = () => {
               <div className="row d-flex justify-content-center">
 
                 {plans && plans.map((plan, index) => (
-                  <div className="col-md-6 col-lg-3">
-                    <div className={`${index === 0 && "pricing-success"} ${index === 1 && "pricing-error"} pricing`}>
+                  <div
+                    className="col-md-6 col-lg-3"
+                    style={{
+                      borderRadius: "30px"
+                    }}
+                  >
+                    <div
+                      className={`${index === 0 && "pricing-success"} ${index === 1 && "pricing-error"} pricing`}
+                    >
                       <div className="title">
                         # Tolotra {plan?.planName}
                       </div>
@@ -87,6 +94,9 @@ const Pricing = () => {
                           type="button"
                           onClick={() => handleBuying(plan)}
                           className={`btn btn-lg ${index === 0 && "btn-success"} ${index === 1 && "btn-danger"} clearfix`}
+                          style={{
+                            borderRadius: "30px"
+                          }}
                         >
                           Acheter
                         </button>

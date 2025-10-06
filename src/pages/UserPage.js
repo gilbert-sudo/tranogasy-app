@@ -113,6 +113,9 @@ const UserPage = () => {
                     onClick={handleRechargeClick}
                     type="button"
                     className="btn bbtn-secondary btn-secondary"
+                    style={{
+                      borderRadius: "30px"
+                    }}
                   >
                     <small>Recharger</small> <FaDonate className="mb-1" />
                   </button>

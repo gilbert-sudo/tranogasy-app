@@ -215,7 +215,7 @@ const AutosuggestInput = ({ data, onSelectItem }) => {
             padding: "15px 15px 15px 40px",
             border: "1px solid #ced4da",
             borderRadius: "20px",
-            fontSize: "14px",
+            fontSize: "16px",
             outline: "none",
             transition: "border-color 0.2s",
             backgroundColor: "#f9f9f9",
