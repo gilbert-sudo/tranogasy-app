@@ -1,4 +1,4 @@
-import MyListingDetails from "../components/MyListingDetails";
+import PropertyDetails from "../components/PropertyDetails";
 import MyListingDetailsSkeleton from "../components/skeletons/MyListingDetailsSkeleton";
 import { Link, useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
@@ -171,7 +171,11 @@ const MyHouseListingPage = () => {
         }}
       >
         <div style={{ padding: '8px', height: '100%' }}>
-          <MyListingDetails property={property} />
+          <PropertyDetails
+            key={property._id}
+            property={property}
+            route={"MyHouseListingPage"}
+          />
         </div>
       </div>
     );
@@ -248,12 +252,15 @@ const MyHouseListingPage = () => {
                               Ce numéro ne correspond à aucun bien que vous possédez.
                             </p>
                           }
-                          {searchResult && searchResult.length > 0 &&
-                            <div style={{ padding: '8px', height: '100%', maxWidth: '450px' }}>
-                              <MyListingDetails property={searchResult[0]} />
-                            </div>
-                          }
                         </center>
+                        {searchResult && searchResult.length > 0 &&
+                          <div style={{ height: '100%', maxWidth: '400px' }}>
+                            <PropertyDetails
+                              property={searchResult[0]}
+                              route={"MyHouseListingPage"}
+                            />
+                          </div>
+                        }
                       </div>
                     </>
                   ) : (

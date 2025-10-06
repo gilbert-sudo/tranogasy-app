@@ -40,6 +40,7 @@ const ExplorePage = () => {
                       <PropertyDetails
                         key={property.property._id}
                         property={property.property}
+                        route={"ExplorePage"}
                       />
                     </div>
                   )

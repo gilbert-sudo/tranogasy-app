@@ -1,12 +1,13 @@
 import { Link, useLocation } from "wouter";
-import { FaHeart } from "react-icons/fa";
-import { BsHeartFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useLike } from "../hooks/useLike";
 import { useLogin } from "../hooks/useLogin";
+import { useProperty } from "../hooks/useProperty";
 import { useEffect, useState } from "react";
 import MiniCarousel from "../components/MiniCarousel";
 
+import { FaHeart, FaRegEdit } from "react-icons/fa";
+import { BsHeartFill, BsTrash3Fill } from "react-icons/bs";
 import { ImLocation } from "react-icons/im";
 import { MdOutlineLiving, MdBalcony, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
@@ -35,7 +36,7 @@ import {
 
 import useSound from "use-sound";
 
-function PropertyDetails({ property }) {
+function PropertyDetails({ property, route }) {
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
     year: "numeric",
     month: "short",
@@ -45,9 +46,11 @@ function PropertyDetails({ property }) {
 
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
+  const { deleteProperty } = useProperty();
+
   const [isliked, setIsliked] = useState(false);
   const [play] = useSound("sounds/Like Sound Effect.mp3");
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   //redux
   const user = useSelector((state) => state.user);
 
@@ -111,23 +114,79 @@ function PropertyDetails({ property }) {
         <MiniCarousel images={property.images} />
       </Link>
       <div className="p-2 property-body">
-        {isliked && isliked ? (
-          <div
-            className="property-favorite"
-            style={{ background: "#f23a2e", zIndex: "1" }}
-            onClick={handleDisLike}
-          >
-            <BsHeartFill className="text-white" />
-          </div>
-        ) : (
-          <div
-            className="property-favorite"
-            style={{ zIndex: "2" }}
-            onClick={handleLike}
-          >
-            <FaHeart />
-          </div>
-        )}
+        {(route === "MyHouseListingPage") &&
+          (
+            <div className="d-flex justify-content-end offer-type-wrap w-100 position-relative">
+              <div className="d-flex position-absolute"
+                style={{
+                  bottom: "32px"
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-light btn-sm mr-1"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setLocation(`/update-property/${encodeURIComponent(propertyDataString)}`);
+                  }}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    padding: "7px",
+                    borderRadius: "50%",
+                    zIndex: 2,
+                  }}
+                >
+                  <FaRegEdit
+                    style={{
+                      fontWeight: 600
+                    }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger btn-sm mr-3"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    deleteProperty(property);
+                  }}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    padding: "7px",
+                    borderRadius: "50%",
+                    zIndex: 2,
+                  }}
+                >
+                  <BsTrash3Fill />
+                </button>
+              </div>
+
+
+            </div>
+          )
+        }
+        {!(route === "MyHouseListingPage") &&
+          (
+            isliked && isliked ? (
+              <div
+                className="property-favorite"
+                style={{ background: "#f23a2e", zIndex: "1" }}
+                onClick={handleDisLike}
+              >
+                <BsHeartFill className="text-white" />
+              </div>
+            ) : (
+              <div
+                className="property-favorite"
+                style={{ zIndex: "2" }}
+                onClick={handleLike}
+              >
+                <FaHeart />
+              </div>
+            )
+          )
+        }
         <Link
           className="text text-dark"
           to={`/property-details/${property._id}/${encodeURIComponent(

@@ -74,8 +74,9 @@ const PropertiesDashboard = ({ properties, todayCount }) => {
         margin: "auto",
         background: "#fff",
         borderRadius: 20,
-        boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+        boxShadow: "4px 10px 15px rgba(0,0,0,0.1)",
         padding: "20px 25px",
+        outline: "none",
       }}
     >
       {/* Titre */}
