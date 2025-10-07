@@ -56,7 +56,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 
 import userProfile from "../img/user-avatar.png";
 
-const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
+const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) => {
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
   const { shareProperty } = useProperty();
@@ -444,7 +444,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
         <Phone onClick={() => { setShowMap(false); setShowContact(true) }} style={{ pointerEvents: "auto" }} size={30} color="white" />
         <Forward onClick={() => shareProperty(property)} style={{ pointerEvents: "auto" }} size={30} color="white" />
 
-        <div style={{ position: "relative", pointerEvents: "none", height: 10, width: 30 }}>
+        <div style={{ display: isDesktop ? "none" : "block", position: "relative", pointerEvents: "none", height: 10, width: 30 }}>
           <button
             type="button"
             style={{
@@ -503,51 +503,63 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
         >
           {property.title}
         </p>
-        <small>
-          {" "}
-          <ImLocation className="text-danger mr-1 mb-2" />
-          {property.city.fokontany} {property.city.commune}
-        </small>
-        <TikTokDescription description={property.description} coords={{ city: property.city?.coords, property: property?.coords }} setIsSlideVisible={setIsSlideVisible} />
+        {isDesktop ?
+          <strong>
+            {" "}
+            <ImLocation className="text-danger mr-1 mb-2" />
+            {property.city.fokontany} {property.city.commune}
+          </strong>
+          :
+          <>
+            <small>
+              {" "}
+              <ImLocation className="text-danger mr-1 mb-2" />
+              {property.city.fokontany} {property.city.commune}
+            </small>
+            <TikTokDescription description={property.description} coords={{ city: property.city?.coords, property: property?.coords }} setIsSlideVisible={setIsSlideVisible} />
+          </>
+        }
+
+
         <p>
-          {property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
-          {property.features.waterPumpSupplyJirama && <FaFaucetDrip className="h6 mr-1" />}
-          {property.features.waterWellSupply && <GiWell className="h6 mr-1" />}
-          {property.features.electricityPower && <FaPlugCircleCheck className="h6 mr-1" />}
-          {property.features.waterPumpSupply && <FaOilWell className="h6 mr-1" />}
-          {property.features.solarPanels && <GiSolarPower className="h6 mr-1" />}
+          {!isDesktop && property.features.electricityJirama && <FaPlugCircleBolt className="h6 mr-1" />}
+          {!isDesktop && property.features.waterPumpSupplyJirama && <FaFaucetDrip className="h6 mr-1" />}
+          {!isDesktop && property.features.waterWellSupply && <GiWell className="h6 mr-1" />}
+          {!isDesktop && property.features.electricityPower && <FaPlugCircleCheck className="h6 mr-1" />}
+          {!isDesktop && property.features.waterPumpSupply && <FaOilWell className="h6 mr-1" />}
+          {!isDesktop && property.features.solarPanels && <GiSolarPower className="h6 mr-1" />}
 
-          {property.features.motoAccess && <FaMotorcycle className="h6 mr-1" />}
-          {property.features.carAccess && <FaCar className="h6 mr-1" />}
-          {property.features.surroundedByWalls && <GiBrickWall className="h6 mr-1" />}
-          {property.features.courtyard && <MdLandscape className="h6 mr-1" />}
-          {property.features.parkingSpaceAvailable && <FaParking className="h6 mr-1" />}
-          {property.features.garage && <FaCar className="h6 mr-1" />}
-          {property.features.garden && <GiWell className="h6 mr-1" />}
-          {property.features.independentHouse && <TbBuildingCastle className="h6 mr-1" />}
-          {property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
+          {!isDesktop && property.features.motoAccess && <FaMotorcycle className="h6 mr-1" />}
+          {!isDesktop && property.features.carAccess && <FaCar className="h6 mr-1" />}
+          {!isDesktop && property.features.surroundedByWalls && <GiBrickWall className="h6 mr-1" />}
+          {!isDesktop && property.features.courtyard && <MdLandscape className="h6 mr-1" />}
+          {!isDesktop && property.features.parkingSpaceAvailable && <FaParking className="h6 mr-1" />}
+          {!isDesktop && property.features.garage && <FaCar className="h6 mr-1" />}
+          {!isDesktop && property.features.garden && <GiWell className="h6 mr-1" />}
+          {!isDesktop && property.features.independentHouse && <TbBuildingCastle className="h6 mr-1" />}
+          {!isDesktop && property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
 
-          {property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
-          {property.features.placardKitchen && <FaBed className="h6 mr-1" />}
-          {property.features.hotWaterAvailable && <FaHotTub className="h6 mr-1" />}
-          {property.features.furnishedProperty && <MdOutlineLiving className="h6 mr-1" />}
-          {property.features.airConditionerAvailable && <TbAirConditioning className="h6 mr-1" />}
-          {property.features.bathtub && <GiBathtub className="h6 mr-1" />}
-          {property.features.fireplace && <GiFireplace className="h6 mr-1" />}
-          {property.features.elevator && <TbBuildingCastle className="h6 mr-1" />}
+          {!isDesktop && property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
+          {!isDesktop && property.features.placardKitchen && <FaBed className="h6 mr-1" />}
+          {!isDesktop && property.features.hotWaterAvailable && <FaHotTub className="h6 mr-1" />}
+          {!isDesktop && property.features.furnishedProperty && <MdOutlineLiving className="h6 mr-1" />}
+          {!isDesktop && property.features.airConditionerAvailable && <TbAirConditioning className="h6 mr-1" />}
+          {!isDesktop && property.features.bathtub && <GiBathtub className="h6 mr-1" />}
+          {!isDesktop && property.features.fireplace && <GiFireplace className="h6 mr-1" />}
+          {!isDesktop && property.features.elevator && <TbBuildingCastle className="h6 mr-1" />}
 
-          {property.features.balcony && <MdBalcony className="h6 mr-1" />}
-          {property.features.roofTop && <GiCastle className="h6 mr-1" />}
-          {property.features.swimmingPool && <FaSwimmingPool className="h6 mr-1" />}
+          {!isDesktop && property.features.balcony && <MdBalcony className="h6 mr-1" />}
+          {!isDesktop && property.features.roofTop && <GiCastle className="h6 mr-1" />}
+          {!isDesktop && property.features.swimmingPool && <FaSwimmingPool className="h6 mr-1" />}
 
-          {property.features.securitySystem && <FaShieldAlt className="h6 mr-1" />}
+          {!isDesktop && property.features.securitySystem && <FaShieldAlt className="h6 mr-1" />}
 
-          {property.features.wifiAvailability && <FaWifi className="h6 mr-1" />}
-          {property.features.fiberOpticReady && <MdOutlineFiberSmartRecord className="h6 mr-1" />}
+          {!isDesktop && property.features.wifiAvailability && <FaWifi className="h6 mr-1" />}
+          {!isDesktop && property.features.fiberOpticReady && <MdOutlineFiberSmartRecord className="h6 mr-1" />}
 
-          {property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
-          {property.features.mountainView && <GiMountainCave className="h6 mr-1" />}
-          {property.features.panoramicView && <GiSeatedMouse className="h6 mr-1" />}
+          {!isDesktop && property.features.seaView && <GiSeaDragon className="h6 mr-1" />}
+          {!isDesktop && property.features.mountainView && <GiMountainCave className="h6 mr-1" />}
+          {!isDesktop && property.features.panoramicView && <GiSeatedMouse className="h6 mr-1" />}
           <br /><strong style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: "30px", padding: "5px" }}>{property.rent && property.rent.toLocaleString("en-US")} <small>Ar / mois</small></strong>
         </p>
       </div>
