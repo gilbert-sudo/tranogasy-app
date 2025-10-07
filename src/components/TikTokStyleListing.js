@@ -220,7 +220,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
       <div
         style={{
           position: "absolute",
-          top: 75,                          // margin top
+          top: 90,                          // margin top
           left: "50%",                      // center horizontally
           transform: "translateX(-50%)",
           zIndex: 20,
@@ -358,7 +358,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
         onClick={() => window.history.back()}
         style={{
           position: "absolute",
-          top: 30,
+          top: 50,
           left: 5,
           zIndex: 2000,
           display: "flex",
@@ -377,7 +377,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll }) => {
       <div
         style={{
           position: "absolute",
-          top: 38,
+          top: 58,
           right: 10,
           zIndex: 10,
           display: "flex",

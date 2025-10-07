@@ -108,46 +108,63 @@ export const useLoader = () => {
   };
 
   const loadProperties = async () => {
+    const mainUrl = process.env.REACT_APP_API_URL;
+    const backupUrl = process.env.REACT_APP_API_BACKUP_URL;
+
+    let baseUrl = mainUrl; // default to main API
     let allProperties = [];
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/properties/paginated`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
 
+    const fetchFromAPI = async (url) => {
+      const response = await fetch(`${url}/api/properties/paginated`, {
+        headers: { "Content-Type": "application/json" },
+      });
       const json = await response.json();
+      if (!response.ok) throw new Error(json.message || "Failed to fetch properties");
+      return json;
+    };
 
-      if (response.ok) {
-        for (let page = 1; page <= json.totalPages; page++) {
-          const response = await fetch(
-            `${process.env.REACT_APP_API_URL}/api/properties/paginated?page=${page}&limit=500`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+    try {
+      // Try main API
+      const json = await fetchFromAPI(baseUrl);
 
-          const json2 = await response.json();
+      for (let page = 1; page <= json.totalPages; page++) {
+        const res = await fetch(
+          `${baseUrl}/api/properties/paginated?page=${page}&limit=500`,
+          { headers: { "Content-Type": "application/json" } }
+        );
+        const json2 = await res.json();
 
-          if (response.ok) {
-            console.log("Fetching page:", page);
-            allProperties = [...allProperties, ...json2.properties];
-            setTimeout(() => {
-              if (page === json.totalPages) {
-                dispatch(setProperties(allProperties));
-                // console.log("all propertis were loaded and ready to use", allProperties);
-              }
-            }, 50);
-          }
+        if (res.ok) {
+          console.log("Fetching page:", page);
+          allProperties = [...allProperties, ...json2.properties];
         }
       }
+
+      dispatch(setProperties(allProperties));
     } catch (error) {
-      console.log(error);
+      console.warn("Main API failed, trying backup...", error.message);
+
+      try {
+        // Try backup API
+        const json = await fetchFromAPI(backupUrl);
+
+        for (let page = 1; page <= json.totalPages; page++) {
+          const res = await fetch(
+            `${backupUrl}/api/properties/paginated?page=${page}&limit=500`,
+            { headers: { "Content-Type": "application/json" } }
+          );
+          const json2 = await res.json();
+
+          if (res.ok) {
+            console.log("Fetching page from BACKUP:", page);
+            allProperties = [...allProperties, ...json2.properties];
+          }
+        }
+
+        dispatch(setProperties(allProperties));
+      } catch (backupError) {
+        console.error("Both main and backup APIs failed:", backupError.message);
+      }
     }
   };
 

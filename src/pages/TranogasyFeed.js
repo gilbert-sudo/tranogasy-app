@@ -1,129 +1,123 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { FixedSizeList as List } from "react-window";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Virtual, Mousewheel, Keyboard, FreeMode } from 'swiper/modules';
 import TranogasyFeedSkeleton from "../components/skeletons/TranogasyFeedSkeleton";
 import TikTokStyleListing from "../components/TikTokStyleListing";
 
-// Detect iOS
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/virtual';
+import 'swiper/css/mousewheel';
+import 'swiper/css/keyboard';
+import 'swiper/css/free-mode';
 
 const TranogasyFeed = () => {
   const properties = useSelector((state) => state.properties);
-  const listRef = useRef();
+  const swiperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [scrollLocked, setScrollLocked] = useState(false);
 
-  const ITEM_HEIGHT = window.innerHeight;
-  const isScrolling = useRef(false);
-  const touchStartY = useRef(0);
-  const momentumTimeout = useRef(null);
+  // Handle slide change
+  const handleSlideChange = (swiper) => {
+    setCurrentIndex(swiper.activeIndex);
+  };
 
-  // iOS-specific touch handlers
-  const handleTouchStart = useCallback((e) => {
-    touchStartY.current = e.touches[0].clientY;
-  }, []);
-
-  const handleTouchMove = useCallback((e) => {
-    if (!isIOS) return;
-
-    const touchY = e.touches[0].clientY;
-    const deltaY = touchY - touchStartY.current;
-
-    // Prevent native scroll during momentum scrolling
-    if (Math.abs(deltaY) > 10 && isScrolling.current) {
-      e.preventDefault();
+  // Programmatic slide control
+  const goToSlide = (index) => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slideTo(index);
     }
-  }, []);
+  };
 
-  // Handle scroll end with momentum detection (iOS specific)
-  const handleScrollEnd = useCallback(() => {
-    if (!listRef.current) return;
-
-    clearTimeout(momentumTimeout.current);
-    momentumTimeout.current = setTimeout(() => {
-      isScrolling.current = false;
-      const scrollOffset = listRef.current.state.scrollOffset;
-      const newIndex = Math.round(scrollOffset / ITEM_HEIGHT);
-
-      if (newIndex !== currentIndex) {
-        listRef.current.scrollToItem(newIndex, "smooth");
-        setCurrentIndex(newIndex);
-      }
-    }, isIOS ? 200 : 100); // Longer timeout for iOS momentum
-  }, [currentIndex, ITEM_HEIGHT]);
-
-  // Set up scroll event listeners
+  // Lock/unlock swiper
   useEffect(() => {
-    const listElement = listRef.current?.outerRef;
-    if (!listElement) return;
-
-    // iOS-specific event listeners
-    if (isIOS) {
-      listElement.addEventListener('touchstart', handleTouchStart, { passive: true });
-      listElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+    if (swiperRef.current && swiperRef.current.swiper) {
+      const swiper = swiperRef.current.swiper;
+      
+      if (scrollLocked) {
+        swiper.mousewheel.disable();
+        swiper.keyboard.disable();
+        swiper.allowTouchMove = false;
+      } else {
+        swiper.mousewheel.enable();
+        swiper.keyboard.enable();
+        swiper.allowTouchMove = true;
+      }
     }
+  }, [scrollLocked]);
 
-    const handleScroll = () => {
-      if (!isScrolling.current) {
-        isScrolling.current = true;
-        handleScrollEnd();
-      }
-      clearTimeout(momentumTimeout.current);
-      momentumTimeout.current = setTimeout(handleScrollEnd, 100);
-    };
-
-    listElement.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      clearTimeout(momentumTimeout.current);
-      listElement.removeEventListener('scroll', handleScroll);
-      if (isIOS) {
-        listElement.removeEventListener('touchstart', handleTouchStart);
-        listElement.removeEventListener('touchmove', handleTouchMove);
-      }
-    };
-  }, [handleScrollEnd, handleTouchMove, handleTouchStart]);
-
-  const Row = useCallback(({ index, style }) => (
-    <div
-      style={{
-        ...style,
-        scrollSnapAlign: "start",
-        backgroundColor: "#000000",
-        WebkitTransform: "translate3d(0,0,0)" // iOS hardware acceleration
-      }}
-    >
-      <TikTokStyleListing
-        property={properties[index]}
-        lockScroll={() => setScrollLocked(true)}
-        unlockScroll={() => setScrollLocked(false)}
-      />
-    </div>
-  ), [properties]);
-
-  return (
-    properties ?
-      <List
-        height={ITEM_HEIGHT}
-        itemCount={properties.length}
-        itemSize={ITEM_HEIGHT}
-        width="100%"
-        ref={listRef}
-        overscanCount={1}
-        initialScrollOffset={currentIndex * ITEM_HEIGHT}
-        style={{
-          WebkitOverflowScrolling: "touch",
-          scrollSnapType: "y mandatory",
-          overflowY: scrollLocked ? "hidden" : "auto",
-          height: scrollLocked ? "98vh" : "100vh",
-          transform: "translate3d(0,0,0)", // iOS performance boost
+  return properties ? (
+    <div style={{ 
+      height: '100vh', 
+      backgroundColor: '#000',
+      overflow: 'hidden'
+    }}>
+      <Swiper
+        ref={swiperRef}
+        direction="vertical"
+        slidesPerView={1}
+        mousewheel={{
+          forceToAxis: true,
+          sensitivity: 1,
+          releaseOnEdges: true,
         }}
-        outerElementType={isIOS ? "div" : undefined} // Custom outer element for iOS
+        keyboard={{
+          enabled: true,
+          onlyInViewport: true,
+        }}
+        freeMode={{
+          enabled: false,
+          sticky: false,
+        }}
+        speed={400}
+        resistance={true}
+        resistanceRatio={0.85}
+        longSwipesRatio={0.1}
+        followFinger={true}
+        threshold={15}
+        virtual={{
+          enabled: true,
+          addSlidesAfter: 1,
+          addSlidesBefore: 1,
+        }}
+        modules={[Virtual, Mousewheel, Keyboard, FreeMode]}
+        style={{
+          height: '100%',
+          touchAction: 'pan-y',
+        }}
+        onSlideChange={handleSlideChange}
+        onSwiper={(swiper) => {
+          // Optional: Initialize at specific slide
+          if (currentIndex > 0) {
+            swiper.slideTo(currentIndex, 0);
+          }
+        }}
       >
-        {Row}
-      </List>
-      : <TranogasyFeedSkeleton />
+        {properties.map((property, index) => (
+          <SwiperSlide
+            key={property.id || index}
+            virtualIndex={index}
+            style={{
+              height: '100vh',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#000',
+            }}
+          >
+            <TikTokStyleListing
+              property={property}
+              lockScroll={() => setScrollLocked(true)}
+              unlockScroll={() => setScrollLocked(false)}
+              isActive={currentIndex === index}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  ) : (
+    <TranogasyFeedSkeleton />
   );
 };
 
