@@ -650,7 +650,6 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
                 />
               </div>
             </>
-
           }
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useProperty } from "../hooks/useProperty";
-import { usePopup } from "../hooks/usePopup";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import NotLogedIn from "../components/NotLogedIn";
 import AutosuggestInput from "../components/AutosuggestInput";
+import PropertyExistsCard from "../components/PropertyExistsCard";
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
@@ -84,6 +84,7 @@ const CreateListing = () => {
   const [houseType, setHouseType] = useState("maison");
   const [floor, setFloor] = useState("");
   const [floorError, setFloorError] = useState(false);
+  const [errorCard, setErrorCard] = useState(true);
 
   // features checkboxs
   const [carAccess, setCarAccess] = useState(false);
@@ -372,28 +373,30 @@ const CreateListing = () => {
   }, [isLoading, coords]);
 
   useEffect(() => {
-    if (selectedCity) { 
+    if (selectedCity) {
       console.log("Selected city changed:", selectedCity);
-        
-          let nearbyLocations = [];
-    if (selectedCity.isGoogleResult === true && selectedCity.coords) {
-      nearbyLocations = findLocationsWithinDistance(
-        mapData,
-        selectedCity.coords,
-        15000
-      ).sort((a, b) => a.distance - b.distance);
-      const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
-      // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
-      if (nearbyLocations.length > 0) {
-        if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
+
+      let nearbyLocations = [];
+      if (selectedCity.isGoogleResult === true && selectedCity.coords) {
+        nearbyLocations = findLocationsWithinDistance(
+          mapData,
+          selectedCity.coords,
+          15000
+        ).sort((a, b) => a.distance - b.distance);
+        const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+        // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
+        if (nearbyLocations.length > 0) {
+          if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
+        }
       }
-    }
     }
   }, [selectedCity]);
 
 
   return (
-    <div className="create-listing">
+    <div
+      className="create-listing"
+    >
       {user && user ? (
         <div className="create-listing mt-5 pt-3">
           <div className="site-section site-section-sm">
@@ -713,7 +716,7 @@ const CreateListing = () => {
                           fontSize: "12px",
                         }}
                       >
-                        <FaUsers style={{minWidth: "20px"}}/>
+                        <FaUsers style={{ minWidth: "20px" }} />
                         Colocation
                       </button>
                     </div>
@@ -1639,6 +1642,8 @@ const CreateListing = () => {
             </nav>
           </div>
           {/* bottom navbar */}
+           {errorCard && <PropertyExistsCard setErrorCard={setErrorCard} />}
+
         </div >
       ) : (
         <NotLogedIn />
