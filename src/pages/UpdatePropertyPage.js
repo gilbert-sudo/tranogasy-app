@@ -330,8 +330,8 @@ const UpdatePropertyPage = () => {
       floor: houseType === "appartement" ? floor : null,
       coords,
       phone1,
-      phone2 : newPhone2,
-      phone3 : newPhone3,
+      phone2: newPhone2,
+      phone3: newPhone3,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -402,6 +402,26 @@ const UpdatePropertyPage = () => {
 
 
   }, [isLoading, coords]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      console.log("Selected city changed:", selectedCity);
+
+      let nearbyLocations = [];
+      if (selectedCity.isGoogleResult === true && selectedCity.coords) {
+        nearbyLocations = findLocationsWithinDistance(
+          mapData,
+          selectedCity.coords,
+          15000
+        ).sort((a, b) => a.distance - b.distance);
+        const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+        // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
+        if (nearbyLocations.length > 0) {
+          if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
+        }
+      }
+    }
+  }, [selectedCity]);
 
   return (
     <>

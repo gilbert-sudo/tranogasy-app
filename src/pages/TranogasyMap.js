@@ -77,6 +77,7 @@ function MyMap() {
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
+  const [initialCenter, setInitialCenter] = useState(false);
   const selectedMarkersHistory = [null, null];
   const defaultCoords = {
     lat: -18.905195365917766,
@@ -167,6 +168,14 @@ function MyMap() {
 
     return remainingElements;
   };
+
+
+  if (!initialCenter) {
+    setTimeout(() => {
+      setInitialCenter(true);
+      console.log("Disable the initialCenter");
+    }, 2000);
+  }
 
   const handleMarkerClick = (property, marker) => {
     dispatch(setTranogasyMapField({ key: "selectedProperty", value: property }));
@@ -443,7 +452,7 @@ function MyMap() {
           minZoom={9}
           zoom={mapZoomLevel}
           onZoomChanged={handleZoomChange}
-          center={(searchResults ? center : defaultposition) || defaultCoords} // Default center if no search results Antananarivo
+          center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
           mapId="80e7a8f8db80acb5"
           mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
           options={{

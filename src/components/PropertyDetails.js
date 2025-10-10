@@ -33,8 +33,50 @@ import {
   FaOilWell,
   FaKitchenSet,
 } from "react-icons/fa6";
+import { Phone } from "lucide-react";
 
 import useSound from "use-sound";
+import userProfile from "../img/user-avatar.png";
+
+const formatPhone = (phone) => {
+  if (!phone) return null;
+
+  // Remove all non-digit characters except plus at the beginning
+  let digits = phone.replace(/\D/g, "");
+
+  // Check if the original had a plus to preserve it
+  const hadPlus = phone.trim().startsWith('+');
+
+  // Handle different input formats
+  if (digits.startsWith("0")) {
+    digits = "261" + digits.substring(1);
+  } else if (digits.startsWith("261")) {
+    // Already in correct format
+    digits = digits;
+  } else if (!digits.startsWith("261") && digits.length === 9) {
+    // Assume it's a local number without prefix
+    digits = "261" + digits;
+  } else if (digits.length === 12 && digits.startsWith("261")) {
+    // Already in correct format without plus
+    digits = digits;
+  }
+
+  // Add the plus sign if it was there originally or we're formatting an international number
+  const shouldAddPlus = hadPlus || digits.length >= 9;
+  const prefix = shouldAddPlus ? "+" : "";
+
+  // Format with spaces for better readability
+  if (digits.length === 12 && digits.startsWith("261")) {
+    // Format: +261 XX XX XXX XX
+    return `${prefix}${digits.substring(0, 3)} ${digits.substring(3, 5)} ${digits.substring(5, 7)} ${digits.substring(7, 10)} ${digits.substring(10)}`;
+  } else if (digits.length === 9) {
+    // Format local numbers differently: XXX XX XXX XX
+    return `${digits.substring(0, 3)} ${digits.substring(3, 5)} ${digits.substring(5, 8)} ${digits.substring(8)}`;
+  }
+
+  // Fallback for other formats
+  return prefix + digits;
+};
 
 function PropertyDetails({ property, route }) {
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
@@ -90,11 +132,15 @@ function PropertyDetails({ property, route }) {
 
   return (
     <div className="property-entry h-100 mx-1">
-      <Link
-        to={`/property-details/${property._id}/${encodeURIComponent(
-          propertyDataString
-        )}/${location.split("/")[1]}`}
+      <div
         className="property-thumbnail"
+        onClick={() => {
+          if (route !== "PropertyExistsCard") {
+            setLocation(`/property-details/${property._id}/${encodeURIComponent(
+              propertyDataString
+            )}/${location.split("/")[1]}`);
+          }
+        }}
       >
         <div className="d-flex justify-content-end">
           <div className="offer-type-wrap">
@@ -112,7 +158,7 @@ function PropertyDetails({ property, route }) {
           </div>
         </div>
         <MiniCarousel images={property.images} />
-      </Link>
+      </div>
       <div className="p-2 property-body">
         {(route === "MyHouseListingPage") &&
           (
@@ -166,7 +212,53 @@ function PropertyDetails({ property, route }) {
             </div>
           )
         }
-        {!(route === "MyHouseListingPage") &&
+        {(route === "PropertyExistsCard") &&
+          (
+            <div className="d-flex justify-content-center offer-type-wrap w-100 position-relative" style={{ pointerEvents: "none" }}>
+              <div
+                style={{
+                  display: "flex",
+                  position: "absolute",
+                  transform: "translate(0, -160%)",
+                  marginRight: "20px",
+                  minWidth: "100%",
+                  fontWeight: 900,
+                  alignItems: "center",
+                  padding: "5px 12px",
+                  border: "1px solid #dcdcdc", // Soft light grey border (lighter than original #eee)
+                  borderRadius: "30px",
+                  background: "rgba(243, 243, 243, 0.8)", // Light grey background (darker than original #fafafa)
+                }}
+              >
+                <img
+                  src={property.owner.avatar || userProfile}
+                  alt={property.owner.username}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    marginRight: "12px",
+                  }}
+                />
+                <div>
+                  <p style={{ margin: 0, fontSize: "15px", color: "#222" }}>
+                    {property.owner.username}
+                  </p>
+                  <small>
+                    Propriétaire actuel
+                  </small>
+                  <p style={{ margin: 0, fontSize: "12px", color: "#555" }}>
+                    {/* Medium-dark grey secondary text */}
+                    <Phone size={12} style={{ marginRight: "4px", color: "#d9534f" }} />
+                    {formatPhone(property.phone1)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )
+        }
+        {(route === "ExplorePage") &&
           (
             isliked && isliked ? (
               <div
@@ -187,11 +279,15 @@ function PropertyDetails({ property, route }) {
             )
           )
         }
-        <Link
+        <div
           className="text text-dark"
-          to={`/property-details/${property._id}/${encodeURIComponent(
-            propertyDataString
-          )}/${location.split("/")[1]}`}
+          onClick={() => {
+            if (route !== "PropertyExistsCard") {
+              setLocation(`/property-details/${property._id}/${encodeURIComponent(
+                propertyDataString
+              )}/${location.split("/")[1]}`);
+            }
+          }}
         >
           <h4 className="ml-1 property-title">
             <label className="text-danger">#</label> {property.title}
@@ -261,7 +357,7 @@ function PropertyDetails({ property, route }) {
               )}
             </div>
           </div>
-        </Link>
+        </div>
       </div>
     </div>
   );

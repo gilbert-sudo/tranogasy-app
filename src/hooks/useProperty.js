@@ -216,6 +216,8 @@ export const useProperty = () => {
   };
 
 
+
+
   const updateProperty = async (oldPropertyDetails, newUpdate) => {
     setIsLoading(true);
     const {
@@ -401,6 +403,100 @@ export const useProperty = () => {
     }
   };
 
+  // 🔎 --- FRONTEND DUPLICATE CHECK ---
+  // Remove accents/diacritics (frontend-safe)
+  const removeDiacritics = (text = "") =>
+    text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // Compare description similarity
+  const checkTextSimilarity = (descA = "", descB = "") => {
+    const normalize = (text) =>
+      removeDiacritics(text || "")
+        .toLowerCase()
+        .replace(/[\n\r\t.,;:!?()\-–—'"“”‘’`´]/g, "")
+        .replace(/\s+/g, " ")
+        .replace(/[0-9]{6,}/g, "")
+        .trim()
+        .split(" ");
+
+    const tokensA = normalize(descA);
+    const tokensB = normalize(descB);
+    if (tokensA.length === 0 || tokensB.length === 0) return 0;
+
+    const setA = new Set(tokensA);
+    const setB = new Set(tokensB);
+    const intersection = [...setA].filter((word) => setB.has(word));
+    return intersection.length / Math.min(setA.size, setB.size);
+  };
+
+  // Check if property probably already exists in Redux (instant check)
+  const checkPropertyAlreadyExistsLocal = (newProperty) => {
+    const {
+      selectedCity,
+      type,
+      houseType,
+      rent,
+      rooms,
+      toilet,
+      bathrooms,
+      description,
+    } = newProperty;
+
+    const city = selectedCity;
+
+    if (!city || !type || !houseType || !description) {
+      return { alreadyExists: false, message: "Missing required fields" };
+    }
+
+    const scoredDuplicates = [];
+
+    for (const p of properties) {
+      // 1️⃣ Same fokontany or same city
+      const sameLocation =
+        p.city?.fokontany === city?.fokontany ||
+        p.city?._id === city?._id;
+      if (!sameLocation) continue;
+
+      // 2️⃣ Same type + houseType
+      if (p.type !== type || p.houseType !== houseType) continue;
+
+      // 3️⃣ Rent similarity (within ±10%)
+      if (p.rent && rent && Math.abs(p.rent - rent) > rent * 0.1) continue;
+
+      // 4️⃣ Room similarity
+      const sameRooms =
+        Math.abs((p.rooms || 0) - (rooms || 0)) <= 1 &&
+        Math.abs((p.toilet || 0) - (toilet || 0)) <= 1 &&
+        Math.abs((p.bathrooms || 0) - (bathrooms || 0)) <= 1;
+      if (!sameRooms) continue;
+
+      // 5️⃣ Description similarity score
+      const sim = checkTextSimilarity(description, p.description);
+      if (sim >= 0.6) {
+        scoredDuplicates.push({ property: p, score: sim });
+      }
+    }
+
+    if (scoredDuplicates.length === 0) {
+      return { alreadyExists: false };
+    }
+
+    // Sort by similarity score (highest first)
+    scoredDuplicates.sort((a, b) => b.score - a.score);
+
+    // Get the best match
+    const bestMatch = scoredDuplicates[0];
+
+    return {
+      alreadyExists: true,
+      bestMatch: bestMatch.property,
+      score: Math.round(bestMatch.score * 100), // percentage (e.g. 85)
+      duplicates: scoredDuplicates,
+    };
+  };
+
+
+
   const deleteProperty = async (property) => {
     const propertyId = property._id;
     let countdown = 7; // Initial countdown value in seconds
@@ -496,7 +592,7 @@ export const useProperty = () => {
     });
   };
 
-    const shareProperty = async (property) => {
+  const shareProperty = async (property) => {
     // Get the current URL
     const currentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${property._id}`;
     // Build the full title
@@ -736,6 +832,7 @@ export const useProperty = () => {
 
   return {
     addProperty,
+    checkPropertyAlreadyExistsLocal,
     updateProperty,
     deleteProperty,
     shareProperty,

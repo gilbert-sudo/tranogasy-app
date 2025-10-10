@@ -6,6 +6,8 @@ import NotLogedIn from "../components/NotLogedIn";
 import AutosuggestInput from "../components/AutosuggestInput";
 import PropertyExistsCard from "../components/PropertyExistsCard";
 
+import PropertyDetailsPage from "./PropertyDetailsPage";
+
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
 import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLocationOn, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
@@ -40,6 +42,7 @@ import {
   FaHouseChimney,
   FaBuilding,
 } from "react-icons/fa6";
+import { IoMdCloseCircle } from "react-icons/io";
 
 
 import ImageUploader from "../components/ImageUploader";
@@ -60,7 +63,6 @@ const CreateListing = () => {
   const [price, setPrice] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [coords, setCoords] = useState(null);
-  const [coordsFromGoogle, setCoordsFromGoogle] = useState(null);
   const [rooms, setRooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
   const [area, setArea] = useState(0);
@@ -73,7 +75,7 @@ const CreateListing = () => {
   const [showPhone3, setShowPhone3] = useState(false);
 
   const { loadMap } = offlineLoader();
-  const { addProperty, isLoading } = useProperty();
+  const { addProperty, checkPropertyAlreadyExistsLocal, isLoading } = useProperty();
   const { findLocationsWithinDistance } = useLocalMapHook();
 
   const [isRent, setIsRent] = useState(true);
@@ -84,7 +86,8 @@ const CreateListing = () => {
   const [houseType, setHouseType] = useState("maison");
   const [floor, setFloor] = useState("");
   const [floorError, setFloorError] = useState(false);
-  const [errorCard, setErrorCard] = useState(true);
+  const [propertyExistsCard, setPropertyExistsCard] = useState(null);
+  const [isSliderVisible, setIsSlideVisible] = useState(false);
 
   // features checkboxs
   const [carAccess, setCarAccess] = useState(false);
@@ -126,6 +129,8 @@ const CreateListing = () => {
 
   const [imageError, setImageError] = useState(false);
   const [noFeatureSet, setNoFeatureSet] = useState(false);
+
+  const [pendingNewProperty, setPendingNewProperty] = useState(null);
 
 
 
@@ -182,6 +187,10 @@ const CreateListing = () => {
     setIsRent(false);
     setIsSale(false);
     setIsColoc(true);
+  };
+
+  const handleCloseSlideClick = () => {
+    setIsSlideVisible(false);
   };
 
   useEffect(() => {
@@ -289,6 +298,7 @@ const CreateListing = () => {
       title,
       description,
       city,
+      selectedCity,
       price,
       rent,
       rooms,
@@ -342,10 +352,22 @@ const CreateListing = () => {
       solarPanels,
     };
 
-    addProperty(newProperty);
+    const checkingResult = checkPropertyAlreadyExistsLocal(newProperty);
 
-    console.log(newProperty);
+    if (checkingResult.alreadyExists) {
+      setPendingNewProperty(newProperty);
+      setPropertyExistsCard(checkingResult.bestMatch);
+      console.log({ original: newProperty, checkingResult });
+    } else {
+      addProperty(newProperty);
+    }
   };
+
+  const handleCreateAnyway = () => {
+    addProperty(pendingNewProperty);
+    setPropertyExistsCard(null);
+    console.log("Create a new listing for ", pendingNewProperty);
+  }
 
   useEffect(() => {
     if (isLoading) {
@@ -398,7 +420,7 @@ const CreateListing = () => {
       className="create-listing"
     >
       {user && user ? (
-        <div className="create-listing mt-5 pt-3">
+        <div className="create-listing mt-5 pt-3 position-relative">
           <div className="site-section site-section-sm">
             <form action="#" method="post" onSubmit={handleSubmit}>
               <div className="container" style={{ paddingBottom: "80px" }}>
@@ -1627,7 +1649,12 @@ const CreateListing = () => {
             </form>
           </div>
           {/* bottom navbar */}
-          <div class="fixed-bottom bg-white">
+          <div
+            class="fixed-bottom bg-white"
+            style={{
+              display: isSliderVisible ? "none" : ""
+            }}
+          >
             <nav className="d-flex justify-content-start navbar navbar-expand-lg navbar-light">
               <button
                 onClick={() => window.history.back()}
@@ -1642,7 +1669,72 @@ const CreateListing = () => {
             </nav>
           </div>
           {/* bottom navbar */}
-           {errorCard && <PropertyExistsCard setErrorCard={setErrorCard} />}
+          {propertyExistsCard && !isSliderVisible &&
+            <PropertyExistsCard
+              handleCreateAnyway={handleCreateAnyway}
+              property={propertyExistsCard}
+              setPropertyExistsCard={setPropertyExistsCard}
+              setIsSlideVisible={setIsSlideVisible}
+            />
+          }
+
+          <div
+            className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+            style={{
+              position: "fixed",
+              left: "50%",
+              bottom: 0,
+              transform: isSliderVisible
+                ? "translate(-50%, 0)"
+                : "translate(-50%, 100%)",
+              width: "100%",
+              height: "95vh",
+              overflowY: "auto",
+              backgroundColor: "#fff",
+              borderRadius: "30px 30px 0 0",
+              boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
+              transition: "transform 0.5s ease",
+              boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+              zIndex: 1000,
+            }}
+          >
+            {/* mini navbar for the lose button to hide the sliding div */}
+            <div
+              className="fixed-top"
+              style={{
+                width: "100%",
+                zIndex: 1000,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "sticky",
+              }}
+            >
+              <IoMdCloseCircle
+                style={{
+                  fontSize: "2rem",
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  zIndex: "9999",
+                  backgroundColor: "#fff",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+                onClick={handleCloseSlideClick}
+              />
+            </div>
+            {/* Close button to hide the sliding div */}
+
+            {propertyExistsCard && isSliderVisible && (
+              <PropertyDetailsPage
+                key={propertyExistsCard._id}
+                fastPreviewProperty={propertyExistsCard}
+                handleCloseSlideClick={handleCloseSlideClick}
+              />
+            )}
+
+          </div>
 
         </div >
       ) : (
