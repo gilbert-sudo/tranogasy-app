@@ -185,6 +185,7 @@ const ImageUploader = ({ payload, setImageIsLoading }) => {
 
   useEffect(() => {
     console.log(imgState);
+    setImgCounter(imgState.length);
   }, [imgState]);
 
   return (

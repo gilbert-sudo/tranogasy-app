@@ -197,7 +197,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
     rel: 'noopener noreferrer'
   };
 
-  // console.log("property details: ", propertiesDetails);
+  console.log("property details: ", propertiesDetails);
 
   return (
     <div

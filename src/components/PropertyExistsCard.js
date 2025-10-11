@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "wouter";
 import PropertyDetails from "../components/PropertyDetails";
 import { IoMdCloseCircle } from "react-icons/io";
+import { MdOutlineTipsAndUpdates } from "react-icons/md";
 import { FolderClock, MegaphoneOff } from "lucide-react";
 
-const PropertyExistsCard = ({ handleCreateAnyway, property, setPropertyExistsCard, setIsSlideVisible }) => {
+const PropertyExistsCard = ({ handlePursueTheSubmit, property, setPropertyExistsCard, setIsSlideVisible, setRecoveryData }) => {
 
-    const [, setLocation] = useLocation();
     //redux
     const user = useSelector((state) => state.user);
 
@@ -18,12 +17,25 @@ const PropertyExistsCard = ({ handleCreateAnyway, property, setPropertyExistsCar
         }
     };
 
-    const handleUpdateListing = (property) => {
-        setLocation(`/update-property/${encodeURIComponent(property)}`);
+    const handleUpdateListing = () => {
+        setPropertyExistsCard(null);
+        setRecoveryData(property);
+        console.log("set the proerty", property);
+        setTimeout(() => {
+            handlePursueTheSubmit(false);
+        }, 100);
     };
 
-    //stringify the property data to pass it as parameter
-    const propertyDataString = JSON.stringify(property);
+    const createdAt = new Date(property.created_at);
+    const now = new Date();
+
+    // difference in milliseconds
+    const diffTime = Math.abs(now - createdAt);
+
+    // convert to days
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    console.log(`${diffDays}  days ago`);
 
     useEffect(() => {
         const body = document.body;
@@ -114,6 +126,10 @@ const PropertyExistsCard = ({ handleCreateAnyway, property, setPropertyExistsCar
                     onClick={() => {
                         setIsSlideVisible(true);
                     }}
+                    style={{
+                        cursor: "pointer",
+                        marginBottom: "5px"
+                    }}
                 >
                     <PropertyDetails
                         key={property._id}
@@ -129,7 +145,7 @@ const PropertyExistsCard = ({ handleCreateAnyway, property, setPropertyExistsCar
                                 type="button"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    handleCreateAnyway();
+                                    handlePursueTheSubmit(true);
                                 }}
                                 style={{
                                     display: "flex",
@@ -155,36 +171,75 @@ const PropertyExistsCard = ({ handleCreateAnyway, property, setPropertyExistsCar
                         </div>
 
                         <div className="more-option">
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    alert("tena mbola tsy vita lesy ito ry zandry 😅");
-                                    return
-                                    handleUpdateListing(propertyDataString);
-                                }}
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "100%",
-                                    padding: "12px 15px",
-                                    borderRadius: "30px",
-                                    backgroundColor: "#6BCB2D", // TranoGasy green tone
-                                    color: "#fff",
-                                    fontWeight: "600",
-                                    cursor: "pointer",
-                                    marginBottom: "10px",
-                                    border: "none",
-                                    boxShadow: "0 3px 8px rgba(107, 203, 45, 0.3)",
-                                    transition: "all 0.3s ease",
-                                }}
-                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5AAE26")}
-                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6BCB2D")}
-                            >
-                                <FolderClock size={18} style={{ marginRight: "10px" }} />
-                                Mettre à jour cette annonce
-                            </button>
+                            {diffDays &&
+                                (diffDays > 7) ?
+                                (
+                                    <>
+                                        <button
+                                            type="button"
+                                            onClick={handleUpdateListing}
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                width: "100%",
+                                                padding: "12px 15px",
+                                                borderRadius: "30px",
+                                                backgroundColor: "#6BCB2D", // TranoGasy green tone
+                                                color: "#fff",
+                                                fontWeight: "600",
+                                                cursor: "pointer",
+                                                marginBottom: "10px",
+                                                border: "none",
+                                                boxShadow: "0 3px 8px rgba(107, 203, 45, 0.3)",
+                                                transition: "all 0.3s ease",
+                                            }}
+                                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#5AAE26")}
+                                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#6BCB2D")}
+                                        >
+                                            <FolderClock size={18} style={{ marginRight: "10px" }} />
+                                            Oui, récupérer cette annonce
+                                        </button>
+                                        {/* Tip */}
+                                        <div
+                                            style={{
+                                                marginTop: "10px",
+                                                padding: "8.4px 10.5px",
+                                                borderRadius: "12px",
+                                                backgroundColor: "#f3faea",
+                                                fontSize: "13px",
+                                                color: "#7cbd1e",
+                                                textAlign: "center",
+                                                fontWeight: "500",
+                                            }}
+                                        >
+                                            <p style={{ margin: 0 }}>
+                                                <strong> <MdOutlineTipsAndUpdates size={18} className="mb-1" /></strong> Le délai de cette annonce est expiré il y a {diffDays - 7} jour{(diffDays - 7) > 1 && "s"}. Vous pouvez maintenant la récupérer.
+                                            </p>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* Tip */}
+                                        <div
+                                            style={{
+                                                marginTop: "10px",
+                                                padding: "8.4px 10.5px",
+                                                borderRadius: "12px",
+                                                backgroundColor: "#ffe6e6ff",
+                                                fontSize: "13px",
+                                                color: "#cc0000ff",
+                                                textAlign: "center",
+                                                fontWeight: "500",
+                                            }}
+                                        >
+                                            <p style={{ margin: 0 }}>
+                                                <strong> <MdOutlineTipsAndUpdates size={18} className="mb-1" /></strong> Après l'expiration du délai de cette annonce dans {7 - diffDays} jour{(7 - diffDays) > 1 && "s"}, vous pourriez la récupérer à ce moment-là.
+                                            </p>
+                                        </div>
+                                    </>
+                                )
+                            }
                         </div>
                     </>
                 )}

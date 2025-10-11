@@ -436,11 +436,17 @@ export const useProperty = () => {
       type,
       houseType,
       rent,
+      price,
       rooms,
+      livingRoom,
+      kitchen,
       toilet,
       bathrooms,
       description,
     } = newProperty;
+
+    console.log("new p to check", newProperty);
+
 
     const city = selectedCity;
 
@@ -451,30 +457,83 @@ export const useProperty = () => {
     const scoredDuplicates = [];
 
     for (const p of properties) {
+
+      // Initialize similarityScore before the loop
+      let similarityScore = 0;
+
       // 1️⃣ Same fokontany or same city
       const sameLocation =
         p.city?.fokontany === city?.fokontany ||
         p.city?._id === city?._id;
       if (!sameLocation) continue;
+      console.log("1️⃣ Same fokontany or same city");
 
       // 2️⃣ Same type + houseType
-      if (p.type !== type || p.houseType !== houseType) continue;
+      const ptype = p.type || "rent";
+      const phouseType = p.houseType || "maison";
+      if (ptype !== type || phouseType !== houseType) continue;
+      console.log("2️⃣ Same type + houseType");
 
-      // 3️⃣ Rent similarity (within ±10%)
-      if (p.rent && rent && Math.abs(p.rent - rent) > rent * 0.1) continue;
+      // 3️⃣ Rent or Price similarity (within ±20%)
+      if (ptype === "rent") {
+        if (p.rent && rent) {
+          const diff = Math.abs(p.rent - rent);
+          const maxDiff = rent * 0.2; // 20% tolerance
+          if (diff > maxDiff) continue;
+
+          // 🔥 Dynamic score — closer = higher score
+          const similarity = 1 - diff / maxDiff; // 1.0 if identical, 0 if at 20% boundary
+          similarityScore += similarity * 20; // weight (20 points max)
+          console.log("Rent similarity (within ±20%)", similarity * 20);
+        }
+      } else if (ptype === "sale") {
+        if (p.price && price) {
+          const diff = Math.abs(p.price - price);
+          const maxDiff = price * 0.2; // 20% tolerance
+          if (diff > maxDiff) continue;
+
+          // 🔥 Dynamic score — closer = higher score
+          const similarity = 1 - diff / maxDiff; // 1.0 if identical, 0 if at 20% boundary
+          similarityScore += similarity * 20; // weight (20 points max)
+          console.log("Price similarity (within ±20%)", similarity * 20);
+        }
+      }
+
 
       // 4️⃣ Room similarity
-      const sameRooms =
-        Math.abs((p.rooms || 0) - (rooms || 0)) <= 1 &&
-        Math.abs((p.toilet || 0) - (toilet || 0)) <= 1 &&
-        Math.abs((p.bathrooms || 0) - (bathrooms || 0)) <= 1;
+      const roomDiff = Math.abs(((p.rooms + p.livingRoom) || 0) - ((Number(rooms) + Number(livingRoom)) || 0));
+      console.log({ prooms: p.rooms, plivingRoom: p.livingRoom }, { rooms: Number(rooms), livingRoom: Number(livingRoom) });
+
+      const kitchenDiff = Math.abs((p.kitchen || 0) - (kitchen || 0));
+      const toiletDiff = Math.abs((p.toilet || 0) - (toilet || 0));
+      const bathDiff = Math.abs((p.bathrooms || 0) - (bathrooms || 0));
+
+      // still keep the strict filter
+      const sameRooms = roomDiff === 0 && kitchenDiff <= 1 && toiletDiff <= 1 && bathDiff <= 1;
       if (!sameRooms) continue;
 
+      // ✅ Dynamic scoring for accuracy (closer = higher score)
+      const roomSim = 1 - roomDiff / 1;     // within ±1 difference → from 1.0 to 0.0
+      const kitchenSim = 1 - kitchenDiff / 1;     // within ±1 difference → from 1.0 to 0.0
+      const toiletSim = 1 - toiletDiff / 1; // same
+      const bathSim = 1 - bathDiff / 1;     // same
+
+      // average or weighted total (up to you)
+      const roomAccuracy = (roomSim + toiletSim + bathSim + kitchenSim) / 4;
+
+      // scale and add (e.g. max 10 points)
+      similarityScore += roomAccuracy * 10;
+
+      console.log("Room similarity accuracy:", (roomAccuracy * 10).toFixed(2), "Total score:", similarityScore);
+
       // 5️⃣ Description similarity score
-      const sim = checkTextSimilarity(description, p.description);
-      if (sim >= 0.6) {
-        scoredDuplicates.push({ property: p, score: sim });
-      }
+      const descAccuracy = checkTextSimilarity(description, p.description);
+
+      // scale and add (e.g. max 10 points)
+      similarityScore += descAccuracy * 10;
+      console.log("Description similarity accuracy:", (descAccuracy * 10).toFixed(2), "Total score:", similarityScore);
+
+      scoredDuplicates.push({ property: p, score: similarityScore });
     }
 
     if (scoredDuplicates.length === 0) {
@@ -495,7 +554,31 @@ export const useProperty = () => {
     };
   };
 
+  const deleteDirectlyProperty = async (property) => {
+    const propertyId = property._id;
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/properties/${propertyId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
 
+      if (response.ok) {
+        dispatch(deleteUsersProperty({ propertyId }));
+        dispatch(deleteFromTopProperty({ propertyId }));
+        dispatch(deleteFromProperties({ propertyId }));
+        disLike(property);
+      }
+    } catch (error) {
+      setLocation("/nosignal");
+      console.log(error);
+    }
+  };
 
   const deleteProperty = async (property) => {
     const propertyId = property._id;
@@ -835,6 +918,7 @@ export const useProperty = () => {
     checkPropertyAlreadyExistsLocal,
     updateProperty,
     deleteProperty,
+    deleteDirectlyProperty,
     shareProperty,
     publishProperty,
     searchProperty,

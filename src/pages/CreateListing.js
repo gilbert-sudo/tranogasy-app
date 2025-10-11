@@ -2,13 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
+import { offlineLoader } from "../hooks/useOfflineLoader";
 import NotLogedIn from "../components/NotLogedIn";
 import AutosuggestInput from "../components/AutosuggestInput";
 import PropertyExistsCard from "../components/PropertyExistsCard";
 
 import PropertyDetailsPage from "./PropertyDetailsPage";
 
-import { offlineLoader } from "../hooks/useOfflineLoader";
 
 import { MdOutlineEditLocation, MdArrowBackIos, MdOutlineLiving, MdBalcony, MdLocationOn, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
 import {
@@ -56,6 +56,7 @@ const CreateListing = () => {
   const user = useSelector((state) => state.user);
   const imgState = useSelector((state) => state.img);
   const [mapData, setMapData] = useState(null);
+  const [recoveryData, setRecoveryData] = useState(null);
 
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
@@ -77,6 +78,7 @@ const CreateListing = () => {
   const { loadMap } = offlineLoader();
   const { addProperty, checkPropertyAlreadyExistsLocal, isLoading } = useProperty();
   const { findLocationsWithinDistance } = useLocalMapHook();
+  const { deleteDirectlyProperty } = useProperty();
 
   const [isRent, setIsRent] = useState(true);
   const [isSale, setIsSale] = useState(false);
@@ -358,15 +360,16 @@ const CreateListing = () => {
       setPendingNewProperty(newProperty);
       setPropertyExistsCard(checkingResult.bestMatch);
       console.log({ original: newProperty, checkingResult });
-    } else {
-      addProperty(newProperty);
-    }
+    };
   };
 
-  const handleCreateAnyway = () => {
+  const handlePursueTheSubmit = (bypass) => {
     addProperty(pendingNewProperty);
     setPropertyExistsCard(null);
     console.log("Create a new listing for ", pendingNewProperty);
+    if (!bypass) {
+      deleteDirectlyProperty(propertyExistsCard);
+    }
   }
 
   useEffect(() => {
@@ -1040,7 +1043,7 @@ const CreateListing = () => {
                             color: "#6b7280",
                           }}
                         >
-                          Salon
+                          Living
                         </label>
                         <input
                           type="number"
@@ -1671,10 +1674,11 @@ const CreateListing = () => {
           {/* bottom navbar */}
           {propertyExistsCard && !isSliderVisible &&
             <PropertyExistsCard
-              handleCreateAnyway={handleCreateAnyway}
+              handlePursueTheSubmit={handlePursueTheSubmit}
               property={propertyExistsCard}
               setPropertyExistsCard={setPropertyExistsCard}
               setIsSlideVisible={setIsSlideVisible}
+              setRecoveryData={setRecoveryData}
             />
           }
 
