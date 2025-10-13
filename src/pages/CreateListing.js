@@ -6,6 +6,8 @@ import { offlineLoader } from "../hooks/useOfflineLoader";
 import NotLogedIn from "../components/NotLogedIn";
 import AutosuggestInput from "../components/AutosuggestInput";
 import PropertyExistsCard from "../components/PropertyExistsCard";
+import RentInput from "../components/RentInput";
+import PhoneInput from "../components/PhoneInput";
 
 import PropertyDetailsPage from "./PropertyDetailsPage";
 
@@ -360,6 +362,8 @@ const CreateListing = () => {
       setPendingNewProperty(newProperty);
       setPropertyExistsCard(checkingResult.bestMatch);
       console.log({ original: newProperty, checkingResult });
+    } else {
+      addProperty(newProperty);
     };
   };
 
@@ -454,7 +458,7 @@ const CreateListing = () => {
                         border: "1px solid #ced4da",
                         borderRadius: "20px",
                         padding: "15px",
-                        fontSize: "14px",
+                        fontSize: "16px",
                         backgroundColor: "#f9f9f9",
                         outline: "none",
                         transition: "border-color 0.2s",
@@ -631,7 +635,7 @@ const CreateListing = () => {
                         outline: "none",
                         borderRadius: "16px",
                         padding: "10px",
-                        fontSize: "14px",
+                        fontSize: "16px",
                         resize: "vertical",
                       }}
                       value={description}
@@ -907,65 +911,12 @@ const CreateListing = () => {
 
                   </div>
 
-                  {isRent && (
-                    <div
-                      style={{
-                        position: "relative",
-                        border: "1px solid #ced4da",
-                        borderRadius: "20px",
-                        padding: "20px",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <label
-                        style={{
-                          position: "absolute",
-                          top: "-10px",
-                          left: "15px",
-                          background: "#fff",
-                          padding: "0 6px",
-                          fontSize: "14px",
-                          color: "#6b7280",
-                        }}
-                      >
-                        Montant du loyer du bien (en Ariary)
-                      </label>
-
-                      <div style={{ position: "relative", marginTop: "10px" }}>
-                        <input
-                          type="number"
-                          name="budgetmax"
-                          placeholder="Indiquer un montant"
-                          style={{
-                            width: "100%",
-                            border: "1px solid #999",
-                            borderRadius: "16px",
-                            padding: "15px",
-                            fontSize: "14px",
-                            textAlign: "left",
-                            paddingRight: "80px", // espace pour le suffixe
-                          }}
-                          value={rent}
-                          onChange={(e) => setRent(e.target.value)}
-                          required={isRent ? true : false}
-                        />
-                        <span
-                          style={{
-                            position: "absolute",
-                            right: "15px",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            color: "#6b7280",
-                            fontSize: "14px",
-                            pointerEvents: "none",
-                          }}
-                        >
-                          Ar / mois
-                        </span>
-                      </div>
-                    </div>
-
-                  )}
+                  {isRent &&
+                    <RentInput
+                      rent={rent}
+                      setRent={setRent}
+                      isRent={isRent}
+                    />}
 
                   <div
                     style={{
@@ -1022,7 +973,7 @@ const CreateListing = () => {
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
                           value={rooms}
                           onChange={(e) => setRooms(e.target.value)}
@@ -1054,7 +1005,7 @@ const CreateListing = () => {
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
                           value={livingRoom}
                           onChange={(e) => setLivingRoom(e.target.value)}
@@ -1086,7 +1037,7 @@ const CreateListing = () => {
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
                           value={kitchen}
                           onChange={(e) => setKitchen(e.target.value)}
@@ -1118,7 +1069,7 @@ const CreateListing = () => {
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
                           value={bathrooms}
                           onChange={(e) => setBathrooms(e.target.value)}
@@ -1150,7 +1101,7 @@ const CreateListing = () => {
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
                           value={toilet}
                           onChange={(e) => setToilet(e.target.value)}
@@ -1182,7 +1133,7 @@ const CreateListing = () => {
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
                           value={area}
                           onChange={(e) => setArea(e.target.value)}
@@ -1451,26 +1402,7 @@ const CreateListing = () => {
                         >
                           Obligatoire
                         </label>
-                        <input
-                          type="tel"
-                          placeholder="Téléphone 1"
-                          style={{
-                            width: "100%",
-                            border: "1px solid #999",
-                            borderRadius: "16px",
-                            padding: "10px",
-                            fontSize: "13px",
-                            textAlign: "center",
-                          }}
-                          value={phone1}
-                          maxLength={10}
-                          pattern="[0-9]*"
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(/\D/g, "");
-                            setPhone1(numericValue);
-                          }}
-                          required
-                        />
+                        <PhoneInput phone={phone1} setPhone={setPhone1} required={true}/>
                       </div>
 
                       {/* Téléphone 2 */}
@@ -1488,25 +1420,7 @@ const CreateListing = () => {
                         >
                           Facultatif
                         </label>
-                        <input
-                          type="tel"
-                          placeholder="Téléphone 2"
-                          style={{
-                            width: "100%",
-                            border: "1px solid #999",
-                            borderRadius: "16px",
-                            padding: "10px",
-                            fontSize: "13px",
-                            textAlign: "center",
-                          }}
-                          value={phone2}
-                          maxLength={10}
-                          pattern="[0-9]*"
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(/\D/g, "");
-                            setPhone2(numericValue);
-                          }}
-                        />
+                        <PhoneInput phone={phone2} setPhone={setPhone2} required={false}/>
                       </div>
 
                       {/* Téléphone 3 (only if user clicks Add More) */}
@@ -1525,25 +1439,7 @@ const CreateListing = () => {
                           >
                             Facultatif
                           </label>
-                          <input
-                            type="tel"
-                            placeholder="Téléphone 3"
-                            style={{
-                              width: "100%",
-                              border: "1px solid #999",
-                              borderRadius: "16px",
-                              padding: "10px",
-                              fontSize: "13px",
-                              textAlign: "center",
-                            }}
-                            value={phone3}
-                            maxLength={10}
-                            pattern="[0-9]*"
-                            onChange={(e) => {
-                              const numericValue = e.target.value.replace(/\D/g, "");
-                              setPhone3(numericValue);
-                            }}
-                          />
+                          <PhoneInput phone={phone3} setPhone={setPhone3} required={false}/>
                         </div>
                       )}
                     </div>

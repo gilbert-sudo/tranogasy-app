@@ -59,6 +59,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
     properties ? getPriceAndRentRanges(properties) : null
   );
   const [rangeValue, setRangeValue] = useState([0, 0]);
+  const [priceError, setPriceError] = useState(""); // state for error message
   const [selectedRoom, setSelectedRoom] = useState("1+");
   const [customRoom, setCustomRoom] = useState("");
 
@@ -502,11 +503,11 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
         panoramicView,
         solarPanels,
       };
-      
+
       const activeFiltersCount = Object.values(counterParameters).filter(value => value === true).length;
 
       dispatch(setTranogasyMapField({ key: "activeFiltersCount", value: activeFiltersCount }));
-      
+
       setSearchResults(searchProperty(parameters));
     }
   }, [
@@ -573,7 +574,11 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
     }
   }, [isRent, isSale]);
 
-
+  // function to format number with spaces (e.g., 3400000 -> "3 400 000")
+  const formatNumber = (value) => {
+    if (!value) return "";
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
 
   return (
     <div className="create-listing">
@@ -697,7 +702,6 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                     <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280" }}>
                       Votre budget {isRent && "(en Ar/mois)"} {isSale && "(en Ar)"}
                     </label>
-
                     <div
                       style={{
                         display: "flex",
@@ -723,23 +727,45 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                           Minimum Ar
                         </label>
                         <input
-                          type="number"
+                          type="tel"
                           placeholder="Minimum"
-                          value={Math.min(...rangeValue) !== 0 ? Math.min(...rangeValue) : ""}
+                          value={formatNumber(Math.min(...rangeValue) !== 0 ? Math.min(...rangeValue) : "")}
                           style={{
                             width: "100%",
                             border: "1px solid #999",
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
-                          onChange={(e) =>
-                            setRangeValue([
-                              Number(e.target.value),
-                              Math.max(...rangeValue),
-                            ])
-                          }
+                          onChange={(e) => {
+                            const rawValue = e.target.value.replace(/\s/g, ""); // remove spaces
+
+                            // Allow only digits
+                            if (!/^\d*$/.test(rawValue)) return;
+
+                            const numericValue = Number(rawValue);
+
+                            if (numericValue < 10000000) {
+                              setPriceError(""); // clear error
+                              if (numericValue < Math.max(...rangeValue)) {
+                                setRangeValue([
+                                  Number(numericValue),
+                                  Math.max(...rangeValue),
+                                ])
+                              } else {
+                                const newMin = (numericValue + 1) < priceRange.maxRent ? (numericValue + 1) : numericValue;
+                                setRangeValue([
+                                  Number(numericValue),
+                                  Number((numericValue + 1)),
+                                ])
+                              }
+                            } else {
+                              // Check max value
+                              setPriceError("Le montant maximal est 10 000 000 Ar");
+                              return; // stop typing more
+                            }
+                          }}
                         />
                       </div>
 
@@ -759,26 +785,60 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                           Maximum Ar
                         </label>
                         <input
-                          type="number"
+                          type="tel"
                           placeholder="Maximum"
-                          value={Math.max(...rangeValue) !== 0 ? Math.max(...rangeValue) : ""}
+                          value={formatNumber(Math.max(...rangeValue) !== 0 ? Math.max(...rangeValue) : "")}
                           style={{
                             width: "100%",
                             border: "1px solid #999",
                             borderRadius: "16px",
                             padding: "10px",
                             textAlign: "center",
-                            fontSize: "13px",
+                            fontSize: "16px",
                           }}
-                          onChange={(e) =>
-                            setRangeValue([
-                              Math.min(...rangeValue),
-                              Number(e.target.value),
-                            ])
-                          }
+                          onChange={(e) => {
+                            const rawValue = e.target.value.replace(/\s/g, ""); // remove spaces
+
+                            // Allow only digits
+                            if (!/^\d*$/.test(rawValue)) return;
+
+                            const numericValue = Number(rawValue);
+
+                            if (numericValue < 10000000) {
+                              setPriceError(""); // clear error
+                              if (numericValue > Math.min(...rangeValue)) {
+                                setRangeValue([
+                                  Math.min(...rangeValue),
+                                  Number(numericValue),
+                                ])
+                              } else {
+                                const newMax = (numericValue - 1) >= 0 ? (numericValue - 1) : numericValue;
+                                setRangeValue([
+                                  Number(newMax),
+                                  Number(numericValue),
+                                ])
+                              }
+                            } else {
+                              // Check max value
+                              setPriceError("Le montant maximal est 10 000 000 Ar");
+                              return; // stop typing more
+                            }
+                          }}
                         />
                       </div>
                     </div>
+                    {priceError && (
+                      <p
+                        style={{
+                          color: "red",
+                          fontSize: "13px",
+                          marginTop: "8px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {priceError}
+                      </p>
+                    )}
 
                     <RangeSlider
                       min={
@@ -875,7 +935,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                           borderRadius: "16px",
                           border: "1px solid #999",
                           textAlign: "center",
-                          fontSize: "12px",
+                          fontSize: "16px",
                           flex: "0 0 auto",
                         }}
                       />
