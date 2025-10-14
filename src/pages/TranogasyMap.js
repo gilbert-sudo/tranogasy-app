@@ -505,6 +505,10 @@ function MyMap() {
             />
           }
         </Map>
+
+         {/* Filter info box */}
+        {!showMapLoader && <FilterInfoBox />}
+        
         {/* Zone de recherche info card */}
         {selectedPlace &&
           <div
@@ -574,9 +578,6 @@ function MyMap() {
             </button>
           </div>
         }
-
-        {/* Filter info box */}
-        {!showMapLoader && <FilterInfoBox />}
 
         {showResultsDisplayModeCard &&
           <ResultsDisplayModeCard

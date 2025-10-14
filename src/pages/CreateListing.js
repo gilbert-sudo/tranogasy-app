@@ -4,9 +4,9 @@ import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { offlineLoader } from "../hooks/useOfflineLoader";
 import NotLogedIn from "../components/NotLogedIn";
-import AutosuggestInput from "../components/AutosuggestInput";
 import PropertyExistsCard from "../components/PropertyExistsCard";
 import RentInput from "../components/RentInput";
+import GoogleAutosuggestInput from '../components/GoogleAutosuggestInput';
 import PhoneInput from "../components/PhoneInput";
 
 import PropertyDetailsPage from "./PropertyDetailsPage";
@@ -50,6 +50,10 @@ import { IoMdCloseCircle } from "react-icons/io";
 import ImageUploader from "../components/ImageUploader";
 import PropertyLocationSelector from "../components/PropertyLocationSelector";
 import Swal from "sweetalert2";
+
+import {
+  APIProvider,
+} from "@vis.gl/react-google-maps";
 
 const CreateListing = () => {
   const myRef = useRef(null);
@@ -212,12 +216,6 @@ const CreateListing = () => {
     pageLoader();
   }, [mapData]);
 
-  // Callback function for handling the selected item's _id
-  const handleItemSelected = (itemId) => {
-    console.log("Selected item _id:", itemId);
-    setSelectedCity(itemId);
-    // Do something with the selected item's _id
-  };
   // function to handle the form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -393,17 +391,26 @@ const CreateListing = () => {
         coords,
         15000
       ).sort((a, b) => a.distance - b.distance);
-      const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+
+      let selectedCityIsNearby = null;
+
+      if (selectedCity) {
+        selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+      }
+
       // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
       if (nearbyLocations.length > 0) {
-        if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
+        if (!selectedCityIsNearby) {
+          setCoords(null);
+          setSelectedCity(nearbyLocations[0].location);
+        }
       }
     }
   }, [isLoading, coords]);
 
   useEffect(() => {
     if (selectedCity) {
-      console.log("Selected city changed:", selectedCity);
+      console.log("Selected city changed:", selectedCity);  
 
       let nearbyLocations = [];
       if (selectedCity.isGoogleResult === true && selectedCity.coords) {
@@ -481,14 +488,12 @@ const CreateListing = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Le fokotany où se trouve la propriété
+                      L'endroit où se trouve la propriété
                     </label>
-
                     {!selectedCity && (
-                      <AutosuggestInput
-                        data={mapData}
-                        onSelectItem={handleItemSelected}
-                      />
+                      <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
+                          <GoogleAutosuggestInput onPlaceSelect={setCoords} />
+                      </APIProvider>
                     )}
 
                     {selectedCity && (
@@ -1402,7 +1407,7 @@ const CreateListing = () => {
                         >
                           Obligatoire
                         </label>
-                        <PhoneInput phone={phone1} setPhone={setPhone1} required={true}/>
+                        <PhoneInput phone={phone1} setPhone={setPhone1} required={true} />
                       </div>
 
                       {/* Téléphone 2 */}
@@ -1420,7 +1425,7 @@ const CreateListing = () => {
                         >
                           Facultatif
                         </label>
-                        <PhoneInput phone={phone2} setPhone={setPhone2} required={false}/>
+                        <PhoneInput phone={phone2} setPhone={setPhone2} required={false} />
                       </div>
 
                       {/* Téléphone 3 (only if user clicks Add More) */}
@@ -1439,7 +1444,7 @@ const CreateListing = () => {
                           >
                             Facultatif
                           </label>
-                          <PhoneInput phone={phone3} setPhone={setPhone3} required={false}/>
+                          <PhoneInput phone={phone3} setPhone={setPhone3} required={false} />
                         </div>
                       )}
                     </div>

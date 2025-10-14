@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setPreviousUrl } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import NotLogedIn from "../components/NotLogedIn";
-import AutosuggestInput from "../components/AutosuggestInput";
+import GoogleAutosuggestInput from '../components/GoogleAutosuggestInput';
 
 import { offlineLoader } from "../hooks/useOfflineLoader";
 
@@ -47,6 +47,10 @@ import ImageUploader from "../components/ImageUploader";
 import PropertyLocationSelector from "../components/PropertyLocationSelector";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import Swal from "sweetalert2";
+
+import {
+  APIProvider,
+} from "@vis.gl/react-google-maps";
 
 const UpdatePropertyPage = () => {
   const myRef = useRef(null);
@@ -393,10 +397,18 @@ const UpdatePropertyPage = () => {
         coords,
         15000
       ).sort((a, b) => a.distance - b.distance);
-      const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+      let selectedCityIsNearby = null;
+
+      if (selectedCity) {
+        selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
+      }
+
       // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
       if (nearbyLocations.length > 0) {
-        if (!selectedCityIsNearby) setSelectedCity(nearbyLocations[0].location);
+        if (!selectedCityIsNearby) {
+          setCoords(null);
+          setSelectedCity(nearbyLocations[0].location);
+        }
       }
     }
 
@@ -552,15 +564,14 @@ const UpdatePropertyPage = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        Le fokotany où se trouve la propriété
+                        L'endroit où se trouve la propriété
                       </label>
-
                       {!selectedCity && (
-                        <AutosuggestInput
-                          data={mapData}
-                          onSelectItem={handleItemSelected}
-                        />
+                        <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
+                          <GoogleAutosuggestInput onPlaceSelect={setCoords} />
+                        </APIProvider>
                       )}
+
 
                       {selectedCity && (
                         <div

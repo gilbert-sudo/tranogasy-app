@@ -83,7 +83,7 @@ const MyHouseListingPage = () => {
     // ✅ Check if within allowed hours
     const now = new Date();
     const hours = now.getHours();
-    setIsWithinAllowedHours(hours >= 6 && hours < 18);
+    user && (user?.role === "admin") ? setIsWithinAllowedHours(hours >= 6 && hours < 18) : setIsWithinAllowedHours(true);
 
     // ✅ Count today's properties
     if (usersProperties?.length > 0) {

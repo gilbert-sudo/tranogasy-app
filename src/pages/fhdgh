@@ -1,0 +1,58 @@
+     <Map
+          minZoom={9}
+          zoom={mapZoomLevel}
+          onZoomChanged={handleZoomChange}
+          center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
+          mapId="80e7a8f8db80acb5"
+          mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
+          options={{
+            fullscreenControl: false,
+            streetViewControl: false, // 👈 disable Pegman
+            cameraControl: false,
+            gestureHandling: 'greedy',
+          }}
+          mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
+        >
+          <MapController selectedPlace={selectedPlace} />
+
+          {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
+          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
+          {geolocation.userCurrentPosition && (
+            <>
+              <AdvancedMarker
+                position={geolocation.userCurrentPosition}
+                title="Vous êtes ici"
+                className="user-marker"
+              >
+                <div className="user-marker-pin">
+                  <FaUser size={16} style={{ marginRight: '4px' }} />
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
+                </div>
+              </AdvancedMarker>
+              <Circle
+                center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
+                radius={1000}
+                strokeColor={"#4285F4"}
+                strokeOpacity={2}
+                fillOpacity={0}
+                strokeWeight={3}
+                clickable={false} // Add this line to make it click-through
+              />
+            </>
+          )}
+
+          {selectedPlace &&
+            <Circle
+              center={selectedPlace} // Default center if no search results Antananarivo
+              radius={800}
+              strokeColor={"#7cbd1e"}
+              strokeOpacity={2}
+              fillOpacity={0}
+              strokeWeight={4}
+              clickable={false} // Add this line to make it click-through
+            />
+          }
+        </Map>
+
+         {/* Filter info box */}
+        {!showMapLoader && <FilterInfoBox />}

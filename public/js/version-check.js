@@ -1,11 +1,28 @@
 const API_URL = "https://apis.tranogasy.mg/api/apps/latest/tranogasy"; 
 
-async function clearAllCaches() {
-  if ("caches" in window) {
-    const names = await caches.keys();
-    await Promise.all(names.map(name => caches.delete(name)));
+async function deleteIndexHtmlFromCaches() {
+  if (!("caches" in window)) return;
+
+  const cacheNames = await caches.keys();
+
+  for (const name of cacheNames) {
+    const cache = await caches.open(name);
+    const keys = await cache.keys();
+
+    for (const request of keys) {
+      const url = new URL(request.url);
+
+      // Match only the index.html (both with and without trailing slash)
+      if (
+        url.pathname.endsWith("/index.html") ||
+        url.pathname === "/" ||
+        url.pathname === "/tranogasy/" // adjust this if your app is served from a subpath
+      ) {
+        console.log("🗑️ Deleting cached:", url.href);
+        await cache.delete(request);
+      }
+    }
   }
-  localStorage.clear();
 }
 
 async function checkAppVersion() {
@@ -15,24 +32,21 @@ async function checkAppVersion() {
     const latestVersion = data.version;
     const storedVersion = localStorage.getItem("app_version");
 
-    // First visit
     if (!storedVersion) {
       console.log("🆕 First visit — setting version:", latestVersion);
       localStorage.setItem("app_version", latestVersion);
       return;
     }
 
-    // Version mismatch
-    console.log("update chack", (storedVersion !== latestVersion));
+    console.log("update check", storedVersion !== latestVersion);
     
     if (storedVersion !== latestVersion) {
       console.log(`🔁 Updating app: ${storedVersion} → ${latestVersion}`);
       const footer = document.getElementById("footer");
       if (footer) footer.innerHTML = "<small>Mise à jour de l’application...</small>";
 
-      await clearAllCaches();
+      await deleteIndexHtmlFromCaches();
 
-      // Store new version after reload
       sessionStorage.setItem("update_pending_version", latestVersion);
       window.location.reload(true);
     } else {
@@ -43,7 +57,6 @@ async function checkAppVersion() {
   }
 }
 
-// After reload — commit the new version
 const pending = sessionStorage.getItem("update_pending_version");
 if (pending) {
   localStorage.setItem("app_version", pending);
