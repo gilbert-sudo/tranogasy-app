@@ -3,15 +3,13 @@ import { useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
 import { setSearchFormField, setTranogasyMapField } from "../redux/redux";
 
+import { usePopup } from "../hooks/usePopup";
+
 import RangeSlider from "react-range-slider-input";
 import "./css/range-slider.css";
 import "react-range-slider-input/dist/style.css";
 import { useProperty } from "../hooks/useProperty";
-import { useMap } from "../hooks/useMap";
 
-import { offlineLoader } from "../hooks/useOfflineLoader";
-
-import { FcGoogle } from "react-icons/fc";
 import { MdOutlineLiving, MdBalcony, MdOutlineFiberSmartRecord, MdLandscape } from "react-icons/md";
 import {
   GiCheckMark,
@@ -40,14 +38,17 @@ import {
   FaPlugCircleBolt,
   FaKitchenSet,
 } from "react-icons/fa6";
+import { Layers2 } from "lucide-react";
 
-const HouseSearchForm = ({ handleCloseSlideClick }) => {
+const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
 
   const searchForm = useSelector((state) => state.searchForm);
   const properties = useSelector((state) => state.properties);
 
   const dispatch = useDispatch();
   const [, setLocation] = useLocation("");
+  const { featureUnderConstructionPopup } = usePopup();
+
   const [budgetMax, setBudgetMax] = useState(null);
   const [budgetMin, setBudgetMin] = useState(null);
   const { searchProperty, getPriceAndRentRanges } = useProperty();
@@ -1223,8 +1224,8 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
                 name="submitType"
                 onClick={() => {
                   (searchResults && searchResults.length > 0)
-                    ? handleCloseSlideClick()
-                    : alert("Fonctionnalité en cours de développement")
+                    ? setShowResultsDisplayModeCard(true)
+                    : featureUnderConstructionPopup()
                 }}
                 value="map"
                 style={{
@@ -1247,7 +1248,7 @@ const HouseSearchForm = ({ handleCloseSlideClick }) => {
               >
 
                 {(searchResults && searchResults.length > 0)
-                  ? <><FcGoogle size={20} /> voir résultats</>
+                  ? <><Layers2 size={20} /> voir résultats</>
                   : <><LuBellPlus size={20} /> Créer une alerte</>
                 }
               </button>

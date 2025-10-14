@@ -8,6 +8,7 @@ import { RxCross2 } from "react-icons/rx";
 import { RiPauseCircleFill } from "react-icons/ri";
 import { MdArrowBackIos } from "react-icons/md";
 import { RiVipCrown2Fill } from "react-icons/ri";
+import { FaMoon, FaSun } from "react-icons/fa";
 
 //Hooks
 import { usePopup } from "../hooks/usePopup";
@@ -57,6 +58,13 @@ const ShowNavbar = (isActive) => {
   return navBarStyle;
 };
 
+const handleDarkMode = () => {
+  const darkModebtn = document.querySelector(
+    "#root > div > div > div > div > input[type=checkbox]"
+  );
+  darkModebtn.click();
+};
+
 const Navbar = () => {
   const dispatch = useDispatch();
   const [location, setLocation] = useLocation();
@@ -67,7 +75,7 @@ const Navbar = () => {
   const timer = useSelector((state) => state.timer);
 
   const properties = useSelector((state) => state.properties);
-  const searchResults = useSelector((state) => state.searchResults);
+  const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const notifications = useSelector((state) => state.notifications);
   const payments = useSelector((state) => state.payments);
   const notificationStatus = useSelector((state) => state.notificationStatus);
@@ -249,6 +257,20 @@ const Navbar = () => {
               </ul>
             </div>
             <div className="d-flex justify-content-center align-items-center">
+              {!user &&
+                <div className="mr-1" onClick={handleDarkMode}>
+                  <label className="darkmode-custom-btn-label mb-0 mt-1">
+                    <FaMoon className="fas fa-moon" />
+                    <FaSun className="fas fa-sun" />
+                    <span
+                      style={
+                        isDarkMode ? { transform: "translateX(24px)" } : {}
+                      }
+                      className="ball"
+                    />
+                  </label>
+                </div>
+              }
               {user && (user.leftTime || timer.timer) && (
                 <>
                   {" "}
@@ -283,7 +305,7 @@ const Navbar = () => {
                   />
                 </button>
               )}{" "}
-              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && prevPath !== "searchResult" && prevPath !== "tranogasyMap" && properties &&(
+              {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && prevPath !== "searchResult" && prevPath !== "tranogasyMap" && properties && (
                 <button
                   style={{ borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-outline-success"

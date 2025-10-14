@@ -7,6 +7,7 @@ import HouseSearchForm from "../components/HouseSearchForm";
 import FilterInfoBox from "../components/FilterInfoBox";
 import TranogasyMapSkeleton from "../components/skeletons/TranogasyMapSkeleton";
 import Circle from "../components/Circle";
+import ResultsDisplayModeCard from "../components/ResultsDisplayModeCard";
 
 import { setReduxFormFilter, resetSearchForm, resetSearchResults, resetTranogasyMap, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
@@ -25,7 +26,7 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdEditLocationAlt } from "react-icons/md";
-import { FaUser, FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaMoneyBillWave } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { BiTargetLock } from "react-icons/bi";
 
@@ -78,6 +79,7 @@ function MyMap() {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
   const [initialCenter, setInitialCenter] = useState(false);
+  const [showResultsDisplayModeCard, setShowResultsDisplayModeCard] = useState(false);
   const selectedMarkersHistory = [null, null];
   const defaultCoords = {
     lat: -18.905195365917766,
@@ -295,7 +297,7 @@ function MyMap() {
         }, timeoutDuration);
       }
     }
-  }, [properties]);
+  }, []);
 
   useEffect(() => {
     if (searchResults && searchResults.length > 0) {
@@ -576,6 +578,13 @@ function MyMap() {
         {/* Filter info box */}
         {!showMapLoader && <FilterInfoBox />}
 
+        {showResultsDisplayModeCard &&
+          <ResultsDisplayModeCard
+            handleCloseSlideClick={handleCloseSlideClick}
+            setShowResultsDisplayModeCard={setShowResultsDisplayModeCard}
+          />
+        }
+
         <div
           className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
           style={{
@@ -633,7 +642,7 @@ function MyMap() {
               transition: "all 0.3s ease"
             }}
           >
-            <HouseSearchForm handleCloseSlideClick={handleCloseSlideClick} />
+            <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} />
           </div>
 
 
