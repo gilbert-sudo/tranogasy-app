@@ -5,7 +5,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { MdOutlineTipsAndUpdates } from "react-icons/md";
 import { FolderClock, MegaphoneOff } from "lucide-react";
 
-const PropertyExistsCard = ({ handlePursueTheSubmit, property, setPropertyExistsCard, setIsSlideVisible, setRecoveryData }) => {
+const PropertyExistsCard = ({ handlePursueTheSubmit, property, setPropertyExistsCard, setIsSlideVisible }) => {
 
     //redux
     const user = useSelector((state) => state.user);
@@ -19,7 +19,6 @@ const PropertyExistsCard = ({ handlePursueTheSubmit, property, setPropertyExists
 
     const handleUpdateListing = () => {
         setPropertyExistsCard(null);
-        setRecoveryData(property);
         console.log("set the proerty", property);
         setTimeout(() => {
             handlePursueTheSubmit(false);

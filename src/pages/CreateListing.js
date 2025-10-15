@@ -62,7 +62,7 @@ const CreateListing = () => {
   const user = useSelector((state) => state.user);
   const imgState = useSelector((state) => state.img);
   const [mapData, setMapData] = useState(null);
-  const [recoveryData, setRecoveryData] = useState(null);
+  const [placeName, setPlaceName] = useState(null);
 
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
@@ -386,11 +386,20 @@ const CreateListing = () => {
     }
     let nearbyLocations = [];
     if (coords) {
+
       nearbyLocations = findLocationsWithinDistance(
         mapData,
         coords,
-        15000
+        15000,
+        placeName
       ).sort((a, b) => a.distance - b.distance);
+
+      console.log(nearbyLocations);
+
+      const bestObject = nearbyLocations.reduce((max, obj) =>
+        obj.simScore > max.simScore ? obj : max
+      );
+
 
       let selectedCityIsNearby = null;
 
@@ -402,7 +411,7 @@ const CreateListing = () => {
       if (nearbyLocations.length > 0) {
         if (!selectedCityIsNearby) {
           setCoords(null);
-          setSelectedCity(nearbyLocations[0].location);
+          setSelectedCity(bestObject.location);
         }
       }
     }
@@ -410,14 +419,15 @@ const CreateListing = () => {
 
   useEffect(() => {
     if (selectedCity) {
-      console.log("Selected city changed:", selectedCity);  
+      console.log("Selected city changed:", selectedCity);
 
       let nearbyLocations = [];
       if (selectedCity.isGoogleResult === true && selectedCity.coords) {
         nearbyLocations = findLocationsWithinDistance(
           mapData,
           selectedCity.coords,
-          15000
+          15000,
+          placeName
         ).sort((a, b) => a.distance - b.distance);
         const selectedCityIsNearby = (nearbyLocations.length > 2) ? nearbyLocations.slice(0, 2).find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id) : nearbyLocations.find((nearbyLocation) => nearbyLocation.location._id === selectedCity._id);
         // console.log(nearbyLocations.slice(0, 3), selectedCityIsNearby);
@@ -492,7 +502,7 @@ const CreateListing = () => {
                     </label>
                     {!selectedCity && (
                       <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-                          <GoogleAutosuggestInput onPlaceSelect={setCoords} />
+                        <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
                       </APIProvider>
                     )}
 
@@ -1579,7 +1589,6 @@ const CreateListing = () => {
               property={propertyExistsCard}
               setPropertyExistsCard={setPropertyExistsCard}
               setIsSlideVisible={setIsSlideVisible}
-              setRecoveryData={setRecoveryData}
             />
           }
 

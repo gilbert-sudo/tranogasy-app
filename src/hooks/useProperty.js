@@ -3,10 +3,6 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSearchResults,
-  setReduxPropertyNumber,
-  updateReduxUsersProperties,
-  updateProperties,
-  updateLikedProperties,
   resetImg,
   resetImgPreview,
   deleteUsersProperty,
@@ -18,6 +14,7 @@ import {
 import { useRedux } from "./useRedux";
 import { useLike } from "./useLike";
 import { usePhoto } from "./usePhoto";
+import { useChecker } from "./useChecker";
 import Swal from "sweetalert2";
 import "../components/css/sweetalert.css";
 
@@ -30,6 +27,7 @@ export const useProperty = () => {
   const { updateReduxProperty, resetReduxStore } = useRedux();
   const { disLike } = useLike();
   const { deleteImg } = usePhoto();
+  const { checkTextSimilarity } = useChecker();
   //redux
   const properties = useSelector((state) => state.properties);
 
@@ -216,8 +214,6 @@ export const useProperty = () => {
   };
 
 
-
-
   const updateProperty = async (oldPropertyDetails, newUpdate) => {
     setIsLoading(true);
     const {
@@ -401,32 +397,6 @@ export const useProperty = () => {
       setLocation("/nosignal");
       console.log(error);
     }
-  };
-
-  // 🔎 --- FRONTEND DUPLICATE CHECK ---
-  // Remove accents/diacritics (frontend-safe)
-  const removeDiacritics = (text = "") =>
-    text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-  // Compare description similarity
-  const checkTextSimilarity = (descA = "", descB = "") => {
-    const normalize = (text) =>
-      removeDiacritics(text || "")
-        .toLowerCase()
-        .replace(/[\n\r\t.,;:!?()\-–—'"“”‘’`´]/g, "")
-        .replace(/\s+/g, " ")
-        .replace(/[0-9]{6,}/g, "")
-        .trim()
-        .split(" ");
-
-    const tokensA = normalize(descA);
-    const tokensB = normalize(descB);
-    if (tokensA.length === 0 || tokensB.length === 0) return 0;
-
-    const setA = new Set(tokensA);
-    const setB = new Set(tokensB);
-    const intersection = [...setA].filter((word) => setB.has(word));
-    return intersection.length / Math.min(setA.size, setB.size);
   };
 
   // Check if property probably already exists in Redux (instant check)

@@ -6,7 +6,7 @@ import "./css/googlemaps.css";
 import { FaSearchLocation } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 
-const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
+const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
     const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
     const inputRef = useRef(null);
     const places = useMapsLibrary("places");
@@ -33,6 +33,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
                     lat: placeAutocomplete.getPlace().geometry.location.lat(),
                     lng: placeAutocomplete.getPlace().geometry.location.lng(),
                 });
+                setPlaceName(placeAutocomplete.getPlace().name);
             }
         });
     }, [onPlaceSelect, placeAutocomplete]);

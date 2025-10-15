@@ -80,10 +80,12 @@ const UpdatePropertyPage = () => {
   const [description, setDescription] = useState(
     oldPropertyDetails.description
   );
+  const [coords, setCoords] = useState(null);
+  const [placeName, setPlaceName] = useState(null);
+
   const [rent, setRent] = useState(oldPropertyDetails.rent);
   const [price, setPrice] = useState(oldPropertyDetails.price);
   const [selectedCity, setSelectedCity] = useState(oldPropertyDetails.city);
-  const [coords, setCoords] = useState(null);
   const [rooms, setRooms] = useState(oldPropertyDetails.rooms);
   const [bathrooms, setBathrooms] = useState(oldPropertyDetails.bathrooms);
   const [area, setArea] = useState(oldPropertyDetails.area);
@@ -395,8 +397,16 @@ const UpdatePropertyPage = () => {
       nearbyLocations = findLocationsWithinDistance(
         mapData,
         coords,
-        15000
+        15000,
+        placeName
       ).sort((a, b) => a.distance - b.distance);
+
+      console.log(nearbyLocations);
+
+      const bestObject = nearbyLocations.reduce((max, obj) =>
+        obj.simScore > max.simScore ? obj : max
+      );
+
       let selectedCityIsNearby = null;
 
       if (selectedCity) {
@@ -407,7 +417,7 @@ const UpdatePropertyPage = () => {
       if (nearbyLocations.length > 0) {
         if (!selectedCityIsNearby) {
           setCoords(null);
-          setSelectedCity(nearbyLocations[0].location);
+          setSelectedCity(bestObject.location);
         }
       }
     }
@@ -568,7 +578,7 @@ const UpdatePropertyPage = () => {
                       </label>
                       {!selectedCity && (
                         <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-                          <GoogleAutosuggestInput onPlaceSelect={setCoords} />
+                          <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
                         </APIProvider>
                       )}
 
