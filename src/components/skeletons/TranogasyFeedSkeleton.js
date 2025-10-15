@@ -20,7 +20,7 @@ const TranogasyFeedSkeleton = () => {
         <div
             style={{
                 width: "100%",
-                height: "98vh",
+                height: "98dvh",
                 position: "relative",
                 overflow: "hidden",
                 backgroundColor: "#000",

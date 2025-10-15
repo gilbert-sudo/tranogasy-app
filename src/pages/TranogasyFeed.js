@@ -143,7 +143,7 @@ const TranogasyFeed = () => {
 
     properties ?
       <div style={{
-        height: '97.9vh',
+        height: '97.9dvh',
         backgroundColor: '#000',
         overflow: 'hidden',
         position: 'relative'
@@ -209,7 +209,7 @@ const TranogasyFeed = () => {
                     key={property.id || index}
                     virtualIndex={index}
                     style={{
-                      height: '98vh',
+                      height: '98dvh',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -242,7 +242,7 @@ const TranogasyFeed = () => {
                   backgroundColor: '#fff',
                   borderRadius: '30px',
                   padding: '24px',
-                  minHeight: 'calc(100vh - 150px)',
+                  minHeight: 'calc(100dvh - 150px)',
                   boxSizing: 'border-box',
                   overflowY: 'auto',
                   boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
@@ -472,7 +472,7 @@ const TranogasyFeed = () => {
                 key={property.id || index}
                 virtualIndex={index}
                 style={{
-                  height: '98vh',
+                  height: '98dvh',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',

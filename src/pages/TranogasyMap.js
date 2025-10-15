@@ -393,7 +393,7 @@ function MyMap() {
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
       <div
         className="pt-4 position-relative"
-        style={{ height: "97.7vh", width: "100%" }}
+        style={{ height: "97.7dvh", width: "100%" }}
       >
         <div className="d-flex justify-content-center align-items-center places-container">
           <div className="places-input">
@@ -596,7 +596,7 @@ function MyMap() {
               ? "translate(-50%, 0)"
               : "translate(-50%, 100%)",
             width: "100%",
-            height: "95vh",
+            height: "95dvh",
             overflowY: "auto",
             backgroundColor: "#fff",
             borderRadius: "30px 30px 0 0",

@@ -19,7 +19,7 @@ const EditUsersProfilePage = () => {
   //redux
   const user = useSelector((state) => state.user);
   console.log(user);
-  
+
   const [avatar, setAvatar] = useState(user?.avatar);
   const [oldAvatar, setOldAvatar] = useState(null);
   const [username, setUsername] = useState(user.username);
@@ -28,6 +28,7 @@ const EditUsersProfilePage = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [imageIsLoading, setImageIsLoading] = useState(false);
   const [saveBtn, setSaveBtn] = useState(false);
 
   const handleImageClick = () => {
@@ -64,9 +65,12 @@ const EditUsersProfilePage = () => {
   };
 
   const handleUploading = async (e) => {
+    setImageIsLoading(true);
+
     const selectedFiles = e.target.files;
 
     if (!selectedFiles || selectedFiles.length <= 0) {
+      setImageIsLoading(false);
       return;
     }
     setAvatar(URL.createObjectURL(selectedFiles[0]));
@@ -105,12 +109,15 @@ const EditUsersProfilePage = () => {
           setAvatar(json.imageUrl);
           setOldAvatar(json.imageUrl);
           console.log(json.imageUrl);
+          setImageIsLoading(false);
         } else {
           console.error("Error uploading file:", response.statusText);
+          setImageIsLoading(false);
         }
       }
     } catch (error) {
       console.error("Error uploading file:", error);
+      setImageIsLoading(false);
     }
   };
 
@@ -135,10 +142,10 @@ const EditUsersProfilePage = () => {
   useEffect(() => {
     async function checkUpdate() {
       avatar !== user?.avatar ||
-      username !== user.username ||
-      (user.bio ? bio !== user.bio : bio !== "") ||
-      (newPassword && newPassword.length > 0) ||
-      phone !== user.phone
+        username !== user.username ||
+        (user.bio ? bio !== user.bio : bio !== "") ||
+        (newPassword && newPassword.length > 0) ||
+        phone !== user.phone
         ? setSaveBtn(false)
         : setSaveBtn(true);
     }
@@ -315,13 +322,19 @@ const EditUsersProfilePage = () => {
             type="submit"
             disabled={
               saveBtn ||
-              Object.values(errorMessages).some((message) => message !== "")
+              Object.values(errorMessages).some((message) => message !== "") || 
+              imageIsLoading
             }
           >
-            <>
-              <FaRegSave className="mr-2 mb-1" />
-              Sauvegarder
-            </>
+
+            {imageIsLoading
+              ? "En attente des images ..."
+              :
+              <>
+                <FaRegSave className="mr-2 mb-1" />
+                Sauvegarder
+              </>
+            }
           </button>
         </nav>
       </div>

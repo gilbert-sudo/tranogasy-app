@@ -202,7 +202,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       className="tikTokStyleListing"
       style={{
         width: "100%",
-        height: (isSliderVisible || showMap || showContact) ? "98vh" : "100vh",
+        height: (isSliderVisible || showMap || showContact) ? "98dvh" : "100dvh",
         maxWidth: "1025px",
         margin: "0 auto",
         position: "relative",
@@ -601,7 +601,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
                   position: "absolute",
                   minHeight: "100%",
                   minWidth: "100%",
-                  top: "-63vh",
+                  top: "-63dvh",
                   padding: "20px 10px 5px 10px",
                   backgroundColor: "white",
                   borderRadius: 20,
@@ -673,7 +673,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             ? "translate(-50%, 0)"
             : "translate(-50%, 100%)",
           width: "100%",
-          height: "95vh",
+          height: "95dvh",
           overflowY: "auto",
           backgroundColor: "#fff",
           borderRadius: "30px 30px 0 0",
