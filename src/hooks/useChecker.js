@@ -4,7 +4,7 @@ import { useRedux } from "./useRedux";
 
 export const useChecker = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useLocation();
+  const [ , setLocation] = useLocation();
   const { resetReduxStore } = useRedux();
 
   const checkInternetConnection = async () => {

@@ -121,8 +121,8 @@ const MyHouseListingPage = () => {
         const newWidth = gridContainerRef.current.offsetWidth;
         setGridWidth(newWidth);
 
-        if (newWidth < 768) setColumnCount(1);
-        else if (newWidth < 992) setColumnCount(2);
+        if (newWidth < 480) setColumnCount(1);
+        else if (newWidth < 768) setColumnCount(2);
         else setColumnCount(3);
       }
     };
@@ -214,7 +214,7 @@ const MyHouseListingPage = () => {
                             height={window.innerHeight - (showSearchInput ? 150 : 80)} // Adjust for header
                             rowCount={Math.ceil(usersProperties.length / columnCount)}
                             rowHeight={ItemSize}
-                            width={gridWidth}
+                            width={(gridWidth/100) * 101.5}
                             itemData={usersProperties}
                           >
                             {Cell}
