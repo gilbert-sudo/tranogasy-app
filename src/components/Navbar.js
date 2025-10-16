@@ -327,11 +327,11 @@ const Navbar = () => {
                   className="ml-1 btn btn-sm btn-danger"
                   onClick={() => window.history.back()}
                 >
-                  <MdArrowBackIos
+                  <RxCross2
                     style={{ fontSize: "17px" }}
                     className="font-weight-bold"
                   />
-                  Retour{" "}
+                  Fermer{" "}
                 </button>
               )}
               {user && !notificationStatus.bell && (

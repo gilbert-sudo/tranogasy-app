@@ -44,6 +44,7 @@ import {
   FaSwimmingPool,
   FaHotTub,
   FaBed,
+  FaSleigh,
 } from "react-icons/fa";
 import {
   FaFaucetDrip,
@@ -72,11 +73,13 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const [showContact, setShowContact] = useState(false);
+  const [isInSearchPage, setIsInSearchPage] = useState(false);
   const [isSliderVisible, setIsSlideVisible] = useState(false);
 
   const [lastScrollLeft, setLastScrollLeft] = useState(0);
 
   const scrollRef = useRef(null);
+  const searchBtnElement = document.querySelector('.search-filter-btn');
 
   const propertyDataString = JSON.stringify(property);
 
@@ -197,6 +200,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
     }
   }, [isSliderVisible, showMap, showContact]);
 
+  useEffect(() => {
+    (location.startsWith("/tranogasyMap")) ? setIsInSearchPage(true) : setIsInSearchPage(false);
+  }, [location]);
+
   return (
     <div
       className="tikTokStyleListing"
@@ -213,6 +220,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
         overscrollBehavior: "contain",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
+        zIndex: 3
       }}
     >
 
@@ -354,6 +362,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       />
 
       {/* Back button */}
+      {!isInSearchPage &&
       <div
         onClick={() => window.history.back()}
         style={{
@@ -371,7 +380,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
         <ChevronLeft
           style={{ width: 30, height: 30, color: "white", stroke: 3 }}
         />
-      </div>
+      </div>}
 
       {/* date displayer */}
       <div
@@ -467,7 +476,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
               fontWeight: "bold",
               cursor: "pointer",
             }}
-            onClick={() => setIsSlideVisible(true)}
+            onClick={() => {
+              setIsSlideVisible(true);
+              searchBtnElement.style.display = 'none';
+            }}
           >
             Voir détails
           </button>
@@ -499,7 +511,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             overflow: "hidden",
             whiteSpace: "nowrap",
           }}
-          onClick={() => setIsSlideVisible(true)}
+          onClick={() => {
+            setIsSlideVisible(true)
+            searchBtnElement.style.display = 'none';
+          }}
         >
           {property.title}
         </p>
@@ -680,7 +695,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
           transition: "transform 0.5s ease",
           boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
-          zIndex: 1000,
+          zIndex: 9000000000000,
         }}
       >
         {/* mini navbar for the lose button to hide the sliding div */}
@@ -727,7 +742,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
               cursor: "pointer",
               color: "#333",
             }}
-            onClick={() => setIsSlideVisible(false)}
+            onClick={() => {
+              setIsSlideVisible(false);
+              searchBtnElement.style.display = '';
+            }}
           />
         </div>
 

@@ -160,7 +160,7 @@ function PropertyDetails({ property, route }) {
         <MiniCarousel images={property.images} />
       </div>
       <div className="p-2 property-body">
-        {(route === "MyHouseListingPage") &&
+        {user && (route === "MyHouseListingPage") && !user.banned &&
           (
             <div className="d-flex justify-content-end offer-type-wrap w-100 position-relative">
               <div className="d-flex position-absolute"

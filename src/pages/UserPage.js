@@ -155,12 +155,14 @@ const UserPage = () => {
             style={{ backgroundColor: "#f4f4f7", borderRadius: "15px" }}
           >
             <ul className="list text-muted mt-3 pl-3">
-              <Link to="/editProfile">
-                <li className="">
-                  <FaUserEdit className="font-weight-bold mr-2" />
-                  Modifier votre profil
-                </li>
-              </Link>
+              {user && !user.banned &&
+                <Link to="/editProfile">
+                  <li className="">
+                    <FaUserEdit className="font-weight-bold mr-2" />
+                    Modifier votre profil
+                  </li>
+                </Link>
+              }
               <li className="" onClick={() => featureUnderConstructionPopup()}>
                 <MdTranslate className="font-weight-bold mr-2" />
                 Ovaina teny Malagasy

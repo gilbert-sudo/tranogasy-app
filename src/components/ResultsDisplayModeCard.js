@@ -4,7 +4,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { BsTiktok, BsViewList } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 
-const ResultsDisplayModeCard = ({ setShowResultsDisplayModeCard, handleCloseSlideClick }) => {
+const ResultsDisplayModeCard = ({ setShowResultsDisplayModeSubmit, setShowResultsDisplayModeCard, handleCloseSlideClick }) => {
     const [isMounted, setIsMounted] = useState(false);
 
     // Handle backdrop click to close the modal
@@ -54,8 +54,8 @@ const ResultsDisplayModeCard = ({ setShowResultsDisplayModeCard, handleCloseSlid
                     position: "fixed",
                     top: "50%",
                     left: "50%",
-                    transform: isMounted 
-                        ? "translate(-50%, -50%) scale(1) rotate(0deg)" 
+                    transform: isMounted
+                        ? "translate(-50%, -50%) scale(1) rotate(0deg)"
                         : "translate(-50%, -50%) scale(0.3) rotate(-5deg)",
                     maxWidth: "500px",
                     width: "calc(100% - 40px)",
@@ -65,8 +65,8 @@ const ResultsDisplayModeCard = ({ setShowResultsDisplayModeCard, handleCloseSlid
                     borderRadius: "20px",
                     zIndex: 3000,
                     overflowY: "auto",
-                    boxShadow: isMounted 
-                        ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)" 
+                    boxShadow: isMounted
+                        ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
                         : "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                     display: "flex",
                     flexDirection: "column",
@@ -148,7 +148,9 @@ const ResultsDisplayModeCard = ({ setShowResultsDisplayModeCard, handleCloseSlid
                             transform: isMounted ? "translateX(0)" : "translateX(-30px)",
                             transition: "all 0.25s ease-out 0.25s",
                         }}
-                        onClick={() => console.log("Mode TikTok sélectionné")}
+                        onClick={() => {
+                            setShowResultsDisplayModeSubmit("tiktok");
+                        }}
                     >
                         <BsTiktok style={{ fontSize: "1.5rem", marginRight: "10px" }} />
                         Mode TikTok
@@ -163,8 +165,7 @@ const ResultsDisplayModeCard = ({ setShowResultsDisplayModeCard, handleCloseSlid
                             transition: "all 0.25s ease-out 0.3s",
                         }}
                         onClick={() => {
-                            handleCloseSlideClick();
-                            setShowResultsDisplayModeCard(false);
+                            setShowResultsDisplayModeSubmit("map");
                         }}
                     >
                         <FcGoogle style={{ fontSize: "1.5rem", marginRight: "10px" }} />

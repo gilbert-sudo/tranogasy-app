@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { getCenterOfBounds } from "geolib";
 import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
+import TranogasyFeed from "./TranogasyFeed";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
 import FilterInfoBox from "../components/FilterInfoBox";
@@ -79,6 +80,9 @@ function MyMap() {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
   const [initialCenter, setInitialCenter] = useState(false);
+
+  const [titokMode, setTitokMode] = useState(false);
+
   const [showResultsDisplayModeCard, setShowResultsDisplayModeCard] = useState(false);
   const selectedMarkersHistory = [null, null];
   const defaultCoords = {
@@ -169,6 +173,21 @@ function MyMap() {
     const remainingElements = selectedMarkersHistory.slice(-2);
 
     return remainingElements;
+  };
+
+  // setShowResultsDisplayModeSubmit 
+
+  const setShowResultsDisplayModeSubmit = (mode) => {
+
+    const isTiktok = (mode === "tiktok");
+
+    if (isTiktok) {
+      setTitokMode("tiktok");
+    }
+    (!isTiktok) && setTitokMode(false);
+
+    setShowResultsDisplayModeCard(false)
+    handleCloseSlideClick();
   };
 
 
@@ -392,7 +411,7 @@ function MyMap() {
   return (
     <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
       <div
-        className="pt-4 position-relative"
+        className={`position-relative ${!(titokMode) ? "pt-4" : "" }`}
         style={{ height: "97.7dvh", width: "100%" }}
       >
         <div className="d-flex justify-content-center align-items-center places-container">
@@ -450,65 +469,75 @@ function MyMap() {
             </div>
           </>
         )}
-        <Map
-          minZoom={9}
-          zoom={mapZoomLevel}
-          onZoomChanged={handleZoomChange}
-          center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
-          mapId="80e7a8f8db80acb5"
-          mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
-          options={{
-            fullscreenControl: false,
-            streetViewControl: false, // 👈 disable Pegman
-            cameraControl: false,
-            gestureHandling: 'greedy',
-          }}
-          mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
-        >
-          <MapController selectedPlace={selectedPlace} />
+        {!titokMode &&
+          <>
+            <Map
+              minZoom={9}
+              zoom={mapZoomLevel}
+              onZoomChanged={handleZoomChange}
+              center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
+              mapId="80e7a8f8db80acb5"
+              mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
+              options={{
+                fullscreenControl: false,
+                streetViewControl: false, // 👈 disable Pegman
+                cameraControl: false,
+                gestureHandling: 'greedy',
+              }}
+              mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
+            >
+              <MapController selectedPlace={selectedPlace} />
 
-          {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-          <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
-          {geolocation.userCurrentPosition && (
-            <>
-              <AdvancedMarker
-                position={geolocation.userCurrentPosition}
-                title="Vous êtes ici"
-                className="user-marker"
-              >
-                <div className="user-marker-pin">
-                  <FaUser size={16} style={{ marginRight: '4px' }} />
-                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
-                </div>
-              </AdvancedMarker>
-              <Circle
-                center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
-                radius={1000}
-                strokeColor={"#4285F4"}
-                strokeOpacity={2}
-                fillOpacity={0}
-                strokeWeight={3}
-                clickable={false} // Add this line to make it click-through
-              />
-            </>
-          )}
+              {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
+              <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
+              {geolocation.userCurrentPosition && (
+                <>
+                  <AdvancedMarker
+                    position={geolocation.userCurrentPosition}
+                    title="Vous êtes ici"
+                    className="user-marker"
+                  >
+                    <div className="user-marker-pin">
+                      <FaUser size={16} style={{ marginRight: '4px' }} />
+                      <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
+                    </div>
+                  </AdvancedMarker>
+                  <Circle
+                    center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
+                    radius={1000}
+                    strokeColor={"#4285F4"}
+                    strokeOpacity={2}
+                    fillOpacity={0}
+                    strokeWeight={3}
+                    clickable={false} // Add this line to make it click-through
+                  />
+                </>
+              )}
 
-          {selectedPlace &&
-            <Circle
-              center={selectedPlace} // Default center if no search results Antananarivo
-              radius={800}
-              strokeColor={"#7cbd1e"}
-              strokeOpacity={2}
-              fillOpacity={0}
-              strokeWeight={4}
-              clickable={false} // Add this line to make it click-through
-            />
-          }
-        </Map>
+              {selectedPlace &&
+                <Circle
+                  center={selectedPlace} // Default center if no search results Antananarivo
+                  radius={800}
+                  strokeColor={"#7cbd1e"}
+                  strokeOpacity={2}
+                  fillOpacity={0}
+                  strokeWeight={4}
+                  clickable={false} // Add this line to make it click-through
+                />
+              }
+            </Map>
+          </>
+        }
+        {/* Filter info box */}
+        {!showMapLoader && <FilterInfoBox mode={titokMode} />}
+        {titokMode &&
+          <TranogasyFeed
+            payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
+            route={"searchResult"}
+            setTitokMode={setTitokMode}
+          />
+        }
 
-         {/* Filter info box */}
-        {!showMapLoader && <FilterInfoBox />}
-        
         {/* Zone de recherche info card */}
         {selectedPlace &&
           <div
@@ -581,6 +610,7 @@ function MyMap() {
 
         {showResultsDisplayModeCard &&
           <ResultsDisplayModeCard
+            setShowResultsDisplayModeSubmit={setShowResultsDisplayModeSubmit}
             handleCloseSlideClick={handleCloseSlideClick}
             setShowResultsDisplayModeCard={setShowResultsDisplayModeCard}
           />

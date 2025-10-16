@@ -5,6 +5,7 @@ import { Virtual, Mousewheel, Keyboard, FreeMode } from 'swiper/modules';
 import TranogasyFeedSkeleton from "../components/skeletons/TranogasyFeedSkeleton";
 import TikTokStyleListing from "../components/TikTokStyleListing";
 import CardDetails from "../components/CardDetails";
+import PlaceAutocompleteClassic from '../components/PlaceAutocompleteClassic';
 import Linkify from 'linkify-react';
 
 // Import icons
@@ -62,12 +63,15 @@ const GenerateFeaturebox = ({ icon, label }) => (
   </div>
 );
 
-const TranogasyFeed = () => {
-  const properties = useSelector((state) => state.properties);
+const TranogasyFeed = ({ payload, route, setTitokMode }) => {
+  const reduxProperties = useSelector((state) => state.properties);
+  const properties = payload ? payload : reduxProperties;
   const swiperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [scrollLocked, setScrollLocked] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+
+  const isSearchResult = (route === "searchResult");
 
   // Detect desktop screen
   useEffect(() => {
@@ -146,8 +150,18 @@ const TranogasyFeed = () => {
         height: '97.9dvh',
         backgroundColor: '#000',
         overflow: 'hidden',
-        position: 'relative'
+        position: 'relative',
+        zIndex: "auto"
       }}>
+        {isSearchResult &&
+          <div className="position-absolute pt-4"
+          style={{
+            zIndex: 2
+          }}
+          >
+            <PlaceAutocompleteClassic onPlaceSelect={() => { }} isSearchResult={isSearchResult} />
+          </div>
+        }
         {isDesktop ? (
           // DESKTOP LAYOUT - Two columns
           <div style={{

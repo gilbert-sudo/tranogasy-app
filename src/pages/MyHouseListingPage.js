@@ -48,11 +48,21 @@ const MyHouseListingPage = () => {
   }
 
   const handleCreateListing = () => {
+    const bypassedUser = (user._id === "656083da05f993ac9d2cc063");
+
+    if (user.banned) {
+      alert("📵 L'administrateur a temporairement retiré cette fonctionnalité de votre compte.");
+      return;
+    }
     if (!isWithinAllowedHours) {
       alert("⏰ Les annonces peuvent être créées entre 6h et 18h uniquement.");
       return;
     }
-    if (todayCount >= 20) {
+    if (bypassedUser && todayCount >= 30) {
+      alert("🚫 Vous avez atteint la limite de 30 annonces pour aujourd’hui.");
+      return;
+    }
+    if (!bypassedUser && todayCount >= 20) {
       alert("🚫 Vous avez atteint la limite de 20 annonces pour aujourd’hui.");
       return;
     }
@@ -214,7 +224,7 @@ const MyHouseListingPage = () => {
                             height={window.innerHeight - (showSearchInput ? 150 : 80)} // Adjust for header
                             rowCount={Math.ceil(usersProperties.length / columnCount)}
                             rowHeight={ItemSize}
-                            width={(gridWidth/100) * 101.5}
+                            width={(gridWidth / 100) * 101.5}
                             itemData={usersProperties}
                           >
                             {Cell}

@@ -26,7 +26,7 @@ import {
   FaKitchenSet,
 } from "react-icons/fa6";
 
-const FilterInfoBox = () => {
+const FilterInfoBox = ({ mode }) => {
 
   // Access filter states from Redux store
   const searchForm = useSelector((state) => state.searchForm);
@@ -38,7 +38,7 @@ const FilterInfoBox = () => {
     <div
       style={{
         position: "fixed",
-        bottom: "55px",
+        bottom: !mode ? "55px" : "10px",
         left: "50%",
         transform: "translateX(-50%)",
         color: "#374151", // elegant dark gray for base text
@@ -54,7 +54,7 @@ const FilterInfoBox = () => {
         minWidth: "40vh",
         fontSize: "12px",
         fontWeight: 400,
-        zIndex: 1000,
+        zIndex: 2,
       }}
     >
       {/* Active filters summary */}

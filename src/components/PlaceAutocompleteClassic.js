@@ -3,14 +3,15 @@ import { useLocation } from "wouter";
 
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./css/googlemaps.css";
-import { TbAdjustmentsSearch } from "react-icons/tb";
+// import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
+import { SearchCode } from "lucide-react";
 // import { LiaBinocularsSolid } from "react-icons/lia";
 import { IoMdCloseCircle } from "react-icons/io";
 import { setReduxFormFilter, setSearchFormField } from "../redux/redux";
 import { useDispatch, useSelector } from "react-redux";
 
-const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
+const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
   const [isInTranogasyMap, setIsInTranogasyMap] = useState(false);
   const [location, setLocation] = useLocation();
@@ -106,7 +107,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
         position: "relative",
       }}
     >
-      <div style={{ position: "relative", flexGrow: 1 }}>
+      <div style={{ position: "relative", flexGrow: 1, display: isSearchResult ? "none" : "" }}>
         <input
           style={{
             flexGrow: 1,
@@ -174,7 +175,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
       {isInTranogasyMap && (
         <div className="d-flex" style={{ gap: "5px", position: "relative" }}>
           {/* Search-filter button with spotlight */}
-          <div style={{ position: "relative", display: "inline-block" }}>
+          <div className="search-filter-btn" style={{ position: "relative", display: "inline-block" }}>
             {/* The button code you provided... */}
             <button
               className="search-filter btn"
@@ -204,7 +205,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect }) => {
                 zIndex: showTooltip ? 10001 : "auto",
               }}
             >
-              <TbAdjustmentsSearch />
+              <SearchCode />
             </button>
 
             {/* Start of the new counter */}
