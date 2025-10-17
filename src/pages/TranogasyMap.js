@@ -16,7 +16,6 @@ import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { useImage } from "../hooks/useImage";
 import { HashLoader } from "react-spinners";
 import {
-  APIProvider,
   Map,
   ControlPosition,
   useMap,
@@ -77,7 +76,6 @@ function MyMap() {
   const selectedProperty = tranogasyMap.selectedProperty;
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
-  const [selectedPlace, setSelectedPlace] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
   const [initialCenter, setInitialCenter] = useState(false);
 
@@ -273,11 +271,11 @@ function MyMap() {
     useEffect(() => {
 
       const isSameCenter = (JSON.stringify(center || null) === JSON.stringify(tranogasyMap.previousCenter || null));
-      const isSameSelectedPlace = (JSON.stringify(selectedPlace || null) === JSON.stringify(tranogasyMap.previousSelectedPlace || null));
+      const isSameSelectedPlace = (JSON.stringify(searchForm.searchCoordinates || null) === JSON.stringify(tranogasyMap.previousSelectedPlace || null));
       if (!isSameCenter) {
         // console.log("11111111111111111111111111111111111111111111 is a new center");
         dispatch(setTranogasyMapField({ key: "previousCenter", value: center }));
-        if (map && center && !selectedPlace) {
+        if (map && center && !searchForm.searchCoordinates) {
           map.panTo(center);
           map.setZoom(mapZoomLevel);
           // console.log("MapController panning to center:", center, isSameCenter);
@@ -285,10 +283,10 @@ function MyMap() {
       }
       if (!isSameSelectedPlace) {
         // console.log("11111111111111111111111111111111111111111111 is a new selectedPlace");
-        dispatch(setTranogasyMapField({ key: "previousSelectedPlace", value: selectedPlace }));
-        if (map && selectedPlace) {
+        dispatch(setTranogasyMapField({ key: "previousSelectedPlace", value: searchForm.searchCoordinates }));
+        if (map && searchForm.searchCoordinates) {
           // console.log("MapController panning to selectedPlace:", selectedPlace);
-          map.panTo(selectedPlace);
+          map.panTo(searchForm.searchCoordinates);
           map.setZoom(15);
         }
       }
@@ -323,9 +321,9 @@ function MyMap() {
       const centerCoord = getCenterOfBounds(getLocationsCoords(searchResults));
       const zoomLevel = calculateZoomLevel(searchResults);
 
-      if (selectedPlace) {
-        setCenterTo(selectedPlace);
-        console.log("running set selected place to center", selectedPlace);
+      if (searchForm.searchCoordinates) {
+        setCenterTo(searchForm.searchCoordinates);
+        console.log("running set selected place to center", searchForm.searchCoordinates);
       } else {
         if (centerCoord)
           setCenter({ lat: centerCoord.latitude, lng: centerCoord.longitude });
@@ -395,7 +393,7 @@ function MyMap() {
   }, [tranogasyMap.formFilter]);
 
   useEffect(() => {
-    console.log("search form redux state", searchForm);
+    // console.log("search form redux state", searchForm);
     if (searchForm.address) {
       const sentence = searchForm.address;
 
@@ -409,285 +407,283 @@ function MyMap() {
   }, [searchForm.address]);
 
   return (
-    <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-      <div
-        className={`position-relative ${!(titokMode) ? "pt-4" : "" }`}
-        style={{ height: "97.7dvh", width: "100%" }}
-      >
-        <div className="d-flex justify-content-center align-items-center places-container">
-          <div className="places-input">
-            <CustomMapControl
-              controlPosition={ControlPosition.LEFT_TOP}
-              onPlaceSelect={setSelectedPlace}
-            />
-          </div>
+    <div
+      className={`position-relative ${!(titokMode) ? "pt-4" : ""}`}
+      style={{ height: "97.7dvh", width: "100%" }}
+    >
+      <div className="d-flex justify-content-center align-items-center places-container">
+        <div className="places-input">
+          <CustomMapControl
+            controlPosition={ControlPosition.LEFT_TOP}
+          />
         </div>
-        {showMapLoader && (
-          <>
-            {/* Overlay */}
-            <div
-              style={{
-                position: "fixed",
-                top: 47,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.4)",
-                zIndex: 9999,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {/* Centered Loader Box */}
-              <div
-                style={{
-                  background: "#fff",
-                  marginTop: "-80px",
-                  padding: "25px",
-                  borderRadius: "50%",
-                  textAlign: "center",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
-                  zIndex: 10000,
-                }}
-              >
-                {/* SVG logo on top */}
-                <img
-                  src={tranogasyMapImg()}
-                  alt="TranoGasy logo"
-                  style={{ width: "80px", height: "80px" }}
-                />
-
-                {/* Spinner + text */}
-                <div className="d-flex justify-content-center align-items-center">
-                  <small className="mr-2" style={{ color: "#c59d45" }}>
-                    Chargement
-                  </small>
-                  <HashLoader color="#c59d45" size={20} />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-        {!titokMode &&
-          <>
-            <Map
-              minZoom={9}
-              zoom={mapZoomLevel}
-              onZoomChanged={handleZoomChange}
-              center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
-              mapId="80e7a8f8db80acb5"
-              mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
-              options={{
-                fullscreenControl: false,
-                streetViewControl: false, // 👈 disable Pegman
-                cameraControl: false,
-                gestureHandling: 'greedy',
-              }}
-              mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
-            >
-              <MapController selectedPlace={selectedPlace} />
-
-              {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-              <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
-              {geolocation.userCurrentPosition && (
-                <>
-                  <AdvancedMarker
-                    position={geolocation.userCurrentPosition}
-                    title="Vous êtes ici"
-                    className="user-marker"
-                  >
-                    <div className="user-marker-pin">
-                      <FaUser size={16} style={{ marginRight: '4px' }} />
-                      <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
-                    </div>
-                  </AdvancedMarker>
-                  <Circle
-                    center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
-                    radius={1000}
-                    strokeColor={"#4285F4"}
-                    strokeOpacity={2}
-                    fillOpacity={0}
-                    strokeWeight={3}
-                    clickable={false} // Add this line to make it click-through
-                  />
-                </>
-              )}
-
-              {selectedPlace &&
-                <Circle
-                  center={selectedPlace} // Default center if no search results Antananarivo
-                  radius={800}
-                  strokeColor={"#7cbd1e"}
-                  strokeOpacity={2}
-                  fillOpacity={0}
-                  strokeWeight={4}
-                  clickable={false} // Add this line to make it click-through
-                />
-              }
-            </Map>
-          </>
-        }
-        {/* Filter info box */}
-        {!showMapLoader && <FilterInfoBox mode={titokMode} />}
-        {titokMode &&
-          <TranogasyFeed
-            payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
-            route={"searchResult"}
-            setTitokMode={setTitokMode}
-          />
-        }
-
-        {/* Zone de recherche info card */}
-        {selectedPlace &&
+      </div>
+      {showMapLoader && (
+        <>
+          {/* Overlay */}
           <div
-            className="search-area-card shadow-sm"
             style={{
-              position: "absolute",
-              top: "97px",
-              left: "10px",
-              backgroundColor: "rgba(0,0,0,0.6)",
-              color: "white",
-              padding: "6px 8px",
-              borderRadius: "30px",
-              // BEFORE: fontSize: "13px",
-              fontSize: "clamp(12px, 2.5vw, 14px)", // 👈 RESPONSIVE
-              zIndex: 20,
-              display: "flex",
-              alignItems: "center",
-              gap: "3px",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              setCenterTo(selectedPlace);
-              setMapZoomLevel(15);
-            }}
-          >
-            <strong>
-              <FaLocationDot className="mb-2" style={{ fontSize: "14px", fontWeight: "bold", color: "red" }} />
-              {area && area} - Rayon : 800 m
-            </strong>
-            <button
-              type="button"
-              style={{
-                border: "none",
-                padding: "5px",
-                borderRadius: "50%",
-                background: "#7cbd1e",
-                color: "white",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                fontSize: "18px",
-              }}
-            >
-              <BiTargetLock />
-            </button>
-            <button
-              onClick={() => alert("Fonctionnalité à venir")}
-              style={{
-                border: "none",
-                padding: "5px",
-                borderRadius: "30px",
-                background: "#7cbd1e",
-                color: "white",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                fontSize: "18px",
-              }}
-            >
-              <MdEditLocationAlt />
-              <small style={{
-                fontSize: "9px",
-                fontWeight: "bold"
-              }}>
-                Changer
-              </small>
-            </button>
-          </div>
-        }
-
-        {showResultsDisplayModeCard &&
-          <ResultsDisplayModeCard
-            setShowResultsDisplayModeSubmit={setShowResultsDisplayModeSubmit}
-            handleCloseSlideClick={handleCloseSlideClick}
-            setShowResultsDisplayModeCard={setShowResultsDisplayModeCard}
-          />
-        }
-
-        <div
-          className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
-          style={{
-            position: "fixed",
-            left: "50%",
-            bottom: 0,
-            transform: isSliderVisible
-              ? "translate(-50%, 0)"
-              : "translate(-50%, 100%)",
-            width: "100%",
-            height: "95dvh",
-            overflowY: "auto",
-            backgroundColor: "#fff",
-            borderRadius: "30px 30px 0 0",
-            boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
-            transition: "transform 0.5s ease",
-            boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
-            zIndex: 1000,
-          }}
-        >
-          {/* mini navbar for the lose button to hide the sliding div */}
-          <div
-            className="fixed-top"
-            style={{
-              width: "100%",
-              zIndex: 1000,
+              position: "fixed",
+              top: 47,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              background: "rgba(0,0,0,0.4)",
+              zIndex: 9999,
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              position: "sticky",
             }}
           >
-            <IoMdCloseCircle
+            {/* Centered Loader Box */}
+            <div
               style={{
-                fontSize: "2rem",
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                zIndex: "9999",
-                backgroundColor: "#fff",
+                background: "#fff",
+                marginTop: "-80px",
+                padding: "25px",
                 borderRadius: "50%",
+                textAlign: "center",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+                zIndex: 10000,
+              }}
+            >
+              {/* SVG logo on top */}
+              <img
+                src={tranogasyMapImg()}
+                alt="TranoGasy logo"
+                style={{ width: "80px", height: "80px" }}
+              />
+
+              {/* Spinner + text */}
+              <div className="d-flex justify-content-center align-items-center">
+                <small className="mr-2" style={{ color: "#c59d45" }}>
+                  Chargement
+                </small>
+                <HashLoader color="#c59d45" size={20} />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {!titokMode &&
+        <>
+          <Map
+            minZoom={9}
+            zoom={mapZoomLevel}
+            onZoomChanged={handleZoomChange}
+            center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
+            mapId="80e7a8f8db80acb5"
+            mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
+            options={{
+              fullscreenControl: false,
+              streetViewControl: false, // 👈 disable Pegman
+              cameraControl: false,
+              gestureHandling: 'greedy',
+            }}
+            mapTypeId={mapTypeId} // ✅ Change the map type based on zoom level
+          >
+            <MapController selectedPlace={searchForm.searchCoordinates} />
+
+            {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
+            <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
+            {geolocation.userCurrentPosition && (
+              <>
+                <AdvancedMarker
+                  position={geolocation.userCurrentPosition}
+                  title="Vous êtes ici"
+                  className="user-marker"
+                >
+                  <div className="user-marker-pin">
+                    <FaUser size={16} style={{ marginRight: '4px' }} />
+                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4285F4' }}>Vous</span>
+                  </div>
+                </AdvancedMarker>
+                <Circle
+                  center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
+                  radius={1000}
+                  strokeColor={"#4285F4"}
+                  strokeOpacity={2}
+                  fillOpacity={0}
+                  strokeWeight={3}
+                  clickable={false} // Add this line to make it click-through
+                />
+              </>
+            )}
+
+            {searchForm.searchCoordinates &&
+              <Circle
+                center={searchForm.searchCoordinates} // Default center if no search results Antananarivo
+                radius={800}
+                strokeColor={"#7cbd1e"}
+                strokeOpacity={2}
+                fillOpacity={0}
+                strokeWeight={4}
+                clickable={false} // Add this line to make it click-through
+              />
+            }
+          </Map>
+
+          {/* Zone de recherche info card */}
+          {searchForm.searchCoordinates &&
+            <div
+              className="search-area-card shadow-sm"
+              style={{
+                position: "absolute",
+                top: "97px",
+                left: "10px",
+                backgroundColor: "rgba(0,0,0,0.6)",
+                color: "white",
+                padding: "6px 8px",
+                borderRadius: "30px",
+                // BEFORE: fontSize: "13px",
+                fontSize: "clamp(12px, 2.5vw, 14px)", // 👈 RESPONSIVE
+                zIndex: 20,
+                display: "flex",
+                alignItems: "center",
+                gap: "3px",
                 cursor: "pointer",
               }}
-              onClick={handleCloseSlideClick}
-            />
-          </div>
-          {/* Close button to hide the sliding div */}
-          <div
+              onClick={() => {
+                setCenterTo(searchForm.searchCoordinates);
+                setMapZoomLevel(15);
+              }}
+            >
+              <strong>
+                <FaLocationDot className="mb-2" style={{ fontSize: "14px", fontWeight: "bold", color: "red" }} />
+                {area && area} - Rayon : 800 m
+              </strong>
+              <button
+                type="button"
+                style={{
+                  border: "none",
+                  padding: "5px",
+                  borderRadius: "50%",
+                  background: "#7cbd1e",
+                  color: "white",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "18px",
+                }}
+              >
+                <BiTargetLock />
+              </button>
+              <button
+                onClick={() => alert("Fonctionnalité à venir")}
+                style={{
+                  border: "none",
+                  padding: "5px",
+                  borderRadius: "30px",
+                  background: "#7cbd1e",
+                  color: "white",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "18px",
+                }}
+              >
+                <MdEditLocationAlt />
+                <small style={{
+                  fontSize: "9px",
+                  fontWeight: "bold"
+                }}>
+                  Changer
+                </small>
+              </button>
+            </div>
+          }
+
+        </>
+      }
+      {/* Filter info box */}
+      {!showMapLoader && <FilterInfoBox mode={titokMode} />}
+      {titokMode &&
+        <TranogasyFeed
+          payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
+          route={"searchResult"}
+          setTitokMode={setTitokMode}
+        />
+      }
+
+      {showResultsDisplayModeCard &&
+        <ResultsDisplayModeCard
+          setShowResultsDisplayModeSubmit={setShowResultsDisplayModeSubmit}
+          handleCloseSlideClick={handleCloseSlideClick}
+          setShowResultsDisplayModeCard={setShowResultsDisplayModeCard}
+        />
+      }
+
+      <div
+        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+        style={{
+          position: "fixed",
+          left: "50%",
+          bottom: 0,
+          transform: isSliderVisible
+            ? "translate(-50%, 0)"
+            : "translate(-50%, 100%)",
+          width: "100%",
+          height: "95dvh",
+          overflowY: "auto",
+          backgroundColor: "#fff",
+          borderRadius: "30px 30px 0 0",
+          boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
+          transition: "transform 0.5s ease",
+          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+          zIndex: 1000,
+        }}
+      >
+        {/* mini navbar for the lose button to hide the sliding div */}
+        <div
+          className="fixed-top"
+          style={{
+            width: "100%",
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "sticky",
+          }}
+        >
+          <IoMdCloseCircle
             style={{
-              padding: "5.5vh 1vh 2vh 1vh",
-              width: tranogasyMap.formFilter ? "auto" : "0",
-              height: tranogasyMap.formFilter ? "auto" : "0",
-              overflow: tranogasyMap.formFilter ? "visible" : "hidden",
-              opacity: tranogasyMap.formFilter ? 1 : 0,
-              transition: "all 0.3s ease"
+              fontSize: "2rem",
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              zIndex: "9999",
+              backgroundColor: "#fff",
+              borderRadius: "50%",
+              cursor: "pointer",
             }}
-          >
-            <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} />
-          </div>
-
-
-          {selectedProperty && !tranogasyMap.formFilter && isSliderVisible && (
-            <PropertyDetailsPage
-              key={selectedProperty._id}
-              fastPreviewProperty={selectedProperty}
-              handleCloseSlideClick={handleCloseSlideClick}
-            />
-          )}
-
+            onClick={handleCloseSlideClick}
+          />
         </div>
+        {/* Close button to hide the sliding div */}
+        <div
+          style={{
+            padding: "5.5vh 1vh 2vh 1vh",
+            width: tranogasyMap.formFilter ? "auto" : "0",
+            height: tranogasyMap.formFilter ? "auto" : "0",
+            overflow: tranogasyMap.formFilter ? "visible" : "hidden",
+            opacity: tranogasyMap.formFilter ? 1 : 0,
+            transition: "all 0.3s ease"
+          }}
+        >
+          <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} />
+        </div>
+
+
+        {selectedProperty && !tranogasyMap.formFilter && isSliderVisible && (
+          <PropertyDetailsPage
+            key={selectedProperty._id}
+            fastPreviewProperty={selectedProperty}
+            handleCloseSlideClick={handleCloseSlideClick}
+          />
+        )}
+
       </div>
-    </APIProvider>
+    </div>
   );
 }
 

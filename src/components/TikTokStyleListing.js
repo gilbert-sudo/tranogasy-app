@@ -78,6 +78,12 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
 
   const [lastScrollLeft, setLastScrollLeft] = useState(0);
 
+  const [startY, setStartY] = useState(0);
+  const [currentY, setCurrentY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef(null);
+
+
   const scrollRef = useRef(null);
   const searchBtnElement = document.querySelector('.search-filter-btn');
 
@@ -363,24 +369,24 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
 
       {/* Back button */}
       {!isInSearchPage &&
-      <div
-        onClick={() => window.history.back()}
-        style={{
-          position: "absolute",
-          top: 50,
-          left: 5,
-          zIndex: 2000,
-          display: "flex",
-          alignItems: "center",
-          cursor: "pointer",
-          padding: "6px 10px",
-          borderRadius: 20,
-        }}
-      >
-        <ChevronLeft
-          style={{ width: 30, height: 30, color: "white", stroke: 3 }}
-        />
-      </div>}
+        <div
+          onClick={() => window.history.back()}
+          style={{
+            position: "absolute",
+            top: 50,
+            left: 5,
+            zIndex: 2000,
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            padding: "6px 10px",
+            borderRadius: 20,
+          }}
+        >
+          <ChevronLeft
+            style={{ width: 30, height: 30, color: "white", stroke: 3 }}
+          />
+        </div>}
 
       {/* date displayer */}
       <div
@@ -676,8 +682,8 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           property={property}
         />
       }
-
       <div
+        ref={sliderRef}
         className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
         style={{
           position: "fixed",
@@ -685,7 +691,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           bottom: 0,
           paddingBottom: "80px",
           transform: isSliderVisible
-            ? "translate(-50%, 0)"
+            ? `translate(-50%, ${Math.min(0, currentY)}px)`
             : "translate(-50%, 100%)",
           width: "100%",
           height: "95dvh",
@@ -693,9 +699,45 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           backgroundColor: "#fff",
           borderRadius: "30px 30px 0 0",
           boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
-          transition: "transform 0.5s ease",
+          transition: isDragging ? "none" : "transform 0.5s ease",
           boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
           zIndex: 9000000000000,
+          touchAction: "pan-y", // Improve touch scrolling
+        }}
+        onTouchStart={(e) => {
+          const touch = e.touches[0];
+          setStartY(touch.clientY);
+          setCurrentY(0);
+          setIsDragging(true);
+        }}
+        onTouchMove={(e) => {
+          if (!isDragging) return;
+
+          const touch = e.touches[0];
+          const deltaY = touch.clientY - startY;
+
+          // Only allow dragging downward (positive deltaY)
+          if (deltaY > 0) {
+            setCurrentY(deltaY);
+            e.preventDefault(); // Prevent page scroll when dragging down
+          }
+        }}
+        onTouchEnd={() => {
+          if (!isDragging) return;
+
+          setIsDragging(false);
+
+          // If dragged more than 100px down, close the slider
+          if (currentY > 100) {
+            setIsSlideVisible(false);
+            if (searchBtnElement) {
+              searchBtnElement.style.display = '';
+            }
+          }
+
+          // Reset position
+          setCurrentY(0);
+          setStartY(0);
         }}
       >
         {/* mini navbar for the lose button to hide the sliding div */}
@@ -744,11 +786,12 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             }}
             onClick={() => {
               setIsSlideVisible(false);
-              searchBtnElement.style.display = '';
+              if (searchBtnElement) {
+                searchBtnElement.style.display = '';
+              }
             }}
           />
         </div>
-
         {/* Close button to hide the sliding div */}
         {isSliderVisible && (
           <div className="container">

@@ -1,4 +1,7 @@
 import { useRef, useEffect, useState } from "react";
+import { useLocation } from "wouter";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchFormField } from "../redux/redux";
 
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./css/googlemaps.css";
@@ -7,11 +10,16 @@ import { FaSearchLocation } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
+
+    const searchForm = useSelector((state) => state.searchForm);
+
     const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
     const inputRef = useRef(null);
+    const dispatch = useDispatch();
     const places = useMapsLibrary("places");
+    const [location,] = useLocation(false);
 
-    const [showClearButton, setShowClearButton] = useState(false);
+    const [isSearchPage, setIsSearchPage] = useState(false);
 
     useEffect(() => {
         if (!places || !inputRef.current) return;
@@ -24,11 +32,25 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
     }, [places]);
 
     useEffect(() => {
+        (location === "/tranogasyMap") ? setIsSearchPage(true) : setIsSearchPage(false);
+    }, [location]);
+
+    useEffect(() => {
         if (!placeAutocomplete) return;
         placeAutocomplete.addListener("place_changed", () => {
             if (!placeAutocomplete.getPlace().geometry) {
                 console.log("No details available for input: '" + placeAutocomplete.getPlace().name + "'");
             } else {
+                if (isSearchPage) {
+                    dispatch(setSearchFormField({
+                        key: "searchCoordinates", value: {
+                            lat: placeAutocomplete.getPlace().geometry.location.lat(),
+                            lng: placeAutocomplete.getPlace().geometry.location.lng(),
+                        }
+                    }));
+                    dispatch(setSearchFormField({ key: "address", value: placeAutocomplete.getPlace().name }));
+                    dispatch(setSearchFormField({ key: "searchRadius", value: 5000 })); // default 5km radius
+                }
                 onPlaceSelect({
                     lat: placeAutocomplete.getPlace().geometry.location.lat(),
                     lng: placeAutocomplete.getPlace().geometry.location.lng(),
@@ -43,19 +65,17 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
         if (inputRef.current) {
             inputRef.current.value = "";
             inputRef.current.focus();
-            setShowClearButton(false);
             onPlaceSelect(null);
+
+            if (isSearchPage) {
+                dispatch(setSearchFormField({ key: "searchCoordinates", value: null }));
+                dispatch(setSearchFormField({ key: "address", value: null }));
+                dispatch(setSearchFormField({ key: "searchRadius", value: 0 }));
+            }
 
             // Trigger input event to reset Google Autocomplete
             const event = new Event('input', { bubbles: true });
             inputRef.current.dispatchEvent(event);
-        }
-    };
-
-    // Check input value to show/hide clear button
-    const checkInputValue = () => {
-        if (inputRef.current) {
-            setShowClearButton(inputRef.current.value.length > 0);
         }
     };
 
@@ -91,14 +111,21 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
                     onBlur={(e) => (e.target.style.borderColor = "#ced4da")}
                     ref={inputRef}
                     onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                        }
+                        if (e.key === "Enter") e.preventDefault();
                     }}
-                    onInput={checkInputValue} // Check input value on change
+                    {...(isSearchPage
+                        ? {
+                            value: searchForm.address,
+                            onChange: (e) =>
+                                dispatch(
+                                    setSearchFormField({ key: "address", value: e.target.value })
+                                ),
+                        }
+                        : {})}
                 />
+
                 {/* Clear button (X) - only shown when there's text */}
-                {showClearButton && (
+                {searchForm.address && (
                     <button
                         onClick={clearInput}
                         style={{
@@ -132,8 +159,6 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
                     </button>
                 )}
             </div>
-
-
         </>
     );
 };

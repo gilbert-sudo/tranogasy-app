@@ -11,7 +11,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { setReduxFormFilter, setSearchFormField } from "../redux/redux";
 import { useDispatch, useSelector } from "react-redux";
 
-const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
+const PlaceAutocompleteClassic = ({ isSearchResult }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
   const [isInTranogasyMap, setIsInTranogasyMap] = useState(false);
   const [location, setLocation] = useLocation();
@@ -21,8 +21,8 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
   const alreadySeen = localStorage.getItem("tranogasy_filter_tooltip_seen");
 
   const [showTooltip, setShowTooltip] = useState(false);
-  const [showClearButton, setShowClearButton] = useState(false);
   const activeFiltersCount = useSelector((state) => state.tranogasyMap.activeFiltersCount || 0);
+  const searchForm = useSelector((state) => state.searchForm);
 
   useEffect(() => {
     if (location.startsWith("/tranogasyMap")) {
@@ -46,21 +46,18 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
       if (!placeAutocomplete.getPlace().geometry) {
         console.log("No details available for input: '" + placeAutocomplete.getPlace().name + "'");
       } else {
+
         dispatch(setSearchFormField({
           key: "searchCoordinates", value: {
             lat: placeAutocomplete.getPlace().geometry.location.lat(),
             lng: placeAutocomplete.getPlace().geometry.location.lng(),
           }
         }));
-        dispatch(setSearchFormField({ key: "address", value: placeAutocomplete.getPlace().formatted_address }));
+        dispatch(setSearchFormField({ key: "address", value: placeAutocomplete.getPlace().name }));
         dispatch(setSearchFormField({ key: "searchRadius", value: 5000 })); // default 5km radius
-        onPlaceSelect({
-          lat: placeAutocomplete.getPlace().geometry.location.lat(),
-          lng: placeAutocomplete.getPlace().geometry.location.lng(),
-        });
       }
     });
-  }, [onPlaceSelect, placeAutocomplete]);
+  }, [placeAutocomplete]);
 
   useEffect(() => {
     if (!alreadySeen) {
@@ -78,8 +75,6 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
     if (inputRef.current) {
       inputRef.current.value = "";
       inputRef.current.focus();
-      setShowClearButton(false);
-      onPlaceSelect(null);
       dispatch(setSearchFormField({ key: "searchCoordinates", value: null }));
       dispatch(setSearchFormField({ key: "address", value: null }));
       dispatch(setSearchFormField({ key: "searchRadius", value: 0 }));
@@ -87,13 +82,6 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
       // Trigger input event to reset Google Autocomplete
       const event = new Event('input', { bubbles: true });
       inputRef.current.dispatchEvent(event);
-    }
-  };
-
-  // Check input value to show/hide clear button
-  const checkInputValue = () => {
-    if (inputRef.current) {
-      setShowClearButton(inputRef.current.value.length > 0);
     }
   };
 
@@ -133,11 +121,14 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, isSearchResult }) => {
               e.preventDefault();
             }
           }}
-          onInput={checkInputValue} // Check input value on change
+          value={searchForm.address}
+          onChange={(e) => {
+            dispatch(setSearchFormField({ key: "address", value: e.target.value }));
+          }}
         />
 
         {/* Clear button (X) - only shown when there's text */}
-        {showClearButton && (
+        {searchForm.address && (
           <button
             onClick={clearInput}
             style={{

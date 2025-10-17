@@ -5,6 +5,9 @@ import { setSearchFormField, setTranogasyMapField } from "../redux/redux";
 
 import { usePopup } from "../hooks/usePopup";
 
+import GoogleAutosuggestInput from "./GoogleAutosuggestInput";
+import PlaceLocationDisplayer from "./PlaceLocationDisplayer";
+
 import RangeSlider from "react-range-slider-input";
 import "./css/range-slider.css";
 import "react-range-slider-input/dist/style.css";
@@ -99,6 +102,9 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
   const [panoramicView, setPanoramicView] = useState(false);
   const [solarPanels, setSolarPanels] = useState(false);
   const [searchResults, setSearchResults] = useState("");
+
+  const [coords, setCoords] = useState(null);
+  const [placeName, setPlaceName] = useState(null);
 
   const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
     return (
@@ -589,6 +595,16 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
             <div className="container pb-3">
               <div id="nav-tab-rent" className="tab-pane fade show active">
                 <>
+                    <div className="place-input mb-4">
+                      <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280", paddingLeft: "10px" }}>
+                        Zone de recherche - Rayon : 800 m
+                      </label>
+                      <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
+
+                      {searchForm.address && searchForm.searchCoordinates &&
+                        <PlaceLocationDisplayer position={searchForm.searchCoordinates} />
+                      }
+                    </div>
                   <div
                     style={{
                       position: "relative",

@@ -51,10 +51,6 @@ import ImageUploader from "../components/ImageUploader";
 import PropertyLocationSelector from "../components/PropertyLocationSelector";
 import Swal from "sweetalert2";
 
-import {
-  APIProvider,
-} from "@vis.gl/react-google-maps";
-
 const CreateListing = () => {
   const myRef = useRef(null);
   const floorRef = useRef(null);
@@ -501,9 +497,7 @@ const CreateListing = () => {
                       L'endroit où se trouve la propriété
                     </label>
                     {!selectedCity && (
-                      <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
-                        <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
-                      </APIProvider>
+                      <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
                     )}
 
                     {selectedCity && (

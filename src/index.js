@@ -3,6 +3,10 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import {
+  APIProvider
+} from "@vis.gl/react-google-maps";
+
 //all redux dependencies
 import { Provider } from "react-redux";
 import { store } from "./redux/redux";
@@ -21,7 +25,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
+        <App />
+      </APIProvider>
     </Provider>
   </React.StrictMode>
 );

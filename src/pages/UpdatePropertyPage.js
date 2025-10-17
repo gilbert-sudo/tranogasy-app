@@ -48,9 +48,6 @@ import PropertyLocationSelector from "../components/PropertyLocationSelector";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import Swal from "sweetalert2";
 
-import {
-  APIProvider,
-} from "@vis.gl/react-google-maps";
 
 const UpdatePropertyPage = () => {
   const myRef = useRef(null);
@@ -577,9 +574,7 @@ const UpdatePropertyPage = () => {
                         L'endroit où se trouve la propriété
                       </label>
                       {!selectedCity && (
-                        <APIProvider apiKey="AIzaSyBPQYtD-cm2GmdJGXhFcD7_2vXTkyPXqOs">
                           <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
-                        </APIProvider>
                       )}
 
 
