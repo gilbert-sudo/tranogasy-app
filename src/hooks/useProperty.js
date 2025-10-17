@@ -15,8 +15,12 @@ import { useRedux } from "./useRedux";
 import { useLike } from "./useLike";
 import { usePhoto } from "./usePhoto";
 import { useChecker } from "./useChecker";
+import { useMap } from "./useMap";
+import { getDistance } from "geolib";
 import Swal from "sweetalert2";
+
 import "../components/css/sweetalert.css";
+
 
 export const useProperty = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,9 +31,11 @@ export const useProperty = () => {
   const { updateReduxProperty, resetReduxStore } = useRedux();
   const { disLike } = useLike();
   const { deleteImg } = usePhoto();
+  const { } = useMap();
   const { checkTextSimilarity } = useChecker();
   //redux
   const properties = useSelector((state) => state.properties);
+  const searchForm = useSelector((state) => state.searchForm);
 
   // Utility to check for undefined or null or empty string
   const isEmpty = (val) => val === undefined || val === null || (typeof val === 'string' && val.trim() === '');
@@ -666,6 +672,27 @@ export const useProperty = () => {
     }
   };
 
+  function findPropertiessWithinDistance(properties, center, distance) {
+
+    const nearbyProperties = [];
+
+    properties.forEach((property) => {
+      let dist = 0;
+
+      if (property.coords) {
+        dist = getDistance(center, property.coords);
+      } else {
+        dist = getDistance(center, property.city.coords);
+      }
+
+      if (dist <= distance) {
+        nearbyProperties.push(property);
+      }
+    });
+    // console.log(nearbyProperties);
+    return nearbyProperties;
+  }
+
   const publishProperty = async (propertyId) => {
     try {
       const response = await fetch(
@@ -839,6 +866,10 @@ export const useProperty = () => {
           (solarPanels ? property.features.solarPanels === solarPanels : true)
       );
 
+      if (searchForm.searchCoordinates) {
+        results = findPropertiessWithinDistance(results, searchForm.searchCoordinates, searchForm.searchRadius);
+      }
+      
       dispatch(setSearchResults(results));
     }
     return results;

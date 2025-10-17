@@ -49,7 +49,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
                         }
                     }));
                     dispatch(setSearchFormField({ key: "address", value: placeAutocomplete.getPlace().name }));
-                    dispatch(setSearchFormField({ key: "searchRadius", value: 5000 })); // default 5km radius
+                    dispatch(setSearchFormField({ key: "searchRadius", value: 1000 })); // default 1km radius
                 }
                 onPlaceSelect({
                     lat: placeAutocomplete.getPlace().geometry.location.lat(),
@@ -70,7 +70,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
             if (isSearchPage) {
                 dispatch(setSearchFormField({ key: "searchCoordinates", value: null }));
                 dispatch(setSearchFormField({ key: "address", value: null }));
-                dispatch(setSearchFormField({ key: "searchRadius", value: 0 }));
+                dispatch(setSearchFormField({ key: "searchRadius", value: null }));
             }
 
             // Trigger input event to reset Google Autocomplete

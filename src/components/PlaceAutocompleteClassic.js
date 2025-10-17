@@ -5,6 +5,7 @@ import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import "./css/googlemaps.css";
 // import { TbAdjustmentsSearch } from "react-icons/tb";
 import { BsSearch } from "react-icons/bs";
+import { FaLocationDot } from "react-icons/fa6";
 import { SearchCode } from "lucide-react";
 // import { LiaBinocularsSolid } from "react-icons/lia";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -15,6 +16,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
   const [placeAutocomplete, setPlaceAutocomplete] = useState(null);
   const [isInTranogasyMap, setIsInTranogasyMap] = useState(false);
   const [location, setLocation] = useLocation();
+  const [area, setArea] = useState("Antananarivo");
   const inputRef = useRef(null);
   const dispatch = useDispatch();
   const places = useMapsLibrary("places");
@@ -40,6 +42,22 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
     setPlaceAutocomplete(new places.Autocomplete(inputRef.current, options));
   }, [places]);
 
+
+  useEffect(() => {
+    // console.log("search form redux state", searchForm);
+    if (searchForm.address) {
+      const sentence = searchForm.address;
+
+      const match = sentence.trim().match(/(\w+,?\s*\w+)/);
+
+      const firstTwoWords = match ? match[1] : '';
+
+      setArea(firstTwoWords);
+    }
+
+  }, [searchForm.address]);
+
+
   useEffect(() => {
     if (!placeAutocomplete) return;
     placeAutocomplete.addListener("place_changed", () => {
@@ -54,7 +72,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
           }
         }));
         dispatch(setSearchFormField({ key: "address", value: placeAutocomplete.getPlace().name }));
-        dispatch(setSearchFormField({ key: "searchRadius", value: 5000 })); // default 5km radius
+        dispatch(setSearchFormField({ key: "searchRadius", value: 1000 })); // default 1km radius
       }
     });
   }, [placeAutocomplete]);
@@ -77,7 +95,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
       inputRef.current.focus();
       dispatch(setSearchFormField({ key: "searchCoordinates", value: null }));
       dispatch(setSearchFormField({ key: "address", value: null }));
-      dispatch(setSearchFormField({ key: "searchRadius", value: 0 }));
+      dispatch(setSearchFormField({ key: "searchRadius", value: null }));
 
       // Trigger input event to reset Google Autocomplete
       const event = new Event('input', { bubbles: true });
@@ -285,6 +303,41 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
               </>
             )}
           </div>
+          {/* Zone de recherche info card */}
+          {isSearchResult && searchForm.searchCoordinates &&
+            <div
+              className="shadow-sm position-relative pl-4"
+              style={{
+                backgroundColor: "rgba(0,0,0,0.6)",
+                color: "white",
+                padding: "6px 8px",
+                borderRadius: "30px",
+                // BEFORE: fontSize: "13px",
+                fontSize: "clamp(12px, 2.5vw, 14px)", // 👈 RESPONSIVE
+                zIndex: 20,
+                display: "flex",
+                alignItems: "center",
+                gap: "3px",
+                cursor: "pointer",
+              }}
+            >
+              <strong
+                style={{
+                  paddingLeft: "5px"
+                }}
+              >
+                <FaLocationDot className="position-absolute"
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    color: "red",
+                    transform: "translate(-20px, -6px)",
+                  }}
+                />
+                {area && area} - Rayon : 800 m
+              </strong>
+            </div>
+          }
         </div>
       )}
     </div>

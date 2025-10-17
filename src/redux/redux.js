@@ -494,7 +494,7 @@ const initialState = {
   solarPanels: false,
   seachArea: null,
   searchCoordinates: null,
-  searchRadius: 0,
+  searchRadius: null,
   address: null,
 };
 

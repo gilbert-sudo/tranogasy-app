@@ -10,6 +10,7 @@ export const useMap = () => {
     console.log(placeName);
 
     const nearbyLocations = [];
+    
     locations.forEach((location) => {
       const dist = getDistance(center, location.coords);
       if (dist <= distance) {

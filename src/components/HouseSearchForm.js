@@ -424,9 +424,6 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
   }, [solarPanels]);
 
 
-
-
-
   useEffect(() => {
     if (properties && properties.length > 0) {
 
@@ -516,8 +513,10 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
       dispatch(setTranogasyMapField({ key: "activeFiltersCount", value: activeFiltersCount }));
 
       setSearchResults(searchProperty(parameters));
+      console.log("ChannelMergerNode");
     }
   }, [
+    searchForm.searchCoordinates,
     isRent,
     budgetMax,
     budgetMin,
@@ -601,7 +600,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
                       </label>
                       <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
 
-                      {searchForm.address && searchForm.searchCoordinates &&
+                      {searchForm.searchCoordinates &&
                         <PlaceLocationDisplayer position={searchForm.searchCoordinates} />
                       }
                     </div>
