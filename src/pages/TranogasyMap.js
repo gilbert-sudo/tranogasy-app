@@ -79,6 +79,8 @@ function MyMap() {
   const [showMapLoader, setShowMapLoader] = useState(true);
   const [initialCenter, setInitialCenter] = useState(false);
 
+  const [rawSearchResults, setRawSearchResults] = useState(null);
+
   const [titokMode, setTitokMode] = useState(false);
 
   const [showResultsDisplayModeCard, setShowResultsDisplayModeCard] = useState(false);
@@ -317,9 +319,11 @@ function MyMap() {
   }, []);
 
   useEffect(() => {
-    if (searchResults && searchResults.length > 0) {
-      const centerCoord = getCenterOfBounds(getLocationsCoords(searchResults));
-      const zoomLevel = calculateZoomLevel(searchResults);
+    setRawSearchResults(tranogasyMap.rawSearchResults)
+    if (tranogasyMap.rawSearchResults && tranogasyMap.rawSearchResults.length > 0) {
+
+      const centerCoord = getCenterOfBounds(getLocationsCoords(tranogasyMap.rawSearchResults));
+      const zoomLevel = calculateZoomLevel(tranogasyMap.rawSearchResults);
 
       if (searchForm.searchCoordinates) {
         setCenterTo(searchForm.searchCoordinates);
@@ -340,7 +344,7 @@ function MyMap() {
         }, timeoutDuration);
       }
     }
-  }, [searchResults]);
+  }, [tranogasyMap.rawSearchResults]);
 
 
   useEffect(() => {
@@ -471,7 +475,7 @@ function MyMap() {
             minZoom={9}
             zoom={mapZoomLevel}
             onZoomChanged={handleZoomChange}
-            center={initialCenter ? defaultCoords : (searchResults ? center : defaultposition)} // Default center if no search results Antananarivo
+            center={initialCenter ? defaultCoords : (rawSearchResults ? center : defaultposition)} // Default center if no search results Antananarivo
             mapId="80e7a8f8db80acb5"
             mapTypeControlOptions={{ position: ControlPosition.BOTTOM_CENTER }}
             options={{
@@ -485,7 +489,7 @@ function MyMap() {
             <MapController selectedPlace={searchForm.searchCoordinates} />
 
             {/* Pass adjustCoordsRandomlyUnique to Markers to use its internal cache */}
-            <Markers points={(searchResults && searchResults.length > 0) ? searchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
+            <Markers points={(rawSearchResults && rawSearchResults.length > 0) ? rawSearchResults : properties} onMarkerClick={handleMarkerClick} adjustCoordsRandomlyUnique={adjustCoordsRandomlyUnique} createCustomMarkerIcon={createCustomMarkerIcon} />
             {geolocation.userCurrentPosition && (
               <>
                 <AdvancedMarker
@@ -500,7 +504,7 @@ function MyMap() {
                 </AdvancedMarker>
                 <Circle
                   center={geolocation.userCurrentPosition} // Default center if no search results Antananarivo
-                  radius={1000}
+                  radius={800}
                   strokeColor={"#4285F4"}
                   strokeOpacity={2}
                   fillOpacity={0}
@@ -670,7 +674,7 @@ function MyMap() {
             transition: "all 0.3s ease"
           }}
         >
-          <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} />
+          <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} mode={titokMode}/>
         </div>
 
 

@@ -53,6 +53,8 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
       const firstTwoWords = match ? match[1] : '';
 
       setArea(firstTwoWords);
+    } else {
+      clearInput();
     }
 
   }, [searchForm.address]);

@@ -6,7 +6,6 @@ import {
   setLikedPropreties,
   setNotifications,
   setProperties,
-  setSearchResults,
   setTopProperties,
   setQuartersName,
   setUsersProperties,

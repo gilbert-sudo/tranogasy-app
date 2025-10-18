@@ -530,6 +530,7 @@ const tranogasyMapInitialState = {
   selectedProperty: null,
   previousCenter: null,
   previousSelectedPlace: null,
+  rawSearchResults : null,
 };
 
 const tranogasyMapSlice = createSlice({

@@ -43,7 +43,7 @@ import {
 } from "react-icons/fa6";
 import { Layers2 } from "lucide-react";
 
-const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
+const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
 
   const searchForm = useSelector((state) => state.searchForm);
   const properties = useSelector((state) => state.properties);
@@ -435,6 +435,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
       let numberOfRooms = (selectedRoom && selectedRoom.length > 0) ? selectedRoom.split("+")[0] : customRoom;
 
       const parameters = {
+        mode,
         type,
         budgetMax,
         budgetMin,
@@ -512,8 +513,8 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
 
       dispatch(setTranogasyMapField({ key: "activeFiltersCount", value: activeFiltersCount }));
 
-      setSearchResults(searchProperty(parameters));
-      console.log("ChannelMergerNode");
+      const { results } = searchProperty(parameters);
+      setSearchResults(results);
     }
   }, [
     searchForm.searchCoordinates,
@@ -594,16 +595,26 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard }) => {
             <div className="container pb-3">
               <div id="nav-tab-rent" className="tab-pane fade show active">
                 <>
-                    <div className="place-input mb-4">
-                      <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280", paddingLeft: "10px" }}>
-                        Zone de recherche - Rayon : 800 m
-                      </label>
-                      <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
+                  <div className="place-input mb-4">
+                    <label htmlFor="cardNumber" style={{ fontSize: "14px", color: "#6b7280", paddingLeft: "10px" }}>
+                      Zone de recherche -
+                      <small
+                        className="text-danger border border-danger ml-2"
+                        style={{
+                          padding: "2px 10px",
+                          fontWeight: 500,
+                          borderRadius: "30px"
+                        }}
+                      >
+                        Pas obligatoire
+                      </small>
+                    </label>
+                    <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
 
-                      {searchForm.searchCoordinates &&
-                        <PlaceLocationDisplayer position={searchForm.searchCoordinates} />
-                      }
-                    </div>
+                    {searchForm.searchCoordinates &&
+                      <PlaceLocationDisplayer position={searchForm.searchCoordinates} />
+                    }
+                  </div>
                   <div
                     style={{
                       position: "relative",

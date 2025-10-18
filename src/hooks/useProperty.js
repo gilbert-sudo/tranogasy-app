@@ -10,6 +10,7 @@ import {
   addUsersProperty,
   pushProperty,
   deleteFromProperties,
+  setTranogasyMapField,
 } from "../redux/redux";
 import { useRedux } from "./useRedux";
 import { useLike } from "./useLike";
@@ -788,6 +789,7 @@ export const useProperty = () => {
 
     if (results.length === 0) {
       dispatch(setSearchResults([]));
+      dispatch(setTranogasyMapField({ key: "rawSearchResults", value: [] }));
     } else {
       // Advanced search
       results = results.filter(
@@ -866,13 +868,15 @@ export const useProperty = () => {
           (solarPanels ? property.features.solarPanels === solarPanels : true)
       );
 
+      dispatch(setTranogasyMapField({ key: "rawSearchResults", value: results }));
+
       if (searchForm.searchCoordinates) {
         results = findPropertiessWithinDistance(results, searchForm.searchCoordinates, searchForm.searchRadius);
       }
-      
+
       dispatch(setSearchResults(results));
     }
-    return results;
+    return { results };
   };
 
   const formatPrice = (price = 0) => {

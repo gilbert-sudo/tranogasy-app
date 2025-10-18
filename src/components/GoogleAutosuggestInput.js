@@ -96,7 +96,7 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
                     className="map-input"
                     type="search"
                     placeholder="Où que ce soit à Madagascar"
-                    required
+                    required={!isSearchPage}
                     style={{
                         width: "100%",
                         padding: "15px 15px 15px 40px",
@@ -141,15 +141,15 @@ const PlaceAutocompleteClassic = ({ onPlaceSelect, setPlaceName }) => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            color: "#999",
+                            color: "#f76060ff",
                             transition: "color 0.2s, background 0.2s",
                         }}
                         onMouseOver={(e) => {
-                            e.currentTarget.style.color = "#666";
-                            e.currentTarget.style.background = "#f0f0f0";
+                            e.currentTarget.style.color = "#ff5252ff";
+                            e.currentTarget.style.background = "#ffdbdbff";
                         }}
                         onMouseOut={(e) => {
-                            e.currentTarget.style.color = "#999";
+                            e.currentTarget.style.color = "#f76060ff";
                             e.currentTarget.style.background = "transparent";
                         }}
                         aria-label="Clear input"
