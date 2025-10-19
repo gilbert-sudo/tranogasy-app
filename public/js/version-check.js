@@ -1,4 +1,4 @@
-const API_URL = "https://apis.tranogasy.mg/api/apps/latest/tranogasy"; 
+const API_URL = "https://apis.tranogasy.mg/api/apps/latest/tranogasy";
 
 async function deleteIndexHtmlFromCaches() {
   if (!("caches" in window)) return;
@@ -12,11 +12,10 @@ async function deleteIndexHtmlFromCaches() {
     for (const request of keys) {
       const url = new URL(request.url);
 
-      // Match only the index.html (both with and without trailing slash)
       if (
         url.pathname.endsWith("/index.html") ||
         url.pathname === "/" ||
-        url.pathname === "/tranogasy/" // adjust this if your app is served from a subpath
+        url.pathname === "/tranogasy/"
       ) {
         console.log("🗑️ Deleting cached:", url.href);
         await cache.delete(request);
@@ -38,17 +37,21 @@ async function checkAppVersion() {
       return;
     }
 
-    console.log("update check", storedVersion !== latestVersion);
-    
     if (storedVersion !== latestVersion) {
       console.log(`🔁 Updating app: ${storedVersion} → ${latestVersion}`);
+
+      // Display message if you want
       const footer = document.getElementById("footer");
       if (footer) footer.innerHTML = "<small>Mise à jour de l’application...</small>";
 
+      // Delete only index.html from cache
       await deleteIndexHtmlFromCaches();
 
+      // Store new version temporarily
       sessionStorage.setItem("update_pending_version", latestVersion);
-      window.location.reload(true);
+
+      // 🔥 Soft reload (no data loss)
+      window.location.reload(); 
     } else {
       console.log("✅ App version up-to-date:", latestVersion);
     }
@@ -57,6 +60,7 @@ async function checkAppVersion() {
   }
 }
 
+// Finalize update
 const pending = sessionStorage.getItem("update_pending_version");
 if (pending) {
   localStorage.setItem("app_version", pending);
