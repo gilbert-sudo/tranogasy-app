@@ -80,6 +80,8 @@ function MyMap() {
   const [showMapLoader, setShowMapLoader] = useState(true);
   const [initialCenter, setInitialCenter] = useState(false);
 
+  const [isListViewSliderVisible, setIsListViewSliderVisible] = useState(false);
+
   const [rawSearchResults, setRawSearchResults] = useState(null);
 
   const [titokMode, setTitokMode] = useState(false);
@@ -601,7 +603,7 @@ function MyMap() {
         </>
       }
       {/* Filter info box */}
-      {!showMapLoader && <FilterInfoBox mode={titokMode} />}
+      {!showMapLoader && !isListViewSliderVisible && <FilterInfoBox mode={titokMode} />}
       {titokMode &&
         <TranogasyFeed
           payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
@@ -614,6 +616,8 @@ function MyMap() {
           payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
           route={"searchResult"}
           setListViewMode={setListViewMode}
+          setIsListViewSliderVisible={setIsListViewSliderVisible}
+          isListViewSliderVisible={isListViewSliderVisible}
         />
       }
 

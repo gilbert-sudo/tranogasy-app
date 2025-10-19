@@ -16,7 +16,7 @@ import { useImage } from "../hooks/useImage";
 import { FixedSizeGrid as Grid } from "react-window";
 import { StepBack, StepForward } from "lucide-react";
 
-const TranogasyList = ({ payload, route, setListViewMode }) => {
+const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisible, setIsListViewSliderVisible }) => {
     const usersProperties = payload;
     const tranogasyMap = useSelector((state) => state.tranogasyMap);
 
@@ -30,7 +30,6 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
     const [showSearchInput, setShowSearchInput] = useState(false);
     const [searchInput, setSearchInput] = useState("");
     const [searchResult, setSearchResult] = useState(null);
-    const [isSliderVisible, setIsSlideVisible] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState(null);
 
     const [currentRow, setCurrentRow] = useState(0);
@@ -70,7 +69,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
     };
 
     const handleCloseSlideClick = () => {
-        setIsSlideVisible(false);
+        setIsListViewSliderVisible(false);
     };
 
     //handle property search
@@ -141,7 +140,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                     style={{ padding: '8px', height: '100%' }}
                     onClick={() => {
                         setSelectedProperty(property);
-                        setIsSlideVisible(true);
+                        setIsListViewSliderVisible(true);
                     }}
                 >
                     <PropertyDetails
@@ -156,7 +155,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
 
     return (
         <div className="mylisting">
-            {true &&
+            {!isListViewSliderVisible &&
                 <div className="position-absolute"
                     style={{
                         zIndex: 2
@@ -249,12 +248,12 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                                         }
                                     </div>
                                     <div
-                                        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+                                        className={`property-details-slide ${isListViewSliderVisible ? "show" : ""}`}
                                         style={{
                                             position: "fixed",
                                             left: "50%",
                                             bottom: 0,
-                                            transform: isSliderVisible
+                                            transform: isListViewSliderVisible
                                                 ? "translate(-50%, 0)"
                                                 : "translate(-50%, 100%)",
                                             width: "100%",
@@ -265,7 +264,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                                             boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
                                             transition: "transform 0.5s ease",
                                             boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
-                                            zIndex: 1000,
+                                            zIndex: 9999,
                                         }}
                                     >
                                         {/* mini navbar for the lose button to hide the sliding div */}
@@ -295,7 +294,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                                             />
                                         </div>
                                         {/* Close button to hide the sliding div */}
-                                        {selectedProperty && !tranogasyMap.formFilter && isSliderVisible && (
+                                        {selectedProperty && !tranogasyMap.formFilter && isListViewSliderVisible && (
                                             <PropertyDetailsPage
                                                 key={selectedProperty._id}
                                                 fastPreviewProperty={selectedProperty}
@@ -318,7 +317,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                     </div>
                 </div>
             </div>
-            {!isSliderVisible &&
+            {!isListViewSliderVisible &&
                 <div
                     className="fixed-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2"
                     style={{
