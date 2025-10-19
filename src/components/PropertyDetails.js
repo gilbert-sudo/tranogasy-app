@@ -135,7 +135,7 @@ function PropertyDetails({ property, route }) {
       <div
         className="property-thumbnail"
         onClick={() => {
-          if (route !== "PropertyExistsCard") {
+          if ((route !== "PropertyExistsCard") && (route !== "TranogasyList")) {
             setLocation(`/property-details/${property._id}/${encodeURIComponent(
               propertyDataString
             )}/${location.split("/")[1]}`);
@@ -294,7 +294,7 @@ function PropertyDetails({ property, route }) {
         <div
           className="text text-dark"
           onClick={() => {
-            if (route !== "PropertyExistsCard") {
+            if ((route !== "PropertyExistsCard") && (route !== "TranogasyList")) {
               setLocation(`/property-details/${property._id}/${encodeURIComponent(
                 propertyDataString
               )}/${location.split("/")[1]}`);

@@ -6,9 +6,12 @@ import PropertyDetails from "../components/PropertyDetails";
 import PlaceAutocompleteClassic from "../components/PlaceAutocompleteClassic";
 import MyListingDetailsSkeleton from "../components/skeletons/MyListingDetailsSkeleton";
 
+import PropertyDetailsPage from "./PropertyDetailsPage";
+
 import { MdArrowBackIos } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { BsSearch, BsFillHouseAddFill } from "react-icons/bs";
+import { IoMdCloseCircle } from "react-icons/io";
 import { useImage } from "../hooks/useImage";
 import { FixedSizeGrid as Grid } from "react-window";
 import { StepBack, StepForward } from "lucide-react";
@@ -27,6 +30,8 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
     const [showSearchInput, setShowSearchInput] = useState(false);
     const [searchInput, setSearchInput] = useState("");
     const [searchResult, setSearchResult] = useState(null);
+    const [isSliderVisible, setIsSlideVisible] = useState(false);
+    const [selectedProperty, setSelectedProperty] = useState(null);
 
     const [currentRow, setCurrentRow] = useState(0);
 
@@ -64,7 +69,9 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
         }
     };
 
-
+    const handleCloseSlideClick = () => {
+        setIsSlideVisible(false);
+    };
 
     //handle property search
     function searchListedProperty(propertyNumber) {
@@ -130,7 +137,13 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
             <div
                 style={style}
             >
-                <div style={{ padding: '8px', height: '100%' }}>
+                <div
+                    style={{ padding: '8px', height: '100%' }}
+                    onClick={() => {
+                        setSelectedProperty(property);
+                        setIsSlideVisible(true);
+                    }}
+                >
                     <PropertyDetails
                         key={property._id}
                         property={property}
@@ -235,6 +248,62 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                                             </div>
                                         }
                                     </div>
+                                    <div
+                                        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+                                        style={{
+                                            position: "fixed",
+                                            left: "50%",
+                                            bottom: 0,
+                                            transform: isSliderVisible
+                                                ? "translate(-50%, 0)"
+                                                : "translate(-50%, 100%)",
+                                            width: "100%",
+                                            height: "95dvh",
+                                            overflowY: "auto",
+                                            backgroundColor: "#fff",
+                                            borderRadius: "30px 30px 0 0",
+                                            boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
+                                            transition: "transform 0.5s ease",
+                                            boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+                                            zIndex: 1000,
+                                        }}
+                                    >
+                                        {/* mini navbar for the lose button to hide the sliding div */}
+                                        <div
+                                            className="fixed-top"
+                                            style={{
+                                                width: "100%",
+                                                zIndex: 1000,
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                position: "sticky",
+                                            }}
+                                        >
+                                            <IoMdCloseCircle
+                                                style={{
+                                                    fontSize: "2rem",
+                                                    position: "absolute",
+                                                    top: "10px",
+                                                    right: "10px",
+                                                    zIndex: "9999",
+                                                    backgroundColor: "#fff",
+                                                    borderRadius: "50%",
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={handleCloseSlideClick}
+                                            />
+                                        </div>
+                                        {/* Close button to hide the sliding div */}
+                                        {selectedProperty && !tranogasyMap.formFilter && isSliderVisible && (
+                                            <PropertyDetailsPage
+                                                key={selectedProperty._id}
+                                                fastPreviewProperty={selectedProperty}
+                                                handleCloseSlideClick={handleCloseSlideClick}
+                                            />
+                                        )}
+
+                                    </div>
                                 </>
                             )
                             :
@@ -249,155 +318,157 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                     </div>
                 </div>
             </div>
-            <div
-                className="fixed-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2"
-                style={{
-                    width: "96%",
-                    maxWidth: "450px",
-                    border: "1px solid rgba(0, 0, 0, 0.3)",
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
-                    borderRadius: "30px",
-                    //center horizontally
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    marginBottom: showSearchInput ? "86dvh" : "1.5dvh",
-                    padding: "10px 20px",
-                    zIndex: 1000
-                }}
-            >
-                {/* Go Back Button */}
-                {!showSearchInput &&
-                    <>
-                        <button
-                            type="button"
-                            className="btn btn-outline-dark d-flex align-items-center justify-content-center"
-                            onClick={handleStepBack}
-                            disabled={currentRow <= 0}
-                            style={{
-                                borderRadius: "30px",
-                                opacity: currentRow <= 0 ? 0.4 : 1,
-                                cursor: currentRow <= 0 ? "not-allowed" : "pointer",
-                                padding: 10,
-                                border: "none"
-                            }}
-                        >
-                            <StepBack />
-                        </button>
-                        <div className="text-center w-100" style={{ fontSize: "14px", fontWeight: "500" }}>
-                            <small>Page</small> <br /> {currentPage} / {totalPages}
-                        </div>
-                    </>
-                }
-
-                {showSearchInput &&
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setShowSearchInput(false);
-                            setSearchInput("");
-                            setSearchResult(null);
-                        }}
-                        className="d-flex align-items-center text-dark text-decoration-none mb-2 border-0 bg-light"
-                    >
-                        <MdArrowBackIos />
-                    </button>
-                }
-
-                {/* Search Form */}
-                <form
-                    className="d-flex align-items-center gap-2"
-                    onSubmit={(e) => e.preventDefault()}
+            {!isSliderVisible &&
+                <div
+                    className="fixed-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2"
+                    style={{
+                        width: "96%",
+                        maxWidth: "450px",
+                        border: "1px solid rgba(0, 0, 0, 0.3)",
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
+                        borderRadius: "30px",
+                        //center horizontally
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        marginBottom: showSearchInput ? "86dvh" : "1.5dvh",
+                        padding: "10px 20px",
+                        zIndex: 1000
+                    }}
                 >
-                    <div style={{ position: "relative", flex: 1, display: showSearchInput ? "block" : "none" }}>
-                        <label
-                            style={{
-                                position: "absolute",
-                                top: "-8px",
-                                left: "15px",
-                                background: "#fff",
-                                padding: "0 6px",
-                                fontSize: "10px",
-                                color: "#6b7280",
-                            }}
-                        >
-                            Numéro du bien
-                        </label>
-                        <input
-                            className="MyListingSearchInput"
-                            ref={inputRef}
-                            type="number"
-                            max="999999"   // numeric maximum
-                            value={searchInput}
-                            onChange={(e) => {
-                                if (e.target.value.length === 0) {
-                                    setSearchResult(null);
-                                }
-                                if (e.target.value.length <= 6) {
-                                    setSearchInput(e.target.value);
-                                }
-                            }}
-                            placeholder="Un numéro"
-                            style={{
-                                width: "100%",
-                                minWidth: "140px",
-                                border: "1px solid #999",
-                                borderRadius: "16px",
-                                padding: "15px 12px",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                right: "0",
-                            }}
-                        />
-                    </div>
-                    <button
-                        className="btn btn-dark d-flex align-items-center justify-content-center"
-                        type={showSearchInput ? "submit" : "button"}
-                        aria-label="Rechercher une annonce"
-                        onClick={() => {
-                            if (searchInput && showSearchInput) {
-                                searchListedProperty(searchInput);
-                            }
-                            if (!searchInput) {
-                                setShowSearchInput(!showSearchInput);
-                            }
-                        }}
-                        style={{ borderRadius: "20px", marginLeft: "2px", padding: "16px 14px" }}
-                    >
-                        <BsSearch />
-                    </button>
+                    {/* Go Back Button */}
                     {!showSearchInput &&
-                        <button
-                            type="button"
-                            className="btn btn-success d-flex align-items-center justify-content-center ml-2"
-                            onClick={handleStepForward}
-                            disabled={currentRow >= maxRow - rowsPerStep}
-                            style={{
-                                borderRadius: "30px",
-                                opacity: currentRow >= maxRow - rowsPerStep ? 0.4 : 1,
-                                cursor: currentRow >= maxRow - rowsPerStep ? "not-allowed" : "pointer",
-                                padding: "12px 10px"
-                            }}
-                        >
-                            <span className="me-1">Page suivante</span>
-                            <StepForward />
-                        </button>
+                        <>
+                            <button
+                                type="button"
+                                className="btn btn-outline-dark d-flex align-items-center justify-content-center"
+                                onClick={handleStepBack}
+                                disabled={currentRow <= 0}
+                                style={{
+                                    borderRadius: "30px",
+                                    opacity: currentRow <= 0 ? 0.4 : 1,
+                                    cursor: currentRow <= 0 ? "not-allowed" : "pointer",
+                                    padding: 10,
+                                    border: "none"
+                                }}
+                            >
+                                <StepBack />
+                            </button>
+                            <div className="text-center w-100" style={{ fontSize: "14px", fontWeight: "500" }}>
+                                <small>Page</small> <br /> {currentPage} / {totalPages}
+                            </div>
+                        </>
                     }
+
                     {showSearchInput &&
                         <button
+                            type="button"
                             onClick={() => {
                                 setShowSearchInput(false);
                                 setSearchInput("");
                                 setSearchResult(null);
                             }}
-                            className="btn btn-danger d-flex align-items-center justify-content-center"
-                            aria-label="Créer une nouvelle annonce"
-                            style={{ borderRadius: "50%", marginLeft: "2px", padding: "13px 12px" }}
+                            className="d-flex align-items-center text-dark text-decoration-none mb-2 border-0 bg-light"
                         >
-                            <RxCross2 style={{ fontSize: "20px" }} />
+                            <MdArrowBackIos />
                         </button>
                     }
-                </form>
-            </div>
+
+                    {/* Search Form */}
+                    <form
+                        className="d-flex align-items-center gap-2"
+                        onSubmit={(e) => e.preventDefault()}
+                    >
+                        <div style={{ position: "relative", flex: 1, display: showSearchInput ? "block" : "none" }}>
+                            <label
+                                style={{
+                                    position: "absolute",
+                                    top: "-8px",
+                                    left: "15px",
+                                    background: "#fff",
+                                    padding: "0 6px",
+                                    fontSize: "10px",
+                                    color: "#6b7280",
+                                }}
+                            >
+                                Numéro du bien
+                            </label>
+                            <input
+                                className="MyListingSearchInput"
+                                ref={inputRef}
+                                type="number"
+                                max="999999"   // numeric maximum
+                                value={searchInput}
+                                onChange={(e) => {
+                                    if (e.target.value.length === 0) {
+                                        setSearchResult(null);
+                                    }
+                                    if (e.target.value.length <= 6) {
+                                        setSearchInput(e.target.value);
+                                    }
+                                }}
+                                placeholder="Un numéro"
+                                style={{
+                                    width: "100%",
+                                    minWidth: "140px",
+                                    border: "1px solid #999",
+                                    borderRadius: "16px",
+                                    padding: "15px 12px",
+                                    textAlign: "center",
+                                    fontSize: "16px",
+                                    right: "0",
+                                }}
+                            />
+                        </div>
+                        <button
+                            className="btn btn-dark d-flex align-items-center justify-content-center"
+                            type={showSearchInput ? "submit" : "button"}
+                            aria-label="Rechercher une annonce"
+                            onClick={() => {
+                                if (searchInput && showSearchInput) {
+                                    searchListedProperty(searchInput);
+                                }
+                                if (!searchInput) {
+                                    setShowSearchInput(!showSearchInput);
+                                }
+                            }}
+                            style={{ borderRadius: "20px", marginLeft: "2px", padding: "16px 14px" }}
+                        >
+                            <BsSearch />
+                        </button>
+                        {!showSearchInput &&
+                            <button
+                                type="button"
+                                className="btn btn-success d-flex align-items-center justify-content-center ml-2"
+                                onClick={handleStepForward}
+                                disabled={currentRow >= maxRow - rowsPerStep}
+                                style={{
+                                    borderRadius: "30px",
+                                    opacity: currentRow >= maxRow - rowsPerStep ? 0.4 : 1,
+                                    cursor: currentRow >= maxRow - rowsPerStep ? "not-allowed" : "pointer",
+                                    padding: "12px 10px"
+                                }}
+                            >
+                                <span className="me-1">Page suivante</span>
+                                <StepForward />
+                            </button>
+                        }
+                        {showSearchInput &&
+                            <button
+                                onClick={() => {
+                                    setShowSearchInput(false);
+                                    setSearchInput("");
+                                    setSearchResult(null);
+                                }}
+                                className="btn btn-danger d-flex align-items-center justify-content-center"
+                                aria-label="Créer une nouvelle annonce"
+                                style={{ borderRadius: "50%", marginLeft: "2px", padding: "13px 12px" }}
+                            >
+                                <RxCross2 style={{ fontSize: "20px" }} />
+                            </button>
+                        }
+                    </form>
+                </div>
+            }
         </div>
     );
 };
