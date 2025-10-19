@@ -238,7 +238,7 @@ function MyMap() {
     }
   };
 
-  const handleCloseSlideClick = (event) => {
+  const handleCloseSlideClick = () => {
     setIsSlideVisible(false);
     dispatch(setReduxFormFilter({ formFilter: false }));
   };
@@ -470,7 +470,7 @@ function MyMap() {
           </div>
         </>
       )}
-      {!titokMode && !listViewMode && 
+      {!titokMode && !listViewMode &&
         <>
           <Map
             minZoom={9}
@@ -667,8 +667,14 @@ function MyMap() {
               backgroundColor: "#fff",
               borderRadius: "50%",
               cursor: "pointer",
+              opacity: tranogasyMap.formFilter && searchResults && searchResults.length === 0 ? 0.4 : 1,
+              pointerEvents: tranogasyMap.formFilter && searchResults && searchResults.length === 0 ? "none" : "auto",
+              transition: "opacity 0.3s ease",
             }}
-            onClick={handleCloseSlideClick}
+            onClick={() => {
+              if (tranogasyMap.formFilter && searchResults && searchResults.length === 0) return;
+              handleCloseSlideClick();
+            }}
           />
         </div>
         {/* Close button to hide the sliding div */}
@@ -682,7 +688,7 @@ function MyMap() {
             transition: "all 0.3s ease"
           }}
         >
-          <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} mode={titokMode}/>
+          <HouseSearchForm setShowResultsDisplayModeCard={setShowResultsDisplayModeCard} mode={titokMode} />
         </div>
 
 
