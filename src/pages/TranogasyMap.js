@@ -3,6 +3,7 @@ import { getCenterOfBounds } from "geolib";
 import { useSelector, useDispatch } from "react-redux";
 import PropertyDetailsPage from "./PropertyDetailsPage";
 import TranogasyFeed from "./TranogasyFeed";
+import TranogasyList from "./TranogasyList";
 import CustomMapControl from "../components/CustomMapControl";
 import HouseSearchForm from "../components/HouseSearchForm";
 import FilterInfoBox from "../components/FilterInfoBox";
@@ -82,6 +83,7 @@ function MyMap() {
   const [rawSearchResults, setRawSearchResults] = useState(null);
 
   const [titokMode, setTitokMode] = useState(false);
+  const [listViewMode, setListViewMode] = useState(false);
 
   const [showResultsDisplayModeCard, setShowResultsDisplayModeCard] = useState(false);
   const selectedMarkersHistory = [null, null];
@@ -180,11 +182,10 @@ function MyMap() {
   const setShowResultsDisplayModeSubmit = (mode) => {
 
     const isTiktok = (mode === "tiktok");
+    const islistViewMode = (mode === "listView");
 
-    if (isTiktok) {
-      setTitokMode("tiktok");
-    }
-    (!isTiktok) && setTitokMode(false);
+    isTiktok ? setTitokMode(mode) : setTitokMode(false);
+    islistViewMode ? setListViewMode(mode) : setListViewMode(false);
 
     setShowResultsDisplayModeCard(false)
     handleCloseSlideClick();
@@ -412,7 +413,7 @@ function MyMap() {
 
   return (
     <div
-      className={`position-relative ${!(titokMode) ? "pt-4" : ""}`}
+      className={`position-relative ${(!(titokMode)) ? "pt-4" : ""}`}
       style={{ height: "97.7dvh", width: "100%" }}
     >
       <div className="d-flex justify-content-center align-items-center places-container">
@@ -431,7 +432,7 @@ function MyMap() {
               top: 47,
               left: 0,
               width: "100vw",
-              height: "100vh",
+              height: "100dvh",
               background: "rgba(0,0,0,0.4)",
               zIndex: 9999,
               display: "flex",
@@ -469,7 +470,7 @@ function MyMap() {
           </div>
         </>
       )}
-      {!titokMode &&
+      {!titokMode && !listViewMode && 
         <>
           <Map
             minZoom={9}
@@ -606,6 +607,13 @@ function MyMap() {
           payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
           route={"searchResult"}
           setTitokMode={setTitokMode}
+        />
+      }
+      {listViewMode &&
+        <TranogasyList
+          payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
+          route={"searchResult"}
+          setListViewMode={setListViewMode}
         />
       }
 

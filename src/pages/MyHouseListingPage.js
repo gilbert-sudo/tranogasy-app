@@ -223,7 +223,7 @@ const MyHouseListingPage = () => {
                             columnWidth={Math.floor(gridWidth / columnCount)}
                             height={window.innerHeight - (showSearchInput ? 150 : 80)} // Adjust for header
                             rowCount={Math.ceil(usersProperties.length / columnCount)}
-                            rowHeight={ItemSize}
+                            rowHeight={(ItemSize / 100) * 102}
                             width={(gridWidth / 100) * 101.5}
                             itemData={usersProperties}
                           >

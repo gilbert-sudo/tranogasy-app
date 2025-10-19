@@ -150,12 +150,24 @@ function PropertyDetails({ property, route }) {
               <span className="offer-type bg-danger">Vente</span>
             )}
           </div>
-          <div className="date-details-wrap text-light">
-            {property.created_at && formattedDate}
+          <div
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 10,
+              zIndex: 10,
+              display: "block",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              alignItems: "center",
+              padding: "3px 8px",
+              fontWeight: "light",
+              borderRadius: 10,
+              color: "white"
+            }}
+          >
+            <small>{formattedDate && formattedDate}</small>
           </div>
-          <div className="quarter-details-wrap text-light">
-            {property.city && property.city.district}
-          </div>
+
         </div>
         <MiniCarousel images={property.images} />
       </div>
@@ -258,7 +270,7 @@ function PropertyDetails({ property, route }) {
             </div>
           )
         }
-        {(route === "ExplorePage") &&
+        {((route === "ExplorePage") || (route === "TranogasyList")) &&
           (
             isliked && isliked ? (
               <div

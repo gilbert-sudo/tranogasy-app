@@ -65,6 +65,7 @@ const GenerateFeaturebox = ({ icon, label }) => (
 
 const TranogasyFeed = ({ payload, route, setTitokMode }) => {
   const reduxProperties = useSelector((state) => state.properties);
+  const tranogasyMap = useSelector((state) => state.tranogasyMap);
   const properties = payload ? payload : reduxProperties;
   const swiperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -127,6 +128,23 @@ const TranogasyFeed = ({ payload, route, setTitokMode }) => {
     }
   }, [scrollLocked]);
 
+  useEffect(() => {
+    const body = document.body;
+
+    if (body) {
+      body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      body.style.overflow = '';
+    };
+  }, [tranogasyMap.formFilter]);
+
+  useEffect(() => {
+    goToSlide(0);
+  }, [payload]);
+
+
   let currentProperty;
 
   if (properties) {
@@ -155,9 +173,9 @@ const TranogasyFeed = ({ payload, route, setTitokMode }) => {
       }}>
         {isSearchResult &&
           <div className="position-absolute pt-4"
-          style={{
-            zIndex: 2
-          }}
+            style={{
+              zIndex: 2
+            }}
           >
             <PlaceAutocompleteClassic onPlaceSelect={() => { }} isSearchResult={isSearchResult} />
           </div>

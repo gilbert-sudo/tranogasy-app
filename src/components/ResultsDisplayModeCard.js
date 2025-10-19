@@ -180,7 +180,9 @@ const ResultsDisplayModeCard = ({ setShowResultsDisplayModeSubmit, setShowResult
                             transform: isMounted ? "translateX(0)" : "translateX(-30px)",
                             transition: "all 0.25s ease-out 0.35s",
                         }}
-                        onClick={() => console.log("Mode Liste sélectionné")}
+                        onClick={() => {
+                            setShowResultsDisplayModeSubmit("listView");
+                        }}
                     >
                         <BsViewList style={{ fontSize: "1.5rem", marginRight: "10px" }} />
                         Mode Liste
