@@ -8,6 +8,7 @@ import PropertyExistsCard from "../components/PropertyExistsCard";
 import RentInput from "../components/RentInput";
 import GoogleAutosuggestInput from '../components/GoogleAutosuggestInput';
 import PhoneInput from "../components/PhoneInput";
+import ListingsSourcesInput from "../components/ListingsSourcesInput";
 
 import PropertyDetailsPage from "./PropertyDetailsPage";
 
@@ -130,6 +131,9 @@ const CreateListing = () => {
   const [panoramicView, setPanoramicView] = useState(false);
   const [solarPanels, setSolarPanels] = useState(false);
 
+  const [sourcesUsername, setSourcesUsername] = useState(null);
+  const [sourcesAvatar, setSourcesAvatar] = useState(null);
+  const [sourcesLink, setSourcesLink] = useState(null);
 
   const [imageError, setImageError] = useState(false);
   const [noFeatureSet, setNoFeatureSet] = useState(false);
@@ -225,6 +229,12 @@ const CreateListing = () => {
     const owner = user._id;
     const images = imgState;
 
+    const sources = {
+      username: sourcesUsername,
+      avatar: sourcesAvatar,
+      link: sourcesLink,
+    };
+
     const anyFeatureSelected = () => {
       return [
         motoAccess,
@@ -313,6 +323,7 @@ const CreateListing = () => {
       phone1,
       phone2: newPhone2,
       phone3: newPhone3,
+      sources,
       motoAccess,
       carAccess,
       parkingSpaceAvailable,
@@ -448,6 +459,17 @@ const CreateListing = () => {
                   Créer une annonce :
                 </h6>
                 <div id="nav-tab-rent" className="tab-pane fade show active">
+                  {user && (user.role === "admin") &&
+                    <ListingsSourcesInput
+                      sourcesAvatar={sourcesAvatar}
+                      setSourcesAvatar={setSourcesAvatar}
+                      sourcesUsername={sourcesUsername}
+                      setSourcesUsername={setSourcesUsername}
+                      sourcesLink={sourcesLink}
+                      setSourcesLink={setSourcesLink}
+                      required={(user.role === "admin")}
+                    />
+                  }
                   <div style={{ marginTop: "20px", marginBottom: "20px" }}>
                     <label
                       style={{

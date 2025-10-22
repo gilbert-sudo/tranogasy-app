@@ -62,7 +62,7 @@ const MyHouseListingPage = () => {
       alert("🚫 Vous avez atteint la limite de 30 annonces pour aujourd’hui.");
       return;
     }
-    if (!bypassedUser && todayCount >= 20) {
+    if (!bypassedUser && todayCount >= 22) {
       alert("🚫 Vous avez atteint la limite de 20 annonces pour aujourd’hui.");
       return;
     }
