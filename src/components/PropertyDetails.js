@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTranogasyListField } from "../redux/redux";
 import { useLike } from "../hooks/useLike";
 import { useLogin } from "../hooks/useLogin";
 import { useProperty } from "../hooks/useProperty";
@@ -89,6 +90,7 @@ function PropertyDetails({ property, route }) {
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
   const { deleteProperty } = useProperty();
+  const dispatch = useDispatch();
 
   const [isliked, setIsliked] = useState(false);
   const [play] = useSound("sounds/Like Sound Effect.mp3");
@@ -96,6 +98,20 @@ function PropertyDetails({ property, route }) {
   //redux
   const user = useSelector((state) => state.user);
 
+  //click the property 
+  const handleShowPropertydetails = async () => {
+    if (route === "TranogasyList") {
+      dispatch(setTranogasyListField({ key: "selectedProperty", value: property }));
+      dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: true }));
+      
+      return;
+    };
+    if (route === "PropertyExistsCard") return;
+    setLocation(`/property-details/${property._id}/${encodeURIComponent(
+      propertyDataString
+    )}/${location.split("/")[1]}`);
+  };
+ 
   //click the like button
   const handleLike = async (e) => {
     e.preventDefault();
@@ -134,13 +150,7 @@ function PropertyDetails({ property, route }) {
     <div className="property-entry h-100 mx-1">
       <div
         className="property-thumbnail"
-        onClick={() => {
-          if ((route !== "PropertyExistsCard") && (route !== "TranogasyList")) {
-            setLocation(`/property-details/${property._id}/${encodeURIComponent(
-              propertyDataString
-            )}/${location.split("/")[1]}`);
-          }
-        }}
+        onClick={handleShowPropertydetails}
       >
         <div className="d-flex justify-content-end">
           <div className="offer-type-wrap">
@@ -293,13 +303,7 @@ function PropertyDetails({ property, route }) {
         }
         <div
           className="text text-dark"
-          onClick={() => {
-            if ((route !== "PropertyExistsCard") && (route !== "TranogasyList")) {
-              setLocation(`/property-details/${property._id}/${encodeURIComponent(
-                propertyDataString
-              )}/${location.split("/")[1]}`);
-            }
-          }}
+          onClick={handleShowPropertydetails}
         >
           <h4 className="ml-1 property-title">
             <label className="text-danger">#</label> {property.title}

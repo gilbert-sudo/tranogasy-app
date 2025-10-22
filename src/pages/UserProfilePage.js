@@ -98,7 +98,7 @@ const UserProfilePage = () => {
                                     <p className="text-center font-weight-bold">Terrain</p>
                                 </div>
                                 <div className="d-flex flex-column justify-content-center text-dark">
-                                    <h5 className="text-center text-danger">56</h5>
+                                    <h5 className="text-center text-danger">150</h5>
                                     <p className="text-center font-weight-bold">J'aime</p>
                                 </div>
                             </div>

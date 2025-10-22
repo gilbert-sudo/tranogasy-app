@@ -39,7 +39,6 @@ import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisati
 import ImageUpload from "./pages/ImageUpload";
 
 import { Geolocation } from "@capacitor/geolocation";
-import { App as CapacitorApp } from "@capacitor/app";
 
 import { useTimer } from "./hooks/useTimer";
 import { useMap } from "./hooks/useMap";

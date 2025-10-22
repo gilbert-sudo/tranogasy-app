@@ -1,6 +1,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTranogasyListField } from "../redux/redux";
 
 import PropertyDetails from "../components/PropertyDetails";
 import PlaceAutocompleteClassic from "../components/PlaceAutocompleteClassic";
@@ -10,16 +11,20 @@ import PropertyDetailsPage from "./PropertyDetailsPage";
 
 import { MdArrowBackIos } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-import { BsSearch, BsFillHouseAddFill } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 import { IoMdCloseCircle } from "react-icons/io";
 import { useImage } from "../hooks/useImage";
 import { FixedSizeGrid as Grid } from "react-window";
 import { StepBack, StepForward } from "lucide-react";
 
-const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisible, setIsListViewSliderVisible }) => {
-    const usersProperties = payload;
-    const tranogasyMap = useSelector((state) => state.tranogasyMap);
 
+
+const TranogasyList = ({ payload, route, setListViewMode }) => {
+    const properties = payload;
+    const tranogasyMap = useSelector((state) => state.tranogasyMap);
+    const tranogasyList = useSelector((state) => state.tranogasyList);
+
+    const dispatch = useDispatch();
     const { noInputValueForSearchImg, noSearchResultImg } = useImage();
 
     const gridContainerRef = useRef();
@@ -30,17 +35,16 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
     const [showSearchInput, setShowSearchInput] = useState(false);
     const [searchInput, setSearchInput] = useState("");
     const [searchResult, setSearchResult] = useState(null);
-    const [selectedProperty, setSelectedProperty] = useState(null);
 
     const [currentRow, setCurrentRow] = useState(0);
 
-    const totalRows = Math.ceil(usersProperties.length / columnCount);
+    const totalRows = Math.ceil(properties.length / columnCount);
     const rowsPerStep = 10 / columnCount; // how many rows ≈ 10 items
     const maxRow = Math.max(totalRows - 1, 0);
 
     const itemsPerPage = columnCount * 10; // since each "step" moves 10 items
     const currentPage = Math.floor((currentRow * columnCount) / itemsPerPage) + 1;
-    const totalPages = Math.ceil(usersProperties.length / itemsPerPage);
+    const totalPages = Math.ceil(properties.length / itemsPerPage);
 
     const handleStepForward = () => {
         if (gridRef.current) {
@@ -69,13 +73,13 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
     };
 
     const handleCloseSlideClick = () => {
-        setIsListViewSliderVisible(false);
+        dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: false }));
     };
 
     //handle property search
     function searchListedProperty(propertyNumber) {
-        console.log("proertyNumber", Number(propertyNumber), usersProperties);
-        const property = usersProperties.filter((prop) => prop.propertyNumber === Number(propertyNumber));
+        console.log("proertyNumber", Number(propertyNumber), properties);
+        const property = properties.filter((prop) => prop.propertyNumber === Number(propertyNumber));
         setSearchResult(property);
         console.log("Form submited, search results", property);
     }
@@ -104,7 +108,7 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
         updateGridMetrics();
         window.addEventListener("resize", updateGridMetrics);
         return () => window.removeEventListener("resize", updateGridMetrics);
-    }, [usersProperties]);
+    }, [properties]);
 
     useEffect(() => {
         const body = document.body;
@@ -121,16 +125,18 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
     useEffect(() => {
         if (gridRef.current) {
             gridRef.current.scrollTo({ scrollTop: 0, scrollLeft: 0 });
+            handleCloseSlideClick();
+            setCurrentRow(0);
         }
-    }, [usersProperties]);
+    }, [properties]);
 
     const ItemSize = 400;
 
     const Cell = useCallback(({ columnIndex, rowIndex, style }) => {
         const index = rowIndex * columnCount + columnIndex;
-        const property = usersProperties?.[index];
+        const property = properties?.[index];
 
-        if (!property || !usersProperties || !usersProperties.length > 0) return null;
+        if (!property || !properties || !properties.length > 0) return null;
 
         return (
             <div
@@ -138,10 +144,6 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
             >
                 <div
                     style={{ padding: '8px', height: '100%' }}
-                    onClick={() => {
-                        setSelectedProperty(property);
-                        setIsListViewSliderVisible(true);
-                    }}
                 >
                     <PropertyDetails
                         key={property._id}
@@ -151,11 +153,11 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                 </div>
             </div>
         );
-    }, [columnCount, usersProperties]);
+    }, [columnCount, properties]);
 
     return (
         <div className="mylisting">
-            {!isListViewSliderVisible &&
+            {!tranogasyList.isListViewSliderVisible &&
                 <div className="position-absolute"
                     style={{
                         zIndex: 2
@@ -173,7 +175,7 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                                 : { paddingBottom: "9dvh" }),
                         }}
                     >
-                        {usersProperties && usersProperties.length > 0 ?
+                        {properties && properties.length > 0 ?
                             (
                                 <>
                                     <div className="row" ref={gridContainerRef} style={{ display: showSearchInput ? "none" : "block" }}>
@@ -183,10 +185,10 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                                                 columnCount={columnCount}
                                                 columnWidth={Math.floor(gridWidth / columnCount)}
                                                 height={window.innerHeight - (showSearchInput ? 150 : 80)}
-                                                rowCount={Math.ceil(usersProperties.length / columnCount)}
+                                                rowCount={Math.ceil(properties.length / columnCount)}
                                                 rowHeight={(ItemSize / 100) * 106}
                                                 width={(gridWidth / 100) * 101.5}
-                                                itemData={usersProperties}
+                                                itemData={properties}
                                                 style={{ paddingBottom: "100px" }}
                                                 onScroll={({ scrollTop }) => {
                                                     const newRow = Math.floor(scrollTop / ((ItemSize / 100) * 106));
@@ -248,12 +250,12 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                                         }
                                     </div>
                                     <div
-                                        className={`property-details-slide ${isListViewSliderVisible ? "show" : ""}`}
+                                        className={`property-details-slide ${tranogasyList.isListViewSliderVisible ? "show" : ""}`}
                                         style={{
                                             position: "fixed",
                                             left: "50%",
                                             bottom: 0,
-                                            transform: isListViewSliderVisible
+                                            transform: tranogasyList.isListViewSliderVisible
                                                 ? "translate(-50%, 0)"
                                                 : "translate(-50%, 100%)",
                                             width: "100%",
@@ -264,7 +266,6 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                                             boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
                                             transition: "transform 0.5s ease",
                                             boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
-                                            zIndex: 9999,
                                         }}
                                     >
                                         {/* mini navbar for the lose button to hide the sliding div */}
@@ -294,10 +295,10 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                                             />
                                         </div>
                                         {/* Close button to hide the sliding div */}
-                                        {selectedProperty && !tranogasyMap.formFilter && isListViewSliderVisible && (
+                                        {tranogasyList.selectedProperty && !tranogasyMap.formFilter && tranogasyList.isListViewSliderVisible && (
                                             <PropertyDetailsPage
-                                                key={selectedProperty._id}
-                                                fastPreviewProperty={selectedProperty}
+                                                key={tranogasyList.selectedProperty._id}
+                                                fastPreviewProperty={tranogasyList.selectedProperty}
                                                 handleCloseSlideClick={handleCloseSlideClick}
                                             />
                                         )}
@@ -317,7 +318,7 @@ const TranogasyList = ({ payload, route, setListViewMode, isListViewSliderVisibl
                     </div>
                 </div>
             </div>
-            {!isListViewSliderVisible &&
+            {!tranogasyList.isListViewSliderVisible &&
                 <div
                     className="fixed-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2"
                     style={{

@@ -526,7 +526,7 @@ export const {
 //tranogasy map 
 const tranogasyMapInitialState = {
   formFilter: false,
-  activeFiltersCount: 0,
+  activeFiltersCount: 0,  
   selectedProperty: null,
   previousCenter: null,
   previousSelectedPlace: null,
@@ -557,6 +557,34 @@ export const {
   setTranogasyMapField,
   resetTranogasyMap
 } = tranogasyMapSlice.actions;
+
+
+//tranogasy List 
+const tranogasyListInitialState = {
+  selectedProperty: null,
+  isListViewSliderVisible: false,
+};
+
+const tranogasyListSlice = createSlice({
+  name: "tranogasyList",
+  initialState: tranogasyListInitialState,
+  reducers: {
+    setTranogasyListState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setTranogasyListField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetTranogasyList: () => tranogasyListInitialState,
+  },
+});
+
+export const {
+  setTranogasyListState,
+  setTranogasyListField,
+  resetTranogasyList
+} = tranogasyListSlice.actions;
 
 //search results
 const searchResultsSlice = createSlice({
@@ -707,6 +735,7 @@ export const store = configureStore({
     searchResults: searchResultsSlice.reducer,
     searchForm: searchFormSlice.reducer,
     tranogasyMap: tranogasyMapSlice.reducer,
+    tranogasyList: tranogasyListSlice.reducer,
     quarter: quarterSlice.reducer,
     payments: paymentSlice.reducer,
     plans: planSlice.reducer,

@@ -11,7 +11,7 @@ import TranogasyMapSkeleton from "../components/skeletons/TranogasyMapSkeleton";
 import Circle from "../components/Circle";
 import ResultsDisplayModeCard from "../components/ResultsDisplayModeCard";
 
-import { setReduxFormFilter, resetSearchForm, resetSearchResults, resetTranogasyMap, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
+import { setReduxFormFilter, resetSearchForm, resetSearchResults, resetTranogasyMap, resetTranogasyList, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { useImage } from "../hooks/useImage";
@@ -55,6 +55,7 @@ export default function TranogasyMap() {
       dispatch(resetSearchResults());
       dispatch(resetSearchForm());
       dispatch(resetTranogasyMap());
+      dispatch(resetTranogasyList());
     };
     // Call the cleanup function when the component unmounts
     return cleanupFunction;
@@ -74,13 +75,12 @@ function MyMap() {
   const searchForm = useSelector((state) => state.searchForm);
   const geolocation = useSelector((state) => state.geolocation);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
+  const tranogasyList = useSelector((state) => state.tranogasyList);
   const selectedProperty = tranogasyMap.selectedProperty;
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
   const [mapZoomLevel, setMapZoomLevel] = useState(null);
   const [showMapLoader, setShowMapLoader] = useState(true);
   const [initialCenter, setInitialCenter] = useState(false);
-
-  const [isListViewSliderVisible, setIsListViewSliderVisible] = useState(false);
 
   const [rawSearchResults, setRawSearchResults] = useState(null);
 
@@ -603,7 +603,9 @@ function MyMap() {
         </>
       }
       {/* Filter info box */}
-      {!showMapLoader && !isListViewSliderVisible && <FilterInfoBox mode={titokMode} />}
+      {!showMapLoader && !tranogasyList.isListViewSliderVisible && 
+      <FilterInfoBox mode={titokMode} />
+      }
       {titokMode &&
         <TranogasyFeed
           payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
@@ -616,8 +618,6 @@ function MyMap() {
           payload={(searchResults && searchResults.length > 0) ? searchResults : properties}
           route={"searchResult"}
           setListViewMode={setListViewMode}
-          setIsListViewSliderVisible={setIsListViewSliderVisible}
-          isListViewSliderVisible={isListViewSliderVisible}
         />
       }
 
