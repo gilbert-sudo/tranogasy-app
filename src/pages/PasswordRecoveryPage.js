@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setTopNavbar } from "../redux/redux";
 import { useAccountRecovery } from "../hooks/useAccountRecovery";
-import { useImage } from "../hooks/useImage";
 import { MdArrowBackIos } from "react-icons/md";
 
 import Swal from "sweetalert2";
@@ -12,7 +11,6 @@ import PhoneNumberInput from "../components/PhoneNumberInput";
 const PasswordRecoveryPage = () => {
   const [match, params] = useRoute("/password-recovery/:phoneNumber");
   const [, setLocation] = useLocation("");
-  const { mgFlag } = useImage();
 
   const [phoneNumber, setPhoneNumber] = useState(
     match ? params.phoneNumber : ""
@@ -29,7 +27,7 @@ const PasswordRecoveryPage = () => {
       ""
     );
     setPhoneNumber(numericValue);
-  }; 
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,27 +97,7 @@ const PasswordRecoveryPage = () => {
               <div className="panel-body p-3">
                 <form action="#" onSubmit={handleSubmit}>
                   <div className="form-group py-2">
-                    <div className="input-field">
-                      <span
-                        className="far p-2"
-                        style={{ minWidth: "max-content" }}
-                      >
-                        <div className="d-flex align-items-center justify-content-centre">
-                        <img
-                            alt="Madagascar"
-                            style={{
-                              objectFit: "cover",
-                              width: "20px",
-                              height: "20px",
-                              borderRadius: "50%"
-                            }}
-                            src={mgFlag()}
-                          />
-                          <div>&nbsp; +261</div>
-                        </div>
-                      </span>
-                      <PhoneNumberInput value={phoneNumber} onChange={handlePhoneNumberInput} />
-                    </div>
+                    <PhoneNumberInput value={phoneNumber} onChange={handlePhoneNumberInput} />
                   </div>
                   <button
                     type="submit"

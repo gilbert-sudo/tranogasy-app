@@ -41,7 +41,7 @@ const NotLogedIn = () => {
               fontSize: "clamp(1.3rem, 2vw, 1.6rem)",
             }}
           >
-            Tongasoa
+            Bienvenue sur TranoGasy !
           </h3>
           <p
             style={{

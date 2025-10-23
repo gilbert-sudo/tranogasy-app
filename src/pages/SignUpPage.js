@@ -121,27 +121,7 @@ const SignUpPage = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <div className="input-field">
-                      <span
-                        className="far p-2"
-                        style={{ minWidth: "max-content" }}
-                      >
-                        <div className="d-flex align-items-center justify-content-centre">
-                          <img
-                            alt="Madagascar"
-                            style={{
-                              objectFit: "cover",
-                              width: "20px",
-                              height: "20px",
-                              borderRadius: "50%"
-                            }}
-                            src={mgFlag()}
-                          />
-                          <div>&nbsp; +261</div>
-                        </div>
-                      </span>
                       <PhoneNumberInput value={phone} onChange={handlePhoneNumberInput} />
-                    </div>
                   </div>
                   <div className="form-group">
                     <div className="input-field">
