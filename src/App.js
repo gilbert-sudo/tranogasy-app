@@ -376,7 +376,7 @@ function App() {
         <SkeletonTheme>
           <Router hook={useHashLocation}>
             <div className="App">
-              {loader && topNavbar && <Navbar />}
+              {loader && topNavbar && true &&  <Navbar />}
               <div style={{ display: "none" }}>
                 <Darkreader
                   defaultDarken={isDarkMode}

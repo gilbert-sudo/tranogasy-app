@@ -484,7 +484,9 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             }}
             onClick={() => {
               setIsSlideVisible(true);
-              searchBtnElement.style.display = 'none';
+              if (searchBtnElement) {
+                searchBtnElement.style.display = 'none';
+              }
             }}
           >
             Voir détails
@@ -519,7 +521,9 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           }}
           onClick={() => {
             setIsSlideVisible(true)
-            searchBtnElement.style.display = 'none';
+            if (searchBtnElement) {
+              searchBtnElement.style.display = 'none';
+            }
           }}
         >
           {property.title}
