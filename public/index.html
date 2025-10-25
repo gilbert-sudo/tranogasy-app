@@ -132,9 +132,12 @@
         const root = document.getElementById("root");
         if (root && root.children.length > 0) {
           const footer = document.getElementById("footer");
-          if (footer) {
-            footer.style.display = "none";
-          }
+               // Hide the loader
+      if (footer) footer.style.display = "none";
+
+      // Change background to white
+      document.body.style.backgroundImage = "none";
+      document.body.style.backgroundColor = "#ffffff";
           clearInterval(checkRootContent); // Stop checking once the root is populated
         }
       }, 100); // Check every 100ms
