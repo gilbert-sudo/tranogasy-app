@@ -11,10 +11,11 @@ import TranogasyMapSkeleton from "../components/skeletons/TranogasyMapSkeleton";
 import Circle from "../components/Circle";
 import ResultsDisplayModeCard from "../components/ResultsDisplayModeCard";
 
-import { setReduxFormFilter, resetSearchForm, resetSearchResults, resetTranogasyMap, resetTranogasyList, setTranogasyMapField, setUserCurrentPosition } from "../redux/redux";
+import { setReduxFormFilter, resetSearchForm, resetSearchResults, resetTranogasyMap, resetTranogasyList, setTranogasyMapField, setTranogasyFeedField, setTranogasyListField, setUserCurrentPosition } from "../redux/redux";
 import { useProperty } from "../hooks/useProperty";
 import { useMap as useLocalMapHook } from "../hooks/useMap";
 import { useImage } from "../hooks/useImage";
+import usePreventGoBack from "../hooks/usePreventGoBack";
 import { HashLoader } from "react-spinners";
 import {
   Map,
@@ -75,6 +76,7 @@ function MyMap() {
   const searchForm = useSelector((state) => state.searchForm);
   const geolocation = useSelector((state) => state.geolocation);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
+  const tranogasyFeed = useSelector((state) => state.tranogasyFeed);
   const tranogasyList = useSelector((state) => state.tranogasyList);
   const selectedProperty = tranogasyMap.selectedProperty;
   const [center, setCenter] = useState(geolocation.userCurrentPosition);
@@ -399,6 +401,18 @@ function MyMap() {
     formFilter ? setIsSlideVisible(true) : setIsSlideVisible(false);
   }, [tranogasyMap.formFilter]);
 
+  usePreventGoBack((isSliderVisible || tranogasyList.isListViewSliderVisible || tranogasyFeed.isFeedSliderVisible), () => {
+    if (isSliderVisible) {
+      handleCloseSlideClick();
+    }
+    if (tranogasyFeed.isFeedSliderVisible) {
+      dispatch(setTranogasyFeedField({ key: "isFeedSliderVisible", value: false }));
+    }
+    if (tranogasyList.isListViewSliderVisible) {
+      dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: false }));
+    }
+  });
+
   useEffect(() => {
     // console.log("search form redux state", searchForm);
     if (searchForm.address) {
@@ -603,7 +617,7 @@ function MyMap() {
         </>
       }
       {/* Filter info box */}
-      {!showMapLoader && !tranogasyList.isListViewSliderVisible && 
+      {!showMapLoader && !tranogasyList.isListViewSliderVisible && !tranogasyFeed.isFeedSliderVisible &&
       <FilterInfoBox mode={titokMode} />
       }
       {titokMode &&

@@ -558,8 +558,35 @@ export const {
   resetTranogasyMap
 } = tranogasyMapSlice.actions;
 
+//tranogasy Feed 
+const tranogasyFeedInitialState = {
+  selectedProperty: null,
+  isFeedSliderVisible: false,
+};
 
-//tranogasy List 
+const tranogasyFeedSlice = createSlice({
+  name: "tranogasyFeed",
+  initialState: tranogasyFeedInitialState,
+  reducers: {
+    setTranogasyFeedState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setTranogasyFeedField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetTranogasyFeed: () => tranogasyFeedInitialState,
+  },
+});
+
+export const {
+  setTranogasyFeedState,
+  setTranogasyFeedField,
+  resetTranogasyFeed
+} = tranogasyFeedSlice.actions;
+
+
+//tranogasy 
 const tranogasyListInitialState = {
   selectedProperty: null,
   isListViewSliderVisible: false,
@@ -735,6 +762,7 @@ export const store = configureStore({
     searchResults: searchResultsSlice.reducer,
     searchForm: searchFormSlice.reducer,
     tranogasyMap: tranogasyMapSlice.reducer,
+    tranogasyFeed: tranogasyFeedSlice.reducer,
     tranogasyList: tranogasyListSlice.reducer,
     quarter: quarterSlice.reducer,
     payments: paymentSlice.reducer,

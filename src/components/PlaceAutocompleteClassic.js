@@ -25,6 +25,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const activeFiltersCount = useSelector((state) => state.tranogasyMap.activeFiltersCount || 0);
   const searchForm = useSelector((state) => state.searchForm);
+  const tranogasyFeed = useSelector((state) => state.tranogasyFeed);
 
   useEffect(() => {
     if (location.startsWith("/tranogasyMap")) {
@@ -183,7 +184,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
         )}
       </div>
 
-      {isInTranogasyMap && (
+      {isInTranogasyMap && !tranogasyFeed.isFeedSliderVisible && (
         <div className="d-flex" style={{ gap: "5px", position: "relative" }}>
           {/* Search-filter button with spotlight */}
           <div className="search-filter-btn" style={{ position: "relative", display: "inline-block" }}>

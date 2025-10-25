@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation } from "wouter";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTranogasyFeedField } from "../redux/redux";
 import Linkify from "linkify-react";
 
 import TikTokDescription from "./TikTokDescription";
@@ -22,7 +23,6 @@ import {
   Phone,
   Forward,
   Plus,
-  SendHorizontal,
   ChevronLeft as LeftArrow,
   ChevronRight as RightArrow
 } from "lucide-react";
@@ -61,20 +61,22 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
 
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
   const { shareProperty } = useProperty();
+  const dispatch = useDispatch();
   const { featureUnderConstructionPopup } = usePopup();
   const [location, setLocation] = useLocation();
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
   const [play] = useSound("sounds/Like Sound Effect.mp3");
   const [isliked, setIsliked] = useState(false);
+
   const user = useSelector((state) => state.user);
+  const tranogasyFeed = useSelector((state) => state.tranogasyFeed);
 
   // slider state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [isInSearchPage, setIsInSearchPage] = useState(false);
-  const [isSliderVisible, setIsSlideVisible] = useState(false);
 
   const [lastScrollLeft, setLastScrollLeft] = useState(0);
 
@@ -83,9 +85,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
 
-
   const scrollRef = useRef(null);
-  const searchBtnElement = document.querySelector('.search-filter-btn');
 
   const propertyDataString = JSON.stringify(property);
 
@@ -93,6 +93,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
     target: '_blank',
     rel: 'noopener noreferrer'
   };
+
+  function setIsSlideVisible(state) {
+    dispatch(setTranogasyFeedField({ key: "isFeedSliderVisible", value: state }));
+  }
 
   // Like handler
   const handleLike = async (e) => {
@@ -199,12 +203,12 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
 
   // 👇 Close map whenever this property is no longer active
   useEffect(() => {
-    if (isSliderVisible || showMap || showContact) {
+    if (tranogasyFeed.isFeedSliderVisible || showMap || showContact) {
       lockScroll();
     } else {
       unlockScroll();
     }
-  }, [isSliderVisible, showMap, showContact]);
+  }, [tranogasyFeed.isFeedSliderVisible, showMap, showContact]);
 
   useEffect(() => {
     (location.startsWith("/tranogasyMap")) ? setIsInSearchPage(true) : setIsInSearchPage(false);
@@ -215,7 +219,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       className="tikTokStyleListing"
       style={{
         width: "100%",
-        height: (isSliderVisible || showMap || showContact) ? "98dvh" : "100dvh",
+        height: (tranogasyFeed.isFeedSliderVisible || showMap || showContact) ? "98dvh" : "100dvh",
         maxWidth: "1025px",
         margin: "0 auto",
         position: "relative",
@@ -484,9 +488,6 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             }}
             onClick={() => {
               setIsSlideVisible(true);
-              if (searchBtnElement) {
-                searchBtnElement.style.display = 'none';
-              }
             }}
           >
             Voir détails
@@ -521,9 +522,6 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           }}
           onClick={() => {
             setIsSlideVisible(true)
-            if (searchBtnElement) {
-              searchBtnElement.style.display = 'none';
-            }
           }}
         >
           {property.title}
@@ -688,13 +686,13 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       }
       <div
         ref={sliderRef}
-        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+        className={`property-details-slide ${tranogasyFeed.isFeedSliderVisible ? "show" : ""}`}
         style={{
           position: "fixed",
           left: "50%",
           bottom: 0,
           paddingBottom: "80px",
-          transform: isSliderVisible
+          transform: tranogasyFeed.isFeedSliderVisible
             ? `translate(-50%, ${Math.min(0, currentY)}px)`
             : "translate(-50%, 100%)",
           width: "100%",
@@ -734,9 +732,6 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           // If dragged more than 100px down, close the slider
           if (currentY > 100) {
             setIsSlideVisible(false);
-            if (searchBtnElement) {
-              searchBtnElement.style.display = '';
-            }
           }
 
           // Reset position
@@ -790,14 +785,11 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             }}
             onClick={() => {
               setIsSlideVisible(false);
-              if (searchBtnElement) {
-                searchBtnElement.style.display = '';
-              }
             }}
           />
         </div>
         {/* Close button to hide the sliding div */}
-        {isSliderVisible && (
+        {tranogasyFeed.isFeedSliderVisible && (
           <div className="container">
             <div className="row">
               <div className="col-lg-12 pb-1 pt-4">

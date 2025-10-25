@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTranogasyFeedField } from "../redux/redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Virtual, Mousewheel, Keyboard, FreeMode } from 'swiper/modules';
 import TranogasyFeedSkeleton from "../components/skeletons/TranogasyFeedSkeleton";
@@ -7,6 +8,8 @@ import TikTokStyleListing from "../components/TikTokStyleListing";
 import CardDetails from "../components/CardDetails";
 import PlaceAutocompleteClassic from '../components/PlaceAutocompleteClassic';
 import Linkify from 'linkify-react';
+
+import usePreventGoBack from "../hooks/usePreventGoBack";
 
 // Import icons
 import { MdOutlineLiving, MdBalcony, MdLandscape, MdOutlineFiberSmartRecord } from "react-icons/md";
@@ -66,8 +69,12 @@ const GenerateFeaturebox = ({ icon, label }) => (
 const TranogasyFeed = ({ payload, route, setTitokMode }) => {
   const reduxProperties = useSelector((state) => state.properties);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
+  const tranogasyFeed = useSelector((state) => state.tranogasyFeed);
   const properties = payload ? payload : reduxProperties;
+
   const swiperRef = useRef(null);
+  const dispatch = useDispatch();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [scrollLocked, setScrollLocked] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -144,6 +151,21 @@ const TranogasyFeed = ({ payload, route, setTitokMode }) => {
     goToSlide(0);
   }, [payload]);
 
+  useEffect(() => {
+    // Cleanup function to remove all pac-container elements when component unmounts
+    const cleanupFunction = () => {
+      console.log("Component unmount — reset states");
+      dispatch(setTranogasyFeedField({ key: "isFeedSliderVisible", value: false }));
+    };
+    // Call the cleanup function when the component unmounts
+    return cleanupFunction;
+  }, []);
+
+  usePreventGoBack((tranogasyFeed.isFeedSliderVisible), () => {
+    if (tranogasyFeed.isFeedSliderVisible) {
+      dispatch(setTranogasyFeedField({ key: "isFeedSliderVisible", value: false }));
+    }
+  });
 
   let currentProperty;
 
