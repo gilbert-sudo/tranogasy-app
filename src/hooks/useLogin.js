@@ -38,6 +38,7 @@ export const useLogin = () => {
       }
     });
   };
+  
   const login = async (phone, passwordToTest) => {
     setIsLoading(true);
     setError(null);
@@ -56,7 +57,7 @@ export const useLogin = () => {
 
     const phoneNumber = phone.trim().replace(/\s/g, "");
     const password = passwordToTest.trim().replace(/\s/g, "");
-    const phoneNumberRegex = /^(03[2,3,4,8])(\d{7})$|^(3[2,3,4,8])(\d{7})$/;
+    const phoneNumberRegex = /^(03[2,3,4,7,8])(\d{7})$|^(3[2,3,4,7,8])(\d{7})$/;
     if (phoneNumberRegex.test(phoneNumber)) {
       if (phoneNumber.length === 10 || phoneNumber.length === 9) {
         try {

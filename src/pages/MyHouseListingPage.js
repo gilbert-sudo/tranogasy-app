@@ -107,6 +107,11 @@ const MyHouseListingPage = () => {
 
       setTodayCount(count);
     }
+
+    if (usersProperties && usersProperties?.length === 0) {
+      setLoading(false);
+      setLocation("/mylisting");
+    }
   }, [usersProperties]);
 
   // Load user properties

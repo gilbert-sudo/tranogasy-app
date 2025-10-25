@@ -61,7 +61,7 @@ export const useSignup = () => {
     const password = inputedPassword.trim().replace(/\s/g, "");
     const confirmPassword = inputedConfirmPassword.trim().replace(/\s/g, "");
     const email = inputedEmail.trim().replace(/\s/g, "");
-    const phoneNumberRegex = /^(03[2,3,4,8])(\d{7})$|^(3[2,3,4,8])(\d{7})$/;
+    const phoneNumberRegex = /^(03[2,3,4,7,8])(\d{7})$|^(3[2,3,4,7,8])(\d{7})$/;
     const phoneNumber = (phone.startsWith("0")) ? phone : `0${phone}`;
 
     if (username.length <= 40) {

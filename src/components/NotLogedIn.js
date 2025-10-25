@@ -2,7 +2,6 @@ import { useLocation, Link } from "wouter";
 import { useImage } from "../hooks/useImage";
 
 const NotLogedIn = () => {
-  const [location, setLocation] = useLocation();
   const { notLogedInImg } = useImage();
 
   return (
@@ -61,7 +60,7 @@ const NotLogedIn = () => {
           style={{
             width: "100%",
             height: "auto",
-            maxHeight: "45vh",
+            maxHeight: "45dvh",
             borderRadius: "15px",
             objectFit: "contain",
             margin: "1.5rem 0",
@@ -77,34 +76,26 @@ const NotLogedIn = () => {
         >
           <Link
             to="/login"
-            className="btn"
+            className="btn btn-outline-dark"
             style={{
-              background: "#fff",
-              border: "2px solid #242424",
               borderRadius: "9999px",
               padding: "15px 0",
               fontSize: "clamp(0.9rem, 1.5vw, 1rem)",
               fontFamily:
                 '"Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif',
               fontWeight: 600,
-              color: "#242424",
               textDecoration: "none",
               transition: "all 0.2s ease",
             }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.background = "#f2f2f2")
-            }
-            onMouseOut={(e) => (e.currentTarget.style.background = "#fff")}
           >
             Se connecter
           </Link>
-
           <Link
             to="/signup"
             className="btn"
             style={{
               background: "#7cbd1e",
-              border: "2px solid #242424",
+              border: "2px solid #7cbd1e",
               color: "#fff",
               borderRadius: "9999px",
               padding: "15px 0",

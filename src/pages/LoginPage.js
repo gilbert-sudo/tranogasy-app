@@ -3,7 +3,7 @@ import PhoneNumberInput from "../components/PhoneNumberInput";
 
 import { useLogin } from "../hooks/useLogin";
 
-import { FaLock, FaEyeSlash, FaEye } from "react-icons/fa";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { Key } from "lucide-react";
 
 import { Link } from "wouter";
@@ -134,13 +134,14 @@ const LoginPage = () => {
           style={{
             fontSize: "2.5rem",
             color: "#333",
-            marginTop: "150px",
+            marginTop: "100px",
             marginBottom: "40px",
             textAlign: "left",
             width: "100%",
+            fontWeight: "700",
           }}
         >
-          Chez toi, c’est ici sur TranoGasy !
+          Bon retour chez TranoGasy !
         </h1>
 
         <form action="#" onSubmit={handleSubmit}>
@@ -274,7 +275,6 @@ const LoginPage = () => {
               textDecoration: "none",
               color: "#7cbd1e",
               fontWeight: "bold",
-              borderBottom: "1px solid #7cbd1e",
               paddingBottom: "2px",
               fontSize: "0.8rem",
             }}
@@ -286,7 +286,6 @@ const LoginPage = () => {
             style={{
               textDecoration: "none",
               fontWeight: "bold",
-              borderBottom: "1px solid #000",
               paddingBottom: "2px",
               fontSize: "0.8rem",
               color: "#000",

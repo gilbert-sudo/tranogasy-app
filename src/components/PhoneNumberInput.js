@@ -12,7 +12,7 @@ const PhoneNumberInput = ({ value, onChange }) => {
 
   return (
     <div style={{ position: 'relative', width: '100%' }}>
-      {isFocused &&
+      {(isFocused || value) &&
         <span
           className="far p-2"
           style={{ minWidth: "max-content", position: 'absolute', transform: 'translateY(20%)' }}
@@ -33,7 +33,7 @@ const PhoneNumberInput = ({ value, onChange }) => {
           </div>
         </span>
       }
-      {!isFocused &&
+      {!isFocused && !value &&
           <span
             style={{
               position: 'absolute',
@@ -50,7 +50,7 @@ const PhoneNumberInput = ({ value, onChange }) => {
       }
       <InputMask
         mask="99 99 999 99"
-        placeholder={isFocused ? "00 00 000 00" : "Votre numéro de téléphone"}
+        placeholder={(isFocused || value) ? "00 00 000 00" : "Votre numéro de téléphone"}
         value={value}
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
@@ -62,7 +62,7 @@ const PhoneNumberInput = ({ value, onChange }) => {
             {...inputProps}
             style={{
               width: '100%',
-              padding: isFocused ? '15px 20px 15px 87px' : '15px 20px 15px 50px',
+              padding: (isFocused || value) ? '15px 20px 15px 87px' : '15px 20px 15px 50px',
               marginBottom: '20px',
               border: 'none',
               borderRadius: '9999px',

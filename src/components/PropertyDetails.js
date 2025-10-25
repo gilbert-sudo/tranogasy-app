@@ -253,8 +253,8 @@ function PropertyDetails({ property, route }) {
                 }}
               >
                 <img
-                  src={property.owner.avatar || userProfile}
-                  alt={property.owner.username}
+                  src={property.owner.role === "admin" ? (property?.sources?.avatar || "images/Gilbert AI dark square.png") : property.owner.avatar || userProfile}
+                  alt={property.owner.role === "admin" ? (property?.sources?.username || "Gilbert AI") : property.owner.username}
                   style={{
                     width: "50px",
                     height: "50px",
@@ -265,7 +265,7 @@ function PropertyDetails({ property, route }) {
                 />
                 <div>
                   <p style={{ margin: 0, fontSize: "15px", color: "#222" }}>
-                    {property.owner.username}
+                    {property.owner.role === "admin" ? (property?.sources?.username || "Gilbert AI") : property.owner.username}
                   </p>
                   <small>
                     Propriétaire actuel

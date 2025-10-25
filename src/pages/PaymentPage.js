@@ -77,8 +77,7 @@ const PaymentPage = () => {
     };
 
     const phone = phoneNumber.trim().replace(/\s/g, "");
-    const phoneNumberRegex = /^(03[2,3,4,8])|^(3[2,3,4,8])/;
-
+    const phoneNumberRegex = /^(?:03[2,3,4,7,8]|3[2,3,4,7,8])\d{7}$/;
     if (!phone) {
       setError("Veuillez saisir un numéro !");
     } else if (!phoneNumberRegex.test(phone)) {

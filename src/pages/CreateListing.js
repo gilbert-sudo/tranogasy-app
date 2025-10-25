@@ -369,6 +369,7 @@ const CreateListing = () => {
       console.log({ original: newProperty, checkingResult });
     } else {
       addProperty(newProperty);
+      console.log("creating the property");
     };
   };
 
