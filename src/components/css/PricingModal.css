@@ -1,0 +1,354 @@
+/* ===== Backdrop ===== */
+.pricing-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+/* ===== Modal Container ===== */
+.pricing-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  width: 95%;
+  max-width: 500px;
+  max-height: 90vh;
+  border-radius: 25px;
+  padding: 1.5rem;
+  z-index: 2000;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  animation: modalPopIn 0.3s ease forwards;
+  font-family: "Poppins", sans-serif;
+}
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ===== Modal Header ===== */
+.pricing-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.pricing-modal-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.pricing-modal-close-icon {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #666;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.pricing-modal-close-icon:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+*
+/* ===== Loading Overlay ===== */
+.pricing-modal-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+}
+
+.pricing-modal-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #9b5de5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pricing-modal-loading-overlay p {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+
+/* ===== Container ===== */
+.pricing-modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+/* ===== Card ===== */
+.pricing-modal-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pricing-modal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* ===== Card Header ===== */
+.pricing-modal-card .pricing-modal-header {
+  color: white;
+  padding: 1.3rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.pricing-modal-plan-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pricing-modal-plan-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pricing-modal-plan-price {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.pricing-modal-arrow-icon {
+  display: flex;
+  align-items: center;
+}
+
+.pricing-modal-arrow {
+  font-size: 1.6rem;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.pricing-modal-card.active .pricing-modal-arrow {
+  transform: rotate(180deg);
+}
+
+/* Gradient colors */
+.color-0 {
+  background: linear-gradient(135deg, #9b5de5, #f15bb5);
+}
+
+.color-1 {
+  background: linear-gradient(135deg, #00bbf9, #0077b6);
+}
+
+.color-2 {
+  background: linear-gradient(135deg, #ff9500, #ff5e00);
+}
+
+/* ===== Card Body ===== */
+.pricing-modal-body {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 1.5rem;
+  background: #fff;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+.pricing-modal-card.active .pricing-modal-body,
+.pricing-modal-body.open {
+  height: 100%;
+  max-height: 260px;
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.pricing-modal-body p {
+  color: #555;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* ===== Button ===== */
+.pricing-modal-buy-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  position: relative;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pricing-modal-buy-btn:hover:not(:disabled) {
+  background: #444;
+}
+
+.pricing-modal-buy-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pricing-modal-btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+}
+
+.pricing-modal-btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.pricing-modal-close-btn {
+  background: #666;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.pricing-modal-close-btn:hover:not(:disabled) {
+  background: #555;
+}
+
+.pricing-modal-close-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== Footer ===== */
+.pricing-modal-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+}
+
+.pricing-modal-back-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: background 0.3s ease;
+}
+
+.pricing-modal-back-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.pricing-modal-back-btn svg {
+  margin-right: 5px;
+  font-size: 1rem;
+}
+
+/* ===== Desktop view ===== */
+@media (min-width: 768px) {
+  .pricing-modal {
+    max-width: 600px;
+    padding: 2rem;
+  }
+
+  .pricing-modal-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .pricing-modal-card {
+    width: 250px;
+    cursor: default;
+  }
+
+  .pricing-modal-body {
+    max-height: none;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .pricing-modal-arrow-icon {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-modal {
+    width: 90%;
+    padding: 1.2rem;
+  }
+  
+  .pricing-modal-title {
+    font-size: 1.4rem;
+  }
+}

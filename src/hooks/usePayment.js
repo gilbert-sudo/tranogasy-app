@@ -286,7 +286,7 @@ export const usePayment = () => {
 
             dispatch(setUser(subResponse.user));
 
-            window.history.back();
+            // window.history.back();
           } else {
             setIsLoading(false);
             Swal.fire({

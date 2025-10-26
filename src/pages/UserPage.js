@@ -6,7 +6,7 @@ import { TbHelp } from "react-icons/tb";
 import { RiVipCrown2Fill, RiPauseCircleFill } from "react-icons/ri";
 import { MdTranslate } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
-import { setTopNavbar } from "../redux/redux";
+import { setTopNavbar, setPricingField } from "../redux/redux";
 
 import "./css/accountbalance.css";
 import "./css/DarkModeSwitch.css";
@@ -14,6 +14,7 @@ import "./css/DarkModeSwitch.css";
 import { useLogout } from "../hooks/useLogout";
 import { useTimer } from "../hooks/useTimer";
 import { usePopup } from "../hooks/usePopup";
+
 
 //import user photo profil
 import userProfile from "../img/user-avatar.png";
@@ -31,6 +32,7 @@ const UserPage = () => {
   console.log(!timer.timer || !user.leftTime);
 
   const plans = useSelector((state) => state.plans);
+  
   const payments = useSelector((state) => state.payments);
 
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
@@ -48,7 +50,7 @@ const UserPage = () => {
     if (payments.filter((payment) => (payment.status === "refused" || payment.status === "redone")).length > 0) {
       unpaidBillPopup();
     } else {
-      if (!timer.timer && !user.leftTime) setLocation("/pricing");
+      if (!timer.timer && !user.leftTime) dispatch(setPricingField({ key: "pricingModal", value: true }));
     }
   }
 

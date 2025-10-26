@@ -1,5 +1,7 @@
 import { useLocation } from "wouter";
 import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { setPricingField } from "../redux/redux";
 
 import { useImage } from "./useImage";
 
@@ -7,6 +9,7 @@ export const useSubscription = () => {
 
   const [, setLocation] = useLocation();
   const { notPremiumImg } = useImage();
+  const dispatch = useDispatch();
 
   const subscribeUser = async (userId, planValidity) => {
     try {
@@ -80,7 +83,8 @@ export const useSubscription = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setLocation("/pricing");
+        dispatch(setPricingField({ key: "pricingModal", value: true }));
+        Swal.close();
       }
     });
   }

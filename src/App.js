@@ -51,6 +51,7 @@ import { useLoader } from "./hooks/useLoader";
 import Navbar from "./components/Navbar";
 import AutoSubscribe from "./components/AutoSubscribe";
 import BackButtonHandler from "./components/BackButtonHandler";
+import PricingModal from "./components/PricingModal";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -125,6 +126,7 @@ function App() {
   const usersProperties = useSelector((state) => state.usersProperties);
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const historyStack = useSelector((state) => state.historyStack.value);
+  const pricing = useSelector((state) => state.pricing);
 
   const { updateTimer, isExpired } = useTimer();
   const { findLocationsWithinDistance } = useMap();
@@ -372,11 +374,12 @@ function App() {
     <WonderPush options={{ webKey: 'ad242738aead9587c7ee3a981f65e2acabfa82bbe33620c0d14cf1ced5b0b5a1' }}>
       <AutoSubscribe />
       <BackButtonHandler />
+        {pricing.pricingModal && <PricingModal />}
       <div id="app-homepage" className="app">
         <SkeletonTheme>
           <Router hook={useHashLocation}>
             <div className="App">
-              {loader && topNavbar && true &&  <Navbar />}
+              {loader && topNavbar && true && <Navbar />}
               <div style={{ display: "none" }}>
                 <Darkreader
                   defaultDarken={isDarkMode}

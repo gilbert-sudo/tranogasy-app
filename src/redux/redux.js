@@ -738,6 +738,32 @@ const planSlice = createSlice({
 
 export const { setPlans } = planSlice.actions;
 
+//tranogasy pricing
+const pricingInitialState = {
+  pricingModal: false,
+};
+
+const pricingSlice = createSlice({
+  name: "pricing",
+  initialState: pricingInitialState,
+  reducers: {
+    setPricingState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setPricingField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetPricing: () => pricingInitialState,
+  },
+});
+
+export const {
+  setPricingState,
+  setPricingField,
+  resetPricing
+} = pricingSlice.actions;
+
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
@@ -767,5 +793,6 @@ export const store = configureStore({
     quarter: quarterSlice.reducer,
     payments: paymentSlice.reducer,
     plans: planSlice.reducer,
+    pricing: pricingSlice.reducer,
   },
 });
