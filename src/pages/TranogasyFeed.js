@@ -187,14 +187,14 @@ const TranogasyFeed = ({ payload, route, setTitokMode }) => {
 
     properties ?
       <div style={{
-        height: '97.9dvh',
+        height: '100dvh',
         backgroundColor: '#000',
         overflow: 'hidden',
         position: 'relative',
         zIndex: "auto"
       }}>
         {isSearchResult &&
-          <div className="position-absolute pt-4"
+          <div className="position-absolute pt-5"
             style={{
               zIndex: 2
             }}

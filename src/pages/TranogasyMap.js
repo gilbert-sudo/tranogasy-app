@@ -411,6 +411,9 @@ function MyMap() {
     if (tranogasyList.isListViewSliderVisible) {
       dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: false }));
     }
+
+    console.log("this is running against my will");
+    
   });
 
   useEffect(() => {
@@ -429,8 +432,8 @@ function MyMap() {
 
   return (
     <div
-      className={`position-relative ${(!(titokMode)) ? "pt-4" : ""}`}
-      style={{ height: "97.7dvh", width: "100%" }}
+      className={`position-relative ${(!(titokMode)) ? "pt-5" : ""}`}
+      style={{ height: "100dvh", width: "100%" }}
     >
       <div className="d-flex justify-content-center align-items-center places-container">
         <div className="places-input">

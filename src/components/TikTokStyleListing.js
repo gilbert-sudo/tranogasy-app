@@ -219,7 +219,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       className="tikTokStyleListing"
       style={{
         width: "100%",
-        height: (tranogasyFeed.isFeedSliderVisible || showMap || showContact) ? "98dvh" : "100dvh",
+        height: "100dvh",
         maxWidth: "1025px",
         margin: "0 auto",
         position: "relative",
@@ -238,7 +238,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       <div
         style={{
           position: "absolute",
-          top: 90,                          // margin top
+          top: 110,                          // margin top
           left: "50%",                      // center horizontally
           transform: "translateX(-50%)",
           zIndex: 20,
@@ -320,7 +320,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           onClick={prevImage}
           style={{
             position: "absolute",
-            top: "45%",
+            top: "40%",
             left: 10,
             transform: "translateY(-50%)",
             background: "rgba(0,0,0,0.5)",
@@ -341,7 +341,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           onClick={nextImage}
           style={{
             position: "absolute",
-            top: "45%",
+            top: "40%",
             right: 10,
             transform: "translateY(-50%)",
             background: "rgba(0,0,0,0.5)",
@@ -377,7 +377,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           onClick={() => window.history.back()}
           style={{
             position: "absolute",
-            top: 50,
+            top: 60,
             left: 5,
             zIndex: 2000,
             display: "flex",
@@ -396,7 +396,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
       <div
         style={{
           position: "absolute",
-          top: 58,
+          top: 70,
           right: 10,
           zIndex: 10,
           display: "flex",
@@ -696,7 +696,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             ? `translate(-50%, ${Math.min(0, currentY)}px)`
             : "translate(-50%, 100%)",
           width: "100%",
-          height: "95dvh",
+          height: "93dvh",
           overflowY: "auto",
           backgroundColor: "#fff",
           borderRadius: "30px 30px 0 0",
