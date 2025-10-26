@@ -22,7 +22,7 @@ const ExplorePage = () => {
 
 
   return (
-    <div className="home">
+    <div id="explorepage" className="home">
       <div className="site-section site-section-sm pb-0">
       <HomeSlider />
         <div className="container" id="prodisplay">

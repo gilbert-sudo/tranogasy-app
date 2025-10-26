@@ -129,16 +129,22 @@
     <script>
       // Check for children in the #root div
       const checkRootContent = setInterval(() => {
+        
         const root = document.getElementById("root");
         if (root && root.children.length > 0) {
           const footer = document.getElementById("footer");
-               // Hide the loader
-      if (footer) footer.style.display = "none";
+          const loaderDone = document.getElementById("explorepage");
+          const loaderDone2 = document.getElementById("propertyDetailsPage");
+          if (footer) footer.style.display = "none";
+          
+          if (loaderDone || loaderDone2) {
+          // Hide the loader
 
-      // Change background to white
-      document.body.style.backgroundImage = "none";
-      document.body.style.backgroundColor = "#ffffff";
+          // Change background to white
+          document.body.style.backgroundImage = "none";
+          document.body.style.backgroundColor = "#ffffff";
           clearInterval(checkRootContent); // Stop checking once the root is populated
+          }
         }
       }, 100); // Check every 100ms
     </script>

@@ -7,10 +7,12 @@ import { setSignUp, setLoader } from "../redux/redux";
 import { useLoader } from "../hooks/useLoader";
 import { useLogin } from "../hooks/useLogin";
 import { offlineLoader } from "../hooks/useOfflineLoader";
+import { useImage } from "../hooks/useImage";
 
 const PageLoader = () => {
   //redux
   const dispatch = useDispatch();
+  const { gilbertLogo } = useImage();
   const [location, setLocation] = useLocation();
   const [oneTimeTask, setOneTimeTask] = useState(false);
   const user = useSelector((state) => state.user);
@@ -84,8 +86,8 @@ const PageLoader = () => {
         }
       }
       if (topProperties) {
-        setLocation("/explore");
         dispatch(setLoader("done"));
+        setLocation("/explore");
       }
       const mapData = await loadMap();
       console.log("mapData", mapData);
@@ -100,14 +102,61 @@ const PageLoader = () => {
   // Render the main content
   return (
     <div>
-      <div className="logo-loader"></div>
-      <div className="page-loader mt-2"></div>
-      <div className="spinner-loader mt-5">
-        <div className="d-flex justify-content-center align-items-center">
-          <small className="mr-2" style={{ color: "#c59d45" }}>
-            Chargement
-          </small>{" "}
-          <HashLoader color="#c59d45" size={20} />
+      {/* Semi-transparent backdrop */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(255, 255, 255, 0.3)",
+          zIndex: 10,
+          cursor: "pointer",
+        }}
+      />
+      <div
+        className="page-loader"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute", /* Position the loader */
+          top: "50%", /* Center vertically */
+          left: "50%", /* Center horizontally */
+          transform: "translate(-50%, -50%)", /* Adjust for the loader's size */
+          textAlign: "center",
+          zIndex: 9999, /* Ensure it's above other content */
+        }}
+      >
+        <img 
+        src={gilbertLogo()} 
+        style={{
+          width:"110px"
+        }}
+        alt="gilbert-logo" 
+         />
+        <div
+          className="spinner-loader"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "white",
+            boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+            padding: "10px",
+            borderRadius: "9999px",
+            border: "4px solid #c59d45",
+          }}
+        >
+          <div className="d-flex justify-content-center align-items-center">
+            <small className="mr-2" style={{ color: "#805c0fff", fontWeight: "bold" }}>
+              ɮʏ ɢɨʟɮɛʀȶ
+            </small>{" "}
+            <HashLoader color="#c59d45" size={20} />
+          </div>
         </div>
       </div>
     </div>
