@@ -446,6 +446,23 @@ const CreateListing = () => {
     }
   }, [selectedCity]);
 
+  useEffect(() => {
+    const handlePopState = (event) => {
+      event.preventDefault();
+      console.log("Running custom back action");
+      // run custom back logic (e.g. close modal)
+      if (window.confirm("Voulez-vous vraiment quitter cette page ? Les modifications que vous avez apportées ne seront peut-être pas enregistrées.")) {
+        window.history.go(-2);
+      }
+    };
+    
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [true]);
 
   return (
     <div
@@ -1588,7 +1605,9 @@ const CreateListing = () => {
           >
             <nav className="d-flex justify-content-start navbar navbar-expand-lg navbar-light">
               <button
-                onClick={() => window.history.back()}
+                onClick={() => {
+                  window.history.back();
+                }}
                 style={{ fontSize: "15px" }}
                 className="text-capitalize font-weight-light btn btn-outline-dark border-0"
               >

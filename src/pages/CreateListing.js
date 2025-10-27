@@ -455,7 +455,7 @@ const CreateListing = () => {
         window.history.go(-2);
       }
     };
-    
+
     window.history.pushState(null, null, window.location.href);
     window.addEventListener("popstate", handlePopState);
 
@@ -470,8 +470,8 @@ const CreateListing = () => {
     >
       {user && user ? (
         <div className="create-listing mt-5 pt-3 position-relative">
-          <div className="site-section site-section-sm">
-            <form action="#" method="post" onSubmit={handleSubmit}>
+          <form action="#" method="post" onSubmit={handleSubmit}>
+            <div className="site-section site-section-sm">
               <div className="container" style={{ paddingBottom: "80px" }}>
                 <h6 className="font-weight-light text-uppercase mb-4">
                   Créer une annonce :
@@ -1576,39 +1576,33 @@ const CreateListing = () => {
                       )}
                     </div>
                   </div>
-
-
-                  <button
-                    type="submit"
-                    style={{ borderRadius: "20px", padding: "10px 20px", marginTop: "20px" }}
-                    className="btn btn-success btn-block shadow-sm"
-                    disabled={imageIsLoading}
-                  >
-                    {" "}
-                    {imageIsLoading
-                      ? "En attente des images ..."
-                      : "Créer l'annonce"}
-                  </button>
-                  {/* <p className="alert alert-success mt-3">
-                    <small>Some text success or error</small>
-                  </p> */}
                 </div>
               </div>
-            </form>
-          </div>
-          {/* bottom navbar */}
-          <div
-            class="fixed-bottom bg-white"
-            style={{
-              display: isSliderVisible ? "none" : ""
-            }}
-          >
-            <nav className="d-flex justify-content-start navbar navbar-expand-lg navbar-light">
+            </div>
+            {/* bottom navbar */}
+            <div
+              className="fixed-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2"
+              style={{
+                width: "96%",
+                maxWidth: "450px",
+                border: "1px solid rgba(0, 0, 0, 0.3)",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
+                borderRadius: "9999px",
+                //center horizontally
+                left: "50%",
+                transform: "translateX(-50%)",
+                marginBottom: "1dvh",
+                padding: "10px 20px",
+                zIndex: 1000
+              }}
+            >
+              {/* Go Back Button */}
               <button
+                type="button"
                 onClick={() => {
                   window.history.back();
                 }}
-                style={{ fontSize: "15px" }}
+                style={{ fontSize: "15px", borderRadius: "9999px", padding: "10px 20px" }}
                 className="text-capitalize font-weight-light btn btn-outline-dark border-0"
               >
                 <MdArrowBackIos
@@ -1616,9 +1610,21 @@ const CreateListing = () => {
                 />
                 Retour
               </button>
-            </nav>
-          </div>
-          {/* bottom navbar */}
+              <button
+                type="submit"
+                style={{ borderRadius: "9999px", padding: "15px 20px", overflowX: "hidden" }}
+                className="btn btn-success"
+                disabled={imageIsLoading}
+              >
+                {" "}
+                {imageIsLoading
+                  ? "En attente des images ..."
+                  : "Créer l'annonce"}
+              </button>
+            </div>
+            {/* bottom navbar */}
+          </form>
+
           {propertyExistsCard && !isSliderVisible &&
             <PropertyExistsCard
               handlePursueTheSubmit={handlePursueTheSubmit}

@@ -299,7 +299,7 @@ const MyHouseListingPage = () => {
               //center horizontally
               left: "50%",
               transform: "translateX(-50%)",
-              marginBottom: showSearchInput ? "86dvh" : "1.5dvh",
+              marginBottom: showSearchInput ? "86dvh" : "1dvh",
               padding: "10px 20px",
               zIndex: 1000
             }}

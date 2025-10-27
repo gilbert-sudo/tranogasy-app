@@ -154,7 +154,7 @@ const EditUsersProfilePage = () => {
 
   return (
     <form method="post" onSubmit={handleSubmit}>
-      <div className="container d-flex justify-content-center">
+      <div className="container d-flex justify-content-center pt-5">
         <div className="edit-user-card card px-4 py-2">
           <div className="form-group mb-4">
             <img
@@ -190,6 +190,9 @@ const EditUsersProfilePage = () => {
             </label>
             <input
               type="text"
+              style={{
+                borderRadius: "9999px"
+              }}
               maxLength={50}
               required="ON"
               className="form-control"
@@ -208,6 +211,9 @@ const EditUsersProfilePage = () => {
             </label>
             <textarea
               className="form-control"
+              style={{
+                borderRadius: "15px"
+              }}
               maxLength={500}
               rows="4"
               placeholder="Descrivez-vous..."
@@ -227,6 +233,9 @@ const EditUsersProfilePage = () => {
             </label>
             <input
               type="tel" // Use type="tel" to display numeric keyboard on mobile devices
+              style={{
+                borderRadius: "9999px"
+              }}
               maxLength={10} // Set maxLength to 10 to limit input to 10 characters
               pattern="[0-9]*" // Allow only numeric characters
               required
@@ -250,8 +259,12 @@ const EditUsersProfilePage = () => {
             <div className="d-flex position-relative">
               <input
                 type={showPassword ? "text" : "password"}
+                style={{
+                  borderRadius: "9999px"
+                }}
                 required={newPassword && newPassword.length > 0}
                 className="form-control"
+                placeholder="Votre mot de passe"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
               />
@@ -279,8 +292,12 @@ const EditUsersProfilePage = () => {
             <div className="d-flex position-relative">
               <input
                 type={showPassword ? "text" : "password"}
+                style={{
+                  borderRadius: "9999px"
+                }}
                 required={oldPassword && oldPassword.length > 0}
                 className="form-control"
+                placeholder="Créer un mot de passe"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
@@ -322,7 +339,7 @@ const EditUsersProfilePage = () => {
             type="submit"
             disabled={
               saveBtn ||
-              Object.values(errorMessages).some((message) => message !== "") || 
+              Object.values(errorMessages).some((message) => message !== "") ||
               imageIsLoading
             }
           >
