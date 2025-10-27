@@ -149,7 +149,7 @@ const PageLoader = () => {
           minWidth: "max-content",
 
           // Position at the bottom
-          bottom: "2px", // Adjust this value for desired distance from the bottom
+          bottom: "10px", // Adjust this value for desired distance from the bottom
 
           // Center horizontally
           left: "50%",

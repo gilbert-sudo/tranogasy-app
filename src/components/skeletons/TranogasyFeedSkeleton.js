@@ -1,4 +1,3 @@
-import React from "react";
 
 const SkeletonBox = ({ width, height, circle = false, style = {} }) => (
     <div
@@ -20,7 +19,7 @@ const TranogasyFeedSkeleton = () => {
         <div
             style={{
                 width: "100%",
-                height: "98dvh",
+                height: "100dvh",
                 position: "relative",
                 overflow: "hidden",
                 backgroundColor: "#000",
@@ -35,7 +34,7 @@ const TranogasyFeedSkeleton = () => {
             <div
                 style={{
                     position: "absolute",
-                    top: 75,
+                    top: 110,
                     left: "50%",
                     transform: "translateX(-50%)",
                     zIndex: 20,
@@ -59,7 +58,7 @@ const TranogasyFeedSkeleton = () => {
                 circle
                 style={{
                     position: "absolute",
-                    top: 30,
+                    top: 70,
                     left: 5,
                     zIndex: 2000,
                 }}
@@ -71,7 +70,7 @@ const TranogasyFeedSkeleton = () => {
                 height={20}
                 style={{
                     position: "absolute",
-                    top: 38,
+                    top: 78,
                     right: 10,
                     borderRadius: 20,
                 }}

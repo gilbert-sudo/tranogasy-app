@@ -110,18 +110,18 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
     <div
       className="autocomplete-container d-flex justify-content-between align-items-center"
       style={{
-        width: "100%",
+        width: "97%",
         gap: "2px",
         paddingTop: "7px",
         position: "relative",
       }}
     >
-      <div style={{ position: "relative", flexGrow: 1, display: isSearchResult ? "none" : "" }}>
+      <div style={{ position: "relative", display: isSearchResult ? "none" : "" }}>
         <input
           style={{
             flexGrow: 1,
             padding: "10px 40px 10px 20px", // Added right padding for clear button
-            borderRadius: "30px",
+            borderRadius: "9999px",
             height: "50px",
             border: "1px solid #ccc",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -131,8 +131,8 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
             transition: "border-color 0.3s, box-shadow 0.3s",
             outline: "none",
             fontFamily: "Arial, sans-serif",
-            minWidth: "35vh",
-            width: "100%",
+            width: "75dvw",
+            maxWidth: "400px",
           }}
           className="map-input"
           placeholder="Où veux-tu vivre ?"
@@ -185,7 +185,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
       </div>
 
       {isInTranogasyMap && !tranogasyFeed.isFeedSliderVisible && (
-        <div className="d-flex" style={{ gap: "5px", position: "relative" }}>
+        <div className="d-flex" style={{ position: "relative" }}>
           {/* Search-filter button with spotlight */}
           <div className="search-filter-btn" style={{ position: "relative", display: "inline-block" }}>
             {/* The button code you provided... */}
@@ -200,7 +200,7 @@ const PlaceAutocompleteClassic = ({ isSearchResult }) => {
               }}
 
               style={{
-                borderRadius: "30px",
+                borderRadius: "9999px",
                 padding: "10px 14px",
                 fontSize: "1.2rem",
                 display: "flex",

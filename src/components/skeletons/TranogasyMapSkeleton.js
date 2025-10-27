@@ -7,7 +7,7 @@ export default function TranogasyMapSkeleton() {
       style={{
         position: "relative",
         width: "100%",
-        height: "98dvh",
+        height: "100dvh",
         overflow: "hidden",
       }}
     >
@@ -18,7 +18,7 @@ export default function TranogasyMapSkeleton() {
       <div
         style={{
           position: "absolute",
-          top: "45px",
+          top: "65px",
           left: "10px",
           right: "10px",
           display: "flex",
