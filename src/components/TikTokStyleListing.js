@@ -14,6 +14,7 @@ import { useProperty } from "../hooks/useProperty";
 import { useLike } from "../hooks/useLike";
 import { useLogin } from "../hooks/useLogin";
 import { usePopup } from "../hooks/usePopup";
+import { useSubscription } from "../hooks/useSubscription";
 import useSound from "use-sound";
 
 import {
@@ -44,7 +45,6 @@ import {
   FaSwimmingPool,
   FaHotTub,
   FaBed,
-  FaSleigh,
 } from "react-icons/fa";
 import {
   FaFaucetDrip,
@@ -62,23 +62,24 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
   const { handleTouchStart, handleTouchMove } = useScrollDirectionLock();
   const { shareProperty } = useProperty();
   const dispatch = useDispatch();
-  const { featureUnderConstructionPopup } = usePopup();
   const [location, setLocation] = useLocation();
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
+  const { featureUnderConstructionPopup, unpaidBillPopup } = usePopup();
+  const { notSubscribedPopup } = useSubscription();
   const [play] = useSound("sounds/Like Sound Effect.mp3");
   const [isliked, setIsliked] = useState(false);
 
   const user = useSelector((state) => state.user);
+  const timer = useSelector((state) => state.timer.timer);
   const tranogasyFeed = useSelector((state) => state.tranogasyFeed);
+  const payments = useSelector((state) => state.payments);
 
   // slider state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showMap, setShowMap] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [isInSearchPage, setIsInSearchPage] = useState(false);
-
-  const [lastScrollLeft, setLastScrollLeft] = useState(0);
 
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
@@ -114,6 +115,32 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
     e.preventDefault();
     setIsliked(false);
     disLike(property);
+  };
+
+  const handleShowContact = () => {
+    // Guard clause 1: User not logged in
+    if (!user) {
+      notLogedPopUp();
+      return; // Exit early
+    }
+
+    // Guard clause 2: Check for specific subscription/timer conditions
+    if (!timer && !user.leftTime && property.owner._id !== user._id) {
+      notSubscribedPopup();
+      return; // Exit early
+    }
+
+    // Guard clause 3: Check for unpaid bills
+    const hasUnpaidBills = payments.some(
+      (payment) => payment.status === "refused" || payment.status === "redone"
+    );
+    if (hasUnpaidBills) {
+      unpaidBillPopup();
+      return; // Exit early
+    }
+
+    // Happy Path: All conditions passed, show contact
+    setShowContact(true);
   };
 
   // check like state
@@ -460,7 +487,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           <Heart style={{ pointerEvents: "auto" }} size={30} color="white" fill="none" onClick={handleLike} />
         )}
         <MapPinned onClick={() => { setShowMap(true); setShowContact(false) }} style={{ pointerEvents: "auto" }} size={30} color="white" />
-        <Phone onClick={() => { setShowMap(false); setShowContact(true) }} style={{ pointerEvents: "auto" }} size={30} color="white" />
+        <Phone onClick={() => { setShowMap(false); handleShowContact() }} style={{ pointerEvents: "auto" }} size={30} color="white" />
         <Forward onClick={() => shareProperty(property)} style={{ pointerEvents: "auto" }} size={30} color="white" />
 
         <div style={{ display: isDesktop ? "none" : "block", position: "relative", pointerEvents: "none", height: 10, width: 30 }}>
@@ -510,6 +537,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
         <p style={{ fontWeight: "bold", fontSize: 16, pointerEvents: "auto", width: "max-content" }} onClick={() => property.owner.role === "user" ? setLocation(`/userProfile/${property.owner._id}`) : null}>
           @{property.owner.role === "admin" ? (property?.sources?.username || "Gilbert AI") : property.owner.username}
         </p>
+        
         <p
           style={{
             fontSize: 14,

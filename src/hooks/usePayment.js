@@ -211,110 +211,57 @@ export const usePayment = () => {
   };
 
   const makeFreePayment = async (paymentData) => {
-    
-    
-    let countdown = 5; // Initial countdown value in seconds
+    setIsLoading(true);
+    try {
+      //subscribe the user
+      const subResponse = await subscribeUser(
+        paymentData.user,
+        paymentData.planValidity
+      );
+      console.log(subResponse);
 
-    const updateCountDownText = () => {
-      Swal.update({
-        html: `Êtes-vous certain de vouloir souscrire au forfait ${paymentData.reason}? <br> <small>(${countdown} sec)</small>`,
-      });
-    };
+      if (subResponse.status === "success") {
+        setIsLoading(false);
+        Swal.fire({
+          title: "<h6><strong>Merci pour votre achat!<strong><h6/>",
+          icon: "success",
+          html: `Félicitations ! Vous avez souscrit à notre service premium ${paymentData.reason}.`,
+          showCloseButton: true,
+          focusConfirm: false,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#7cbd1e",
+          customClass: {
+            popup: "smaller-sweet-alert",
+          },
+        });
 
-    const countdownFunction = () => {
-      countdown -= 1;
-      updateCountDownText();
-      Swal.update({
-        showConfirmButton: false,
-      });
+        dispatch(setUser(subResponse.user));
 
-      if (countdown > 0) {
-        setTimeout(countdownFunction, 1000); // Update every second
+        // window.history.back();
       } else {
-        // Show the confirm button after 7 seconds
-        Swal.hideLoading();
-        Swal.update({
-          showConfirmButton: true,
-          html: `Êtes-vous certain de vouloir souscrire au forfait ${paymentData.reason}?`,
-          confirmButtonText: "Oui, confirmer !",
+        setIsLoading(false);
+        Swal.fire({
+          title:
+            "<h6><strong>Oops! Une erreur s'est produite.<strong><h6/>",
+          icon: "error",
+          html: `Nous sommes désolés, mais une erreur s'est produite lors de votre achat. Veuillez réessayer plus tard.`,
+          showCloseButton: true,
+          focusConfirm: false,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#F31559",
+          customClass: {
+            popup: "smaller-sweet-alert",
+          },
         });
       }
-    };
-    Swal.fire({
-      title: `<h6><strong>Vérifier bien!</small></h6>`,
-      html: `Êtes-vous certain de vouloir souscrire au forfait ${paymentData.reason}?`,
-      showCloseButton: true,
-      showCancelButton: true,
-      focusConfirm: false,
-      confirmButtonText: "",
-      confirmButtonColor: "#7cbd1e",
-      cancelButtonText: "Annuler",
-      cancelButtonColor: "#F31559",
-      timerProgressBar: true, // Show progress bar
-      customClass: {
-        popup: "smaller-sweet-alert",
-      },
-      didOpen: () => {
-        Swal.showLoading();
-        countdownFunction();
-      },
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        setIsLoading(true);
-        try {
-          //subscribe the user
-          const subResponse = await subscribeUser(
-            paymentData.user,
-            paymentData.planValidity
-          );
-          console.log(subResponse);
-
-          if (subResponse.status === "success") {
-            setIsLoading(false);
-            Swal.fire({
-              title: "<h6><strong>Merci pour votre achat!<strong><h6/>",
-              icon: "success",
-              html: `Félicitations ! Vous avez souscrit à notre service premium ${paymentData.reason}.`,
-              showCloseButton: true,
-              focusConfirm: false,
-              confirmButtonText: "Ok",
-              confirmButtonColor: "#7cbd1e",
-              customClass: {
-                popup: "smaller-sweet-alert",
-              },
-            });
-
-            dispatch(setUser(subResponse.user));
-
-            // window.history.back();
-          } else {
-            setIsLoading(false);
-            Swal.fire({
-              title:
-                "<h6><strong>Oops! Une erreur s'est produite.<strong><h6/>",
-              icon: "error",
-              html: `Nous sommes désolés, mais une erreur s'est produite lors de votre achat. Veuillez réessayer plus tard.`,
-              showCloseButton: true,
-              focusConfirm: false,
-              confirmButtonText: "Ok",
-              confirmButtonColor: "#F31559",
-              customClass: {
-                popup: "smaller-sweet-alert",
-              },
-            });
-          }
-        } catch (error) {
-          setIsLoading(false);
-          setLocation("/nosignal");
-          console.log(error);
-          // Close the alert when loading is complete
-          Swal.close();
-        }
-      }
-    });
+    } catch (error) {
+      setIsLoading(false);
+      setLocation("/nosignal");
+      console.log(error);
+      // Close the alert when loading is complete
+      Swal.close();
+    }
   };
-
-
 
   const updatePayment = async (paymentData, paymentId) => {
     let countdown = 7; // Initial countdown value in seconds

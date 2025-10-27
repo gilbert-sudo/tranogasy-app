@@ -19,6 +19,10 @@ const PricingModal = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const [loadingPlanIndex, setLoadingPlanIndex] = useState(null);
   const [wasLoading, setWasLoading] = useState(false);
+  const [confirmationPlan, setConfirmationPlan] = useState(null);
+  const [confirmationIndex, setConfirmationIndex] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+  const [countdownInterval, setCountdownInterval] = useState(null);
 
   // Close modal when loading completes
   useEffect(() => {
@@ -31,7 +35,13 @@ const PricingModal = () => {
   // lock scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => (document.body.style.overflow = "");
+    return () => {
+      document.body.style.overflow = "";
+      // Clear any running intervals
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+    };
   }, []);
 
   // Detect screen resize
@@ -41,31 +51,63 @@ const PricingModal = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Countdown effect
+  useEffect(() => {
+    if (countdown > 0) {
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      setCountdownInterval(interval);
+      return () => clearInterval(interval);
+    }
+  }, [countdown]);
+
   const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget && !isLoading) dispatch(setPricingField({ key: "pricingModal", value: false }));
+    if (e.target === e.currentTarget && !isLoading && !confirmationPlan) {
+      dispatch(setPricingField({ key: "pricingModal", value: false }));
+    }
   };
 
-  const handleBuying = async (plan, index) => {
-    if (isLoading) return; // Prevent multiple clicks
+  const showConfirmation = (plan, index) => {
+    setConfirmationPlan(plan);
+    setConfirmationIndex(index);
+    setCountdown(5); // Start 5-second countdown
+  };
+
+  const hideConfirmation = () => {
+    setConfirmationPlan(null);
+    setConfirmationIndex(null);
+    setCountdown(0);
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+  };
+
+  const handleBuying = async () => {
+    if (isLoading || countdown > 0) return;
     
-    setLoadingPlanIndex(index);
+    setLoadingPlanIndex(confirmationIndex);
     
-    if (plan.amount === 0) {
+    if (confirmationPlan.amount === 0) {
       const paymentData = {
         user: user._id,
-        reason: plan.planName,
-        planValidity: plan.planValidity,
+        reason: confirmationPlan.planName,
+        planValidity: confirmationPlan.planValidity,
       };
       await makeFreePayment(paymentData);
-      // Don't close modal here - let the useEffect handle it when isLoading becomes false
       return;
     }
-    setLocation(`/payment/${encodeURIComponent(JSON.stringify(plan))}/init`);
-    // Don't close modal here - let the useEffect handle it when isLoading becomes false
+    setLocation(`/payment/${encodeURIComponent(JSON.stringify(confirmationPlan))}/init`);
   };
 
   const toggleAccordion = (index) => {
-    if (isDesktop || isLoading) return; // disable accordion on desktop and during loading
+    if (isDesktop || isLoading || confirmationPlan) return;
     setActiveIndex(index === activeIndex ? null : index);
   };
 
@@ -92,8 +134,53 @@ const PricingModal = () => {
       <div className="pricing-modal-backdrop" onClick={handleBackdropClick} />
 
       <div className="pricing-modal">
+        {/* Confirmation Overlay */}
+        {confirmationPlan && (
+          <div className="pricing-modal-confirmation-overlay">
+            <div className="pricing-modal-confirmation-content">
+              <h3>Confirmer votre achat</h3>
+              
+              <div className="pricing-modal-confirmation-details">
+                <div className="confirmation-plan-name">{confirmationPlan.planName}</div>
+                <div className="confirmation-plan-price">Ar {confirmationPlan.amount}  {(confirmationPlan.amount <= 0) && "( Gratuit )"}</div>
+              </div>
+
+              <div className="pricing-modal-confirmation-text">
+                <p>Êtes-vous sûr de vouloir acheter ce plan ?</p>
+              </div>
+
+              <div className="pricing-modal-confirmation-actions">
+                <button
+                  className="pricing-modal-confirm-btn"
+                  onClick={handleBuying}
+                  disabled={countdown > 0 || isLoading}
+                >
+                  {countdown > 0 ? (
+                    `Confirmer (${countdown}s)`
+                  ) : isLoading ? (
+                    <div className="pricing-modal-btn-loading">
+                      <div className="pricing-modal-btn-spinner"></div>
+                      Traitement...
+                    </div>
+                  ) : (
+                    "Confirmer l'achat"
+                  )}
+                </button>
+                
+                <button
+                  className="pricing-modal-cancel-btn"
+                  onClick={hideConfirmation}
+                  disabled={isLoading}
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Loading Overlay */}
-        {isLoading && (
+        {isLoading && !confirmationPlan && (
           <div className="pricing-modal-loading-overlay">
             <div className="pricing-modal-loading-spinner"></div>
             <p>Traitement de votre achat...</p>
@@ -104,8 +191,8 @@ const PricingModal = () => {
           <h2 className="pricing-modal-title">Nos Offres TranoGasy</h2>
           <button 
             className="pricing-modal-close-icon"
-            onClick={() => !isLoading && dispatch(setPricingField({ key: "pricingModal", value: false }))}
-            disabled={isLoading}
+            onClick={() => !isLoading && !confirmationPlan && dispatch(setPricingField({ key: "pricingModal", value: false }))}
+            disabled={isLoading || confirmationPlan}
           >
             ×
           </button>
@@ -130,7 +217,7 @@ const PricingModal = () => {
                         {index === 0 && <IoDiamondSharp />}
                         {index === 1 && <IoInfiniteSharp />}
                       </div>
-                      <div className="pricing-modal-plan-price">Ar {plan.amount}</div>
+                      <div className="pricing-modal-plan-price">Ar {plan.amount}  {(plan.amount <= 0) && "( Gratuit )"}</div>
                     </div>
 
                     {!isDesktop && (
@@ -150,18 +237,11 @@ const PricingModal = () => {
                       className="pricing-modal-buy-btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleBuying(plan, index);
+                        showConfirmation(plan, index);
                       }}
-                      disabled={isLoading}
+                      disabled={isLoading || confirmationPlan}
                     >
-                      {isThisPlanLoading ? (
-                        <div className="pricing-modal-btn-loading">
-                          <div className="pricing-modal-btn-spinner"></div>
-                          Traitement...
-                        </div>
-                      ) : (
-                        "Acheter"
-                      )}
+                      Acheter
                     </button>
                   </div>
                 </div>
@@ -171,9 +251,9 @@ const PricingModal = () => {
 
         <div className="pricing-modal-footer">
           <button 
-            onClick={() => !isLoading && dispatch(setPricingField({ key: "pricingModal", value: false }))} 
+            onClick={() => !isLoading && !confirmationPlan && dispatch(setPricingField({ key: "pricingModal", value: false }))} 
             className="pricing-modal-back-btn"
-            disabled={isLoading}
+            disabled={isLoading || confirmationPlan}
           >
             <MdArrowBackIos /> Retour
           </button>

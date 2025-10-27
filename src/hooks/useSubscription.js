@@ -70,11 +70,11 @@ export const useSubscription = () => {
   const notSubscribedPopup = async () => {
     Swal.fire({
       title: "<h6><strong>Vous êtes en mode gratuit<strong><h6/>",
-      html: `<img src=${notPremiumImg()} alt="please log in" class="img-fluid"><br> Nous sommes désolés, mais vous devez disposer d'un forfait pour effectuer cette action. Veuillez acheter un forfait pour continuer !`,
+      html: `<img src=${notPremiumImg()} alt="please log in" class="img-fluid"><br> Nous sommes désolés, mais vous devez disposer d'un forfait pour effectuer cette action. Veuillez acheter un forfait pour continuer ! <strong>( À partir de 0 ar )</strong>`,
       showCloseButton: true,
       showCancelButton: true,
       focusConfirm: false,
-      confirmButtonText: "Acheter un forfait",
+      confirmButtonText: "Voir les Offres",
       confirmButtonColor: "#7cbd1e",
       cancelButtonText: "Annuler",
       cancelButtonColor: "#F31559",

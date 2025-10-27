@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { IoMdCloseCircle } from "react-icons/io";
 import { Phone, SendHorizontal } from "lucide-react";
 import { ImLocation } from "react-icons/im";
@@ -59,33 +59,41 @@ export default function ContactCard({ setShowContact, property }) {
         }
     };
 
+    // lock scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, []);
+
     return (
         <>
-            {/* Semi-transparent backdrop */}
-            <div
-                style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    zIndex: 10,
-                    cursor: "pointer",
-                }}
-                onClick={handleBackdropClick}
-            />
-
             <div
                 style={{
                     position: "absolute",
-                    bottom: 95,
-                    left: 10,
-                    right: 10,
-                    zIndex: 10,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10000,
                     display: "block",
+                    padding: "10px",
                 }}
             >
+                {/* Semi-transparent backdrop */}
+                <div
+                    style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        zIndex: 10,
+                        cursor: "pointer",
+                        minHeight: "100vh",
+                    }}
+                    onClick={handleBackdropClick}
+                />
                 <div
                     style={{
                         position: "relative",
@@ -101,7 +109,7 @@ export default function ContactCard({ setShowContact, property }) {
                             position: "absolute",
                             minHeight: "100%",
                             maxWidth: "500px",
-                            top: "-55vh",
+                            top: "-65vh",
                             padding: "20px 15px",
                             backgroundColor: "white",
                             borderRadius: "20px",

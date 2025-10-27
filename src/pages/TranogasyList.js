@@ -75,6 +75,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
     const handleCloseSlideClick = () => {
         dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: false }));
     };
+    
 
     //handle property search
     function searchListedProperty(propertyNumber) {
