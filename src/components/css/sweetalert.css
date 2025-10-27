@@ -2,6 +2,10 @@
   font-size: 14px; /* Change font size */
 }
 
+.swal2-actions {
+  margin-top: 0 !important; /* Adjust margin-top to 0 */
+}
+
 /* Custom styles for smaller SweetAlert2 dialog and buttons */
 .smaller-sweet-alert {
   font-size: 14px;
@@ -10,9 +14,10 @@
 }
 
 .smaller-sweet-alert .swal2-confirm {
+  min-width: 70px;
   font-size: 13px;
   border-radius: 9999px;
-  padding: 10px 12px;
+  padding: 10px 15px;
 }
 
 .smaller-sweet-alert .swal2-close:focus {
@@ -23,7 +28,7 @@
 .smaller-sweet-alert .swal2-cancel {
   font-size: 13px;
   border-radius: 9999px;
-  padding: 10px 12px;
+  padding: 10px 15px;
 }
 .smaller-sweet-alert .swal2-icon {
   font-size: 12px;

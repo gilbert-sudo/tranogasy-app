@@ -265,7 +265,7 @@ const topPropertiesSlice = createSlice({
 
       // Find the index of the property to delete
       const propertyIndex = state.findIndex(
-        (topProperty) => topProperty.property._id === propertyToDeleteId
+        (topProperty) => topProperty._id === propertyToDeleteId
       );
 
       if (propertyIndex !== -1) {
@@ -280,12 +280,12 @@ const topPropertiesSlice = createSlice({
 
       // Find the index of the property to update
       const topPropertyIndex = state.findIndex(
-        (topProperty) => topProperty.property._id === updatedProperty._id
+        (topProperty) => topProperty._id === updatedProperty._id
       );
 
       if (topPropertyIndex !== -1) {
         // If the property is found, update it in the array
-        state[topPropertyIndex].property = updatedProperty;
+        state[topPropertyIndex] = updatedProperty;
       }
     },
   },

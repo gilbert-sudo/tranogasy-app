@@ -511,7 +511,7 @@ const UpdatePropertyPage = () => {
                           fontWeight: 500,
                         }}
                       >
-                        Statut de l'annonce
+                        Statut de l'annonce <small className="text-danger">(En maintenance)</small>
                       </label>
 
                       <div

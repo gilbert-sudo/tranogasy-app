@@ -89,7 +89,7 @@ export const useLoader = () => {
 
   const loadTopProperties = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/top-properties`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties/latest`, {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "aplication/json",
