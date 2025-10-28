@@ -284,7 +284,13 @@ const Navbar = () => {
               )}
               {!properties && (
                 <button
-                  style={{ borderRadius: "20px", position: "relative", paddingRight: "25px" }}
+                  style={{
+                    borderRadius: "20px",
+                    border: "2px solid #7cbd1e",
+                    fontWeight: "bold",
+                    position: "relative",
+                    paddingRight: "27px"
+                  }}
                   className="ml-1 btn btn-sm btn-outline-success"
                   type="button"
                 >
@@ -307,7 +313,11 @@ const Navbar = () => {
               )}{" "}
               {location !== "/search" && location !== "/searchResult" && location !== "/tranogasyMap" && prevPath !== "searchResult" && prevPath !== "tranogasyMap" && properties && (
                 <button
-                  style={{ borderRadius: "20px" }}
+                  style={{
+                    borderRadius: "20px",
+                    border: "2px solid #7cbd1e",
+                    fontWeight: "bold",
+                  }}
                   className="ml-1 btn btn-sm btn-outline-success"
                   type="button"
                   onClick={(e) => {
@@ -340,7 +350,7 @@ const Navbar = () => {
                     className="ml-1"
                     src={user?.avatar ? user.avatar : userProfile}
                     alt="profile picture"
-                    style={{ objectFit: "cover", height: "30px", width: "30px", borderRadius: "50%" }}
+                    style={{ objectFit: "cover", padding: "1px", height: "35px", width: "35px", borderRadius: "50%", border: "2px solid rgb(0, 0, 0, 0.4)" }}
                   />
                 </Link>
               )}

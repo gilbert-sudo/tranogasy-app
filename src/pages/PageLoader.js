@@ -85,10 +85,12 @@ const PageLoader = () => {
           dispatch(setSignUp(localSignup));
         }
       }
-      if (topProperties) {
+
+      setTimeout(() => {
         dispatch(setLoader("done"));
         setLocation("/explore");
-      }
+      }, 1000);
+
       const mapData = await loadMap();
       console.log("mapData", mapData);
 
@@ -160,12 +162,12 @@ const PageLoader = () => {
         }}
       >
         <small style={{ color: "#805c0fff", fontWeight: "bold" }}>
-            𝓑𝔂 𝓖𝓲𝓵𝓫𝓮𝓻𝓽 𝓜𝓪𝓭𝓪𝓰𝓪𝓼𝓬𝓪𝓻
-          </small>
+          𝓑𝔂 𝓖𝓲𝓵𝓫𝓮𝓻𝓽 𝓜𝓪𝓭𝓪𝓰𝓪𝓼𝓬𝓪𝓻
+        </small>
         <div className="d-flex justify-content-center align-items-center">
-            <small className="mr-2" style={{ color: "#d8a842ff", fontWeight: "bold" }}>
+          <small className="mr-2" style={{ color: "#d8a842ff", fontWeight: "bold" }}>
             Chargement...
-          </small>{" "} 
+          </small>{" "}
           <HashLoader color="#c59d45" size={20} />
         </div>
       </div>

@@ -452,7 +452,7 @@ const CreateListing = () => {
       console.log("Running custom back action");
       // run custom back logic (e.g. close modal)
       if (window.confirm("Voulez-vous vraiment quitter cette page ? Les modifications que vous avez apportées ne seront peut-être pas enregistrées.")) {
-        window.history.go(-2);
+        window.history.go(-1);
       }
     };
     
