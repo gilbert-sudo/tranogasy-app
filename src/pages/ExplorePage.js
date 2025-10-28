@@ -1,104 +1,152 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "wouter";
 import Skeleton from "react-loading-skeleton";
 import PropertyDetails from "../components/PropertyDetails";
 import PropertyFilter from "../components/PropertyFilter";
+import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkeleton";
 import HomeSlider from "../components/HomeSlider";
 import { useSelector } from "react-redux";
 import { BsFillSearchHeartFill } from "react-icons/bs";
+import { FixedSizeGrid as Grid } from "react-window";
 
 const ExplorePage = () => {
-  //redux
   const topProperties = useSelector((state) => state.topProperties);
-  const properties = useSelector((state) => state.properties);
+  const gridContainerRef = useRef();
+  const gridRef = useRef();
+  const [gridWidth, setGridWidth] = useState(0);
+  const [columnCount, setColumnCount] = useState(3);
+  const [atTheTop, setAtTheTop] = useState(true);
 
+  // prevent scroll on body
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
-  const [oneTimeTask, setOneTimeTask] = useState(null);
+  // responsive columns
+  useEffect(() => {
+    const updateGridMetrics = () => {
+      if (gridContainerRef.current) {
+        const newWidth = gridContainerRef.current.offsetWidth;
+        setGridWidth(newWidth);
+        if (newWidth < 480) setColumnCount(1);
+        else if (newWidth < 768) setColumnCount(2);
+        else setColumnCount(3);
+      }
+    };
+    updateGridMetrics();
+    window.addEventListener("resize", updateGridMetrics);
+    return () => window.removeEventListener("resize", updateGridMetrics);
+  }, [topProperties]);
 
-  if (oneTimeTask === null) {
-    // Check if the property preview exists in local storage
-    const propertyPreview = localStorage.getItem("propertyPreview");
-    if (propertyPreview) {
-      console.log("Property preview exists in local storage.", propertyPreview);
-    }
-    setOneTimeTask("done");
-  }
+  const ItemSize = 400;
+
+  const Cell = useCallback(
+    ({ columnIndex, rowIndex, style }) => {
+      const index = rowIndex * columnCount + columnIndex;
+      const property = topProperties?.[index];
+      if (!property) return null;
+      return (
+        <div style={style}>
+          <div style={{ padding: "8px", height: "100%" }}>
+            <PropertyDetails
+              key={property._id}
+              property={property}
+              route={"TranogasyList"}
+            />
+          </div>
+        </div>
+      );
+    },
+    [columnCount, topProperties]
+  );
 
 
   return (
     <div id="explorepage" className="home">
       <div className="site-section site-section-sm pb-0">
-        <HomeSlider />
-        <div className="container" id="prodisplay">
+
+        {/* 🧭 Smooth HomeSlider */}
+        <div
+          style={{
+            transform: atTheTop ? "scaleY(1)" : "scaleY(0)",
+            transformOrigin: "top",
+            opacity: atTheTop ? 1 : 0,
+            height: atTheTop ? "auto" : "0px",
+            transition: "all 0.6s cubic-bezier(0.25, 1, 0.5, 1)",
+            willChange: "transform, opacity, height",
+            overflow: "hidden",
+          }}
+        >
+          <HomeSlider />
+        </div>
+
+        <div
+          className={`container transition-all duration-500 ${atTheTop ? "mt-1" : "mt-5"
+            }`}
+          id="prodisplay"
+        >
           <PropertyFilter />
         </div>
       </div>
+
       <div className="site-section site-section-sm bg-light">
-        <div className="custom-container" style={{ paddingBottom: "80px" }}>
-          <div className="row">
-            {topProperties &&
-              topProperties.map(
-                (property) =>
-                  property && (
-                    <div className="col-md-6 col-lg-4 mb-4">
-                      <PropertyDetails
-                        key={property._id}
-                        property={property}
-                        route={"ExplorePage"}
-                      />
-                    </div>
-                  )
-              )}
-          </div>
-          <div className="row d-flex justify-content-center w-100">
-            {properties &&
-              <Link
-                to="/tranogasyMap"
-                className="btn btn-success btn-sm"
-                style={{
-                  display: "inline-block",
-                  cursor: "pointer",
-                  marginLeft: "15px",
-                  padding: "5px 10px",
-                  borderRadius: "9999px",
-                  width: "215px",
-                  height: "36px",
-                  fontSize: "16px",
-                }}
-              >
-                Voir plus d’annonces
-              </Link>
-            }
-            {!properties &&
-              <div style={{ position: "relative", display: "inline-block" }}>
-                <Skeleton
-                  width={215}
-                  height={36}
-                  borderRadius={20}
-                  baseColor="rgba(124, 189, 30, 0.5)"
-                  highlightColor="rgba(124, 189, 30, 0.6)"
+        <div className="custom-container">
+          {topProperties?.length === 0 ? (
+            <div className="empty-state">
+              <div className="no-booking d-flex justify-content-center align-items-center">
+                <img
+                  src="images/create-ad.jpg"
+                  alt="Aucune propriété listée"
+                  className="img-fluid empty-state-image"
                 />
-                <span
+              </div>
+              <p className="empty-state-message">
+                Créez votre annonce dès maintenant et trouvez le parfait
+                acheteur ou locataire pour votre propriété !
+              </p>
+            </div>
+          ) : topProperties && topProperties.length > 0 ? (
+            <div className="row" ref={gridContainerRef}>
+              {gridWidth > 0 && (
+                <Grid
+                  ref={gridRef}
+                  columnCount={columnCount}
+                  columnWidth={Math.floor(gridWidth / columnCount)}
+                  height={window.innerHeight - 80}
+                  rowCount={Math.ceil(topProperties.length / columnCount)}
+                  rowHeight={(ItemSize / 100) * 106}
+                  width={(gridWidth / 100) * 101.5}
+                  itemData={topProperties}
                   style={{
-                    marginTop: "2px",
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    fontSize: "16px",
-                    fontWeight: "670",
-                    color: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "8px",
+                    scrollbarWidth: "none",
+                    paddingBottom: "100px",
+                    willChange: "scroll-position",
+                  }}
+                  onScroll={({ scrollTop }) => {
+                    const itemHeight = (ItemSize / 100) * 106;
+                    const hideThreshold = itemHeight * 2; // allow 2 items scroll before hiding
+
+                    setAtTheTop((prev) => {
+                      if (scrollTop <= 0 && !prev) return true;
+                      if (scrollTop > hideThreshold && prev) return false;
+                      return prev;
+                    });
                   }}
                 >
-                  <BsFillSearchHeartFill /> Préparation
-                </span>
-              </div>
-            }
-          </div>
+                  {Cell}
+                </Grid>
+              )}
+            </div>
+          ) : (
+            <div className="row mt-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ListingDetailsSkeleton key={index} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

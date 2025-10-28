@@ -1,5 +1,5 @@
 import PropertyDetails from "../components/PropertyDetails";
-import MyListingDetailsSkeleton from "../components/skeletons/MyListingDetailsSkeleton";
+import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkeleton";
 import { Link, useLocation } from "wouter";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -88,6 +88,19 @@ const MyHouseListingPage = () => {
       inputRef.current.focus();
     }
   }, [showSearchInput]);
+
+  useEffect(() => {
+    const body = document.body;
+
+    if (body) {
+      body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      body.style.overflow = '';
+    };
+  }, []);
+
 
   useEffect(() => {
     // ✅ Check if within allowed hours
@@ -231,6 +244,10 @@ const MyHouseListingPage = () => {
                             rowHeight={(ItemSize / 100) * 102}
                             width={(gridWidth / 100) * 101.5}
                             itemData={usersProperties}
+                            style={{
+                              scrollbarWidth: 'none',
+                              paddingBottom: "100px"
+                            }}
                           >
                             {Cell}
                           </Grid>
@@ -281,7 +298,7 @@ const MyHouseListingPage = () => {
                   ) : (
                     <div className="row mt-3">
                       {Array.from({ length: 6 }).map((_, index) => (
-                        <MyListingDetailsSkeleton key={index} />
+                        <ListingDetailsSkeleton key={index} />
                       ))}
                     </div>
                   )}

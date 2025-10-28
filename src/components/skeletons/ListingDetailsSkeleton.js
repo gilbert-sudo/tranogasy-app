@@ -1,7 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import "../css/mylisting.css";
 
-function MyListingDetailsSkeleton() {
+function ListingDetailsSkeleton() {
   return (
     <div className="col-md-6 col-lg-4 mb-4">
       <div className="property-entry h-100 mx-1">
@@ -42,4 +42,4 @@ function MyListingDetailsSkeleton() {
   );
 }
 
-export default MyListingDetailsSkeleton;
+export default ListingDetailsSkeleton;

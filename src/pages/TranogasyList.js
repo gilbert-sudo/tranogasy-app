@@ -5,7 +5,7 @@ import { setTranogasyListField } from "../redux/redux";
 
 import PropertyDetails from "../components/PropertyDetails";
 import PlaceAutocompleteClassic from "../components/PlaceAutocompleteClassic";
-import MyListingDetailsSkeleton from "../components/skeletons/MyListingDetailsSkeleton";
+import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkeleton";
 
 import PropertyDetailsPage from "./PropertyDetailsPage";
 
@@ -75,7 +75,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
     const handleCloseSlideClick = () => {
         dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: false }));
     };
-    
+
 
     //handle property search
     function searchListedProperty(propertyNumber) {
@@ -190,7 +190,10 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                                                 rowHeight={(ItemSize / 100) * 106}
                                                 width={(gridWidth / 100) * 101.5}
                                                 itemData={properties}
-                                                style={{ paddingBottom: "100px" }}
+                                                style={{
+                                                    scrollbarWidth: 'none',
+                                                    paddingBottom: "100px"
+                                                }}
                                                 onScroll={({ scrollTop }) => {
                                                     const newRow = Math.floor(scrollTop / ((ItemSize / 100) * 106));
                                                     setCurrentRow(newRow);
@@ -311,7 +314,7 @@ const TranogasyList = ({ payload, route, setListViewMode }) => {
                             (
                                 <div className="row mt-3">
                                     {Array.from({ length: 6 }).map((_, index) => (
-                                        <MyListingDetailsSkeleton key={index} />
+                                        <ListingDetailsSkeleton key={index} />
                                     ))}
                                 </div>
                             )
