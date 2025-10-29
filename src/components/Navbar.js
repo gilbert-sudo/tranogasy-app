@@ -333,7 +333,7 @@ const Navbar = () => {
               )}
               {(location === "/searchResult" || location === "/tranogasyMap" || prevPath === "searchResult" || prevPath === "tranogasyMap") && properties && (
                 <button
-                  style={{ borderRadius: "20px" }}
+                  style={{ display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "20px" }}
                   className="ml-1 btn btn-sm btn-danger"
                   onClick={() => window.history.back()}
                 >
@@ -341,7 +341,7 @@ const Navbar = () => {
                     style={{ fontSize: "17px" }}
                     className="font-weight-bold"
                   />
-                  Fermer{" "}
+                  <fermer style={{ paddingBottom: "2px" }}>Fermer</fermer>
                 </button>
               )}
               {user && !notificationStatus.bell && (

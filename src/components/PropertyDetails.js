@@ -79,7 +79,7 @@ const formatPhone = (phone) => {
   return prefix + digits;
 };
 
-function PropertyDetails({ property, route }) {
+function PropertyDetails({ property, route, handlePropertyClick }) {
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
     year: "numeric",
     month: "short",
@@ -104,6 +104,10 @@ function PropertyDetails({ property, route }) {
       dispatch(setTranogasyListField({ key: "selectedProperty", value: property }));
       dispatch(setTranogasyListField({ key: "isListViewSliderVisible", value: true }));
       
+      return;
+    };
+    if (route === "ExplorePage") {
+      handlePropertyClick(property)
       return;
     };
     if (route === "PropertyExistsCard") return;

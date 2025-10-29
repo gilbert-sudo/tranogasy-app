@@ -1,18 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import PropertyDetails from "../components/PropertyDetails";
 import PropertyFilter from "../components/PropertyFilter";
 import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkeleton";
 import HomeSlider from "../components/HomeSlider";
 
+import PropertyDetailsPage from "./PropertyDetailsPage";
+
 import { useImage } from "../hooks/useImage";
+import { useLike } from "../hooks/useLike";
+import { useLogin } from "../hooks/useLogin";
+import useSound from "use-sound";
+
 import { useSelector, useDispatch } from "react-redux";
 import { setGilbertAiField } from "../redux/redux";
 import { FixedSizeGrid as Grid } from "react-window";
 import Typewriter from "typewriter-effect";
 import GraphemeSplitter from "grapheme-splitter";
 
-import { Settings, SendHorizontal, MapPin, Import } from "lucide-react";
+import { Settings, SendHorizontal, MapPin, Heart } from "lucide-react";
 import {
   FaBed,
   FaCouch,
@@ -20,6 +26,7 @@ import {
   FaToilet,
   FaShower,
 } from "react-icons/fa";
+import { IoMdCloseCircle } from "react-icons/io";
 
 const stringSplitter = (str) => {
   const splitter = new GraphemeSplitter();
@@ -49,6 +56,8 @@ const typeDelay = 25; //this is in ms
 const ExplorePage = () => {
   const topProperties = useSelector((state) => state.topProperties);
   const gilbertAi = useSelector((state) => state.gilbertAi);
+  const user = useSelector((state) => state.user);
+
   const [, setLocation] = useLocation();
   const gridContainerRef = useRef();
   const dispatch = useDispatch();
@@ -57,15 +66,21 @@ const ExplorePage = () => {
   const messagesEndRef = useRef();
   const messagesContainerRef = useRef();
   const { gilbertIALogoDark, gilbertIALogoLight } = useImage();
+  const { like, disLike } = useLike();
+  const { notLogedPopUp } = useLogin();
+  const [play] = useSound("sounds/Like Sound Effect.mp3");
+
   const [gridWidth, setGridWidth] = useState(0);
   const [columnCount, setColumnCount] = useState(3);
   const [atTheTop, setAtTheTop] = useState(true);
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isSliderVisible, setIsSlideVisible] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   const [chatMessages, setChatMessages] = useState(gilbertAi.chatMessages);
-    useEffect(() => {
+  useEffect(() => {
     dispatch(setGilbertAiField({ key: "chatMessages", value: chatMessages }));
   }, [chatMessages]);
 
@@ -109,6 +124,11 @@ const ExplorePage = () => {
     }
   };
 
+  const handleCloseSlideClick = () => {
+    setIsSlideVisible(false);
+  };
+
+
   // prevent scroll on body
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -126,7 +146,7 @@ const ExplorePage = () => {
         !chatboxRef.current.contains(event.target) &&
         !event.target.closest(".gibert-ai-btn")
       ) {
-         setIsChatboxOpen(false);
+        setIsChatboxOpen(false);
       }
     };
 
@@ -215,17 +235,19 @@ const ExplorePage = () => {
               width: "28px",
               height: "28px",
               borderRadius: "50%",
+              paddingTop: "3px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              transition: "all 0.2s ease"
+              transition: "all 0.2s ease",
+              color: msg.liked ? "red" : "black"
             }}
               onClick={(e) => {
                 e.stopPropagation();
-                handleFavoriteClick(msg.property);
+                handleFavoriteClick(msg);
               }}>
-              ♡
+              <Heart />
             </div>
           </div>
 
@@ -487,8 +509,10 @@ const ExplorePage = () => {
   const handlePropertyClick = (property) => {
     // Navigate to property details or show in modal
     console.log("Property clicked:", property);
-    // You can implement navigation or modal display here
-    // For example: window.location.href = `/property/${property.id}`;
+    setSelectedProperty(property);
+    setTimeout(() => {
+      setIsSlideVisible(true);
+    }, 100);
   };
 
   const simulatePropertyRecommendation = () => {
@@ -501,6 +525,7 @@ const ExplorePage = () => {
       type: 'property',
       property: sampleProperty,
       isUser: false,
+      liked: false,
       timestamp: new Date(),
     };
 
@@ -534,10 +559,20 @@ const ExplorePage = () => {
   };
 
   // Add the handleFavoriteClick function
-  const handleFavoriteClick = (property) => {
-    console.log("Added to favorites:", property);
-    // You can implement favorite functionality here
-    // For example: dispatch(addToFavorites(property));
+  const handleFavoriteClick = (msg) => {
+    console.log("Added to favorites:", msg.property);
+    if (user) {
+      (!msg.liked) && play();
+      setChatMessages((prev) =>
+        prev.map((m) =>
+          m.id === msg.id ? { ...m, liked: !msg.liked } : m
+        )
+      );
+      (!msg.liked) ? like(msg.property) : disLike(msg.property);
+    }
+    if (!user) {
+      notLogedPopUp();
+    }
   };
 
   const handleSendMessage = () => {
@@ -606,7 +641,8 @@ const ExplorePage = () => {
             <PropertyDetails
               key={property._id}
               property={property}
-              route={"TranogasyList"}
+              route={"ExplorePage"}
+              handlePropertyClick={handlePropertyClick}
             />
           </div>
         </div>
@@ -639,7 +675,7 @@ const ExplorePage = () => {
               overflow: "hidden",
             }}
           >
-            <HomeSlider setIsChatboxOpen={setIsChatboxOpen}/>
+            <HomeSlider setIsChatboxOpen={setIsChatboxOpen} />
           </div>
 
           <div
@@ -898,6 +934,69 @@ const ExplorePage = () => {
             </div>
           </div>
         )}
+      </div>
+      {/* White slider */}
+      <div
+        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+        style={{
+          position: "fixed",
+          left: "50%",
+          bottom: 0,
+          transform: isSliderVisible
+            ? "translate(-50%, 0)"
+            : "translate(-50%, 100%)",
+          width: "100%",
+          height: "99dvh",
+          overflowY: "auto",
+          backgroundColor: "#fff",
+          borderRadius: "30px 30px 0 0",
+          boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
+          transition: "transform 0.5s ease",
+          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+          zIndex: 1000,
+        }}
+      >
+        {/* mini navbar for the lose button to hide the sliding div */}
+        <div
+          className="fixed-top"
+          style={{
+            width: "100%",
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "sticky",
+          }}
+        >
+          <IoMdCloseCircle
+            style={{
+              fontSize: "2rem",
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              zIndex: "9999",
+              backgroundColor: "#fff",
+              borderRadius: "50%",
+              cursor: "pointer",
+              opacity: 1,
+              pointerEvents: "auto",
+              transition: "opacity 0.3s ease",
+            }}
+            onClick={() => {
+              handleCloseSlideClick();
+            }}
+          />
+        </div>
+
+        {/* Close button to hide the sliding div */}
+        {selectedProperty && isSliderVisible && (
+          <PropertyDetailsPage
+            key={selectedProperty._id}
+            fastPreviewProperty={selectedProperty}
+            handleCloseSlideClick={handleCloseSlideClick}
+          />
+        )}
+
       </div>
     </>
   );
