@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import PropertyDetails from "../components/PropertyDetails";
 import PropertyFilter from "../components/PropertyFilter";
 import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkeleton";
@@ -10,6 +10,15 @@ import { useSelector } from "react-redux";
 import { FixedSizeGrid as Grid } from "react-window";
 import Typewriter from "typewriter-effect";
 import GraphemeSplitter from "grapheme-splitter";
+
+import { Settings, SendHorizontal, MapPin } from "lucide-react";
+import {
+  FaBed,
+  FaCouch,
+  FaUtensils,
+  FaToilet,
+  FaShower,
+} from "react-icons/fa";
 
 const stringSplitter = (str) => {
   const splitter = new GraphemeSplitter();
@@ -25,11 +34,20 @@ function countWords(str) {
   return words.length;
 }
 
+function getRandomIntInclusive(min, max) {
+  // Ensure min and max are treated as integers for the calculation
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 
 const typeDelay = 25; //this is in ms
 
 const ExplorePage = () => {
   const topProperties = useSelector((state) => state.topProperties);
+  const [, setLocation] = useLocation();
   const gridContainerRef = useRef();
   const gridRef = useRef();
   const chatboxRef = useRef();
@@ -41,31 +59,57 @@ const ExplorePage = () => {
   const [atTheTop, setAtTheTop] = useState(true);
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
-      text: `👋 Manao ahoana ! Je suis Gilbert IA, ton agent immobilier virtuel sur TranoGasy.
-            Je peux t'aider à trouver, vendre ou louer une maison à Madagascar.
-            Tu veux qu'on commence par quoi ?`,
+      text: `👋 Salama tompoko ! Je suis Gilbert (i Zily 😁), ton agent immobilier virtuel sur TranoGasy.
+            Je peux t'aider à trouver, vendre ou louer une maison à Madagascar. \n
+            😊 Que puis-je faire pour vous?`,
       isUser: false,
       timestamp: new Date(),
+      status: "unread", // "read" | "unread" 
     },
   ]);
 
   // Track previous message count to detect new messages
   const previousMessageCountRef = useRef(chatMessages.length);
 
-  // Auto-scroll to bottom only when new messages are added (not on initial open)
+  // Auto-scroll to bottom
   useEffect(() => {
+
+    let interval;
+
     if (chatMessages.length > previousMessageCountRef.current) {
-      scrollToBottom();
+      scrollToBottom("smooth");
     }
     previousMessageCountRef.current = chatMessages.length;
-  }, [chatMessages]);
 
-  const scrollToBottom = () => {
+    if (isTyping) {
+      interval = setInterval(() => {
+        scrollToBottom("smooth");
+      }, 500);
+    }
+
+    return () => {
+      // cleanup when isTyping becomes false or component unmounts
+      clearInterval(interval);
+    };
+  }, [chatMessages, isTyping]);
+
+  useEffect(() => {
+    if (isChatboxOpen) {
+      scrollToBottom("instant");
+    }
+  }, [isChatboxOpen]);
+
+
+  const scrollToBottom = (mode) => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: mode,
+      });
     }
   };
 
@@ -192,9 +236,9 @@ const ExplorePage = () => {
             {/* Price */}
             <div style={{
               position: "absolute",
-              top: -28,
+              top: -35,
               right: "10px",
-              fontSize: "10px",
+              fontSize: "12px",
               padding: "5px 10px",
               borderRadius: "9999px",
               backgroundColor: "white",
@@ -211,7 +255,7 @@ const ExplorePage = () => {
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text"
               }}>
-                {msg.property.rent}/mois
+                {msg.property.rent && msg.property.rent.toLocaleString("en-US")} Ar/mois
               </span>
             </div>
 
@@ -225,7 +269,7 @@ const ExplorePage = () => {
               display: "flex",
               alignItems: "flex-start",
             }}>
-              <span style={{ fontSize: "14px", marginTop: "1px", color: "red" }}>#</span>
+              <span className="mr-1" style={{ fontSize: "14px", marginTop: "1px", color: "red" }}>#</span>
               {msg.property.title}
             </div>
 
@@ -238,7 +282,7 @@ const ExplorePage = () => {
               alignItems: "center",
               gap: "2px"
             }}>
-              <span style={{ fontSize: "12px" }}>📍</span>
+              <MapPin size={12} color="red" className="mb-1" />
               <small>{msg.property.city.fokontany} {msg.property.city.commune}</small>
             </div>
 
@@ -247,21 +291,81 @@ const ExplorePage = () => {
               display: "flex",
               gap: "12px",
               marginBottom: "5px",
-              paddingBottom: "5px",
+              padding: "0 5px",
               borderBottom: "1px solid #f3f4f6"
             }}>
-              {msg.property.features && msg.property.features.map((feature, index) => (
-                <div key={index} style={{
+              <div
+                style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "2px",
                   fontSize: "11px",
                   color: "#6b7280"
                 }}>
-                  <span>{feature.icon}</span>
-                  <span>{feature.value}</span>
-                </div>
-              ))}
+                <span>{msg.property.livingRoom}</span>
+                <span><FaCouch style={{ marginBottom: "2px" }} /></span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "2px",
+                  fontSize: "11px",
+                  color: "#6b7280"
+                }}>
+                <span>{msg.property.rooms}</span>
+                <span><FaBed style={{ marginBottom: "2px" }} /></span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "2px",
+                  fontSize: "11px",
+                  color: "#6b7280"
+                }}>
+                <span>{msg.property.kitchen}</span>
+                <span> <FaUtensils style={{ marginBottom: "4px" }} /></span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "2px",
+                  fontSize: "11px",
+                  color: "#6b7280"
+                }}>
+                <span>{msg.property.bathrooms}</span>
+                <span> <FaShower style={{ marginBottom: "3px" }} /></span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "2px",
+                  fontSize: "11px",
+                  color: "#6b7280"
+                }}>
+                <span>{msg.property.toilet}</span>
+                <span> <FaToilet className="mb-1" /></span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "2px",
+                  fontSize: "11px",
+                  color: "#6b7280",
+                }}>
+                <span>{msg.property?.area} </span>
+                <span style={{ fontWeight: "1000" }}> m²</span>
+              </div>
             </div>
 
             {/* Footer with Date and Action */}
@@ -270,25 +374,14 @@ const ExplorePage = () => {
               justifyContent: "space-between",
               alignItems: "center"
             }}>
-              {/* Date */}
-              <div style={{
-                fontSize: "11px",
-                color: "#9ca3af",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px"
-              }}>
-                <span>📅</span>
-                <small style={{ fontWeight: "bold" }}> {msg.property.date || "aujourd'hui"}</small>
-              </div>
-
               {/* View Details Button */}
-              {/* <button
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePropertyClick(msg.property);
                 }}
                 style={{
+                  width: "100%",
                   padding: "8px 16px",
                   backgroundColor: "transparent",
                   color: "#7cbd1e",
@@ -300,6 +393,7 @@ const ExplorePage = () => {
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "6px"
                 }}
                 onMouseEnter={(e) => {
@@ -313,7 +407,7 @@ const ExplorePage = () => {
               >
                 Voir détails
                 <span style={{ fontSize: "10px" }}>→</span>
-              </button> */}
+              </button>
             </div>
           </div>
         </div>
@@ -325,6 +419,7 @@ const ExplorePage = () => {
         <button
           onClick={(e) => {
             e.stopPropagation();
+            setLocation(msg.route);
           }}
           style={{
             padding: "8px 16px",
@@ -358,14 +453,35 @@ const ExplorePage = () => {
     // Default text message
     return (
       <>
-        {msg.isUser && msg.text}
-        {!msg.isUser &&
-          <Typewriter options={{
-            strings: msg.text,
-            stringSplitter,
-            autoStart: true,
-            delay: typeDelay,
-          }} />}
+        {(msg.isUser || msg.status === "read") && msg.text}
+        {!msg.isUser && msg.status !== "read" &&
+          <Typewriter
+            options={{
+              stringSplitter,
+              autoStart: true,
+              delay: typeDelay,
+            }}
+            onInit={(typewriter) => {
+              // When typing starts
+              setIsTyping(true);
+
+              typewriter
+                .callFunction(() => setIsTyping(true))
+                .typeString(msg.text)
+                .callFunction(() => {
+                  setChatMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === msg.id ? { ...m, status: "read" } : m
+                    )
+                  );
+                  setTimeout(() => {
+                    setIsTyping(false);
+                  }, 1000);
+                })// When finished typing
+                .start();
+            }}
+          />
+        }
       </>
     );
   };
@@ -379,28 +495,8 @@ const ExplorePage = () => {
 
   const simulatePropertyRecommendation = () => {
     // Get a random property from topProperties or use enhanced sample data
-    const sampleProperty = topProperties?.[0] ? {
-      ...topProperties[0],
-      image: topProperties[0].images?.[0].src || null,
-      date: "il y a 2h",
-      features: [
-        { icon: "🛏️", value: "3 chs" },
-        { icon: "🚿", value: "2 sdb" },
-        { icon: "📐", value: "150m²" }
-      ]
-    } : {
-      _id: "sample-1",
-      title: "Villa moderne avec piscine à Antananarivo",
-      location: "Ivandry, Antananarivo",
-      price: "125,000,000 Ar",
-      image: null,
-      date: "il y a 2h",
-      features: [
-        { icon: "🛏️", value: "3 chs" },
-        { icon: "🚿", value: "2 sdb" },
-        { icon: "📐", value: "150m²" }
-      ]
-    };
+
+    const sampleProperty = topProperties?.[getRandomIntInclusive(0, (topProperties.length - 1))];
 
     const propertyMessage = {
       id: chatMessages.length + 3,
@@ -414,6 +510,7 @@ const ExplorePage = () => {
       id: chatMessages.length + 4,
       type: 'button',
       text: "Explorer TranoGasy",
+      route: "/tranogasyMap",
       isUser: false,
       timestamp: new Date(),
     };
@@ -423,6 +520,7 @@ const ExplorePage = () => {
       text: "Mais voici un exemple de ce que je pourrai bientôt faire ! Voici une propriété qui pourrait vous intéresser :",
       isUser: false,
       timestamp: new Date(),
+      status: "unread",
     } : buttonMessage;
 
     // First add the intro message immediately
@@ -430,8 +528,6 @@ const ExplorePage = () => {
 
 
     const timout = (stringSplitter(introMessage.text).length + countWords(introMessage.text)) * typeDelay + 2000;
-
-    console.log({ timout });
 
     // Then add the property message after custion delay
     setTimeout(() => {
@@ -447,7 +543,9 @@ const ExplorePage = () => {
   };
 
   const handleSendMessage = () => {
-    if (message.trim() === "") return;
+    if (message.trim() === "" || isTyping) return;
+
+    setIsTyping(true);
 
     // Add user message
     const userMessage = {
@@ -455,6 +553,7 @@ const ExplorePage = () => {
       text: message,
       isUser: true,
       timestamp: new Date(),
+      status: "read",
     };
 
     setChatMessages([...chatMessages, userMessage]);
@@ -467,19 +566,19 @@ const ExplorePage = () => {
         text: "😅 Oups ! Je suis encore en formation… \nGilbert IA est encore en construction… \nJe m'entraîne pour devenir le meilleur agent immobilier virtuel de Madagascar ! \nBientôt, je pourrai t'aider sur TranoGasy !",
         isUser: false,
         timestamp: new Date(),
+        status: "unread",
       } : {
         id: chatMessages.length + 2,
         text: "😢 Je m'excuse sincèrement, mais je ne peux pas vous aider maintenant 🥺. Gilbert Ai n'est pas encore disponible.\n\n 😋 Mais n'hésitez pas à explorer Tranogasy en cliquant sur ce bouton!",
         isUser: false,
         timestamp: new Date(),
+        status: "unread",
       };
 
       // First add the "under construction" message
       setChatMessages(prev => [...prev, aiResponse]);
 
       const timout = (stringSplitter(aiResponse.text).length + countWords(aiResponse.text)) * typeDelay + 2000;
-
-      console.log({ timout });
 
       // Then after another delay, simulate property recommendation
       setTimeout(() => {
@@ -490,7 +589,7 @@ const ExplorePage = () => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !isTyping) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -542,7 +641,7 @@ const ExplorePage = () => {
               overflow: "hidden",
             }}
           >
-            <HomeSlider />
+            <HomeSlider setIsChatboxOpen={setIsChatboxOpen}/>
           </div>
 
           <div
@@ -775,7 +874,7 @@ const ExplorePage = () => {
                 />
                 <button
                   onClick={handleSendMessage}
-                  disabled={message.trim() === ""}
+                  disabled={message.trim() === "" || isTyping}
                   style={{
                     padding: "12px",
                     backgroundColor: "#000000",
@@ -784,14 +883,18 @@ const ExplorePage = () => {
                     borderRadius: "50%",
                     width: "44px",
                     height: "44px",
-                    cursor: message.trim() === "" ? "not-allowed" : "pointer",
-                    opacity: message.trim() === "" ? 0.5 : 1,
+                    cursor: (message.trim() === "" || isTyping) ? "not-allowed" : "pointer",
+                    opacity: (message.trim() === "" || isTyping) ? 0.5 : 1,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  ➤
+                  {isTyping ?
+                    <Settings className="spin" />
+                    :
+                    <SendHorizontal />
+                  }
                 </button>
               </div>
             </div>

@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { BsFillSearchHeartFill } from "react-icons/bs";
 import { GiRobotHelmet } from "react-icons/gi";
 import { useLocation } from "wouter";
-import { usePopup } from "../hooks/usePopup";
 
 const options = {
   items: 1,
@@ -15,10 +14,9 @@ const options = {
   loop: true,
 };
 
-const HomeSlider = () => {
+const HomeSlider = ({ setIsChatboxOpen }) => {
   const [, setLocation] = useLocation();
   const [loaded, setLoaded] = useState(false);
-  const { featureUnderConstructionPopup } = usePopup();
   const properties = useSelector((state) => state.properties);
 
 
@@ -110,7 +108,7 @@ const HomeSlider = () => {
               <p className="align-self-end">
                 <button
                   type="button"
-                  onClick={() => featureUnderConstructionPopup()}
+                  onClick={() => setIsChatboxOpen(true)}
                   className="btn btn-5 font-weight-bold"
                   style={{
                     borderRadius: "30px",
