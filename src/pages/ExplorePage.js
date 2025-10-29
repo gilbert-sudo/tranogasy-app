@@ -6,12 +6,13 @@ import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkelet
 import HomeSlider from "../components/HomeSlider";
 
 import { useImage } from "../hooks/useImage";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setGilbertAiField } from "../redux/redux";
 import { FixedSizeGrid as Grid } from "react-window";
 import Typewriter from "typewriter-effect";
 import GraphemeSplitter from "grapheme-splitter";
 
-import { Settings, SendHorizontal, MapPin } from "lucide-react";
+import { Settings, SendHorizontal, MapPin, Import } from "lucide-react";
 import {
   FaBed,
   FaCouch,
@@ -47,8 +48,10 @@ const typeDelay = 25; //this is in ms
 
 const ExplorePage = () => {
   const topProperties = useSelector((state) => state.topProperties);
+  const gilbertAi = useSelector((state) => state.gilbertAi);
   const [, setLocation] = useLocation();
   const gridContainerRef = useRef();
+  const dispatch = useDispatch();
   const gridRef = useRef();
   const chatboxRef = useRef();
   const messagesEndRef = useRef();
@@ -60,17 +63,11 @@ const ExplorePage = () => {
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [chatMessages, setChatMessages] = useState([
-    {
-      id: 1,
-      text: `👋 Salama tompoko ! Je suis Gilbert (i Zily 😁), ton agent immobilier virtuel sur TranoGasy.
-            Je peux t'aider à trouver, vendre ou louer une maison à Madagascar. \n
-            😊 Que puis-je faire pour vous?`,
-      isUser: false,
-      timestamp: new Date(),
-      status: "unread", // "read" | "unread" 
-    },
-  ]);
+
+  const [chatMessages, setChatMessages] = useState(gilbertAi.chatMessages);
+    useEffect(() => {
+    dispatch(setGilbertAiField({ key: "chatMessages", value: chatMessages }));
+  }, [chatMessages]);
 
   // Track previous message count to detect new messages
   const previousMessageCountRef = useRef(chatMessages.length);
@@ -103,7 +100,6 @@ const ExplorePage = () => {
     }
   }, [isChatboxOpen]);
 
-
   const scrollToBottom = (mode) => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTo({
@@ -124,12 +120,13 @@ const ExplorePage = () => {
   // Close chatbox when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
+      if (isTyping) return
       if (
         chatboxRef.current &&
         !chatboxRef.current.contains(event.target) &&
         !event.target.closest(".gibert-ai-btn")
       ) {
-        setIsChatboxOpen(false);
+         setIsChatboxOpen(false);
       }
     };
 
@@ -156,6 +153,7 @@ const ExplorePage = () => {
   }, [topProperties]);
 
   const toggleChatbox = () => {
+    if (isTyping) return
     setIsChatboxOpen(!isChatboxOpen);
   };
 
@@ -782,7 +780,7 @@ const ExplorePage = () => {
                 </div>
               </div>
               <button
-                onClick={() => setIsChatboxOpen(false)}
+                onClick={() => !isTyping && setIsChatboxOpen(false)}
                 style={{
                   marginLeft: "auto",
                   background: "none",

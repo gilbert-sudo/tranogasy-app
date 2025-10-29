@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   setUser,
   setSignUp,
@@ -23,12 +23,17 @@ import {
 } from "../redux/redux";
 
 export const useRedux = () => {
+
   const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user);
 
   // Central update function using Thunks
   const updateReduxProperty = (property) => (dispatch) => {
-    dispatch(updateReduxUsersProperties(property));
-    dispatch(updateLikedProperties(property));
+    if (user) {
+      dispatch(updateReduxUsersProperties(property));
+      dispatch(updateLikedProperties(property));
+    }
     dispatch(updateProperties(property));
     dispatch(updateTopProperty(property));
     // You can add any other necessary dispatches here

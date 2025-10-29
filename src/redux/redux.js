@@ -526,11 +526,11 @@ export const {
 //tranogasy map 
 const tranogasyMapInitialState = {
   formFilter: false,
-  activeFiltersCount: 0,  
+  activeFiltersCount: 0,
   selectedProperty: null,
   previousCenter: null,
   previousSelectedPlace: null,
-  rawSearchResults : null,
+  rawSearchResults: null,
 };
 
 const tranogasyMapSlice = createSlice({
@@ -764,6 +764,42 @@ export const {
   resetPricing
 } = pricingSlice.actions;
 
+//tranogasy Gilbert AI
+const gilbertAiInitialState = {
+  chatMessages: [
+    {
+      id: 1,
+      text: `👋 Salama tompoko ! Je suis Gilbert (i Zily 😁), ton agent immobilier virtuel sur TranoGasy.
+            Je peux t'aider à trouver, vendre ou louer une maison à Madagascar. \n
+            😊 Que puis-je faire pour vous?`,
+      isUser: false,
+      timestamp: new Date(),
+      status: "unread", // "read" | "unread" 
+    },
+  ],
+};
+
+const gilbertAiSlice = createSlice({
+  name: "gilbertAi",
+  initialState: gilbertAiInitialState,
+  reducers: {
+    setGilbertAiState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setGilbertAiField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetGilbertAi: () => gilbertAiInitialState,
+  },
+});
+
+export const {
+  setGilbertAiState,
+  setGilbertAiField,
+  resetGilbertAi
+} = gilbertAiSlice.actions;
+
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
@@ -794,5 +830,6 @@ export const store = configureStore({
     payments: paymentSlice.reducer,
     plans: planSlice.reducer,
     pricing: pricingSlice.reducer,
+    gilbertAi: gilbertAiSlice.reducer,
   },
 });
