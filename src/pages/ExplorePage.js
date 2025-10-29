@@ -8,6 +8,25 @@ import HomeSlider from "../components/HomeSlider";
 import { useImage } from "../hooks/useImage";
 import { useSelector } from "react-redux";
 import { FixedSizeGrid as Grid } from "react-window";
+import Typewriter from "typewriter-effect";
+import GraphemeSplitter from "grapheme-splitter";
+
+const stringSplitter = (str) => {
+  const splitter = new GraphemeSplitter();
+  return splitter.splitGraphemes(str);
+};
+
+function countWords(str) {
+  if (str === null || str.trim() === "") {
+    return 0; // Handle null or empty strings
+  }
+  const trimmedStr = str.trim();
+  const words = trimmedStr.split(/\s+/);
+  return words.length;
+}
+
+
+const typeDelay = 25; //this is in ms
 
 const ExplorePage = () => {
   const topProperties = useSelector((state) => state.topProperties);
@@ -98,6 +117,7 @@ const ExplorePage = () => {
 
   // Function to render different message types
   const renderMessageContent = (msg) => {
+
     if (msg.type === 'property') {
       return (
         <div style={{
@@ -300,8 +320,54 @@ const ExplorePage = () => {
       );
     }
 
+    if (msg.type === 'button') {
+      return (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "transparent",
+            color: "#7cbd1e",
+            border: "1.5px solid #7cbd1e",
+            borderRadius: "9999px",
+            cursor: "pointer",
+            fontSize: "12px",
+            fontWeight: "600",
+            transition: "all 0.2s ease",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#7cbd1e";
+            e.currentTarget.style.color = "white";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#7cbd1e";
+          }}
+        >
+          {msg.text}
+          <span style={{ fontSize: "10px" }}>→</span>
+        </button>
+      );
+    }
+
     // Default text message
-    return msg.text;
+    return (
+      <>
+        {msg.isUser && msg.text}
+        {!msg.isUser &&
+          <Typewriter options={{
+            strings: msg.text,
+            stringSplitter,
+            autoStart: true,
+            delay: typeDelay,
+          }} />}
+      </>
+    );
   };
 
   const handlePropertyClick = (property) => {
@@ -344,20 +410,33 @@ const ExplorePage = () => {
       timestamp: new Date(),
     };
 
-    const introMessage = {
-      id: chatMessages.length + 2,
-      text: "Mais voici un exemple de ce que je pourrai bientôt faire ! Voici une propriété qui pourrait vous intéresser :",
+    const buttonMessage = {
+      id: chatMessages.length + 4,
+      type: 'button',
+      text: "Explorer TranoGasy",
       isUser: false,
       timestamp: new Date(),
     };
 
+    const introMessage = (chatMessages.length < 5) ? {
+      id: chatMessages.length + 2,
+      text: "Mais voici un exemple de ce que je pourrai bientôt faire ! Voici une propriété qui pourrait vous intéresser :",
+      isUser: false,
+      timestamp: new Date(),
+    } : buttonMessage;
+
     // First add the intro message immediately
     setChatMessages(prev => [...prev, introMessage]);
 
-    // Then add the property message after 2000ms delay
+
+    const timout = (stringSplitter(introMessage.text).length + countWords(introMessage.text)) * typeDelay + 2000;
+
+    console.log({ timout });
+
+    // Then add the property message after custion delay
     setTimeout(() => {
-      setChatMessages(prev => [...prev, propertyMessage]);
-    }, 3000);
+      if (chatMessages.length < 5) setChatMessages(prev => [...prev, propertyMessage]);
+    }, timout);
   };
 
   // Add the handleFavoriteClick function
@@ -383,9 +462,14 @@ const ExplorePage = () => {
 
     // Simulate AI response after a short delay
     setTimeout(() => {
-      const aiResponse = {
+      const aiResponse = (chatMessages.length < 5) ? {
         id: chatMessages.length + 2,
         text: "😅 Oups ! Je suis encore en formation… \nGilbert IA est encore en construction… \nJe m'entraîne pour devenir le meilleur agent immobilier virtuel de Madagascar ! \nBientôt, je pourrai t'aider sur TranoGasy !",
+        isUser: false,
+        timestamp: new Date(),
+      } : {
+        id: chatMessages.length + 2,
+        text: "😢 Je m'excuse sincèrement, mais je ne peux pas vous aider maintenant 🥺. Gilbert Ai n'est pas encore disponible.\n\n 😋 Mais n'hésitez pas à explorer Tranogasy en cliquant sur ce bouton!",
         isUser: false,
         timestamp: new Date(),
       };
@@ -393,12 +477,16 @@ const ExplorePage = () => {
       // First add the "under construction" message
       setChatMessages(prev => [...prev, aiResponse]);
 
+      const timout = (stringSplitter(aiResponse.text).length + countWords(aiResponse.text)) * typeDelay + 2000;
+
+      console.log({ timout });
+
       // Then after another delay, simulate property recommendation
       setTimeout(() => {
         simulatePropertyRecommendation();
-      }, 4000);
+      }, timout);
 
-    }, 1000);
+    }, 1200);
   };
 
   const handleKeyPress = (e) => {
@@ -429,6 +517,11 @@ const ExplorePage = () => {
     },
     [columnCount, topProperties]
   );
+
+  // useEffect(() => {
+  //   console.log(chatMessages, chatMessages.length);
+
+  // }, [chatMessages]);
 
   return (
     <>
