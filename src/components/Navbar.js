@@ -341,7 +341,7 @@ const Navbar = () => {
                     style={{ fontSize: "17px" }}
                     className="font-weight-bold"
                   />
-                  <fermer style={{ paddingBottom: "2px" }}>Fermer</fermer>
+                  <fermer>Fermer</fermer>
                 </button>
               )}
               {user && !notificationStatus.bell && (

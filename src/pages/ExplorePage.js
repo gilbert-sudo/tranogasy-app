@@ -869,6 +869,7 @@ const ExplorePage = () => {
                       lineHeight: "1.4",
                       wordWrap: "break-word",
                       whiteSpace: "pre-line",
+                      fontFamily: `"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif`
                     }}
                   >
                     {renderMessageContent(msg)}
