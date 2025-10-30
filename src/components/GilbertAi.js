@@ -52,7 +52,7 @@ const GilbertAi = () => {
   const gilbertAi = useSelector((state) => state.gilbertAi);
   const user = useSelector((state) => state.user);
 
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const dispatch = useDispatch();
   const chatboxRef = useRef();
   const messagesEndRef = useRef();
@@ -115,6 +115,10 @@ const GilbertAi = () => {
   function setIsChatboxOpen(state) {
     dispatch(setGilbertAiField({ key: "isChatboxOpen", value: state }));
   }
+
+  useEffect(() => {
+    handleCloseSlideClick();
+  }, [location]);
 
   // Track previous message count to detect new messages
   const previousMessageCountRef = useRef(chatMessages.length);

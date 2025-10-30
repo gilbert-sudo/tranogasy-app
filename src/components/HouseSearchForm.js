@@ -109,8 +109,13 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
   const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
     return (
       <div
-        style={{ borderRadius: "20px", padding: "10px", cursor: "pointer", border: "1px solid #ccc" }}
-        className={`btn-group ${state ? "bg-secondary" : "bg-light"
+        style={{
+           borderRadius: "20px", 
+           padding: "8px 10px 10px 10px", 
+           cursor: "pointer", 
+           border: "1px solid #ccc"
+           }}
+        className={`d-flex justify-content-center align-items-center btn-group ${state ? "bg-secondary" : "bg-light"
           }`}
         role="group"
         onClick={onClickFunction}
@@ -118,7 +123,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
         {state && <span className="text-light">{icon}</span>}
         <div className="form-check pl-0" style={{ cursor: "pointer" }}>
           <label
-            className="form-check-label"
+            className="form-check-label" 
             htmlFor={state}
             style={{ cursor: "pointer" }}
           >

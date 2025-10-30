@@ -28,8 +28,6 @@
   color: #fff;
   cursor: pointer;
   display: inline-block;
-  font-family: "Montserrat", -apple-system, system-ui, "Segoe UI",
-    "Liberation Sans", sans-serif;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.15385;
@@ -83,7 +81,6 @@ tionDetails .button-7:active {
 }
 
 .text-light-custom {
-  font-family: "Montserrat", sans-serif;
   color: #c5c5c5 !important;
 }
 
@@ -197,7 +194,6 @@ tionDetails .button-7:active {
     border-radius: 11px !important;
     padding: 3px;
     font-size: small;
-    font-family: "Montserrat", sans-serif;
   }
 }
 
@@ -206,7 +202,6 @@ tionDetails .button-7:active {
     border-radius: 13px !important;
     padding: 3px 5px;
     font-size: smaller;
-    font-family: "Montserrat", sans-serif;
   }
 }
 
@@ -214,7 +209,6 @@ tionDetails .button-7:active {
   .btn-form {
     border-radius: 10px !important;
     padding: 4px 7px;
-    font-family: "Montserrat", sans-serif;
   }
 }
 @media (min-width: 576px) {

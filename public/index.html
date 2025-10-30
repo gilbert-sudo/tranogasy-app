@@ -63,6 +63,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
+      font-family: "Segoe UI Emoji", sans-serif;
     }
 
     /* Responsive full-page background */
@@ -141,7 +142,6 @@
       border-radius: 9999px; /* pill shape */
       min-width: max-content;
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      font-family: 'Montserrat', sans-serif;
       font-size: 14px;
       color: #333;
     }
@@ -173,11 +173,6 @@
     😍 + 2000 annonces ✨
   </div>
 
-  <!-- Logo Container -->
-  <div class="logo-container">
-    <img src="%PUBLIC_URL%/images/gilbert-logo.png" alt="gilbert-logo">
-  </div>
-
     <!-- Loader -->
   <div id="footer">
     <div class="loader-text">
@@ -197,14 +192,12 @@
         const root = document.getElementById("root");
         if (root && root.children.length > 0) {
           const floatingAnnonces = document.querySelector(".floating-annonces");
-          const logoContainer = document.querySelector(".logo-container");
           const footer = document.getElementById("footer");
           const loaderDone = document.getElementById("explorepage");
           const loaderDone2 = document.getElementById("propertyDetailsPage");
 
                   // Hide all loader elements
           if (floatingAnnonces) floatingAnnonces.style.display = "none";
-          if (logoContainer) logoContainer.style.display = "none";
           if (footer) footer.style.display = "none";
           
           if (loaderDone || loaderDone2) {

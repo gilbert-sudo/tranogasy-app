@@ -145,8 +145,8 @@ const CreateListing = () => {
   const GenerateCheckbox = ({ state, label, icon, onClickFunction }) => {
     return (
       <div
-        style={{ borderRadius: "20px", padding: "10px", cursor: "pointer", border: "1px solid #ccc" }}
-        className={`btn-group ${state ? "bg-secondary" : "bg-light"
+        style={{ borderRadius: "20px", padding: "8px 10px 10px 10px", cursor: "pointer", border: "1px solid #ccc" }}
+        className={`d-flex justify-content-center align-items-center btn-group ${state ? "bg-secondary" : "bg-light"
           }`}
         role="group"
         onClick={onClickFunction}

@@ -93,10 +93,10 @@ const PageLoader = () => {
         }
       }
 
-      setTimeout(() => {
+      if (topProperties) {
         dispatch(setLoader("done"));
         setLocation("/explore");
-      }, 1000);
+      }
 
       const mapData = await loadMap();
       console.log("mapData", mapData);

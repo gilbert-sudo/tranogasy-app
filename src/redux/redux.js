@@ -277,15 +277,16 @@ const topPropertiesSlice = createSlice({
     updateTopProperty: (state, action) => {
       // Extract the updated property from the action payload
       const updatedProperty = action.payload;
+      if (state) {
+        // Find the index of the property to update
+        const topPropertyIndex = state.findIndex(
+          (topProperty) => topProperty._id === updatedProperty._id
+        );
 
-      // Find the index of the property to update
-      const topPropertyIndex = state.findIndex(
-        (topProperty) => topProperty._id === updatedProperty._id
-      );
-
-      if (topPropertyIndex !== -1) {
-        // If the property is found, update it in the array
-        state[topPropertyIndex] = updatedProperty;
+        if (topPropertyIndex !== -1) {
+          // If the property is found, update it in the array
+          state[topPropertyIndex] = updatedProperty;
+        }
       }
     },
   },
@@ -368,15 +369,16 @@ const propertiesSlice = createSlice({
     updateProperties: (state, action) => {
       // Extract the updated property from the action payload
       const updatedProperty = action.payload;
+      if (state) {
+        // Find the index of the property to update
+        const propertyIndex = state.findIndex(
+          (property) => property._id === updatedProperty._id
+        );
 
-      // Find the index of the property to update
-      const propertyIndex = state.findIndex(
-        (property) => property._id === updatedProperty._id
-      );
-
-      if (propertyIndex !== -1) {
-        // If the property is found, update it in the array
-        state[propertyIndex] = updatedProperty;
+        if (propertyIndex !== -1) {
+          // If the property is found, update it in the array
+          state[propertyIndex] = updatedProperty;
+        }
       }
     },
   },
