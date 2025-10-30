@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 
-import PropertyDetailsPage from "./PropertyDetailsPage";
+import PropertyDetailsPage from "../pages/PropertyDetailsPage";
 
 import { useImage } from "../hooks/useImage";
 import { useLike } from "../hooks/useLike";
@@ -13,7 +13,7 @@ import { setGilbertAiField } from "../redux/redux";
 import Typewriter from "typewriter-effect";
 import GraphemeSplitter from "grapheme-splitter";
 
-import { Settings, SendHorizontal, MapPin, Heart } from "lucide-react";
+import { Settings, SendHorizontal, MapPin, Heart, X, Move, BrainCircuit, Gamepad2 } from "lucide-react";
 import {
   FaBed,
   FaCouch,
@@ -21,6 +21,7 @@ import {
   FaToilet,
   FaShower,
 } from "react-icons/fa";
+import { IoMdCloseCircle } from "react-icons/io";
 
 const stringSplitter = (str) => {
   const splitter = new GraphemeSplitter();
@@ -44,11 +45,9 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
 const typeDelay = 25; //this is in ms
 
 const GilbertAi = () => {
-
   const topProperties = useSelector((state) => state.topProperties);
   const gilbertAi = useSelector((state) => state.gilbertAi);
   const user = useSelector((state) => state.user);
@@ -58,28 +57,70 @@ const GilbertAi = () => {
   const chatboxRef = useRef();
   const messagesEndRef = useRef();
   const messagesContainerRef = useRef();
+  const buttonRef = useRef();
   const { gilbertIALogoDark, gilbertIALogoLight } = useImage();
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
   const [play] = useSound("sounds/Like Sound Effect.mp3");
 
-  const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isSliderVisible, setIsSlideVisible] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
 
+  // Draggable states
+  const [buttonPosition, setButtonPosition] = useState({ x: 20, y: 150 });
+  const [chatboxPosition, setChatboxPosition] = useState({ x: 20, y: 100 });
+  const [isDraggingButton, setIsDraggingButton] = useState(false);
+  const [isDraggingChatbox, setIsDraggingChatbox] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [showTutorial, setShowTutorial] = useState(false);
+
   const [chatMessages, setChatMessages] = useState(gilbertAi.chatMessages);
+
   useEffect(() => {
     dispatch(setGilbertAiField({ key: "chatMessages", value: chatMessages }));
   }, [chatMessages]);
+
+  // Load positions from localStorage on component mount
+  useEffect(() => {
+    const savedButtonPos = localStorage.getItem('gilbertAiButtonPosition');
+    const savedChatboxPos = localStorage.getItem('gilbertAiChatboxPosition');
+    const tutorialShown = localStorage.getItem('gilbertAiTutorialShown');
+
+    if (savedButtonPos) {
+      setButtonPosition(JSON.parse(savedButtonPos));
+    }
+    if (savedChatboxPos) {
+      setChatboxPosition(JSON.parse(savedChatboxPos));
+    }
+    if (tutorialShown) {
+      setShowTutorial(false);
+    } else {
+      setTimeout(() => {
+        setShowTutorial(true);
+      }, 4000);
+    }
+  }, []);
+
+  // Save positions to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('gilbertAiButtonPosition', JSON.stringify(buttonPosition));
+  }, [buttonPosition]);
+
+  useEffect(() => {
+    localStorage.setItem('gilbertAiChatboxPosition', JSON.stringify(chatboxPosition));
+  }, [chatboxPosition]);
+
+  function setIsChatboxOpen(state) {
+    dispatch(setGilbertAiField({ key: "isChatboxOpen", value: state }));
+  }
 
   // Track previous message count to detect new messages
   const previousMessageCountRef = useRef(chatMessages.length);
 
   // Auto-scroll to bottom
   useEffect(() => {
-
     let interval;
 
     if (chatMessages.length > previousMessageCountRef.current) {
@@ -100,10 +141,10 @@ const GilbertAi = () => {
   }, [chatMessages, isTyping]);
 
   useEffect(() => {
-    if (isChatboxOpen) {
+    if (gilbertAi.isChatboxOpen) {
       scrollToBottom("instant");
     }
-  }, [isChatboxOpen]);
+  }, [gilbertAi.isChatboxOpen]);
 
   const scrollToBottom = (mode) => {
     if (messagesContainerRef.current) {
@@ -116,16 +157,176 @@ const GilbertAi = () => {
 
   const handleCloseSlideClick = () => {
     setIsSlideVisible(false);
+    setSelectedProperty(null);
   };
 
-  // Close chatbox when clicking outside
+  // Draggable functionality for button
+  const handleButtonMouseDown = (e) => {
+    e.preventDefault();
+    setIsDraggingButton(true);
+    const rect = buttonRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  const handleButtonTouchStart = (e) => {
+    const touch = e.touches[0];
+    setIsDraggingButton(true);
+    const rect = buttonRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    });
+  };
+
+  // Draggable functionality for chatbox
+  const handleChatboxMouseDown = (e) => {
+    if (e.target.closest('.messages-div') || e.target.closest('textarea') || e.target.closest('button')) {
+      return;
+    }
+    e.preventDefault();
+    setIsDraggingChatbox(true);
+    const rect = chatboxRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  const handleChatboxTouchStart = (e) => {
+    if (e.target.closest('.messages-div') || e.target.closest('textarea') || e.target.closest('button')) {
+      return;
+    }
+    const touch = e.touches[0];
+    setIsDraggingChatbox(true);
+    const rect = chatboxRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    });
+  };
+
+  // Handle drag movement
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isDraggingButton) {
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+
+        // Constrain to viewport
+        const maxX = window.innerWidth - 60;
+        const maxY = window.innerHeight - 60;
+
+        setButtonPosition({
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY))
+        });
+      } else if (isDraggingChatbox) {
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+
+        // Constrain to viewport
+        const maxX = window.innerWidth - 350;
+        const maxY = window.innerHeight - 500;
+
+        setChatboxPosition({
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY))
+        });
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      const touch = e.touches[0];
+      if (isDraggingButton) {
+        const newX = touch.clientX - dragOffset.x;
+        const newY = touch.clientY - dragOffset.y;
+
+        // Constrain to viewport
+        const maxX = window.innerWidth - 60;
+        const maxY = window.innerHeight - 60;
+
+        setButtonPosition({
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY))
+        });
+      } else if (isDraggingChatbox) {
+        const newX = touch.clientX - dragOffset.x;
+        const newY = touch.clientY - dragOffset.y;
+
+        // Constrain to viewport
+        const maxX = window.innerWidth - 350;
+        const maxY = window.innerHeight - 500;
+
+        setChatboxPosition({
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY))
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDraggingButton(false);
+      setIsDraggingChatbox(false);
+    };
+
+    if (isDraggingButton || isDraggingChatbox) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchend', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchend', handleMouseUp);
+    };
+  }, [isDraggingButton, isDraggingChatbox, dragOffset]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      // Adjust button position if needed
+      const maxButtonX = window.innerWidth - 60;
+      const maxButtonY = window.innerHeight - 60;
+
+      setButtonPosition(prev => ({
+        x: Math.min(prev.x, maxButtonX),
+        y: Math.min(prev.y, maxButtonY)
+      }));
+
+      // Adjust chatbox position if needed
+      const maxChatboxX = window.innerWidth - 350;
+      const maxChatboxY = window.innerHeight - 500;
+
+      setChatboxPosition(prev => ({
+        x: Math.min(prev.x, maxChatboxX),
+        y: Math.min(prev.y, maxChatboxY)
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
+  // Close chatbox when clicking outside (only if not typing)
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isTyping) return
+      if (isTyping) return;
       if (
         chatboxRef.current &&
         !chatboxRef.current.contains(event.target) &&
-        !event.target.closest(".gibert-ai-btn")
+        !event.target.closest(".gibert-ai-btn") &&
+        !isDraggingChatbox
       ) {
         setIsChatboxOpen(false);
       }
@@ -135,16 +336,21 @@ const GilbertAi = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isTyping, isDraggingChatbox]);
 
   const toggleChatbox = () => {
-    if (isTyping) return
-    setIsChatboxOpen(!isChatboxOpen);
+    if (isTyping) return;
+    if (showTutorial) setShowTutorial(false);
+    setIsChatboxOpen(!gilbertAi.isChatboxOpen);
+  };
+
+  const closeTutorial = () => {
+    setShowTutorial(false);
+    localStorage.setItem('gilbertAiTutorialShown', 'true');
   };
 
   // Function to render different message types
   const renderMessageContent = (msg) => {
-
     if (msg.type === 'property') {
       return (
         <div style={{
@@ -404,6 +610,8 @@ const GilbertAi = () => {
         <button
           onClick={(e) => {
             e.stopPropagation();
+            !isTyping && setIsChatboxOpen(false)
+            handleCloseSlideClick();
             setLocation(msg.route);
           }}
           style={{
@@ -476,6 +684,7 @@ const GilbertAi = () => {
     console.log("Property clicked:", property);
     setSelectedProperty(property);
     setIsSlideVisible(true);
+    !isTyping && setIsChatboxOpen(false)
   };
 
   const simulatePropertyRecommendation = () => {
@@ -591,29 +800,136 @@ const GilbertAi = () => {
     }
   };
 
-
-  // useEffect(() => {
-  //   console.log(chatMessages, chatMessages.length);
-
-  // }, [chatMessages]);
+  // lock scroll when tutorial is open
+  useEffect(() => {
+    if (showTutorial) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showTutorial]);
 
   return (
     <>
-      {/* Chatbot Button and Chatbox */}
+      {/* Tutorial Tooltip */}
+      {showTutorial && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: "-100%",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1000,
+              cursor: "pointer",
+              minWidth: "100dvw",
+              minHeight: "100dvh",
+            }}
+            onClick={closeTutorial}
+          />
+          <div style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "30px",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+            zIndex: 10000,
+            maxWidth: "400px",
+            width: "90%",
+            border: "2px solid #7cbd1e"
+          }}>
+            {/* Semi-transparent backdrop */}
+
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "15px"
+            }}>
+              <div className="d-flex justify-content-center">
+                <img src={gilbertIALogoDark()} alt="gilbert ai" className="img-fluid" style={{ borderRadius: "50%", marginRight: "5px", width: "30px", height: "30px" }} />
+                <h4 style={{ margin: 0, color: "#1f2937" }}>  Gilbert AI <small style={{ fontSize: "10px", fontWeight: "bold" }}>( Nouveau )</small></h4>
+              </div>
+              <button
+                onClick={closeTutorial}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "20px",
+                  cursor: "pointer",
+                  color: "#6b7280"
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <p style={{ margin: "10px 0", fontSize: "14px", lineHeight: "1.5" }}>
+                <strong>✨ Fonctionnalités :</strong>
+              </p>
+              <ul style={{ paddingLeft: "20px", fontSize: "14px", lineHeight: "1.5" }}>
+                <li><strong>Assistant IA immobilier</strong> pour vous aider à trouver votre propriété idéale</li>
+                <li><strong>Glisser-déposer</strong> : Déplacez le bouton et la fenêtre de chat où vous voulez</li>
+                <li><strong>Interface responsive</strong> qui s'adapte à tous vos appareils</li>
+              </ul>
+
+              <p style={{ margin: "15px 0 5px 0", fontSize: "14px", lineHeight: "1.5" }}>
+                <strong><Gamepad2 className="mb-1" size={20} /> Comment déplacer :</strong>
+              </p>
+              <ul style={{ paddingLeft: "20px", fontSize: "14px", lineHeight: "1.5" }}>
+                <li><strong>Souris</strong> : Cliquez et maintenez, puis glissez</li>
+                <li><strong>Écran tactile</strong> : Touchez et maintenez, puis glissez</li>
+                <li>Recherchez l'icône <Move size={22} style={{ color: "white", borderRadius: "50%", padding: "5px", display: "inline", marginBottom: "-2px", backgroundColor: "#7cbd1e" }} /> pour les éléments déplaçables</li>
+              </ul>
+            </div>
+
+            <button
+              onClick={closeTutorial}
+              style={{
+                width: "100%",
+                padding: "10px",
+                backgroundColor: "#7cbd1e",
+                color: "white",
+                border: "none",
+                borderRadius: "9999px",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "bold"
+              }}
+            >
+              Compris, commençons !
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Gilbert AI Button - Now Draggable */}
       <div
-        className="fast-actions"
+        ref={buttonRef}
+        className="gibert-ai-btn"
         style={{
-          position: "absolute",
-          top: "auto",
-          bottom: "70px",
-          left: "4dvw",
-          zIndex: 1000,
+          position: "fixed",
+          left: `${buttonPosition.x}px`,
+          top: `${buttonPosition.y}px`,
+          zIndex: 9999,
+          cursor: isDraggingButton ? "grabbing" : "grab",
+          touchAction: "none",
+          userSelect: "none",
           transform: 'translateZ(0)',
-          maxWidth: "60px"
         }}
+        onMouseDown={handleButtonMouseDown}
+        onTouchStart={handleButtonTouchStart}
       >
         <img
-          className="gibert-ai-btn"
           onClick={toggleChatbox}
           src={gilbertIALogoDark()}
           alt="Gilbert AI Assistant"
@@ -626,181 +942,341 @@ const GilbertAi = () => {
             border: "2px solid rgb(128, 128, 128)",
             cursor: "pointer",
             transition: "transform 0.2s ease",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
           }}
           onMouseEnter={(e) => e.target.style.transform = "scale(1.1)"}
           onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
         />
+        {/* Drag handle indicator */}
+        <div style={{
+          position: "absolute",
+          top: "-5px",
+          right: "-5px",
+          backgroundColor: "#7cbd1e",
+          borderRadius: "50%",
+          width: "20px",
+          height: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+          fontSize: "10px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+        }}>
+          <Move size={12} />
+        </div>
+      </div>
 
-        {/* Chatbox */}
-        {isChatboxOpen && (
+      {/* Chatbox - Now Draggable */}
+      {gilbertAi.isChatboxOpen && (
+        <div
+          ref={chatboxRef}
+          style={{
+            position: "fixed",
+            left: `${chatboxPosition.x}px`,
+            top: `${chatboxPosition.y}px`,
+            width: "350px",
+            height: "500px",
+            backgroundColor: "white",
+            borderRadius: "12px",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
+            border: "1px solid #e0e0e0",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            zIndex: 1001,
+            cursor: isDraggingChatbox ? "grabbing" : "default",
+            touchAction: "none",
+            userSelect: "none",
+          }}
+          onMouseDown={handleChatboxMouseDown}
+          onTouchStart={handleChatboxTouchStart}
+        >
+          {/* Chat Header with Drag Handle */}
           <div
-            ref={chatboxRef}
             style={{
-              position: "absolute",
-              bottom: "70px",
-              left: "0",
-              width: "350px",
-              height: "500px",
-              backgroundColor: "white",
-              borderRadius: "12px",
-              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
-              border: "1px solid #e0e0e0",
+              padding: "16px",
+              backgroundColor: "#000000",
+              color: "white",
               display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-              zIndex: 1001,
+              alignItems: "center",
+              gap: "12px",
+              cursor: "move",
             }}
           >
-            {/* Chat Header */}
-            <div
+            <img
+              src={gilbertIALogoLight()}
+              alt="Gilbert AI"
               style={{
-                padding: "16px",
-                backgroundColor: "#000000",
+                width: "35px",
+                height: "35px",
+                padding: "1px",
+                border: "1px solid white",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: "bold", fontSize: "16px" }}>
+                Gilbert AI <small className="font-weight-light">(Beta)</small>
+              </div>
+              <div style={{ fontSize: "12px", opacity: 0.8 }}>
+                En ligne <strong className="text-success" style={{ fontSize: "11px" }}>🟢</strong> Prêt à aider
+              </div>
+            </div>
+
+            {/* Drag Indicator */}
+            <Move
+              size={22}
+              style={{
+                opacity: 1,
+                marginRight: "8px",
                 color: "white",
+                borderRadius: "50%",
+                padding: "5px",
+                backgroundColor: "#7cbd1e"
+              }}
+            />
+
+            <button
+              onClick={() => !isTyping && setIsChatboxOpen(false)}
+              style={{
+                background: "none",
+                border: "1px solid rgb(255, 255, 255, 0.8)",
+                borderRadius: "50%",
+                padding: "3px",
+                width: "30px",
+                height: "30px",
+                color: "white",
+                cursor: "pointer",
+                fontSize: "18px",
+                opacity: 0.8,
                 display: "flex",
                 alignItems: "center",
-                gap: "12px",
+                justifyContent: "center",
               }}
             >
-              <img
-                src={gilbertIALogoLight()}
-                alt="Gilbert AI"
+              ×
+            </button>
+          </div>
+
+          {/* Chat Messages */}
+          <div
+            ref={messagesContainerRef}
+            className="messages-div"
+            style={{
+              flex: 1,
+              padding: "16px",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              backgroundColor: "#f8fafc",
+              cursor: "default",
+            }}
+          >
+            {chatMessages.map((msg) => (
+              <div
+                key={msg.id}
                 style={{
-                  width: "35px",
-                  height: "35px",
-                  padding: "1px",
-                  border: "1px solid white",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
-              <div>
-                <div style={{ fontWeight: "bold", fontSize: "16px" }}>
-                  Gilbert AI
-                </div>
-                <div style={{ fontSize: "12px", opacity: 0.8 }}>
-                  En ligne <strong className="text-success" style={{ fontSize: "11px" }}>🟢</strong> Prêt à aider
-                </div>
-              </div>
-              <button
-                onClick={() => !isTyping && setIsChatboxOpen(false)}
-                style={{
-                  marginLeft: "auto",
-                  background: "none",
-                  border: "1px solid rgb(255, 255, 255, 0.8)",
-                  borderRadius: "50%",
-                  padding: "3px",
-                  width: "30px",
-                  height: "30px",
-                  color: "white",
-                  cursor: "pointer",
-                  fontSize: "18px",
-                  opacity: 0.8,
+                  display: "flex",
+                  justifyContent: msg.isUser ? "flex-end" : "flex-start",
                 }}
               >
-                ×
+                <div
+                  style={{
+                    maxWidth: "80%",
+                    padding: "12px 16px",
+                    borderRadius: "18px",
+                    backgroundColor: msg.isUser ? "#000000" : "white",
+                    color: msg.isUser ? "white" : "#333",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                    fontSize: "14px",
+                    fontFamily: `"Segoe UI Emoji", sans-serif`,
+                    lineHeight: "1.4",
+                    wordWrap: "break-word",
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {renderMessageContent(msg)}
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Chat Input */}
+          <div
+            style={{
+              padding: "16px",
+              borderTop: "1px solid #e0e0e0",
+              backgroundColor: "white",
+            }}
+          >
+            <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={isTyping ? "Gilbert AI écrit..." : "Tapez votre message..."}
+                disabled={isTyping}
+                style={{
+                  flex: 1,
+                  padding: "12px 16px",
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "24px",
+                  resize: "none",
+                  outline: "none",
+                  fontSize: "16px",
+                  lineHeight: "1.4",
+                  maxHeight: "100px",
+                  minHeight: "40px",
+                }}
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={isTyping || message.trim() === ""}
+                style={{
+                  backgroundColor: isTyping || message.trim() === "" ? "#ccc" : "#000000",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: "40px",
+                  height: "40px",
+                  cursor: isTyping || message.trim() === "" ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                {isTyping ?
+                  <Settings className="spin" />
+                  :
+                  <SendHorizontal size={18} />
+                }
               </button>
             </div>
-
-            {/* Chat Messages */}
-            <div
-              ref={messagesContainerRef}
-              className="messages-div"
-              style={{
-                flex: 1,
-                padding: "16px",
-                overflowY: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px",
-                backgroundColor: "#f8fafc",
-              }}
-            >
-              {chatMessages.map((msg) => (
-                <div
-                  key={msg.id}
-                  style={{
-                    display: "flex",
-                    justifyContent: msg.isUser ? "flex-end" : "flex-start",
-                  }}
-                >
-                  <div
-                    style={{
-                      maxWidth: "80%",
-                      padding: "12px 16px",
-                      borderRadius: "18px",
-                      backgroundColor: msg.isUser ? "#3b82f6" : "white",
-                      color: msg.isUser ? "white" : "#333",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                      fontSize: "14px",
-                      lineHeight: "1.4",
-                      wordWrap: "break-word",
-                      whiteSpace: "pre-line",
-                    }}
-                  >
-                    {renderMessageContent(msg)}
-                  </div>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Chat Input */}
-            <div
-              style={{
-                padding: "16px",
-                borderTop: "1px solid #e0e0e0",
-                backgroundColor: "white",
-              }}
-            >
-              <div style={{ display: "flex", gap: "8px" }}>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Tapez votre message..."
-                  style={{
-                    flex: 1,
-                    padding: "12px",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: "24px",
-                    resize: "none",
-                    fontSize: "16px",
-                    minHeight: "44px",
-                    maxHeight: "100px",
-                    outline: "none",
-                    fontFamily: "inherit",
-                  }}
-                  rows={1}
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={message.trim() === "" || isTyping}
-                  style={{
-                    padding: "12px",
-                    backgroundColor: "#000000",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "44px",
-                    height: "44px",
-                    cursor: (message.trim() === "" || isTyping) ? "not-allowed" : "pointer",
-                    opacity: (message.trim() === "" || isTyping) ? 0.5 : 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {isTyping ?
-                    <Settings className="spin" />
-                    :
-                    <SendHorizontal />
-                  }
-                </button>
-              </div>
-            </div>
           </div>
+        </div>
+      )}
+
+      {/* Property Details Slider */}
+      {/* {isSliderVisible && selectedProperty && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 9999,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "90%",
+              height: "90%",
+              backgroundColor: "white",
+              borderRadius: "12px",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <button
+              onClick={handleCloseSlideClick}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                color: "white",
+                border: "none",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                cursor: "pointer",
+                zIndex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              ×
+            </button>
+            <PropertyDetailsPage
+              key={selectedProperty._id}
+              fastPreviewProperty={selectedProperty}
+              handleCloseSlideClick={handleCloseSlideClick}
+            />
+          </div>
+        </div>
+      )} */}
+      <div
+        className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
+        style={{
+          position: "fixed",
+          left: "50%",
+          bottom: 0,
+          transform: isSliderVisible
+            ? "translate(-50%, 0)"
+            : "translate(-50%, 100%)",
+          width: "100%",
+          height: "99dvh",
+          overflowY: "auto",
+          backgroundColor: "#fff",
+          borderRadius: "30px 30px 0 0",
+          boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
+          transition: "transform 0.5s ease",
+          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+          zIndex: 9000,
+        }}
+      >
+        {/* mini navbar for the lose button to hide the sliding div */}
+        <div
+          className="fixed-top"
+          style={{
+            width: "100%",
+            zIndex: 1000,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "sticky",
+          }}
+        >
+          <IoMdCloseCircle
+            style={{
+              fontSize: "2rem",
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              zIndex: "9999",
+              backgroundColor: "#fff",
+              borderRadius: "50%",
+              cursor: "pointer",
+              opacity: 1,
+              pointerEvents: "auto",
+              transition: "opacity 0.3s ease",
+            }}
+            onClick={() => {
+              handleCloseSlideClick();
+            }}
+          />
+        </div>
+
+        {/* Close button to hide the sliding div */}
+        {selectedProperty && isSliderVisible && (
+          <PropertyDetailsPage
+            key={selectedProperty._id}
+            fastPreviewProperty={selectedProperty}
+            handleCloseSlideClick={handleCloseSlideClick}
+          />
         )}
+
       </div>
     </>
   );

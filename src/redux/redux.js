@@ -766,6 +766,7 @@ export const {
 
 //tranogasy Gilbert AI
 const gilbertAiInitialState = {
+  isChatboxOpen: false,
   chatMessages: [
     {
       id: 1,

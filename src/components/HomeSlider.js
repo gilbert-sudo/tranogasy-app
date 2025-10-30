@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import OwlCarousel from "react-owl-carousel";
 import Skeleton from "react-loading-skeleton";
-import { useSelector } from "react-redux";
+
+import { useSelector, useDispatch } from "react-redux";
+import { setGilbertAiField } from "../redux/redux";
+
 import { BsFillSearchHeartFill } from "react-icons/bs";
 import { GiRobotHelmet } from "react-icons/gi";
 import { useLocation } from "wouter";
@@ -14,8 +17,9 @@ const options = {
   loop: true,
 };
 
-const HomeSlider = ({ setIsChatboxOpen }) => {
+const HomeSlider = () => {
   const [, setLocation] = useLocation();
+  const dispatch = useDispatch();
   const [loaded, setLoaded] = useState(false);
   const properties = useSelector((state) => state.properties);
 
@@ -108,7 +112,7 @@ const HomeSlider = ({ setIsChatboxOpen }) => {
               <p className="align-self-end">
                 <button
                   type="button"
-                  onClick={() => setIsChatboxOpen(true)}
+                  onClick={() => dispatch(setGilbertAiField({ key: "isChatboxOpen", value: true }))}
                   className="btn btn-5 font-weight-bold"
                   style={{
                     borderRadius: "30px",

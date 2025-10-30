@@ -37,6 +37,7 @@ import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import PasswordRecoveryVerificationPage from "./pages/PasswordRecoveryVerificationPage";
 import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisationPage";
 import ImageUpload from "./pages/ImageUpload";
+import GilbertAi from "./components/GilbertAi";
 
 import { Geolocation } from "@capacitor/geolocation";
 
@@ -374,12 +375,15 @@ function App() {
     <WonderPush options={{ webKey: 'ad242738aead9587c7ee3a981f65e2acabfa82bbe33620c0d14cf1ced5b0b5a1' }}>
       <AutoSubscribe />
       {/* <BackButtonHandler /> // Handle back button navigation on android devices */}
-        {pricing.pricingModal && <PricingModal />}
+      {pricing.pricingModal && <PricingModal />}
       <div id="app-homepage" className="app">
         <SkeletonTheme>
           <Router hook={useHashLocation}>
             <div className="App">
-              {loader && topNavbar && true && <Navbar />}
+              <div className="position-relative">
+                {loader && <GilbertAi />}
+              </div>
+              {loader && topNavbar && <Navbar />}
               <div style={{ display: "none" }}>
                 <Darkreader
                   defaultDarken={isDarkMode}
@@ -423,6 +427,7 @@ function App() {
                     </Route>}
                 </Switch>
               </main>
+
             </div>
           </Router>
         </SkeletonTheme>
