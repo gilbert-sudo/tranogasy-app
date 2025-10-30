@@ -70,7 +70,7 @@ const GilbertAi = () => {
 
   // Draggable states
   const [buttonPosition, setButtonPosition] = useState({ x: 20, y: 150 });
-  const [chatboxPosition, setChatboxPosition] = useState({ x: 20, y: 100 });
+  const [chatboxPosition, setChatboxPosition] = useState({ x: 20, y: 80 });
   const [isDraggingButton, setIsDraggingButton] = useState(false);
   const [isDraggingChatbox, setIsDraggingChatbox] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -1233,7 +1233,7 @@ const GilbertAi = () => {
           boxShadow: "0 -1px 12px hsla(var(--hue), var(--sat), 15%, 0.30)",
           transition: "transform 0.5s ease",
           boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
-          zIndex: 9000,
+          zIndex: 1000,
         }}
       >
         {/* mini navbar for the lose button to hide the sliding div */}

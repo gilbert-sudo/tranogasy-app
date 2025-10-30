@@ -52,7 +52,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   const [, setLocation] = useLocation();
   const myRef = useRef(null);
   const { shareProperty } = useProperty();
-  const { gilbertLogo } = useImage();
+  const { happyFamilyTranogasyBG, gilbertLogo } = useImage();
 
   const user = useSelector((state) => state.user);
   const timer = useSelector((state) => state.timer.timer);
@@ -200,6 +200,19 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
   };
 
   // console.log("property details: ", propertiesDetails);
+
+  useEffect(() => {
+    if ((!(propertyData !== "preview" || propertyPreview) || (propertyData !== "preview" && !loader))) {
+      document.body.style.backgroundImage = `url(${happyFamilyTranogasyBG()})`;
+    } else {
+      document.body.style.backgroundImage = "none";
+      document.body.style.backgroundColor = "#ffffff";
+    }
+    return () => {
+      document.body.style.backgroundImage = "none";
+      document.body.style.backgroundColor = "#ffffff";
+    };
+  }, [(!(propertyData !== "preview" || propertyPreview) || (propertyData !== "preview" && !loader))]);
 
   return (
     <div
@@ -404,77 +417,102 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
         </>
       )}
 
-      {(!(propertyData !== "preview" || propertyPreview) || (propertyData !== "preview" && !loader)) && (
-        <div>
-          {/* Semi-transparent backdrop - remains fixed at full screen */}
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(255, 255, 255, 0)",
-              zIndex: 10,
-              cursor: "pointer",
-            }}
-          />
-          {/* The main page-loader container (now only holds the logo) */}
-          <div
-            className="page-loader"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-              zIndex: 9999,
-            }}
-          >
-            <img
-              src={gilbertLogo()}
+      {(!(propertyData !== "preview" || propertyPreview) || (propertyData !== "preview" && !loader)) &&
+        (
+          <div>
+            {/* Semi-transparent backdrop - remains fixed at full screen */}
+            <div
               style={{
-                width: "110px",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(255, 255, 255, 0)",
+                zIndex: 10,
+                cursor: "pointer",
               }}
-              alt="gilbert-logo"
             />
-          </div>
+            {/* Floating Text - +2000 annonces */}
+            <div
+              className="floating-annonces"
+              style={{
+                position: "fixed",
+                width: "70dvw",
+                maxWidth: "450px",
+                top: "25px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                color: "black",
+                padding: "8px 16px",
+                borderRadius: "20px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                zIndex: 9999,
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.25)",
+                animation: "float 2.3s ease-in-out infinite",
+                textAlign: "center",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              😍 + 2000 annonces ✨
+            </div>
+            {/* The main page-loader container (now only holds the logo) */}
+            <div
+              className="page-loader"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                textAlign: "center",
+                zIndex: 9999,
+              }}
+            >
+              <img
+                src={gilbertLogo()}
+                style={{
+                  width: "110px",
+                }}
+                alt="gilbert-logo"
+              />
+            </div>
 
-          {/* SPINNER LOADER - MODIFIED FOR BOTTOM CENTER FIXED POSITION */}
-          <div
-            className="spinner-loader mb-4"
-            style={{
-              // Change from 'absolute' to 'fixed' to position relative to the viewport
-              position: "fixed",
-              minWidth: "max-content",
+            {/* SPINNER LOADER - MODIFIED FOR BOTTOM CENTER FIXED POSITION */}
+            <div
+              className="spinner-loader mb-4"
+              style={{
+                // Change from 'absolute' to 'fixed' to position relative to the viewport
+                position: "fixed",
+                minWidth: "max-content",
 
-              // Position at the bottom
-              bottom: "10px", // Adjust this value for desired distance from the bottom
+                // Position at the bottom
+                bottom: "10px", // Adjust this value for desired distance from the bottom
 
-              // Center horizontally
-              left: "50%",
-              transform: "translateX(-50%)", // Use translateX to center it
+                // Center horizontally
+                left: "50%",
+                transform: "translateX(-50%)", // Use translateX to center it
 
-              // Ensure it's on top of everything
-              zIndex: 1000,
-            }}
-          >
-            <small style={{ color: "#805c0fff", fontWeight: "bold" }}>
-              𝓑𝔂 𝓖𝓲𝓵𝓫𝓮𝓻𝓽 𝓜𝓪𝓭𝓪𝓰𝓪𝓼𝓬𝓪𝓻
-            </small>
-            <div className="d-flex justify-content-center align-items-center">
-              <small className="mr-2" style={{ color: "#d8a842ff", fontWeight: "bold" }}>
-                Chargement...
-              </small>{" "}
-              <HashLoader color="#c59d45" size={20} />
+                // Ensure it's on top of everything
+                zIndex: 1000,
+              }}
+            >
+              <small style={{ color: "#805c0fff", fontWeight: "bold" }}>
+                𝓑𝔂 𝓖𝓲𝓵𝓫𝓮𝓻𝓽 𝓜𝓪𝓭𝓪𝓰𝓪𝓼𝓬𝓪𝓻
+              </small>
+              <div className="d-flex justify-content-center align-items-center">
+                <small className="mr-2" style={{ color: "#d8a842ff", fontWeight: "bold" }}>
+                  Chargement...
+                </small>{" "}
+                <HashLoader color="#c59d45" size={20} />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

@@ -329,11 +329,11 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
             alt={`image-${index}`}
             loading="lazy"
             style={{
-              marginTop: img.height > img.width ? "0" : "-80px",
+              marginTop: img.height > img.width ? "0" : "-50px",
               flexShrink: 0,
               width: "100%",
               height: "100%",
-              objectFit: img.height > img.width ? "cover" : "contain",
+              objectFit: img.height > img.width ? "contain" : "contain",
               scrollSnapAlign: "start",
               backgroundColor: "#000",
             }}

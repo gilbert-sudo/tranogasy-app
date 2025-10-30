@@ -12,14 +12,13 @@ import { useImage } from "../hooks/useImage";
 const PageLoader = () => {
   //redux
   const dispatch = useDispatch();
-  const { gilbertLogo } = useImage();
+  const { happyFamilyTranogasyBG, gilbertLogo } = useImage();
   const [location, setLocation] = useLocation();
   const [oneTimeTask, setOneTimeTask] = useState(false);
   const user = useSelector((state) => state.user);
   const signupWaitlist = useSelector((state) => state.signup);
   const topProperties = useSelector((state) => state.topProperties);
   const properties = useSelector((state) => state.properties);
-
 
   const {
     loadTopProperties,
@@ -53,6 +52,14 @@ const PageLoader = () => {
     !properties && loadProperties();
     setOneTimeTask(true);
   }
+
+  useEffect(() => {
+    document.body.style.backgroundImage = `url(${happyFamilyTranogasyBG()})`;
+    return () => {
+      document.body.style.backgroundImage = "none";
+      document.body.style.backgroundColor = "#ffffff";
+    };
+  }, []);
 
   useEffect(() => {
     // Log the last user
@@ -117,6 +124,32 @@ const PageLoader = () => {
           cursor: "pointer",
         }}
       />
+
+      {/* Floating Text - +2000 annonces */}
+      <div
+        className="floating-annonces"
+        style={{
+          position: "fixed",
+          width: "70dvw",
+          maxWidth: "450px",
+          top: "25px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          color: "black",
+          padding: "8px 16px",
+          borderRadius: "20px",
+          fontSize: "16px",
+          fontWeight: "bold",
+          zIndex: 9999,
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.25)",
+          animation: "float 2.3s ease-in-out infinite",
+          textAlign: "center",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        😍 + 2000 annonces ✨
+      </div>
+
       {/* The main page-loader container (now only holds the logo) */}
       <div
         className="page-loader"
@@ -171,6 +204,23 @@ const PageLoader = () => {
           <HashLoader color="#c59d45" size={20} />
         </div>
       </div>
+
+      {/* Add CSS animation for floating effect */}
+      <style>
+        {`
+          @keyframes float {
+            0% {
+              transform: translateX(-50%) translateY(0px);
+            }
+            50% {
+              transform: translateX(-50%) translateY(-5px);
+            }
+            100% {
+              transform: translateX(-50%) translateY(0px);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
