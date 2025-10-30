@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import PropertyDetails from "../components/PropertyDetails";
 import PropertyFilter from "../components/PropertyFilter";
 import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkeleton";
+import Skeleton from "react-loading-skeleton";
 import HomeSlider from "../components/HomeSlider";
 
 import PropertyDetailsPage from "./PropertyDetailsPage";
@@ -14,7 +15,6 @@ import useSound from "use-sound";
 
 import { useSelector, useDispatch } from "react-redux";
 import { setGilbertAiField } from "../redux/redux";
-import { FixedSizeGrid as Grid } from "react-window";
 import Typewriter from "typewriter-effect";
 import GraphemeSplitter from "grapheme-splitter";
 
@@ -27,6 +27,7 @@ import {
   FaShower,
 } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
+import { BsFillSearchHeartFill } from "react-icons/bs";
 
 const stringSplitter = (str) => {
   const splitter = new GraphemeSplitter();
@@ -54,14 +55,13 @@ function getRandomIntInclusive(min, max) {
 const typeDelay = 25; //this is in ms
 
 const ExplorePage = () => {
+  const properties = useSelector((state) => state.properties);
   const topProperties = useSelector((state) => state.topProperties);
   const gilbertAi = useSelector((state) => state.gilbertAi);
   const user = useSelector((state) => state.user);
 
   const [, setLocation] = useLocation();
-  const gridContainerRef = useRef();
   const dispatch = useDispatch();
-  const gridRef = useRef();
   const chatboxRef = useRef();
   const messagesEndRef = useRef();
   const messagesContainerRef = useRef();
@@ -70,9 +70,6 @@ const ExplorePage = () => {
   const { notLogedPopUp } = useLogin();
   const [play] = useSound("sounds/Like Sound Effect.mp3");
 
-  const [gridWidth, setGridWidth] = useState(0);
-  const [columnCount, setColumnCount] = useState(3);
-  const [atTheTop, setAtTheTop] = useState(true);
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -128,15 +125,6 @@ const ExplorePage = () => {
     setIsSlideVisible(false);
   };
 
-
-  // prevent scroll on body
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
   // Close chatbox when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -155,22 +143,6 @@ const ExplorePage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // responsive columns
-  useEffect(() => {
-    const updateGridMetrics = () => {
-      if (gridContainerRef.current) {
-        const newWidth = gridContainerRef.current.offsetWidth;
-        setGridWidth(newWidth);
-        if (newWidth < 480) setColumnCount(1);
-        else if (newWidth < 768) setColumnCount(2);
-        else setColumnCount(3);
-      }
-    };
-    updateGridMetrics();
-    window.addEventListener("resize", updateGridMetrics);
-    return () => window.removeEventListener("resize", updateGridMetrics);
-  }, [topProperties]);
 
   const toggleChatbox = () => {
     if (isTyping) return
@@ -510,9 +482,7 @@ const ExplorePage = () => {
     // Navigate to property details or show in modal
     console.log("Property clicked:", property);
     setSelectedProperty(property);
-    setTimeout(() => {
-      setIsSlideVisible(true);
-    }, 100);
+    setIsSlideVisible(true);
   };
 
   const simulatePropertyRecommendation = () => {
@@ -628,28 +598,6 @@ const ExplorePage = () => {
     }
   };
 
-  const ItemSize = 400;
-
-  const Cell = useCallback(
-    ({ columnIndex, rowIndex, style }) => {
-      const index = rowIndex * columnCount + columnIndex;
-      const property = topProperties?.[index];
-      if (!property) return null;
-      return (
-        <div style={style}>
-          <div style={{ padding: "8px", height: "100%" }}>
-            <PropertyDetails
-              key={property._id}
-              property={property}
-              route={"ExplorePage"}
-              handlePropertyClick={handlePropertyClick}
-            />
-          </div>
-        </div>
-      );
-    },
-    [columnCount, topProperties]
-  );
 
   // useEffect(() => {
   //   console.log(chatMessages, chatMessages.length);
@@ -658,68 +606,33 @@ const ExplorePage = () => {
 
   return (
     <>
-      <div
-        id="explorepage"
-        className="home"
-      >
+      <div id="explorepage" className="home">
         <div className="site-section site-section-sm pb-0">
-          {/* Smooth HomeSlider */}
-          <div
-            style={{
-              transform: atTheTop ? "scaleY(1)" : "scaleY(0)",
-              transformOrigin: "top",
-              opacity: atTheTop ? 1 : 0,
-              height: atTheTop ? "auto" : "0px",
-              transition: "all 0.6s cubic-bezier(0.25, 1, 0.5, 1)",
-              willChange: "transform, opacity, height",
-              overflow: "hidden",
-            }}
-          >
-            <HomeSlider setIsChatboxOpen={setIsChatboxOpen} />
-          </div>
-
-          <div
-            className={`container transition-all duration-500 ${atTheTop ? "mt-1" : "mt-5"}`}
-            id="prodisplay"
-          >
+          <HomeSlider />
+          <div className="container" id="prodisplay">
             <PropertyFilter />
           </div>
         </div>
-
         <div className="site-section site-section-sm bg-light">
-          <div className="custom-container">
+          <div className="custom-container" style={{ paddingBottom: "80px" }}>
+
             {topProperties && topProperties.length > 0 ?
               (
-                <div className="row" ref={gridContainerRef}>
-                  {gridWidth > 0 && (
-                    <Grid
-                      ref={gridRef}
-                      columnCount={columnCount}
-                      columnWidth={Math.floor(gridWidth / columnCount)}
-                      height={window.innerHeight - 80}
-                      rowCount={Math.ceil(topProperties.length / columnCount)}
-                      rowHeight={(ItemSize / 100) * 106}
-                      width={(gridWidth / 100) * 101.5}
-                      itemData={topProperties}
-                      style={{
-                        scrollbarWidth: "none",
-                        paddingBottom: "100px",
-                        willChange: "scroll-position",
-                      }}
-                      onScroll={({ scrollTop }) => {
-                        const itemHeight = (ItemSize / 100) * 106;
-                        const hideThreshold = itemHeight * 1.7;
-
-                        setAtTheTop((prev) => {
-                          if (scrollTop <= 0 && !prev) return true;
-                          if (scrollTop > hideThreshold && prev) return false;
-                          return prev;
-                        });
-                      }}
-                    >
-                      {Cell}
-                    </Grid>
-                  )}
+                <div className="row">
+                  {topProperties &&
+                    topProperties.map(
+                      (property) =>
+                        property && (
+                          <div className="col-md-6 col-lg-4 mb-4">
+                            <PropertyDetails
+                              key={property._id}
+                              property={property}
+                              route={"ExplorePage"}
+                              handlePropertyClick={handlePropertyClick}
+                            />
+                          </div>
+                        )
+                    )}
                 </div>
               ) : (
                 <div className="row mt-3">
@@ -728,6 +641,55 @@ const ExplorePage = () => {
                   ))}
                 </div>
               )}
+            <div className="row d-flex justify-content-center w-100">
+              {properties &&
+                <Link
+                  to="/tranogasyMap"
+                  className="btn btn-success btn-sm"
+                  style={{
+                    display: "inline-block",
+                    cursor: "pointer",
+                    marginLeft: "15px",
+                    padding: "5px 10px",
+                    borderRadius: "9999px",
+                    width: "215px",
+                    height: "36px",
+                    fontSize: "16px",
+                  }}
+                >
+                  Voir plus d’annonces
+                </Link>
+              }
+              {!properties &&
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  <Skeleton
+                    width={215}
+                    height={36}
+                    borderRadius={20}
+                    baseColor="rgba(124, 189, 30, 0.5)"
+                    highlightColor="rgba(124, 189, 30, 0.6)"
+                  />
+                  <span
+                    style={{
+                      marginTop: "2px",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      fontSize: "16px",
+                      fontWeight: "670",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <BsFillSearchHeartFill /> Préparation
+                  </span>
+                </div>
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -869,7 +831,6 @@ const ExplorePage = () => {
                       lineHeight: "1.4",
                       wordWrap: "break-word",
                       whiteSpace: "pre-line",
-                      fontFamily: `"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif`
                     }}
                   >
                     {renderMessageContent(msg)}
@@ -899,7 +860,7 @@ const ExplorePage = () => {
                     border: "1px solid #e0e0e0",
                     borderRadius: "24px",
                     resize: "none",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     minHeight: "44px",
                     maxHeight: "100px",
                     outline: "none",
