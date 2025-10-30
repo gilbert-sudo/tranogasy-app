@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DialButton = () => {
+const GilbertAi = () => {
   const phoneNumber = "0345189896";
 
   return (
@@ -10,4 +10,4 @@ const DialButton = () => {
   );
 };
 
-export default DialButton;
+export default GilbertAi;
