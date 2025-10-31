@@ -9,8 +9,6 @@ import { useModal } from "../hooks/useModal";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { Key } from "lucide-react";
 
-import Swal from "sweetalert2";
-
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,27 +27,128 @@ const LoginPage = () => {
     login(phoneNumber, password);
   };
 
-  useEffect(() => {
-    if (isLoading) {
-      // Display the alert
-      Swal.fire({
-        imageUrl: "images/scan doc.gif",
-        imageHeight: 50, // Set a max height in pixels
-        html: `<p style={{ fontWeight: "400" }}> En train de verifier </p>`,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        customClass: {
-          popup: "smaller-sweet-alert2",
-        },
-      });
-    } else {
-      // Close the alert when loading is complete
-      Swal.close();
-    }
-  }, [isLoading]);
+  // Modern Loader Component
+  const LoadingOverlay = () => {
+    if (!isLoading) return null;
+
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+          backdropFilter: "blur(5px)",
+          borderRadius: "inherit",
+        }}
+      >
+        {/* Animated Logo/Icon */}
+        <div
+          style={{
+            width: "80px",
+            height: "80px",
+            borderRadius: "50%",
+            backgroundColor: "#7cbd1e",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: "20px",
+            animation: "pulse 2s infinite ease-in-out",
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </div>
+
+        {/* Loading Text */}
+        <p
+          style={{
+            fontSize: "1.1rem",
+            color: "#333",
+            fontWeight: "500",
+            marginBottom: "15px",
+          }}
+        >
+          En train de vérifier
+        </p>
+
+        {/* Animated Dots */}
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+          }}
+        >
+          {[0, 1, 2].map((dot) => (
+            <div
+              key={dot}
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "#7cbd1e",
+                animation: `bounce 1.4s infinite ease-in-out ${dot * 0.16}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* CSS Animations */}
+        <style>
+          {`
+            @keyframes pulse {
+              0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(124, 189, 30, 0.4);
+              }
+              50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(124, 189, 30, 0);
+              }
+              100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(124, 189, 30, 0);
+              }
+            }
+
+            @keyframes bounce {
+              0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+              }
+              40% {
+                transform: scale(1);
+                opacity: 1;
+              }
+            }
+          `}
+        </style>
+      </div>
+    );
+  };
 
   return (
     <div
+      className="login-page"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -61,7 +160,10 @@ const LoginPage = () => {
         paddingTop: "50px",
       }}
     >
-      {/* Formes d’arrière-plan */}
+      {/* Loading Overlay - Now positioned relative to login-page */}
+      <LoadingOverlay />
+
+      {/* Rest of your existing JSX remains the same */}
       <div
         style={{
           position: "absolute",
@@ -87,7 +189,7 @@ const LoginPage = () => {
         }}
       ></div>
 
-      {/* Conteneur principal */}
+      {/* Main container */}
       <div
         style={{
           position: "relative",
@@ -103,36 +205,7 @@ const LoginPage = () => {
           boxSizing: "border-box",
         }}
       >
-        {/* Bouton retour */}
-        {/* <div
-          onClick={() => window.history.back()}
-          style={{
-            position: "absolute",
-            top: "20px",
-            left: "20px",
-            backgroundColor: "white",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 0 24 24"
-            width="24px"
-            fill="#333"
-          >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
-          </svg>
-        </div> */}
-
-        {/* Texte de bienvenue */}
+        {/* Welcome text */}
         <h1
           style={{
             fontSize: "2.5rem",
@@ -148,11 +221,10 @@ const LoginPage = () => {
         </h1>
 
         <form action="#" onSubmit={handleSubmit}>
-
-          {/* Champ du numéro de téléphone */}
+          {/* Phone number input */}
           <PhoneNumberInput value={phoneNumber} onChange={handlePhoneNumberInput} />
 
-          {/* Champ du mot de passe */}
+          {/* Password input */}
           <div style={{ position: "relative", width: "100%", marginBottom: "40px" }}>
             <span
               style={{
@@ -211,7 +283,7 @@ const LoginPage = () => {
             </>
           )}
 
-          {/* Bouton Se connecter */}
+          {/* Login button */}
           <div
             style={{
               display: "flex",
@@ -258,10 +330,9 @@ const LoginPage = () => {
               </svg>
             </button>
           </div>
-
         </form>
 
-        {/* Liens du bas */}
+        {/* Bottom links */}
         <div
           style={{
             display: "flex",

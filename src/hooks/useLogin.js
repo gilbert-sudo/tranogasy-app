@@ -13,7 +13,7 @@ export const useLogin = () => {
   const [location, setLocation] = useLocation();
   const historyStack = useSelector((state) => state.historyStack);
   const { notLogedInImg } = useImage();
-  const { showModal } = useModal();
+  const { showModal, hideModal } = useModal();
 
   //redux
   const dispatch = useDispatch();
@@ -43,6 +43,7 @@ export const useLogin = () => {
   const login = async (phone, passwordToTest) => {
     setIsLoading(true);
     setError(null);
+
     if (!phone.length || !passwordToTest.length) {
       setBootstrap("alert alert-warning");
       setError("Veuillez remplir les champs obligatoires.");
@@ -90,12 +91,8 @@ export const useLogin = () => {
             localStorage.setItem("user", JSON.stringify(json));
             setIsLoading(false);
             Swal.close();
-            setLocation("/loader");
             console.log(location);
-            setTimeout(() => {
-              console.log("steps needed: ", -(historyStack.steps + 2));
-              window.history.go(-(historyStack.steps + 2));
-            }, 500);
+            hideModal();
           }
         } catch (error) {
           setIsLoading(false);

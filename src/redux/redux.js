@@ -634,13 +634,13 @@ export const { setSearchResults, resetSearchResults } = searchResultsSlice.actio
 //liked properties
 const likedPropertiesSlice = createSlice({
   name: "likedProperties",
-  initialState: [],
+  initialState: null,
   reducers: {
     setLikedPropreties: (state, action) => {
       return action.payload;
     },
     resetLikedPropreties: (state, action) => {
-      return [];
+      return null;
     },
     addLike: (state, action) => {
       state.unshift(action.payload);

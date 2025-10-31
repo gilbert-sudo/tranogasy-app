@@ -18,6 +18,8 @@ const FavoritePage = () => {
   if (oneTimeTask === null) {
     // scroll to top of the page
     window.scrollTo(0, 0);
+    console.log(likedPropertiesState);
+    
     setOneTimeTask("done");
   }
 

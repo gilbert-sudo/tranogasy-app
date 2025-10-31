@@ -188,7 +188,7 @@ export const useLoader = () => {
     }
   };
 
-  const loadPlans = async (userId) => {
+  const loadPlans = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/plans/`, {
         headers: {
