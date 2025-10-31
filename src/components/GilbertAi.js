@@ -1166,60 +1166,7 @@ const GilbertAi = () => {
       )}
 
       {/* Property Details Slider */}
-      {/* {isSliderVisible && selectedProperty && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 9999,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "90%",
-              height: "90%",
-              backgroundColor: "white",
-              borderRadius: "12px",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <button
-              onClick={handleCloseSlideClick}
-              style={{
-                position: "absolute",
-                top: "16px",
-                right: "16px",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: "40px",
-                height: "40px",
-                cursor: "pointer",
-                zIndex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              ×
-            </button>
-            <PropertyDetailsPage
-              key={selectedProperty._id}
-              fastPreviewProperty={selectedProperty}
-              handleCloseSlideClick={handleCloseSlideClick}
-            />
-          </div>
-        </div>
-      )} */}
+
       <div
         className={`property-details-slide ${isSliderVisible ? "show" : ""}`}
         style={{

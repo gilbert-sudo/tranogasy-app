@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+
 import PhoneNumberInput from "../components/PhoneNumberInput";
 
 import { useLogin } from "../hooks/useLogin";
+import { useModal } from "../hooks/useModal";
 
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { Key } from "lucide-react";
 
-import { Link } from "wouter";
 import Swal from "sweetalert2";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-
+  const [, setLocation] = useLocation();
+  const { showModal, hideModal } = useModal();
   const { login, isLoading, error, bootstrapClassname } = useLogin();
 
   const handlePhoneNumberInput = (e) => {
@@ -26,7 +29,7 @@ const LoginPage = () => {
     login(phoneNumber, password);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (isLoading) {
       // Display the alert
       Swal.fire({
@@ -101,7 +104,7 @@ const LoginPage = () => {
         }}
       >
         {/* Bouton retour */}
-        <div
+        {/* <div
           onClick={() => window.history.back()}
           style={{
             position: "absolute",
@@ -127,7 +130,7 @@ const LoginPage = () => {
             <path d="M0 0h24v24H0V0z" fill="none" />
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
           </svg>
-        </div>
+        </div> */}
 
         {/* Texte de bienvenue */}
         <h1
@@ -199,7 +202,7 @@ const LoginPage = () => {
             </span>
           </div>
 
-            {error && (
+          {error && (
             <>
               <br></br>
               <div className={bootstrapClassname}>
@@ -269,30 +272,32 @@ const LoginPage = () => {
             marginBottom: "50px",
           }}
         >
-          <Link
-            to="/signup"
+          <h6
+            onClick={() => showModal("signup")}
             style={{
-              textDecoration: "none",
               color: "#7cbd1e",
               fontWeight: "bold",
-              paddingBottom: "2px",
-              fontSize: "0.8rem",
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              cursor: "pointer",
             }}
           >
             Créer un compte
-          </Link>
-          <Link
-            to="/password-recovery/"
+          </h6>
+          <h6
+            onClick={() => {
+              hideModal();
+              setLocation("/password-recovery/");
+            }}
             style={{
-              textDecoration: "none",
               fontWeight: "bold",
-              paddingBottom: "2px",
-              fontSize: "0.8rem",
+              fontSize: "0.9rem",
               color: "#000",
+              cursor: "pointer",
             }}
           >
             Mot de passe oublié ?
-          </Link>
+          </h6>
         </div>
       </div>
     </div>

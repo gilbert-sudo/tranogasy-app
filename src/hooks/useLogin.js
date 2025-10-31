@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../redux/redux";
 import { useLocation } from "wouter";
 import { useImage } from "./useImage";
+import { useModal } from "./useModal";
+
 import Swal from "sweetalert2";
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,13 +13,12 @@ export const useLogin = () => {
   const [location, setLocation] = useLocation();
   const historyStack = useSelector((state) => state.historyStack);
   const { notLogedInImg } = useImage();
+  const { showModal } = useModal();
 
   //redux
   const dispatch = useDispatch();
 
   const notLogedPopUp = async () => {
-    
-
     Swal.fire({
       title: "<h6><strong>Vous êtes déconnecté(e)<strong><h6/>",
       html: `<img src=${notLogedInImg()} class="img-fluid"><br> Pour aimer et sauvegarder des articles, connectez-vous ou créez votre compte gratuitement. Merci !`,
@@ -33,12 +34,12 @@ export const useLogin = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setLocation("/login");
-        console.log(location);
+        showModal("login");
+        Swal.close();
       }
     });
   };
-  
+
   const login = async (phone, passwordToTest) => {
     setIsLoading(true);
     setError(null);

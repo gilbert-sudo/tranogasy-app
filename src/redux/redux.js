@@ -803,6 +803,33 @@ export const {
   resetGilbertAi
 } = gilbertAiSlice.actions;
 
+//tranogasy modals
+const modalsInitialState = {
+  isMasterModalOpen: false,
+  modalContent: "login",
+};
+
+const modalsSlice = createSlice({
+  name: "modals",
+  initialState: modalsInitialState,
+  reducers: {
+    setModalsState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setModalsField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetModals: () => modalsInitialState,
+  },
+});
+
+export const {
+  setModalsState,
+  setModalsField,
+  resetModals
+} = modalsSlice.actions;
+
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
@@ -834,5 +861,6 @@ export const store = configureStore({
     plans: planSlice.reducer,
     pricing: pricingSlice.reducer,
     gilbertAi: gilbertAiSlice.reducer,
+    modals: modalsSlice.reducer,
   },
 });

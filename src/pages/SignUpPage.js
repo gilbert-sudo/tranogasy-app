@@ -4,6 +4,7 @@ import PhoneNumberInput from "../components/PhoneNumberInput";
 import CodeConfirmerModal from "../components/CodeConfirmerModal";
 
 import { useSignup } from "../hooks/useSignup";
+import { useModal } from "../hooks/useModal";
 
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { Key, User } from "lucide-react";
@@ -12,8 +13,8 @@ import { Link, useLocation } from "wouter";
 import Swal from "sweetalert2";
 
 const SignUpPage = () => {
-  const { signup, generateRandomCode, isLoading, error, bootstrapClassname } =
-    useSignup();
+  const { signup, generateRandomCode, isLoading, error, bootstrapClassname } = useSignup();
+  const { showModal } = useModal();
 
   const [username, setUsername] = useState("");
   const [location, setLocation] = useLocation("");
@@ -22,7 +23,7 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const signupWaitlist = useSelector((state) => state.signup);
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlePhoneNumberInput = (e) => {
     // Remove non-numeric characters before updating state
@@ -101,6 +102,7 @@ const SignUpPage = () => {
     }
   }, [isLoading]);
 
+
   return (
     <>
       <CodeConfirmerModal
@@ -163,35 +165,6 @@ const SignUpPage = () => {
             boxSizing: "border-box",
           }}
         >
-          {/* Bouton retour */}
-          <div
-            onClick={() => window.history.back()}
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "20px",
-              backgroundColor: "white",
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 0 24 24"
-              width="24px"
-              fill="#333"
-            >
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
-            </svg>
-          </div>
-
           {/* Texte de bienvenue */}
           <h1
             style={{
@@ -368,18 +341,20 @@ const SignUpPage = () => {
             }}
           >
             Si vous disposez déjà d'un compte, &nbsp;
-            <Link
-              to="/login"
+            <h6
+              onClick={() => showModal("login")}
               style={{
-                textDecoration: "none",
+                borderBottom: "1px solid #7cbd1e",
                 color: "#7cbd1e",
                 fontWeight: "bold",
-                borderBottom: "1px solid #7cbd1e",
                 paddingBottom: "2px",
+                fontSize: "0.9rem",
+                fontWeight: "bold",
+                cursor: "pointer",
               }}
             >
               Se connecter
-            </Link>
+            </h6>
           </div>
         </div>
       </div>

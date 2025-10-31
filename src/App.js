@@ -24,7 +24,6 @@ import CreateListing from "./pages/CreateListing";
 import UpdatePropertyPage from "./pages/UpdatePropertyPage";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentRecoveryPage from "./pages/PaymentRecoveryPage";
-import Pricing from "./pages/Pricing";
 import FavoritePage from "./pages/FavoritePage";
 import NotificationPage from "./pages/NotificationPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -47,6 +46,7 @@ import { useRedux } from "./hooks/useRedux";
 import { useNotification } from "./hooks/useNotification";
 import { useUser } from "./hooks/useUser";
 import { useLoader } from "./hooks/useLoader";
+import { useModal } from "./hooks/useModal";
 
 //all components
 import Navbar from "./components/Navbar";
@@ -70,6 +70,7 @@ import {
   deleteFromNotifications,
   toggleDarkMode,
   setTimer,
+  setModalsField
 } from "./redux/redux";
 
 // returns the current hash location in a normalized form
@@ -96,7 +97,6 @@ const routes = [
   { path: "/mylisting", component: MyListingPage, private: false },
   { path: "/myhouselisting", component: MyHouseListingPage, private: false },
   { path: "/notification", component: NotificationPage, private: false },
-  { path: "/pricing", component: Pricing, private: false },
   { path: "/payment-recovery", component: PaymentRecoveryPage, private: false },
   { path: "/payment/:planData/:option", component: PaymentPage, private: false },
   { path: "/create-listing", component: CreateListing, private: false },
@@ -123,6 +123,7 @@ function App() {
   const user = useSelector((state) => state.user);
 
   const topNavbar = useSelector((state) => state.topNavbar);
+  const modals = useSelector((state) => state.modals);
   const properties = useSelector((state) => state.properties);
   const usersProperties = useSelector((state) => state.usersProperties);
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
@@ -131,6 +132,7 @@ function App() {
 
   const { updateTimer, isExpired } = useTimer();
   const { findLocationsWithinDistance } = useMap();
+  const { hideModal } = useModal();
   const { updateReduxProperty } = useRedux();
   const { pushNotification } = useNotification();
   const { updateUser } = useUser();
@@ -383,6 +385,60 @@ function App() {
               <div className="position-relative">
                 {loader && <GilbertAi />}
               </div>
+              {modals.isMasterModalOpen &&
+                (
+                  <div
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      zIndex: 9999,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "97%",
+                        maxWidth: "720px",
+                        height: "95%",
+                        backgroundColor: "white",
+                        borderRadius: "30px",
+                        overflow: "hidden",
+                        position: "relative",
+                      }}
+                    >
+                      <button
+                        onClick={() => hideModal()}
+                        style={{
+                          position: "absolute",
+                          top: "16px",
+                          right: "16px",
+                          backgroundColor: "rgba(0, 0, 0, 0.7)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "40px",
+                          height: "40px",
+                          cursor: "pointer",
+                          zIndex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        ×
+                      </button>
+                      {modals.modalContent === "login" && <LoginPage />}
+                      {modals.modalContent === "signup" && <SignUpPage />}
+                    </div>
+                  </div>
+                )
+              }
               {loader && topNavbar && <Navbar />}
               <div style={{ display: "none" }}>
                 <Darkreader

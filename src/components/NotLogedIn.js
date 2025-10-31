@@ -1,8 +1,11 @@
-import { useLocation, Link } from "wouter";
+import { Link } from "wouter";
 import { useImage } from "../hooks/useImage";
+import { useModal } from "../hooks/useModal";
+
 
 const NotLogedIn = () => {
   const { notLogedInImg } = useImage();
+  const { showModal } = useModal();
 
   return (
     <div
@@ -74,8 +77,9 @@ const NotLogedIn = () => {
             gap: "1rem",
           }}
         >
-          <Link
-            to="/login"
+          <button
+            type="button"
+            onClick={() => showModal("login")}
             className="btn btn-outline-dark"
             style={{
               borderRadius: "9999px",
@@ -89,9 +93,10 @@ const NotLogedIn = () => {
             }}
           >
             Se connecter
-          </Link>
-          <Link
-            to="/signup"
+          </button>
+          <button
+            type="button"
+            onClick={() => showModal("signup")}
             className="btn"
             style={{
               background: "#7cbd1e",
@@ -112,7 +117,7 @@ const NotLogedIn = () => {
             onMouseOut={(e) => (e.currentTarget.style.background = "#7cbd1e")}
           >
             Créer un compte
-          </Link>
+          </button>
         </div>
       </div>
     </div>

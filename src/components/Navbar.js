@@ -100,7 +100,6 @@ const Navbar = () => {
         location.startsWith("/password-recovery") ||
         location.startsWith("/password-recovery-finalisation") ||
         location.startsWith("/myhouselisting") ||
-        location.startsWith("/pricing") ||
         location.startsWith("/create-listing")
       ) {
         dispatch(setNavbar(false));
@@ -201,7 +200,6 @@ const Navbar = () => {
                     style={ActiveLink(
                       "/mylisting",
                       "/create-listing",
-                      "/pricing",
                       "/payment"
                     )}
                   >
