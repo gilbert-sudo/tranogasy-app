@@ -20,6 +20,9 @@ import { useMap } from "./useMap";
 import { getDistance } from "geolib";
 import Swal from "sweetalert2";
 
+import { subDays, isAfter, parseISO } from "date-fns";
+
+
 import "../components/css/sweetalert.css";
 
 
@@ -779,15 +782,23 @@ export const useProperty = () => {
 
     let results = [];
 
-    // Simple search
-    results = properties.filter(
-      (property) =>
+    const now = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+
+    results = properties.filter((property) => {
+      const createdAt = new Date(property.created_at);
+
+      return (
         property.type === type &&
+        createdAt >= thirtyDaysAgo && // ✅ Only properties created in the last 30 days
         (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
         (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
         (budgetMin && property.price ? property.price >= budgetMin : true) &&
         (budgetMax && property.price ? property.price <= budgetMax : true)
-    );
+      );
+    });
+
 
     if (results.length === 0) {
       dispatch(setSearchResults([]));
@@ -892,13 +903,50 @@ export const useProperty = () => {
     return price;
   };
 
+  // const getPriceAndRentRanges = (properties) => {
+  //   let minPrice = Infinity;
+  //   let maxPrice = -Infinity;
+  //   let minRent = Infinity;
+  //   let maxRent = -Infinity;
+
+  //   properties.forEach(property => {
+  //     if (property.price !== null) {
+  //       minPrice = Math.min(minPrice, property.price);
+  //       maxPrice = Math.max(maxPrice, property.price);
+  //     }
+  //     if (property.rent !== null) {
+  //       minRent = Math.min(minRent, property.rent);
+  //       maxRent = Math.max(maxRent, property.rent);
+  //     }
+  //   });
+
+  //   // If there are no valid price values, set min and max price to null
+  //   if (minPrice === Infinity) minPrice = null;
+  //   if (maxPrice === -Infinity) maxPrice = null;
+
+  //   // If there are no valid rent values, set min and max rent to null
+  //   if (minRent === Infinity) minRent = null;
+  //   if (maxRent === -Infinity) maxRent = null;
+
+  //   return { minPrice, maxPrice, minRent, maxRent };
+  // }
+
   const getPriceAndRentRanges = (properties) => {
+    const thirtyDaysAgo = subDays(new Date(), 30);
+
+    // ✅ Only keep properties created in the last 30 days
+    const recentProperties = properties.filter((property) => {
+      if (!property.created_at) return false;
+      const createdAt = parseISO(property.created_at);
+      return isAfter(createdAt, thirtyDaysAgo);
+    });
+
     let minPrice = Infinity;
     let maxPrice = -Infinity;
     let minRent = Infinity;
     let maxRent = -Infinity;
 
-    properties.forEach(property => {
+    recentProperties.forEach((property) => {
       if (property.price !== null) {
         minPrice = Math.min(minPrice, property.price);
         maxPrice = Math.max(maxPrice, property.price);
@@ -909,16 +957,15 @@ export const useProperty = () => {
       }
     });
 
-    // If there are no valid price values, set min and max price to null
+    // ✅ Handle empty cases gracefully
     if (minPrice === Infinity) minPrice = null;
     if (maxPrice === -Infinity) maxPrice = null;
-
-    // If there are no valid rent values, set min and max rent to null
     if (minRent === Infinity) minRent = null;
     if (maxRent === -Infinity) maxRent = null;
 
     return { minPrice, maxPrice, minRent, maxRent };
-  }
+  };
+
 
   return {
     addProperty,

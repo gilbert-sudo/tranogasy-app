@@ -43,18 +43,12 @@ import useSound from "use-sound";
 import userProfile from "../img/user-avatar.png";
 
 function PropertyDetails({ property, route, handlePropertyClick }) {
-  const formattedDate = new Intl.DateTimeFormat("fr-FR", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    timeZone: "Indian/Antananarivo",
-  }).format(new Date(property.created_at));
 
   const dispatch = useDispatch();
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
   const { deleteProperty } = useProperty();
-  const { formatPhone } = useFormater();
+  const { formatPhone, formatDateAgo } = useFormater();
 
   const [isliked, setIsliked] = useState(false);
   const [play] = useSound("sounds/Like Sound Effect.mp3");
@@ -139,11 +133,11 @@ function PropertyDetails({ property, route, handlePropertyClick }) {
               alignItems: "center",
               padding: "3px 8px",
               fontWeight: "light",
-              borderRadius: 10,
+              borderRadius: "9999px",
               color: "white"
             }}
           >
-            <small>{formattedDate && formattedDate}</small>
+            <small>{formatDateAgo(property.created_at)}</small>
           </div>
 
         </div>

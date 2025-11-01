@@ -16,7 +16,6 @@ const PageLoader = () => {
   const [location, setLocation] = useLocation();
   const [oneTimeTask, setOneTimeTask] = useState(false);
   const user = useSelector((state) => state.user);
-  const signupWaitlist = useSelector((state) => state.signup);
   const topProperties = useSelector((state) => state.topProperties);
   const properties = useSelector((state) => state.properties);
 

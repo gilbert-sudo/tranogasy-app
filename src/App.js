@@ -126,6 +126,7 @@ function App() {
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const historyStack = useSelector((state) => state.historyStack.value);
   const pricing = useSelector((state) => state.pricing);
+  const payments = useSelector((state) => state.payments);
   const likedPropertiesState = useSelector((state) => state.likedProperties);
 
   const { updateTimer, isExpired } = useTimer();
@@ -134,7 +135,7 @@ function App() {
   const { updateReduxProperty } = useRedux();
   const { pushNotification } = useNotification();
   const { updateUser } = useUser();
-  const { loadUsersPropertiesFromLocalState, loadLikes, loadUsersProperties } = useLoader();
+  const { loadUsersPropertiesFromLocalState, loadLikes, loadPayments } = useLoader();
 
   // Render the main content
 
@@ -335,12 +336,15 @@ function App() {
   useEffect(() => {
     console.log("run this shit");
     if (user) {
+      const userId = user._id;
       if (!likedPropertiesState) {
-        const userId = user._id;
         loadLikes(userId);
       }
+      if (!payments || payments.length === 0) {
+        loadPayments(userId);
+      }
       if (properties && properties.length > 0 && !usersProperties) {
-        loadUsersPropertiesFromLocalState(user._id, properties);
+        loadUsersPropertiesFromLocalState(userId, properties);
       }
     }
   }, [user, properties, usersProperties]);

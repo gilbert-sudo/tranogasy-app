@@ -15,6 +15,7 @@ import { useLike } from "../hooks/useLike";
 import { useLogin } from "../hooks/useLogin";
 import { usePopup } from "../hooks/usePopup";
 import { useSubscription } from "../hooks/useSubscription";
+import { useFormater } from "../hooks/useFormater";
 import useSound from "use-sound";
 
 import {
@@ -67,6 +68,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
   const { notLogedPopUp } = useLogin();
   const { featureUnderConstructionPopup, unpaidBillPopup } = usePopup();
   const { notSubscribedPopup } = useSubscription();
+  const { formatDateAgo } = useFormater();
   const [play] = useSound("sounds/Like Sound Effect.mp3");
   const [isliked, setIsliked] = useState(false);
 
@@ -196,13 +198,6 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
     }
   };
 
-
-  const formattedDate = new Intl.DateTimeFormat("fr-FR", {
-    year: "numeric",
-    month: "short", // Use short month name
-    day: "2-digit", // Use 2-digit day format
-    timeZone: "Indian/Antananarivo",
-  }).format(new Date(property.created_at));
 
   const GenerateFeaturebox = ({ icon, label }) => {
     return (
@@ -431,10 +426,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           alignItems: "center",
           padding: "5px 10px",
           fontWeight: "light",
-          borderRadius: 20,
+          borderRadius: "9999px",
         }}
       >
-        <small>{formattedDate && formattedDate}</small>
+        <small>{formatDateAgo(property.created_at)}</small>
       </div>
 
       {/* Vertical action buttons */}
@@ -537,7 +532,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
         <p style={{ fontWeight: "bold", fontSize: 16, pointerEvents: "auto", width: "max-content" }} onClick={() => property.owner.role === "user" ? setLocation(`/userProfile/${property.owner._id}`) : null}>
           @{property.owner.role === "admin" ? (property?.sources?.username || "Gilbert AI") : property.owner.username}
         </p>
-        
+
         <p
           style={{
             fontSize: 14,

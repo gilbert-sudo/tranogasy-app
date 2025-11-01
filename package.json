@@ -16,6 +16,7 @@
     "@testing-library/react": "^13.4.0",
     "@vis.gl/react-google-maps": "^0.5.4",
     "browser-image-compression": "^2.0.2",
+    "date-fns": "^4.1.0",
     "geolib": "^3.3.4",
     "grapheme-splitter": "^1.0.4",
     "linkify-react": "^4.2.0",

@@ -6,6 +6,7 @@ import { BsHeartFill } from "react-icons/bs";
 import { ImLocation } from "react-icons/im";
 import { useLike } from "../hooks/useLike";
 import { useLogin } from "../hooks/useLogin";
+import { useFormater } from "../hooks/useFormater";
 import "./css/sweetalert.css";
 //import user photo profil
 import userProfile from "../img/user-avatar.png";
@@ -13,13 +14,14 @@ import useSound from "use-sound";
 
 const CarouselDetails = ({ property, handleShowContact }) => {
 
-  const [location, setLocation] = useLocation("");
+  const [, setLocation] = useLocation("");
   const { like, disLike } = useLike();
   const { notLogedPopUp } = useLogin();
+  const { formatDateAgo } = useFormater();
+
   const [play] = useSound("sounds/Like Sound Effect.mp3");
   const [isliked, setIsliked] = useState(false);
   const user = useSelector((state) => state.user);
-  const timer = useSelector((state) => state.timer.timer);
 
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
     year: "numeric",
@@ -97,7 +99,7 @@ const CarouselDetails = ({ property, handleShowContact }) => {
                 <i className="fas fa-angle-down mr-3 text-muted"> </i>
               </div>
               <h6 className="text-light-custom">
-                <small>{property && formattedDate}</small>
+                <small>{property && formatDateAgo(property.created_at)}</small>
               </h6>
             </div>
           </div>
