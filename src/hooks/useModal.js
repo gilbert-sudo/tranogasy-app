@@ -7,16 +7,21 @@ export const useModal = () => {
 
   const showModal = async (content) => {
     dispatch(setModalsField({ key: "isMasterModalOpen", value: true }));
-    dispatch(setModalsField({ key: "modalContent", value: content }));
+    dispatch(setModalsField({ key: "masterModalContent", value: content }));
+  };
+
+  const setCodeConfirmer = async (value) => {
+    dispatch(setModalsField({ key: "codeConfirmer", value: value }));
   };
 
   const hideModal = async () => {
     dispatch(setModalsField({ key: "isMasterModalOpen", value: false }));
-    dispatch(setModalsField({ key: "modalContent", value: "login" }));
+    dispatch(setModalsField({ key: "masterModalContent", value: "login" }));
   };
 
   return {
     showModal,
+    setCodeConfirmer,
     hideModal
   };
 };

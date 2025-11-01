@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { v6 as uuidv6 } from "uuid";
 import { HashLoader } from "react-spinners";
-import { setSignUp, setLoader } from "../redux/redux";
+import { setLoader } from "../redux/redux";
 import { useLoader } from "../hooks/useLoader";
 import { useLogin } from "../hooks/useLogin";
 import { offlineLoader } from "../hooks/useOfflineLoader";
@@ -84,12 +84,6 @@ const PageLoader = () => {
             loadNotifications(localUser._id);
             loginLastUser(localUser._id);
           }
-        }
-      }
-      if (!signupWaitlist) {
-        const localSignup = JSON.parse(localStorage.getItem("signup"));
-        if (localSignup) {
-          dispatch(setSignUp(localSignup));
         }
       }
 

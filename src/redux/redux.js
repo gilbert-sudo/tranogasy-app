@@ -85,18 +85,6 @@ const timerSlice = createSlice({
 
 export const { setTimer } = timerSlice.actions;
 
-//signup user log
-const signUpSlice = createSlice({
-  name: "signup",
-  initialState: null,
-  reducers: {
-    setSignUp: (state, action) => {
-      return action.payload;
-    },
-  },
-});
-
-export const { setSignUp } = signUpSlice.actions;
 
 //image upload state
 const imgSlice = createSlice({
@@ -808,7 +796,8 @@ export const {
 //tranogasy modals
 const modalsInitialState = {
   isMasterModalOpen: false,
-  modalContent: "login",
+  codeConfirmer: null,
+  masterModalContent: "login",
 };
 
 const modalsSlice = createSlice({
@@ -839,7 +828,6 @@ export const store = configureStore({
     accountRecovery: accountRecoverySlice.reducer,
     timer: timerSlice.reducer,
     historyStack: historyStackSlice.reducer,
-    signup: signUpSlice.reducer,
     img: imgSlice.reducer,
     imgPreview: imgPreviewSlice.reducer,
     loader: loaderSlice.reducer,

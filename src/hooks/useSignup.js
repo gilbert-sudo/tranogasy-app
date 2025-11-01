@@ -1,20 +1,17 @@
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setSignUp } from "../redux/redux";
-import { useRedux } from "./useRedux";
-import { useSMS } from "./useSMS";
+import { setUser } from "../redux/redux";
+import { useModal } from "./useModal";
 import Swal from "sweetalert2";
 
 export const useSignup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [bootstrapClassname, setBootstrap] = useState(null);
-  const [location, setLocation] = useLocation();
-  const { sendSMS } = useSMS();
-  const { resetReduxStore } = useRedux();
-
   const dispatch = useDispatch();
+  const [, setLocation] = useLocation();
+  const { hideModal, setCodeConfirmer } = useModal();
 
   const generateRandomCode = async () => {
     const min = 100;
@@ -88,36 +85,8 @@ export const useSignup = () => {
             }
             if (!response.ok) {
               if (password === confirmPassword) {
-                console.log(location);
-                dispatch(
-                  setSignUp({
-                    username,
-                    email,
-                    phone,
-                    password,
-                    confirmationCode,
-                  })
-                );
-
-                localStorage.setItem(
-                  "signup",
-                  JSON.stringify({
-                    username,
-                    email,
-                    phone,
-                    password,
-                    confirmationCode,
-                  })
-                );
-
-                //send verification code to the user
-                await sendSMS(
-                  phone,
-                  "Votre code de confirmation TranoGasy est le : " +
-                    confirmationCode
-                );
-
-                setLocation(`/signupverification`);
+                // verify the user's phone number
+                setCodeConfirmer(confirmationCode);
                 setIsLoading(false);
               } else {
                 setBootstrap("alert alert-danger");
@@ -172,8 +141,8 @@ export const useSignup = () => {
       if (response.ok) {
         Swal.fire({
           icon: "success",
-          title: "<h6><strong>Bienvenue à TranoGasy !<strong><h6/>",
-          text: "votre compte a été créé avec succès",
+          title: "<h6><strong>Bienvenue sur TranoGasy !<strong><h6/>",
+          text: "Votre compte a été créé avec succès.",
           showCloseButton: true,
           showCancelButton: false,
           focusConfirm: false,
@@ -183,10 +152,11 @@ export const useSignup = () => {
             popup: "smaller-sweet-alert",
           },
         });
+
+        dispatch(setUser(json.user));
         localStorage.setItem("user", JSON.stringify(json));
-        localStorage.removeItem("signup");
-        resetReduxStore();
-        setLocation("/loader");
+        setIsLoading(false);
+        hideModal();
       }
       if (!response.ok) {
         setBootstrap("alert alert-danger");

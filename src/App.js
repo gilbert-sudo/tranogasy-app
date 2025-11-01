@@ -31,7 +31,6 @@ import UserPage from "./pages/UserPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import EditUsersProfilePage from "./pages/EditUsersProfilePage";
 import PropertyDetailsPage from "./pages/PropertyDetailsPage";
-import SignUpVerificationPage from "./pages/SignUpVerificationPage";
 import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import PasswordRecoveryVerificationPage from "./pages/PasswordRecoveryVerificationPage";
 import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisationPage";
@@ -70,7 +69,6 @@ import {
   deleteFromNotifications,
   toggleDarkMode,
   setTimer,
-  setModalsField
 } from "./redux/redux";
 
 // returns the current hash location in a normalized form
@@ -104,7 +102,6 @@ const routes = [
   { path: "/user", component: UserPage, private: false },
   { path: "/userProfile/:userId", component: UserProfilePage, private: false },
   { path: "/editProfile", component: EditUsersProfilePage, private: false },
-  { path: "/signupverification", component: SignUpVerificationPage, private: false },
   { path: "/signup", component: SignUpPage, private: false },
   { path: "/password-recovery", component: PasswordRecoveryPage, private: false },
   { path: "/password-recovery/:phoneNumber", component: PasswordRecoveryPage, private: false },
@@ -129,6 +126,7 @@ function App() {
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const historyStack = useSelector((state) => state.historyStack.value);
   const pricing = useSelector((state) => state.pricing);
+  const likedPropertiesState = useSelector((state) => state.likedProperties);
 
   const { updateTimer, isExpired } = useTimer();
   const { findLocationsWithinDistance } = useMap();
@@ -136,7 +134,7 @@ function App() {
   const { updateReduxProperty } = useRedux();
   const { pushNotification } = useNotification();
   const { updateUser } = useUser();
-  const { loadUsersPropertiesFromLocalState } = useLoader();
+  const { loadUsersPropertiesFromLocalState, loadLikes, loadUsersProperties } = useLoader();
 
   // Render the main content
 
@@ -335,8 +333,15 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    if (user && properties && properties.length > 0 && !usersProperties) {
-      loadUsersPropertiesFromLocalState(user._id, properties);
+    console.log("run this shit");
+    if (user) {
+      if (!likedPropertiesState) {
+        const userId = user._id;
+        loadLikes(userId);
+      }
+      if (properties && properties.length > 0 && !usersProperties) {
+        loadUsersPropertiesFromLocalState(user._id, properties);
+      }
     }
   }, [user, properties, usersProperties]);
 
@@ -433,8 +438,8 @@ function App() {
                       >
                         ×
                       </button>
-                      {modals.modalContent === "login" && <LoginPage />}
-                      {modals.modalContent === "signup" && <SignUpPage />}
+                      {modals.masterModalContent === "login" && <LoginPage />}
+                      {modals.masterModalContent === "signup" && <SignUpPage />}
                     </div>
                   </div>
                 )

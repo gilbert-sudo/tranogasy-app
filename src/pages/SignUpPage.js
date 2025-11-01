@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import PhoneNumberInput from "../components/PhoneNumberInput";
 import CodeConfirmerModal from "../components/CodeConfirmerModal";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 import { useSignup } from "../hooks/useSignup";
 import { useModal } from "../hooks/useModal";
@@ -9,12 +10,15 @@ import { useModal } from "../hooks/useModal";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { Key, User } from "lucide-react";
 
-import { Link, useLocation } from "wouter";
-import Swal from "sweetalert2";
+import { useLocation } from "wouter";
 
 const SignUpPage = () => {
-  const { signup, generateRandomCode, isLoading, error, bootstrapClassname } = useSignup();
-  const { showModal } = useModal();
+
+  const modals = useSelector((state) => state.modals);
+  const signupWaitlist = useSelector((state) => state.signup);
+
+  const { signup, finalizeSignup, generateRandomCode, isLoading, error, bootstrapClassname } = useSignup();
+  const { showModal, setCodeConfirmer } = useModal();
 
   const [username, setUsername] = useState("");
   const [location, setLocation] = useLocation("");
@@ -22,8 +26,6 @@ const SignUpPage = () => {
   const email = "";
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const signupWaitlist = useSelector((state) => state.signup);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handlePhoneNumberInput = (e) => {
     // Remove non-numeric characters before updating state
@@ -35,25 +37,25 @@ const SignUpPage = () => {
   };
 
   const handleVerifyCode = async (code) => {
-    console.log("Code à vérifier:", code);
+
+    const generatedCode = modals.codeConfirmer;
+    const inputedcode = code;
 
     // Simulation d'une vérification API
     try {
       // Remplacez ceci par votre appel API réel
       await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simuler une erreur aléatoire pour le test
-          if (Math.random() > 0.5) {
-            resolve();
-          } else {
-            reject(new Error("Code invalide"));
-          }
-        }, 1000);
+        if (inputedcode === generatedCode) {
+          finalizeSubmit();
+          resolve();
+        } else {
+          reject();
+        }
       });
 
       return true;
     } catch (error) {
-      throw new Error("Échec de la vérification");
+      throw new Error("Code incorrect. Veuillez réessayer.");
     }
   };
 
@@ -73,6 +75,12 @@ const SignUpPage = () => {
     );
   };
 
+  // Render the main content
+  const finalizeSubmit = async () => {
+    await finalizeSignup({ username, email, phone, password });
+    console.log("finalize the submition");
+  };
+
   useEffect(() => {
     const pageLoader = async () => {
       if (signupWaitlist) {
@@ -83,35 +91,16 @@ const SignUpPage = () => {
     pageLoader();
   }, [signupWaitlist]);
 
-  useEffect(() => {
-    if (isLoading) {
-      // Display the alert
-      Swal.fire({
-        imageUrl: "images/verification.gif",
-        imageHeight: 50, // Set a max height in pixels
-        html: `<p style={{ fontWeight: "400" }}> Vérification... </p>`,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        customClass: {
-          popup: "smaller-sweet-alert2",
-        },
-      });
-    } else {
-      // Close the alert when loading is complete
-      Swal.close();
-    }
-  }, [isLoading]);
-
-
   return (
     <>
       <CodeConfirmerModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={modals.codeConfirmer}
+        onClose={() => setCodeConfirmer(null)}
         onVerify={handleVerifyCode}
-        phoneNumber="+261 34 51 898 89"
+        phoneNumber={phone}
       />
       <div
+        className="signup-page"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -123,6 +112,8 @@ const SignUpPage = () => {
           paddingTop: "50px",
         }}
       >
+        {/* Loading Overlay - relative to signup-page */}
+        {isLoading && <LoadingOverlay />}
         {/* Formes d’arrière-plan */}
         <div
           style={{

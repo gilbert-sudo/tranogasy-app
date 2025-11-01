@@ -1,17 +1,14 @@
 import { useSelector, useDispatch } from "react-redux";
 import {
   setUser,
-  setSignUp,
   setLoader,
   setNavbar,
   setTopNavbar,
   resetPagination,
-  setTopProperties,
   updateReduxUsersProperties,
   updateLikedProperties,
   updateProperties,
   updateTopProperty,
-  setProperties,
   setNotifications,
   setPayments,
   setNotificationReadingStatus,
@@ -45,8 +42,6 @@ export const useRedux = () => {
     dispatch(setUser(null));
     // reset the user's timer state
     dispatch(setTimer({ timer: null, display: null }));
-    // reset the signup waitlist
-    dispatch(setSignUp(null));
     // reset the loader state into undone
     dispatch(setLoader(null));
     // reset the navbar state into onshow

@@ -124,7 +124,7 @@ const PasswordRecoveryPage = () => {
         <div class="fixed-bottom bg-white">
           <nav className="d-flex justify-content-start navbar navbar-expand-lg navbar-light">
             <button
-              onClick={() => setLocation("/login")}
+              onClick={() => setLocation("/user")}
               style={{ fontSize: "15px" }}
               className="text-capitalize font-weight-light btn btn-outline-dark border-0"
             >

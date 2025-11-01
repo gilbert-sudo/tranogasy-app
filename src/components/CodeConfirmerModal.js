@@ -1,14 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
-import { 
-  CheckCircle, 
-  XCircle, 
-  RotateCcw, 
+import { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+import {
+  CheckCircle,
+  XCircle,
+  RotateCcw,
   Clock,
   ShieldCheck
 } from "lucide-react";
 import "./css/CodeConfirmerModal.css";
+import { useSMS } from "../hooks/useSMS";
+import { useFormater } from "../hooks/useFormater";
 
 const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
+
+  const modals = useSelector((state) => state.modals);
+
   const [code, setCode] = useState(["", "", ""]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -16,15 +22,20 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
   const [timeLeft, setTimeLeft] = useState(0);
   const inputRefs = useRef([]);
 
+  const { sendSMS } = useSMS();
+  const { formatPhone } = useFormater();
+
   useEffect(() => {
     if (isOpen) {
+      //Send the sms to the user
+      sendTheCode();
       // Réinitialiser le code quand la modale s'ouvre
       setCode(["", "", ""]);
       setError("");
       setSuccess("");
       setIsVerifying(false);
       setTimeLeft(0);
-      
+
       // Focus sur le premier input avec un léger délai
       if (inputRefs.current[0]) {
         setTimeout(() => {
@@ -45,6 +56,14 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
     return () => clearInterval(timer);
   }, [timeLeft, isOpen]);
 
+  const sendTheCode = async () => {
+    await sendSMS(
+      phoneNumber,
+      "Votre code de confirmation TranoGasy est le : " +
+      modals.codeConfirmer
+    );
+  }
+
   const handleInputChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
 
@@ -62,9 +81,9 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
     }
 
     // Soumettre automatiquement si tous les chiffres sont saisis
-    if (index === 2 && value !== "" && newCode.every(digit => digit !== "")) {
-      setTimeout(() => handleVerify(), 100);
-    }
+    // if (index === 2 && value !== "" && newCode.every(digit => digit !== "")) {
+    //   setTimeout(() => handleVerify(), 100);
+    // }
   };
 
   const handleKeyDown = (index, e) => {
@@ -79,7 +98,7 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
     e.preventDefault();
     const pasteData = e.clipboardData.getData("text");
     const numbers = pasteData.replace(/\D/g, "").slice(0, 3);
-    
+
     if (numbers.length === 3) {
       const newCode = numbers.split("");
       setCode(newCode);
@@ -91,7 +110,7 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
 
   const handleVerify = async () => {
     const verificationCode = code.join("");
-    
+
     if (verificationCode.length !== 3) {
       setError("Veuillez saisir les 3 chiffres du code de vérification");
       return;
@@ -102,23 +121,20 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
     setSuccess("");
 
     try {
-      // Simulation de la vérification
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       if (onVerify) {
         await onVerify(verificationCode);
       }
-      
+
       setSuccess("Code vérifié avec succès !");
       setTimeout(() => {
         setIsVerifying(false);
         if (onClose) onClose();
       }, 1500);
-      
+
     } catch (err) {
       setError(err.message || "Code incorrect. Veuillez réessayer.");
       setIsVerifying(false);
-      
+
       // Réinitialiser les champs en cas d'erreur
       setCode(["", "", ""]);
       setTimeout(() => {
@@ -129,20 +145,22 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
 
   const handleResendCode = () => {
     if (timeLeft > 0) return;
-    
+
     setError("");
     setSuccess("Code renvoyé avec succès !");
     setCode(["", "", ""]);
     setTimeLeft(30);
-    
+
     // Refocus sur le premier input
     setTimeout(() => {
       inputRefs.current[0]?.focus();
     }, 100);
-    
+
     // Ici, vous ajouteriez la logique pour renvoyer le code
+    //send verification code to the user
+    sendTheCode();
     console.log("Code renvoyé");
-    
+
     // Effacer le message de succès après 3 secondes
     setTimeout(() => setSuccess(""), 3000);
   };
@@ -163,10 +181,10 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
           <ShieldCheck size={24} />
           Vérification du Numéro
         </h2>
-        
+
         <div className="modal-description">
           Nous avons envoyé un code de vérification à 3 chiffres au{" "}
-          <span className="phone-number">{phoneNumber}</span>
+          <span className="phone-number">{phoneNumber ? formatPhone(phoneNumber) : "+261*********"}</span>
         </div>
 
         {/* Contenu principal */}
@@ -192,7 +210,7 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
             ))}
           </div>
 
-          {error && false && (
+          {error && (
             <div className="error-message" role="alert">
               <XCircle size={18} />
               {error}
@@ -206,8 +224,8 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
             </div>
           )}
 
-          <button 
-            className="verify-button" 
+          <button
+            className="verify-button"
             onClick={handleVerify}
             disabled={code.join("").length !== 3 || isVerifying}
             aria-label="Vérifier le code"
@@ -218,16 +236,16 @@ const CodeConfirmerModal = ({ isOpen, onClose, onVerify, phoneNumber }) => {
 
           <div className="resend-code">
             <span>Vous n'avez pas reçu le code ?</span>
-            {!(timeLeft > 0) && 
-              <button 
-              className="resend-link" 
-              onClick={handleResendCode}
-              disabled={timeLeft > 0 || isVerifying}
-              aria-label={timeLeft > 0 ? `Renvoyer le code dans ${timeLeft} secondes` : "Renvoyer le code"}
-            >
-              <RotateCcw size={14} />
-              {timeLeft > 0 ? `Renvoyer (${timeLeft}s)` : "Renvoyer le code"}
-            </button>
+            {!(timeLeft > 0) &&
+              <button
+                className="resend-link"
+                onClick={handleResendCode}
+                disabled={timeLeft > 0 || isVerifying}
+                aria-label={timeLeft > 0 ? `Renvoyer le code dans ${timeLeft} secondes` : "Renvoyer le code"}
+              >
+                <RotateCcw size={14} />
+                {timeLeft > 0 ? `Renvoyer (${timeLeft}s)` : "Renvoyer le code"}
+              </button>
             }
           </div>
 
