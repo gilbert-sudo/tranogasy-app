@@ -655,13 +655,15 @@ const likedPropertiesSlice = createSlice({
       const updatedProperty = action.payload;
 
       // Find the index of the property to update
-      const likeIndex = state.findIndex(
-        (like) => like._id === updatedProperty._id
-      );
+      if (state) {
+        const likeIndex = state.findIndex(
+          (like) => like._id === updatedProperty._id
+        );
 
-      if (likeIndex !== -1) {
-        // If the property is found, update it in the array
-        state[likeIndex] = updatedProperty;
+        if (likeIndex !== -1) {
+          // If the property is found, update it in the array
+          state[likeIndex] = updatedProperty;
+        }
       }
     },
   },

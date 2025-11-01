@@ -1,0 +1,95 @@
+/* btn 23 */
+
+.button-23 {
+  background-color: #FFFFFF;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #222222;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  padding: 13px 23px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: box-shadow .2s,-ms-transform .1s,-webkit-transform .1s,transform .1s;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+}
+
+.button-23:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow .2s;
+}
+
+.button-23:active {
+  background-color: #F7F7F7;
+  border-color: #000000;
+  transform: scale(.96);
+}
+
+.button-23:disabled {
+  border-color: #DDDDDD;
+  color: #DDDDDD;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.button-23-success  {
+  background-color: #7cbd1e;
+  border: 1px solid #6aa61a;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  padding: 13px 23px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+  box-shadow: 0 2px 4px rgba(124, 189, 30, 0.3);
+}
+
+.button-23-success :hover {
+  background-color: #6aa61a;
+  box-shadow: 0 4px 8px rgba(124, 189, 30, 0.4);
+  transform: translateY(-1px);
+}
+
+.button-23-success :focus-visible {
+  box-shadow: 0 0 0 3px rgba(124, 189, 30, 0.5);
+}
+
+.button-23-success :active {
+  background-color: #5e9317;
+  border-color: #5e9317;
+  transform: scale(0.96);
+  box-shadow: 0 2px 4px rgba(124, 189, 30, 0.3);
+}
+
+.button-23-success :disabled {
+  background-color: #cde5a6;
+  border-color: #b9d88a;
+  color: #f4f4f4;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

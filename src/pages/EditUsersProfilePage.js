@@ -335,7 +335,7 @@ const EditUsersProfilePage = () => {
 
           <button
             className="btn btn-success text-white font-weight-bold my-2 my-sm-0"
-            style={{ padding: "1.5vh", borderRadius: "10px" }}
+            style={{ padding: "1.5vh", borderRadius: "9999px" }}
             type="submit"
             disabled={
               saveBtn ||

@@ -211,7 +211,7 @@ const MyListingPage = () => {
             </div>
           ) : <MyListingPageSkeleton />
         : (
-          <NotLogedIn />
+          <NotLogedIn route="MyListingPage"/>
         )}
     </div>
   );

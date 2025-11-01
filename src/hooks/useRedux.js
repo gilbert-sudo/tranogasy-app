@@ -60,7 +60,7 @@ export const useRedux = () => {
     // dispatch(setProperties(null));
     //Reset the initial notifications list
     dispatch(setNotifications(null));
-    dispatch(setPayments(null));
+    dispatch(setPayments([]));
     dispatch(setNotificationReadingStatus(null));
     dispatch(setNotificationCounterStatus(0));
     //Reset the liked property list

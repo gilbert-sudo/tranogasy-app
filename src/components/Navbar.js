@@ -236,7 +236,7 @@ const Navbar = () => {
                 </li>
                 <li className="nav__item mt-2">
                   <Link
-                    to="/login"
+                    to="/user"
                     className="nav__link"
                     style={ActiveLink(
                       "/login",

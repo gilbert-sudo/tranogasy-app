@@ -13,7 +13,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  /* background: linear-gradient(135deg, #f5f7fa, #c3cfe2); */
+  background: linear-gradient(135deg, #f5f7fa, #d5d5d5);
   width: 95%;
   max-width: 500px;
   max-height: 90vh;

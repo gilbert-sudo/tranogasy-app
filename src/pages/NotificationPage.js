@@ -40,7 +40,7 @@ const NotificationPage = () => {
       }
     };
     pageLoader();
-  }, []);
+  }, [user, notifications]);
 
   return (
     <>
@@ -92,7 +92,7 @@ const NotificationPage = () => {
           </div>
         </section>
       ) : (
-        <NotLogedIn />
+        <NotLogedIn route="NotificationPage"/>
       )}
     </>
   );

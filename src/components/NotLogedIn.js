@@ -1,11 +1,24 @@
-import { Link } from "wouter";
+
 import { useImage } from "../hooks/useImage";
 import { useModal } from "../hooks/useModal";
 
+import "./css/notLogedIn.css";
 
-const NotLogedIn = () => {
-  const { notLogedInImg } = useImage();
+const NotLogedIn = ({ route }) => {
+
+  const { notLogedInImg, noFavoriteImg, noNotificationImg, noListingImg} = useImage();
   const { showModal } = useModal();
+
+  const getAccordingImg = () => {
+
+    let imgSource = notLogedInImg();
+
+    if (route === "NotificationPage") imgSource = noNotificationImg();
+    if (route === "MyListingPage") imgSource = noListingImg();
+    if (route === "FavoritePage") imgSource = noFavoriteImg();
+
+    return imgSource;
+  }
 
   return (
     <div
@@ -58,7 +71,7 @@ const NotLogedIn = () => {
         </div>
 
         <img
-          src={notLogedInImg()}
+          src={getAccordingImg()}
           alt="Connexion requise"
           style={{
             width: "100%",
@@ -80,16 +93,9 @@ const NotLogedIn = () => {
           <button
             type="button"
             onClick={() => showModal("login")}
-            className="btn btn-outline-dark"
+            className="button-23 py-3"
             style={{
-              borderRadius: "9999px",
-              padding: "15px 0",
-              fontSize: "clamp(0.9rem, 1.5vw, 1rem)",
-              fontFamily:
-                '"Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif',
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "all 0.2s ease",
+              borderRadius: "9999px"
             }}
           >
             Se connecter
@@ -97,21 +103,11 @@ const NotLogedIn = () => {
           <button
             type="button"
             onClick={() => showModal("signup")}
-            className="btn"
+            className="button-23-success py-3"
             style={{
-              background: "#7cbd1e",
-              border: "2px solid #7cbd1e",
-              color: "#fff",
               borderRadius: "9999px",
-              padding: "15px 0",
-              fontSize: "clamp(0.9rem, 1.5vw, 1rem)",
-              fontFamily:
-                '"Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif',
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "all 0.2s ease",
             }}
-            onMouseOver={(e) =>
+              onMouseOver={(e) =>
               (e.currentTarget.style.background = "#6aa619")
             }
             onMouseOut={(e) => (e.currentTarget.style.background = "#7cbd1e")}

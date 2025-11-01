@@ -88,7 +88,7 @@ const FavoritePage = () => {
           </div>
         </div>
       ) : (
-        <NotLogedIn />
+        <NotLogedIn route="FavoritePage"/>
       )}
     </div>
   );
