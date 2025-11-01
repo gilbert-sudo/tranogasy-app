@@ -140,7 +140,7 @@ const PageLoader = () => {
           backdropFilter: "blur(10px)",
         }}
       >
-        😍 + 2000 annonces ✨
+        😍 + 2000 annonces / mois ✨
       </div>
 
       {/* The main page-loader container (now only holds the logo) */}
