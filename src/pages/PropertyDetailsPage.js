@@ -208,6 +208,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
       document.body.style.backgroundImage = "none";
       document.body.style.backgroundColor = "#ffffff";
     }
+    
     return () => {
       document.body.style.backgroundImage = "none";
       document.body.style.backgroundColor = "#ffffff";

@@ -22,7 +22,6 @@ export const useSMS = () => {
     });
 
     const response = await json.json();
-    // console.log("status de la requet:" + response);
   };
   return { sendSMS };
 };

@@ -35,6 +35,7 @@ import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import PasswordRecoveryVerificationPage from "./pages/PasswordRecoveryVerificationPage";
 import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisationPage";
 import ImageUpload from "./pages/ImageUpload";
+import SMSBot from "./pages/SMSBot";
 import GilbertAi from "./components/GilbertAi";
 
 import { Geolocation } from "@capacitor/geolocation";
@@ -109,6 +110,7 @@ const routes = [
   { path: "/password-recovery-finalisation", component: PasswordRecoveryFinalisationPage, private: false },
   { path: "/nosignal", component: NoInternetPage, private: false },
   { path: "/TestApp", component: ImageUpload, private: false },
+  { path: "/SMSBot", component: SMSBot, private: false },
   // Add other routes similarly
 ];
 

@@ -6,6 +6,8 @@ import ListingDetailsSkeleton from "../components/skeletons/ListingDetailsSkelet
 import Skeleton from "react-loading-skeleton";
 import HomeSlider from "../components/HomeSlider";
 
+import usePreventGoBack from "../hooks/usePreventGoBack";
+
 import PropertyDetailsPage from "./PropertyDetailsPage";
 
 import { useSelector } from "react-redux";
@@ -30,6 +32,13 @@ const ExplorePage = () => {
     setSelectedProperty(property);
     setIsSlideVisible(true);
   };
+
+   usePreventGoBack((isSliderVisible), () => {
+    if (isSliderVisible) {
+      handleCloseSlideClick();
+    }
+    console.log("this is running against my will");
+  });
 
   return (
     <>
