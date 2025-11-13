@@ -4,11 +4,26 @@ import { useSMS } from "../hooks/useSMS";
 import { useFormater } from "../hooks/useFormater";
 
 const SMSBot = () => {
-  const { sendSMS } = useSMS();
+  const { sendBefianaSMS } = useSMS();
   const { formatDate } = useFormater();
-  // const properties = useSelector((state) => state.properties);
-  const usersProperties = useSelector((state) => state.usersProperties);
-  const properties = usersProperties.slice(-5);
+  const XProperties = useSelector((state) => state.properties);
+  // const usersProperties = useSelector((state) => state.usersProperties);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // start of today
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1); // start of tomorrow
+
+  const todaysProperties = XProperties.filter((property) => {
+    const createdAt = new Date(property.created_at);
+    return createdAt >= today && createdAt < tomorrow;
+  });
+
+  console.log({ todaysProperties });
+
+  const properties = todaysProperties;
+
   const [isSending, setIsSending] = useState(false);
   const [progress, setProgress] = useState(0);
   const [logs, setLogs] = useState([]);
@@ -25,11 +40,11 @@ const SMSBot = () => {
     setLogs([]);
     let sentCount = 0;
     console.log(properties);
-    
 
     for (const property of properties) {
-      const phone = property.owner.phone;
-      // const phone = property.phone1;
+      // const phone = property.owner.phone;
+      // const phone = "0345189896";
+      const phone = property.phone1;
       if (!phone) continue;
 
       const username =
@@ -38,13 +53,15 @@ const SMSBot = () => {
           : "Mikajy ranaivo";
 
       const city = property.city?.fokontany || "Antananarivo";
-      const rent = property.rent ? `${property.rent.toLocaleString()} Ar` : "Prix non précisé";
+      const rent = property.rent
+        ? `${property.rent.toLocaleString()} Ar`
+        : "Prix non précisé";
       const rooms = property.rooms || "Trano ahofa";
       const livingRoom = property.livingRoom || "Trano ahofa";
       const date = formatDate(property.created_at) || "ito volana ito";
-       // Get the current URL
-    // const propertyCurrentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${property._id}`;
-    const propertyCurrentUrl = `https://apis.tranogasy.mg/api/preview/${property._id}`;
+      // Get the current URL
+      // const propertyCurrentUrl = `${process.env.REACT_APP_API_URL}/api/preview/${property._id}`;
+      const propertyCurrentUrl = `https://apis.tranogasy.mg/api/preview/${property._id}`;
 
       const message = `Salama ${username} 😊, arabaina !
     Ilay tranonao ${livingRoom}Lv ${rooms}Ch any ${city} (${rent}/mois) ny ${date}.
@@ -52,11 +69,14 @@ const SMSBot = () => {
     Pejy facebook'nay: TranoGasy by Gilbert Madagascar Trano Ahofa`;
 
       try {
-        await sendSMS(phone, message);
+        await sendBefianaSMS(phone, message);
         sentCount++;
         setLogs((prev) => [...prev, `✅ SMS sent to ${username} (${phone})`]);
       } catch (err) {
-        setLogs((prev) => [...prev, `❌ Error sending to ${username} (${phone})`]);
+        setLogs((prev) => [
+          ...prev,
+          `❌ Error sending to ${username} (${phone})`,
+        ]);
       }
 
       setProgress(Math.round((sentCount / properties.length) * 100));
@@ -110,9 +130,12 @@ const SMSBot = () => {
       </div>
 
       <ul style={{ marginTop: "20px", lineHeight: "1.5em" }}>
-        {logs.slice().reverse().map((log, i) => (
-          <li key={i}>{log}</li>
-        ))}
+        {logs
+          .slice()
+          .reverse()
+          .map((log, i) => (
+            <li key={i}>{log}</li>
+          ))}
       </ul>
     </div>
   );

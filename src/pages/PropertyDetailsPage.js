@@ -172,6 +172,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
     const hasUnpaidBills = payments.some(
       (payment) => payment.status === "refused" || payment.status === "redone"
     );
+    
     if (hasUnpaidBills) {
       unpaidBillPopup();
       return; // Exit early

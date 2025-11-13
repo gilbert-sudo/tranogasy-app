@@ -11,7 +11,7 @@ export default function usePreventGoBack(active, customBackAction) {
   const [initiateHook, setInitiatelHook] = useState(false);
 
   useEffect(() => {
-    console.log({ active });
+    // console.log({ active });
 
 
     if (!active && !initiateHook) {

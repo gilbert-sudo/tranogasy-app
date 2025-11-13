@@ -106,7 +106,7 @@ const PasswordRecoveryVerificationPage = () => {
   };
 
   useEffect(() => {
-    console.log(accountRecovery);
+    // console.log(accountRecovery);
     inputRefs.current[0].focus();
   }, []);
 

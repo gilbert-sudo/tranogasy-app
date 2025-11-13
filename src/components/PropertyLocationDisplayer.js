@@ -53,7 +53,7 @@ function MyMap({ position, circle }) {
       if (newLocations) {
         setMapZoom(calculateZoomLevel(newLocations));
       }
-      console.log("the users current position", geolocation.userCurrentPosition);
+      // console.log("the users current position", geolocation.userCurrentPosition);
     } else {
       setCenter(position);
       setMapZoom(15);

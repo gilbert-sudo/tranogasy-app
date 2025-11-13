@@ -325,13 +325,13 @@ function PropertyDetails({ property, route, handlePropertyClick }) {
             </div>
             <div className="mt-2 property-title">
               {property.type === "rent" ? (
-                <small className="d-flex text-success justify-content-end">
-                  <strong>{property.rent.toLocaleString("en-US")} <small>Ar/mois</small></strong>
-                </small>
+                <h6 className="d-flex text-success justify-content-end">
+                  <strong style={{ fontWeight: 800 }}>{property.rent.toLocaleString("en-US")} <small>Ar/mois</small></strong>
+                </h6>
               ) : (
-                <small className="d-flex text-danger justify-content-end">
-                  <strong>{property.price.toLocaleString("en-US")} <small>Ar</small></strong>
-                </small>
+                <h6 className="d-flex text-danger justify-content-end">
+                  <strong style={{ fontWeight: 800 }}>{property.price.toLocaleString("en-US")} <small>Ar</small></strong>
+                </h6>
               )}
             </div>
           </div>

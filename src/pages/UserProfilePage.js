@@ -82,9 +82,9 @@ const UserProfilePage = () => {
                             />
                         </div>
                         <div className="text-dark d-flex flex-column justify-content-center description pt-4">
-                            <h6 className="text-center">{userData.username}</h6>
+                            <h6 className="text-center mt-3">{userData.username}</h6>
                             <p className="text-center mb-1"> {userData.bio}</p>
-                            <p className="text-center mb-1"><ImLocation className="text-danger" /> Soanierana  Antananarivo</p>
+                            {/* <p className="text-center mb-1"><ImLocation className="text-danger" />   Antananarivo</p> */}
                             <p className="text-center mb-1"><ImPhone className="text-success mb-1" /> {userData.phone}</p>
                         </div>
                         <div className="d-flex justify-content-center my-2">
@@ -98,7 +98,7 @@ const UserProfilePage = () => {
                                     <p className="text-center font-weight-bold">Terrain</p>
                                 </div>
                                 <div className="d-flex flex-column justify-content-center text-dark">
-                                    <h5 className="text-center text-danger">150</h5>
+                                    <h5 className="text-center text-danger">1 k</h5>
                                     <p className="text-center font-weight-bold">J'aime</p>
                                 </div>
                             </div>

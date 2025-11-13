@@ -47,11 +47,16 @@ export const useAccountRecovery = () => {
 
       if (response.ok) {
         if (json) {
-          console.log(json);
+          // console.log(json);
           dispatch(setAccountRecoveryUser(json));
           dispatch(setAccountRecoveryVerification({ code: confirmationCode }));
 
           // send verification code to the user
+          // await sendBefianaSMS(
+          //   phoneNumber,
+          //   "Votre code de confirmation TranoGasy est le : " + confirmationCode
+          // );
+
           await sendSMS(
             phoneNumber,
             "Votre code de confirmation TranoGasy est le : " + confirmationCode
@@ -74,7 +79,7 @@ export const useAccountRecovery = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      setLocation("/nosignal");
+      // setLocation("/nosignal");
       console.log(error);
     }
   };

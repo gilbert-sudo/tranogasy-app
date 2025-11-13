@@ -35,6 +35,7 @@ import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import PasswordRecoveryVerificationPage from "./pages/PasswordRecoveryVerificationPage";
 import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisationPage";
 import ImageUpload from "./pages/ImageUpload";
+import TestPage from "./pages/TestPage";
 import SMSBot from "./pages/SMSBot";
 import GilbertAi from "./components/GilbertAi";
 
@@ -64,6 +65,7 @@ import {
   addPayment,
   updatePayment,
   pushProperty,
+  pushTopProperty,
   deleteFromProperties,
   deleteFromTopProperty,
   deleteLike,
@@ -109,7 +111,7 @@ const routes = [
   { path: "/password-recovery-verification", component: PasswordRecoveryVerificationPage, private: false },
   { path: "/password-recovery-finalisation", component: PasswordRecoveryFinalisationPage, private: false },
   { path: "/nosignal", component: NoInternetPage, private: false },
-  { path: "/TestApp", component: ImageUpload, private: false },
+  { path: "/TestApp", component: TestPage, private: false },
   { path: "/SMSBot", component: SMSBot, private: false },
   // Add other routes similarly
 ];
@@ -166,14 +168,14 @@ function App() {
       };
 
       const isSameCoords = (JSON.stringify(user?.coords || null) === JSON.stringify(userNewCoords));
-      console.log("dispatching users Current position:", userNewCoords);
+      // console.log("dispatching users Current position:", userNewCoords);
       dispatch(
         setUserCurrentPosition(userNewCoords)
       );
 
       if (user) {
         if (!isSameCoords) {
-          console.log("updating the user's current coords ", user, { userNewCoords }, (JSON.stringify(user?.coords || null) !== JSON.stringify(userNewCoords)));
+          // console.log("updating the user's current coords ", user, { userNewCoords }, (JSON.stringify(user?.coords || null) !== JSON.stringify(userNewCoords)));
           updateUser({
             userId: user._id,
             coords: {
@@ -274,6 +276,7 @@ function App() {
         // You can dispatch an action or handle the payment data as needed
         if (propertyData.reason === "create") {
           dispatch(pushProperty(property));
+          dispatch(pushTopProperty(property));
           console.log("New property added:", property);
         }
         if (propertyData.reason === "update") {
@@ -336,7 +339,6 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    console.log("run this shit");
     if (user) {
       const userId = user._id;
       if (!likedPropertiesState) {

@@ -92,7 +92,7 @@ const PageLoader = () => {
       }
 
       const mapData = await loadMap();
-      console.log("mapData", mapData);
+      // console.log("mapData", mapData);
 
       loadPlans();
 

@@ -244,6 +244,12 @@ const topPropertiesSlice = createSlice({
   name: "topProperties",
   initialState: null,
   reducers: {
+    pushTopProperty: (state, action) => {
+      const isPropertyExists = state.some((property) => property._id === action.payload._id);
+      if (!isPropertyExists) {
+        state.unshift(action.payload);
+      }
+    },
     setTopProperties: (state, action) => {
       return action.payload;
     },
@@ -280,8 +286,12 @@ const topPropertiesSlice = createSlice({
   },
 });
 
-export const { setTopProperties, deleteFromTopProperty, updateTopProperty } =
-  topPropertiesSlice.actions;
+export const {
+  pushTopProperty,
+  setTopProperties,
+  deleteFromTopProperty,
+  updateTopProperty
+} = topPropertiesSlice.actions;
 
 //the user's properties
 const usersPropertiesSlice = createSlice({

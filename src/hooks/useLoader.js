@@ -134,7 +134,7 @@ export const useLoader = () => {
         const json2 = await res.json();
 
         if (res.ok) {
-          console.log("Fetching page:", page);
+          // console.log("Fetching page:", page);
           allProperties = [...allProperties, ...json2.properties];
         }
       }
@@ -155,7 +155,7 @@ export const useLoader = () => {
           const json2 = await res.json();
 
           if (res.ok) {
-            console.log("Fetching page from BACKUP:", page);
+            // console.log("Fetching page from BACKUP:", page);
             allProperties = [...allProperties, ...json2.properties];
           }
         }
@@ -200,7 +200,6 @@ export const useLoader = () => {
 
       if (response.ok) {
         dispatch(setPlans(json.plans));
-        console.log("plans loaded: ", json.plans);
       }
     } catch (error) {
       console.log(error);

@@ -115,7 +115,7 @@ const Navbar = () => {
       } else {
         dispatch(setTopNavbar(true));
       }
-      console.log({ prevPath });
+      // console.log({ prevPath });
 
     }
     loadPage();
