@@ -389,6 +389,32 @@ export const {
   updateProperties,
 } = propertiesSlice.actions;
 
+// Filtered properties slice
+const filteredPropertiesInitialState = {
+  recentProperties: null,
+};
+
+const filteredPropertiesSlice = createSlice({
+  name: "filteredProperties",
+  initialState: filteredPropertiesInitialState,
+  reducers: {
+    setFilteredPropertiesState: (state, action) => {
+      Object.assign(state, action.payload);
+    },
+    setFilteredPropertiesField: (state, action) => {
+      const { key, value } = action.payload;
+      state[key] = value;
+    },
+    resetFilteredProperties: () => filteredPropertiesInitialState,
+  },
+});
+
+export const {
+  setFilteredPropertiesState,
+  setFilteredPropertiesField,
+  resetFilteredProperties
+} = filteredPropertiesSlice.actions;
+
 //notifications
 const notificationSlice = createSlice({
   name: "notifications",
@@ -848,6 +874,7 @@ export const store = configureStore({
     topProperties: topPropertiesSlice.reducer,
     usersProperties: usersPropertiesSlice.reducer,
     properties: propertiesSlice.reducer,
+    filteredProperties: filteredPropertiesSlice.reducer,
     notifications: notificationSlice.reducer,
     notificationStatus: notificationStatusSlice.reducer,
     likedProperties: likedPropertiesSlice.reducer,

@@ -17,13 +17,13 @@ const PageLoader = () => {
   const [oneTimeTask, setOneTimeTask] = useState(false);
   const user = useSelector((state) => state.user);
   const topProperties = useSelector((state) => state.topProperties);
-  const properties = useSelector((state) => state.properties);
+  const filteredProperties = useSelector((state) => state.filteredProperties);
 
   const {
     loadTopProperties,
     loadLikes,
     loadNotifications,
-    loadProperties,
+    loadRecentProperties,
     loadPayments,
     loadPlans
   } = useLoader();
@@ -48,7 +48,7 @@ const PageLoader = () => {
   }
 
   if (oneTimeTask === false) {
-    !properties && loadProperties();
+    !filteredProperties.recentProperties && loadRecentProperties();
     setOneTimeTask(true);
   }
 

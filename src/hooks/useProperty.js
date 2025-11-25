@@ -782,23 +782,14 @@ export const useProperty = () => {
 
     let results = [];
 
-    const now = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(now.getDate() - 30);
-
-    results = properties.filter((property) => {
-      const createdAt = new Date(property.created_at);
-
-      return (
+    results = properties.filter(
+      (property) =>
         property.type === type &&
-        createdAt >= thirtyDaysAgo && // ✅ Only properties created in the last 30 days
         (budgetMin && property.rent ? property.rent >= budgetMin : true) &&
         (budgetMax && property.rent ? property.rent <= budgetMax : true) &&
         (budgetMin && property.price ? property.price >= budgetMin : true) &&
         (budgetMax && property.price ? property.price <= budgetMax : true)
-      );
-    });
-
+    );
 
     if (results.length === 0) {
       dispatch(setSearchResults([]));

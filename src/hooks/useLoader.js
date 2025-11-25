@@ -1,11 +1,11 @@
 // Desc: This hook is used to load data from the server and dispatch it to the redux store
-import { useState } from "react";
 import { useLocation } from "wouter";
 import { useDispatch } from "react-redux";
 import {
   setLikedPropreties,
   setNotifications,
   setProperties,
+  setFilteredPropertiesField,
   setTopProperties,
   setQuartersName,
   setUsersProperties,
@@ -167,6 +167,79 @@ export const useLoader = () => {
     }
   };
 
+  const loadRecentProperties = async (days = 31) => {
+    const mainUrl = process.env.REACT_APP_API_URL;
+    const backupUrl = process.env.REACT_APP_API_BACKUP_URL;
+
+    let baseUrl = mainUrl;
+    let allProperties = [];
+
+    const fetchFromAPI = async (url) => {
+      const response = await fetch(
+        `${url}/api/properties/paginated/recent?days=${days}`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const json = await response.json();
+      if (!response.ok)
+        throw new Error(json.message || "Failed to fetch recent properties");
+
+      return json;
+    };
+
+    try {
+      // Try MAIN API
+      const json = await fetchFromAPI(baseUrl);
+
+      for (let page = 1; page <= json.totalPages; page++) {
+        const res = await fetch(
+          `${baseUrl}/api/properties/paginated/recent?days=${days}&page=${page}&limit=500`,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        const json2 = await res.json();
+        if (res.ok) {
+          // console.log("Fetching recent page:", page);
+          allProperties = [...allProperties, ...json2.properties];
+        }
+      }
+
+      dispatch(setProperties(allProperties));
+      dispatch(setFilteredPropertiesField({ key: "recentProperties", value: allProperties }));
+    } catch (error) {
+      console.warn("Main API failed, trying backup...", error.message);
+
+      try {
+        // Try BACKUP API
+        const json = await fetchFromAPI(backupUrl);
+
+        for (let page = 1; page <= json.totalPages; page++) {
+          const res = await fetch(
+            `${backupUrl}/api/properties/paginated/recent?days=${days}&page=${page}&limit=500`,
+            {
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+
+          const json2 = await res.json();
+          if (res.ok) {
+            // console.log("Fetching recent page from BACKUP:", page);
+            allProperties = [...allProperties, ...json2.properties];
+          }
+        }
+
+        dispatch(setProperties(allProperties));
+        dispatch(setFilteredPropertiesField({ key: "recentProperties", value: allProperties }));
+      } catch (backupError) {
+        console.error("Both main and backup APIs failed:", backupError.message);
+      }
+    }
+  };
+
 
   const loadPayments = async (userId) => {
     try {
@@ -257,6 +330,7 @@ export const useLoader = () => {
     loadNotifications,
     loadQuartersName,
     loadProperties,
+    loadRecentProperties,
     loadPayments,
     loadPlans,
     loadTopProperties,
