@@ -1,4 +1,26 @@
 {
     "_id": "691343a68b1cc7ef93386820",
     "phone": "0338200840"
+},
+
+{
+      "user": {
+"_id": "6917647eb5ada05ea8645b74",
+"username": "Sophyna dyan sambatra",
+"bio": null,
+"email": "",
+"phone": "0336349165",
+"password": "$2a$05$mk1tBrfqpOwXL9i4ap5jN.ndFSRU4mMPMBAD84MWbSQrx/oLbOOiq",
+"role": "user",
+"favorites": [],
+"balance": 0,
+"startTime": null,
+"leftTime": null,
+"planValidity": null,
+"banned": false,
+"lastConnectedAt": "2025-11-14T17:45:57.212Z",
+"created_at": "2025-11-14T17:18:54.886Z",
+"__v": 0
+},
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNjZTM3MWZmNDIwYTIwYTViYWYzMzUiLCJpYXQiOjE3NjMxNDQyMjIsImV4cCI6MTc2MzQwMzQyMn0.kYnWf_QizdKlWTrvTGZAWBdgAnW57AFUZFx6ihvONKU"
 }

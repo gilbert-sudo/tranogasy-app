@@ -127,10 +127,10 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
     }
 
     // Guard clause 2: Check for specific subscription/timer conditions
-    if (!timer && !user.leftTime && property.owner._id !== user._id) {
-      notSubscribedPopup();
-      return; // Exit early
-    }
+    // if (!timer && !user.leftTime && property.owner._id !== user._id) {
+    //   notSubscribedPopup();
+    //   return; // Exit early
+    // }
 
     // Guard clause 3: Check for unpaid bills
     const hasUnpaidBills = payments.some(

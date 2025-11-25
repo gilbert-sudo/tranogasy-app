@@ -20,25 +20,36 @@ export const useLogin = () => {
 
   const notLogedPopUp = async () => {
     Swal.fire({
-      title: "<h6><strong>Vous êtes déconnecté(e)<strong><h6/>",
-      html: `<img src=${notLogedInImg()} class="img-fluid"><br> Pour aimer et sauvegarder des articles, connectez-vous ou créez votre compte gratuitement. Merci !`,
+      title: "<h6><strong>Vous êtes déconnecté(e)</strong></h6>",
+      html: `
+      <img src="${notLogedInImg()}" class="img-fluid"><br>
+      Pour exécuter cette action,  connectez-vous ou créez votre compte gratuitement. Merci !
+    `,
       showCloseButton: true,
       showCancelButton: true,
       focusConfirm: false,
+
       confirmButtonText: "Se connecter",
       confirmButtonColor: "#7cbd1e",
-      cancelButtonText: "Annuler",
-      cancelButtonColor: "#F31559",
+
+      cancelButtonText: "Créer un compte",
+      cancelButtonColor: "transparent", // ignored because of custom class
+
       customClass: {
         popup: "smaller-sweet-alert",
+        cancelButton: "creer-compte-btn",
       },
     }).then((result) => {
       if (result.isConfirmed) {
         showModal("login");
         Swal.close();
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        showModal("signup");
+        Swal.close();
       }
     });
   };
+
 
   const login = async (phone, passwordToTest) => {
     setIsLoading(true);

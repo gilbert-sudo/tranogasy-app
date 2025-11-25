@@ -326,6 +326,9 @@ function MyMap({ mapLoaded }) {
           setMapZoomLevel(14);
           setTimeout(() => {
             setShowMapLoader(false);
+            setTimeout(() => {
+              dispatch(setReduxFormFilter({ formFilter: true }));
+            }, 100);
           }, 550);
         }, timeoutDuration);
       }

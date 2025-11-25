@@ -40,5 +40,21 @@
   width: auto; /* Maintain aspect ratio */
 }
 
+/* Outline dark button for "Créer un compte" */
+.smaller-sweet-alert .swal2-cancel.creer-compte-btn {
+  background-color: transparent !important;
+  color: #333 !important;
+  border: 1.5px solid #333 !important;
+  font-size: 13px;
+  border-radius: 9999px;
+  padding: 9px 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+.smaller-sweet-alert .swal2-cancel.creer-compte-btn:hover {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
 
 
