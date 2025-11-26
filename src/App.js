@@ -34,7 +34,6 @@ import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import PasswordRecoveryPage from "./pages/PasswordRecoveryPage";
 import PasswordRecoveryVerificationPage from "./pages/PasswordRecoveryVerificationPage";
 import PasswordRecoveryFinalisationPage from "./pages/PasswordRecoveryFinalisationPage";
-import ImageUpload from "./pages/ImageUpload";
 import TestPage from "./pages/TestPage";
 import SMSBot from "./pages/SMSBot";
 import GilbertAi from "./components/GilbertAi";
@@ -42,7 +41,6 @@ import GilbertAi from "./components/GilbertAi";
 import { Geolocation } from "@capacitor/geolocation";
 
 import { useTimer } from "./hooks/useTimer";
-import { useMap } from "./hooks/useMap";
 import { useRedux } from "./hooks/useRedux";
 import { useNotification } from "./hooks/useNotification";
 import { useUser } from "./hooks/useUser";
@@ -134,12 +132,11 @@ function App() {
   const likedPropertiesState = useSelector((state) => state.likedProperties);
 
   const { updateTimer, isExpired } = useTimer();
-  const { findLocationsWithinDistance } = useMap();
   const { hideModal } = useModal();
   const { updateReduxProperty } = useRedux();
   const { pushNotification } = useNotification();
   const { updateUser } = useUser();
-  const { loadUsersPropertiesFromLocalState, loadLikes, loadPayments } = useLoader();
+  const { loadUsersProperties, loadLikes, loadPayments } = useLoader();
 
   // Render the main content
 
@@ -183,9 +180,10 @@ function App() {
               lng: coordinates.coords.longitude,
             }
           });
-        } else {
-          console.log("don't update the user's current coords because it is the same", user, { userNewCoords }, (JSON.stringify(user?.coords || null) !== JSON.stringify(userNewCoords)));
         }
+        //  else {
+        //   console.log("don't update the user's current coords because it is the same", user, { userNewCoords }, (JSON.stringify(user?.coords || null) !== JSON.stringify(userNewCoords)));
+        // }
       }
     }
   };
@@ -347,8 +345,8 @@ function App() {
       if (!payments || payments.length === 0) {
         loadPayments(userId);
       }
-      if (properties && properties.length > 0 && !usersProperties) {
-        loadUsersPropertiesFromLocalState(userId, properties);
+      if (!usersProperties) {
+        loadUsersProperties(userId);
       }
     }
   }, [user, properties, usersProperties]);

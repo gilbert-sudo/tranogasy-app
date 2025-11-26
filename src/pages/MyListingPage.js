@@ -50,11 +50,7 @@ const MyListingPage = () => {
       alert("⏰ Les annonces peuvent être créées entre 6h et 18h uniquement.");
       return;
     }
-    if (bypassedUser && todayCount >= 30) {
-      alert("🚫 Vous avez atteint la limite de 30 annonces pour aujourd’hui.");
-      return;
-    }
-    if (!bypassedUser && todayCount >= 22) {
+    if (todayCount >= 22) {
       alert("🚫 Vous avez atteint la limite de 20 annonces pour aujourd’hui.");
       return;
     }

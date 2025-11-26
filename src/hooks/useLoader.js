@@ -171,74 +171,73 @@ export const useLoader = () => {
     const mainUrl = process.env.REACT_APP_API_URL;
     const backupUrl = process.env.REACT_APP_API_BACKUP_URL;
 
-    let baseUrl = mainUrl;
     let allProperties = [];
 
-    const fetchFromAPI = async (url) => {
+    // fetch 1 page only
+    const fetchPage = async (url, page) => {
       const response = await fetch(
-        `${url}/api/properties/paginated/recent?days=${days}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        `${url}/api/properties/paginated/recent?days=${days}&page=${page}&limit=500`,
+        { headers: { "Content-Type": "application/json" } }
       );
 
       const json = await response.json();
       if (!response.ok)
         throw new Error(json.message || "Failed to fetch recent properties");
 
-      return json;
+      return json.properties; // backend returns only properties + hasMore
+    };
+
+    // fetch repeatedly until empty page
+    const fetchAllPages = async (baseUrl) => {
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore) {
+        const properties = await fetchPage(baseUrl, page);
+
+        if (properties.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        console.log("Fetching recent page:", page, "items:", properties.length);
+
+        allProperties = [...allProperties, ...properties];
+        if (page === 1) {
+          console.log("load the page one");
+          dispatch(
+            setFilteredPropertiesField({
+              key: "pageOne",
+              value: allProperties,
+            })
+          );
+        }
+        page++;
+      }
+
+      return allProperties;
     };
 
     try {
-      // Try MAIN API
-      const json = await fetchFromAPI(baseUrl);
-
-      for (let page = 1; page <= json.totalPages; page++) {
-        const res = await fetch(
-          `${baseUrl}/api/properties/paginated/recent?days=${days}&page=${page}&limit=500`,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
-        const json2 = await res.json();
-        if (res.ok) {
-          // console.log("Fetching recent page:", page);
-          allProperties = [...allProperties, ...json2.properties];
-        }
-      }
-
-      dispatch(setProperties(allProperties));
-      dispatch(setFilteredPropertiesField({ key: "recentProperties", value: allProperties }));
+      // MAIN API
+      const data = await fetchAllPages(mainUrl);
+      dispatch(setProperties(data));
     } catch (error) {
       console.warn("Main API failed, trying backup...", error.message);
 
       try {
-        // Try BACKUP API
-        const json = await fetchFromAPI(backupUrl);
-
-        for (let page = 1; page <= json.totalPages; page++) {
-          const res = await fetch(
-            `${backupUrl}/api/properties/paginated/recent?days=${days}&page=${page}&limit=500`,
-            {
-              headers: { "Content-Type": "application/json" },
-            }
-          );
-
-          const json2 = await res.json();
-          if (res.ok) {
-            // console.log("Fetching recent page from BACKUP:", page);
-            allProperties = [...allProperties, ...json2.properties];
-          }
-        }
-
-        dispatch(setProperties(allProperties));
-        dispatch(setFilteredPropertiesField({ key: "recentProperties", value: allProperties }));
+        // BACKUP API
+        const data = await fetchAllPages(backupUrl);
+        dispatch(setProperties(data));
       } catch (backupError) {
-        console.error("Both main and backup APIs failed:", backupError.message);
+        console.error(
+          "Both main and backup APIs failed:",
+          backupError.message
+        );
       }
     }
   };
+
 
 
   const loadPayments = async (userId) => {
@@ -253,7 +252,7 @@ export const useLoader = () => {
 
       if (response.ok) {
         dispatch(setPayments(json));
-        console.log("payments loaded: ", json);
+        // console.log("payments loaded: ", json);
       }
     } catch (error) {
       console.log(error);
@@ -282,21 +281,54 @@ export const useLoader = () => {
 
 
   const loadUsersProperties = async (userId) => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/properties/user/${userId}`, {
+    const primaryUrl = process.env.REACT_APP_API_URL;
+    const backupUrl = process.env.REACT_APP_API_URL_BACKUP; // <-- Add this in .env
+
+    // Helper: timeout wrapper
+    const fetchWithTimeout = (url, options, timeout = 15000) => {
+      return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), timeout)
+        ),
+      ]);
+    };
+
+    // Core function: try fetching from a specific server
+    const tryFetch = async (base) => {
+      const url = `${base}/api/properties/user/${userId}`;
+      const response = await fetchWithTimeout(url, {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Content-Type": "aplication/json",
+          "Content-Type": "application/json",
         },
       });
-      const json = await response.json();
 
-      if (response.ok) {
+      if (!response.ok) throw new Error("Server returned non-200");
+      return response.json();
+    };
+
+    try {
+      // 1️⃣ Try MAIN server
+      console.log("🔵 Trying MAIN server...");
+      const json = await tryFetch(primaryUrl);
+
+      dispatch(setUsersProperties(json));
+    } catch (err1) {
+      console.log("❌ Main server failed:", err1.message);
+
+      try {
+        // 2️⃣ Try BACKUP server
+        console.log("🟡 Trying BACKUP server...");
+        const json = await tryFetch(backupUrl);
+
         dispatch(setUsersProperties(json));
+      } catch (err2) {
+        console.log("🔴 Backup server failed:", err2.message);
+
+        // 3️⃣ Both failed → redirect
+        setLocation("/nosignal");
       }
-    } catch (error) {
-      console.log(error);
-      setLocation("/nosignal");
     }
   };
 

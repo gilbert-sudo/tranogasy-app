@@ -392,6 +392,7 @@ export const {
 // Filtered properties slice
 const filteredPropertiesInitialState = {
   recentProperties: null,
+  pageOne: null,
 };
 
 const filteredPropertiesSlice = createSlice({

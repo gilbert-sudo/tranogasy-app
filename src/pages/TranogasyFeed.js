@@ -67,10 +67,10 @@ const GenerateFeaturebox = ({ icon, label }) => (
 );
 
 const TranogasyFeed = ({ payload, route, setTitokMode }) => {
-  const reduxProperties = useSelector((state) => state.properties);
+  const reduxProperties = useSelector((state) => state.filteredProperties);
   const tranogasyMap = useSelector((state) => state.tranogasyMap);
   const tranogasyFeed = useSelector((state) => state.tranogasyFeed);
-  const properties = payload ? payload : reduxProperties;
+  const properties = payload ? payload : reduxProperties.pageOne;
 
   const swiperRef = useRef(null);
   const dispatch = useDispatch();
