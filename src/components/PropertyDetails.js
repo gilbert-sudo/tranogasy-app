@@ -37,6 +37,7 @@ import {
   FaOilWell,
   FaKitchenSet,
 } from "react-icons/fa6";
+import { TfiLayoutSidebarLeft } from "react-icons/tfi";
 import { Phone } from "lucide-react";
 
 import useSound from "use-sound";
@@ -300,6 +301,7 @@ function PropertyDetails({ property, route, handlePropertyClick }) {
               {property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
               {property.features.bassin && <TbWash className="h6 mr-1" />}
 
+              {property.features.openKitchen && <TfiLayoutSidebarLeft className="h6 mr-1" />}
               {property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
               {property.features.placardKitchen && <FaBed className="h6 mr-1" />}
               {property.features.hotWaterAvailable && <FaHotTub className="h6 mr-1" />}

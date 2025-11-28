@@ -18,6 +18,7 @@ import {
 } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { ImCircleDown } from "react-icons/im";
+import { TfiLayoutSidebarLeft } from "react-icons/tfi";
 import {
   FaCar,
   FaHome,
@@ -113,6 +114,7 @@ const UpdatePropertyPage = () => {
   const [surroundedByWalls, setSurroundedByWalls] = useState(oldPropertyDetails.features.surroundedByWalls);
   const [electricityJirama, setElectricityJirama] = useState(oldPropertyDetails.features.electricityJirama);
   const [waterPumpSupplyJirama, setWaterPumpSupplyJirama] = useState(oldPropertyDetails.features.waterPumpSupplyJirama);
+  const [openKitchen, setOpenKitchen] = useState(oldPropertyDetails.features.openKitchen);
   const [kitchenFacilities, setKitchenFacilities] = useState(oldPropertyDetails.features.kitchenFacilities);
   const [airConditionerAvailable, setAirConditionerAvailable] = useState(oldPropertyDetails.features.airConditionerAvailable);
   const [swimmingPool, setSwimmingPool] = useState(oldPropertyDetails.features.swimmingPool);
@@ -263,6 +265,7 @@ const UpdatePropertyPage = () => {
         guardianHouse,
         bassin,
         kitchenFacilities,
+        openKitchen,
         placardKitchen,
         bathtub,
         fireplace,
@@ -349,6 +352,7 @@ const UpdatePropertyPage = () => {
       garage,
       guardianHouse,
       bassin,
+      openKitchen,
       kitchenFacilities,
       placardKitchen,
       insideToilet,
@@ -574,7 +578,7 @@ const UpdatePropertyPage = () => {
                         L'endroit où se trouve la propriété
                       </label>
                       {!selectedCity && (
-                          <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
+                        <GoogleAutosuggestInput onPlaceSelect={setCoords} setPlaceName={setPlaceName} />
                       )}
 
 
@@ -1494,6 +1498,7 @@ const UpdatePropertyPage = () => {
                         <GenerateCheckbox icon={<FaShieldAlt />} state={guardianHouse} label={"Maison pour gardien"} onClickFunction={() => setGuardianHouse(!guardianHouse)} />
                         <GenerateCheckbox icon={<TbWash />} state={bassin} label={"Bassin"} onClickFunction={() => setBassin(!bassin)} />
                         {/* 🏠 Confort intérieur */}
+                        <GenerateCheckbox icon={<TfiLayoutSidebarLeft />} state={openKitchen} label={"Cuisine ouverte"} onClickFunction={() => setOpenKitchen(!openKitchen)} />
                         <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
                         <GenerateCheckbox icon={<FaBed />} state={placardKitchen} label={"Cuisine placardée"} onClickFunction={() => setPlacardKitchen(!placardKitchen)} />
                         <GenerateCheckbox icon={<FaHotTub />} state={hotWaterAvailable} label={"Eau chaude"} onClickFunction={() => setHotWaterAvailable(!hotWaterAvailable)} />

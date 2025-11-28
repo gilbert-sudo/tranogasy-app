@@ -23,6 +23,7 @@ import {
 } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { LuBellPlus } from "react-icons/lu";
+import { TfiLayoutSidebarLeft } from "react-icons/tfi";
 import {
   FaCar,
   FaHome,
@@ -49,7 +50,6 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
   const properties = useSelector((state) => state.properties);
 
   const dispatch = useDispatch();
-  const [, setLocation] = useLocation("");
   const { featureUnderConstructionPopup } = usePopup();
 
   const [budgetMax, setBudgetMax] = useState(null);
@@ -77,6 +77,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
   const [surroundedByWalls, setSurroundedByWalls] = useState(false);
   const [electricity, setElectricity] = useState(false);
   const [waterPumpSupply, setWaterPumpSupply] = useState(false);
+  const [openKitchen, setOpenKitchen] = useState(false);
   const [kitchenFacilities, setKitchenFacilities] = useState(false);
   const [airConditionerAvailable, setAirConditionerAvailable] = useState(false);
   const [swimmingPool, setSwimmingPool] = useState(false);
@@ -110,11 +111,11 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
     return (
       <div
         style={{
-           borderRadius: "20px", 
-           padding: "8px 10px 10px 10px", 
-           cursor: "pointer", 
-           border: "1px solid #ccc"
-           }}
+          borderRadius: "20px",
+          padding: "8px 10px 10px 10px",
+          cursor: "pointer",
+          border: "1px solid #ccc"
+        }}
         className={`d-flex justify-content-center align-items-center btn-group ${state ? "bg-secondary" : "bg-light"
           }`}
         role="group"
@@ -123,7 +124,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
         {state && <span className="text-light">{icon}</span>}
         <div className="form-check pl-0" style={{ cursor: "pointer" }}>
           <label
-            className="form-check-label" 
+            className="form-check-label"
             htmlFor={state}
             style={{ cursor: "pointer" }}
           >
@@ -196,6 +197,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
       bassin,
       kitchenFacilities,
       placardKitchen,
+      openKitchen,
       insideToilet,
       insideBathroom,
       bathtub,
@@ -253,6 +255,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
       setGuardianHouse(searchForm.guardianHouse);
       setBassin(searchForm.bassin);
       setPlacardKitchen(searchForm.placardKitchen);
+      setOpenKitchen(searchForm.openKitchen);
       setBathtub(searchForm.bathtub);
       setFireplace(searchForm.fireplace);
       setFiberOpticReady(searchForm.fiberOpticReady);
@@ -401,6 +404,10 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
   }, [placardKitchen]);
 
   useEffect(() => {
+    dispatch(setSearchFormField({ key: "openKitchen", value: openKitchen }));
+  }, [openKitchen]);
+
+  useEffect(() => {
     dispatch(setSearchFormField({ key: "bathtub", value: bathtub }));
   }, [bathtub]);
 
@@ -461,6 +468,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
         bassin,
         kitchenFacilities,
         placardKitchen,
+        openKitchen,
         insideToilet,
         insideBathroom,
         bathtub,
@@ -505,6 +513,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
         guardianHouse,
         bassin,
         placardKitchen,
+        openKitchen,
         bathtub,
         fireplace,
         fiberOpticReady,
@@ -544,6 +553,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
     bassin,
     kitchenFacilities,
     placardKitchen,
+    openKitchen,
     insideToilet,
     insideBathroom,
     bathtub,
@@ -1014,6 +1024,7 @@ const HouseSearchForm = ({ setShowResultsDisplayModeCard, mode }) => {
                       <GenerateCheckbox icon={<FaShieldAlt />} state={guardianHouse} label={"Maison pour gardien"} onClickFunction={() => setGuardianHouse(!guardianHouse)} />
                       <GenerateCheckbox icon={<TbWash />} state={bassin} label={"Bassin"} onClickFunction={() => setBassin(!bassin)} />
                       {/* 🏠 Confort intérieur */}
+                      <GenerateCheckbox icon={<TfiLayoutSidebarLeft />} state={openKitchen} label={"Cuisine ouverte"} onClickFunction={() => setOpenKitchen(!openKitchen)} />
                       <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
                       <GenerateCheckbox icon={<FaBed />} state={placardKitchen} label={"Cuisine placardée"} onClickFunction={() => setPlacardKitchen(!placardKitchen)} />
                       <GenerateCheckbox icon={<FaHotTub />} state={hotWaterAvailable} label={"Eau chaude"} onClickFunction={() => setHotWaterAvailable(!hotWaterAvailable)} />

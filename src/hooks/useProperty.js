@@ -87,6 +87,7 @@ export const useProperty = () => {
       bassin,
       kitchenFacilities,
       placardKitchen,
+      openKitchen,
       insideToilet,
       insideBathroom,
       bathtub,
@@ -167,6 +168,7 @@ export const useProperty = () => {
           bassin,
           kitchenFacilities,
           placardKitchen,
+          openKitchen,
           insideToilet,
           insideBathroom,
           bathtub,
@@ -265,6 +267,7 @@ export const useProperty = () => {
       bassin,
       kitchenFacilities,
       placardKitchen,
+      openKitchen,
       insideToilet,
       insideBathroom,
       bathtub,
@@ -330,6 +333,7 @@ export const useProperty = () => {
         guardianHouse,
         bassin,
         placardKitchen,
+        openKitchen,
         bathtub,
         fireplace,
         fiberOpticReady,
@@ -761,6 +765,7 @@ export const useProperty = () => {
       bassin,
       kitchenFacilities,
       placardKitchen,
+      openKitchen,
       insideToilet,
       insideBathroom,
       bathtub,
@@ -830,6 +835,9 @@ export const useProperty = () => {
             : true) &&
           (placardKitchen
             ? property.features.placardKitchen === placardKitchen
+            : true) &&
+          (openKitchen
+            ? property.features.openKitchen === openKitchen
             : true) &&
           (insideToilet === "all"
             ? true

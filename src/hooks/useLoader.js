@@ -285,7 +285,7 @@ export const useLoader = () => {
     const backupUrl = process.env.REACT_APP_API_URL_BACKUP; // <-- Add this in .env
 
     // Helper: timeout wrapper
-    const fetchWithTimeout = (url, options, timeout = 15000) => {
+    const fetchWithTimeout = (url, options, timeout = 8000) => {
       return Promise.race([
         fetch(url, options),
         new Promise((_, reject) =>

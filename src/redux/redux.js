@@ -512,6 +512,7 @@ const initialState = {
   guardianHouse: false,
   bassin: false,
   placardKitchen: false,
+  openKitchen: false,
   bathtub: false,
   fireplace: false,
   fiberOpticReady: false,

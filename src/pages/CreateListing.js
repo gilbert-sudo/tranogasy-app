@@ -23,6 +23,7 @@ import {
 } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { ImCircleDown } from "react-icons/im";
+import { TfiLayoutSidebarLeft } from "react-icons/tfi";
 import {
   FaCar,
   FaKey,
@@ -106,6 +107,7 @@ const CreateListing = () => {
   const [surroundedByWalls, setSurroundedByWalls] = useState(false);
   const [electricityJirama, setElectricityJirama] = useState(false);
   const [waterPumpSupplyJirama, setWaterPumpSupplyJirama] = useState(false);
+  const [openKitchen, setOpenKitchen] = useState(false);
   const [kitchenFacilities, setKitchenFacilities] = useState(false);
   const [airConditionerAvailable, setAirConditionerAvailable] = useState(false);
   const [swimmingPool, setSwimmingPool] = useState(false);
@@ -340,6 +342,7 @@ const CreateListing = () => {
       bassin,
       kitchenFacilities,
       placardKitchen,
+      openKitchen,
       insideToilet,
       insideBathroom,
       bathtub,
@@ -1370,6 +1373,7 @@ const CreateListing = () => {
                       <GenerateCheckbox icon={<TbWash />} state={bassin} label={"Bassin"} onClickFunction={() => setBassin(!bassin)} />
 
                       {/* 🏠 Confort intérieur */}
+                      <GenerateCheckbox icon={<TfiLayoutSidebarLeft />} state={openKitchen} label={"Cuisine ouverte"} onClickFunction={() => setOpenKitchen(!openKitchen)} />
                       <GenerateCheckbox icon={<FaKitchenSet />} state={kitchenFacilities} label={"Cuisine équipée"} onClickFunction={() => setKitchenFacilities(!kitchenFacilities)} />
                       <GenerateCheckbox icon={<FaBed />} state={placardKitchen} label={"Cuisine placardée"} onClickFunction={() => setPlacardKitchen(!placardKitchen)} />
                       <GenerateCheckbox icon={<FaHotTub />} state={hotWaterAvailable} label={"Eau chaude"} onClickFunction={() => setHotWaterAvailable(!hotWaterAvailable)} />

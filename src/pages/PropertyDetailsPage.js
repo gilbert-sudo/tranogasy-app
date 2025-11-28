@@ -29,6 +29,7 @@ import {
 } from "react-icons/gi";
 import { TbAirConditioning, TbBuildingCastle, TbWash } from "react-icons/tb";
 import { IoMdShareAlt } from "react-icons/io";
+import { TfiLayoutSidebarLeft } from "react-icons/tfi";
 
 import { useRoute } from "wouter";
 import CarouselDetails from "../components/CarouselDetails";
@@ -336,6 +337,7 @@ const PropertyDetailsPage = ({ fastPreviewProperty, handleCloseSlideClick }) => 
                     {propertiesDetails.features?.guardianHouse && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Maison pour gardien"} />}
                     {propertiesDetails.features?.bassin && <GenerateFeaturebox icon={<TbWash />} label={"Bassin"} />}
                     {/* 🏠 Confort intérieur */}
+                    {propertiesDetails.features?.openKitchen && <GenerateFeaturebox icon={<TfiLayoutSidebarLeft />} label={"Cuisine ouverte"} />}
                     {propertiesDetails.features?.kitchenFacilities && <GenerateFeaturebox icon={<FaKitchenSet />} label={"Cuisine équipée"} />}
                     {propertiesDetails.features?.placardKitchen && <GenerateFeaturebox icon={<FaBed />} label={"Cuisine placardée"} />}
                     {propertiesDetails.features?.hotWaterAvailable && <GenerateFeaturebox icon={<FaHotTub />} label={"Eau chaude"} />}

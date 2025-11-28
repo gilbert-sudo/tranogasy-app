@@ -55,6 +55,7 @@ import {
   FaKitchenSet,
 } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
+import { TfiLayoutSidebarLeft } from "react-icons/tfi";
 
 import userProfile from "../img/user-avatar.png";
 
@@ -586,6 +587,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
           {!isDesktop && property.features.independentHouse && <TbBuildingCastle className="h6 mr-1" />}
           {!isDesktop && property.features.guardianHouse && <FaShieldAlt className="h6 mr-1" />}
 
+          {!isDesktop && property.features.openKitchen && <TfiLayoutSidebarLeft className="h6 mr-1" />}
           {!isDesktop && property.features.kitchenFacilities && <FaKitchenSet className="h6 mr-1" />}
           {!isDesktop && property.features.placardKitchen && <FaBed className="h6 mr-1" />}
           {!isDesktop && property.features.hotWaterAvailable && <FaHotTub className="h6 mr-1" />}
@@ -888,6 +890,7 @@ const TikTokStyleListing = ({ property, lockScroll, unlockScroll, isDesktop }) =
                   {property.features?.guardianHouse && <GenerateFeaturebox icon={<FaShieldAlt />} label={"Maison pour gardien"} />}
                   {property.features?.bassin && <GenerateFeaturebox icon={<TbWash />} label={"Bassin"} />}
                   {/* 🏠 Confort intérieur */}
+                  {property.features?.openKitchen && <GenerateFeaturebox icon={<TfiLayoutSidebarLeft />} label={"Cuisine ouverte"} />}
                   {property.features?.kitchenFacilities && <GenerateFeaturebox icon={<FaKitchenSet />} label={"Cuisine équipée"} />}
                   {property.features?.placardKitchen && <GenerateFeaturebox icon={<FaBed />} label={"Cuisine placardée"} />}
                   {property.features?.hotWaterAvailable && <GenerateFeaturebox icon={<FaHotTub />} label={"Eau chaude"} />}

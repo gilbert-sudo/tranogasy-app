@@ -40,8 +40,6 @@ const MyListingPage = () => {
   }
 
   const handleCreateListing = () => {
-    const bypassedUser = (user._id === "656083da05f993ac9d2cc063");
-    
     if (user.banned) {
       alert("📵 L'administrateur a temporairement retiré cette fonctionnalité de votre compte.");
       return;

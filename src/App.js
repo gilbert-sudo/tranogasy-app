@@ -387,7 +387,8 @@ function App() {
   return (
     <WonderPush options={{ webKey: 'ad242738aead9587c7ee3a981f65e2acabfa82bbe33620c0d14cf1ced5b0b5a1' }}>
       <AutoSubscribe />
-      {/* <BackButtonHandler /> // Handle back button navigation on android devices */}
+      {/* // Handle back button navigation on android devices */}
+      {/* <BackButtonHandler />  */}
       {pricing.pricingModal && <PricingModal />}
       <div id="app-homepage" className="app">
         <SkeletonTheme>
